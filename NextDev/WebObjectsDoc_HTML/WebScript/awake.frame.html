@@ -1,0 +1,37 @@
+<HTML>
+<HEAD>
+<TITLE>The awake Method</TITLE>
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+
+
+<P><A HREF="WebScript.book.html"><IMG SRC="fm2html-toc.gif">Table of Contents</A>
+<A HREF="specialMethods.frame.html"><IMG SRC="fm2html-previous.gif">Previous Section</A>
+<!-- This file was created with the fm2html filter.
+The filter is copyright Norwegian Telecom Research and
+was programmed by Jon Stephenson von Tetzchner. -->
+
+
+<H2><A NAME="HDR7"><A NAME="awake">The awake Method</A></A></H2>
+<P></B>In an application or component script, it's common to implement an <B>awake</B> method that prepares the associated page and its variables for use during the processing of the page. For example, the <B>Main.wos</B> script in the <A HREF="visitors.frame.html#visitors">Visitors </A>application uses <B>awake</B> to increment the count of visitors to the page:
+<PRE>
+id number;
+- awake {
+  if (!number) {
+    number = [WOApp visitorNum];
+    number++;
+    [WOApp setVisitorNum:number];
+  }
+  return self;
+}  
+</PRE>
+<P>For a given page, the <B>awake</B> method is invoked exactly once for each transaction. Therefore, if the same page handles the request as well as generates the response (for example, the first page of an application), the <B>awake</B> method is only invoked during the request phase.
+<P>The <B>awake</B> method is the best place to initialize variables whose values remain static for the life of the page, such as a list of hyperlinks. The advantage of using <B>awake</B> to perform this type of initialization is that the variables are guaranteed to be initialized every time the page is displayed.
+
+
+<P><A HREF="WebScript.book.html"><IMG SRC="fm2html-toc.gif">Table of Contents</A>
+<A HREF="requests.frame.html"><IMG SRC="fm2html-next.gif">Next Section</A>
+
+</BODY>
+</HTML>
+

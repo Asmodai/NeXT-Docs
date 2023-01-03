@@ -1,0 +1,40 @@
+<HTML>
+<HEAD>
+<TITLE>Working with Dictionaries</TITLE>
+</HEAD>
+<BODY bgcolor="#FFFFFF">
+<P><A HREF="Foundation.book.html"><IMG SRC="fm2html-toc.gif">Table of Contents</A>
+<A HREF="Ar_M.frame.html"><IMG SRC="fm2html-previous.gif">Previous Section</A>
+<!-- This file was created with the fm2html filter.
+The filter is copyright Norwegian Telecom Research and
+was programmed by Jon Stephenson von Tetzchner. -->
+
+
+<H2><A NAME="REF15215">Working with Dictionaries</A></H2>
+<P>NSDictionary and NSMutableDictionary objects store collections of key-value pairs. The key-value pairs within a dictionary are called <I>entries</I>. Each entry consists of an NSString that represents the key and a second object which is that key's value. Within a dictionary, the keys are unique. That is, no two keys in a single dictionary are equivalent. You use dictionaries to store objects that can be uniquely identified by strings.
+<P>The difference between NSDictionary and NSMutableDictionary is that you can't add, modify, or remove entries from an NSDictionary's initial collection of entries. Insertion and deletion methods provided for NSMutableDictionaries are not available for NSDictionaries. Although their use is limited to managing static collections of objects, it's best to use NSDictionaries wherever possible.
+<P>You can create NSDictionaries with WebScript's @ syntax for defining constant objects. For example, the following statements create NSDictionaries:
+<PRE>
+id sizes = @{"S" = "Small"; "M" = "Medium"; "L" = "Large"; "X" = "Extra Large"};
+id defaultPreferences = @{
+  "seatAssignment" = "Window";
+  "smoking" = "Non-smoking";
+  "aircraft" = "747"};
+</PRE>
+<P>You can also create dictionaries with creation methods. For example, if you want to create an NSDictionary that contains variables, you have to use a creation method. You can't use variables with WebScript's @ syntax. The following statement creates an NSDictionary that contains variables:
+<PRE>
+id customerPreferences = [NSDictionary dictionaryWithObjectsAndKeys:
+  seatingPreference, @"seatAssignment", 
+  smokingPreference, @"smoking",
+  aircraftPreference, @"aircraft", nil];
+</PRE>
+<P>The variable <B>customerPreferences</B> is an NSDictionary, so its initial collection of entries can't be modified. To create a dictionary that can be modified, use a creation method to create an NSMutableDictionary. For example, the following statement creates an empty NSMutableDictionary:
+<PRE>
+id dictionary = [NSMutableDictionary dictionary];
+</PRE>
+<P>The methods provided by NSDictionary and NSMutableDictionary are described in more detail in the section <A HREF="Di_M.frame.html#REF26295">Commonly Used Dictionary Methods</A>.
+
+<P><A HREF="Foundation.book.html"><IMG SRC="fm2html-toc.gif">Table of Contents</A>
+<A HREF="Di_M.frame.html"><IMG SRC="fm2html-next.gif">Next Section</A>
+</BODY>
+</HTML>

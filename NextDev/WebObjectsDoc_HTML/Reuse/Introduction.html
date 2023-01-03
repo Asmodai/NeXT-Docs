@@ -1,0 +1,109 @@
+<HTML>
+<HEAD>
+<TITLE> Introduction: Reusable Components </TITLE>
+</HEAD>
+<BODY>
+<P>
+
+</P>
+<H1>Introduction</H1>
+The WebObjects architecture lends itself to the creation of reusable components. You can design  reusable components that display:
+
+<UL>
+<LI>Custom configurations of images, input fields, or frames
+<LI>The current number people that have visited a particular page
+<LI>Your company's logo and current stock quote
+<LI>A Java animation or VRML demonstration
+</UL>
+
+The possibilities are endless.<P>
+
+With WebObjects, you design pages from static HTML elements and dynamic WebObjects elements. The HTML template for a page shows how these features are intermixed:
+
+<PRE>
+    &lt;CENTER&gt;
+    &lt;STRONG&gt;Today's image:&lt;/STRONG&gt; 
+	&lt;WEBOBJECT NAME=IMAGE&gt;&lt;/WEBOBJECT&gt; 
+    &lt;/CENTER&gt;
+    &lt;WEBOBJECT NAME=FOOTER&gt;&lt;/WEBOBJECT&gt;
+</PRE>
+
+The portions of the page marked by the WEBOBJECT tags derive their HTML values dynamically.  When this page is requested, WebObjects consults the template's corresponding declarations file:
+
+<PRE>
+    IMAGE : WOImage {src = todaysImage;};
+    FOOTER : Footer {date = now;};
+</PRE>
+
+The first declaration indicates that IMAGE is a WOImage that derives its image data from the invocation of the method <STRONG>todaysImage</STRONG>.  WOImage is one of the fundamental dynamic elements that WebObjects defines. The declaration for FOOTER specifies an element that isn't one of WebObjects' fundamental types--it specifies a <EM>reusable component</EM>.<P>
+
+The Footer reusable component is stored in a directory (named &quot;Footer.wo&quot;) that contains the same configuration of three files (template, declarations, and script files) as you would find for a WebObjects page. Here's what these files contain:<P>
+
+<PRE>
+
+</PRE>
+<H4>Footer Template File</H4>
+<HR>
+<PRE>
+    &lt;WEBOBJECT NAME="DATE"&gt;&lt;/WEBOBJECT&gt;&lt;BR&gt;
+    
+</PRE>
+
+<H4>Footer Declarations File</H4>
+<HR>
+<PRE>
+    DATE:WOString {value = formattedDate;};
+    
+</PRE>
+
+<H4>Footer Script File</H4>
+<HR>
+<PRE>
+    id date;
+    
+    - formattedDate { 
+	id head, tail;
+    
+	head = [date descriptionWithCalendarFormat:@"%m-%d-%Y"];
+	tail = [date descriptionWithCalendarFormat:@"%H:%M:%S"];
+	return [NSString stringWithFormat:@"%@ - %@\n", head, tail];
+    }
+    
+</PRE>
+
+As you can see, the Footer component is simply a string whose contents is dynamically set to be the current date and time. <P>
+
+<PRE>
+
+</PRE>
+<H2>Accessing a Reusable Component</H2>
+The Footer component can be included on any page of an application simply by:
+
+<UL>
+<LI> Adding the WEBOBJECTS tags to the page's HTML template file
+<LI> Declaring the component in the page's declarations file
+<LI> Installing the component directory where WebObjects can find it
+</UL>
+
+WebObjects searches for a reusable component in these places and in this order:
+
+<OL>
+<LI> The directory of the current page.  For example, if the template, declarations, and script files for the current page are stored in <STRONG>Page5.wo</STRONG>, WebObjects will look for the component in the directory <STRONG>Page5.wo/Footer.wo</STRONG>.
+<LI> The parent directory of the current page.
+<LI> Within the <STRONG>WebObjects</STRONG> directory of the server's document root.
+</OL>
+
+
+<PRE>
+
+</PRE>
+<H2>More Information</H2>
+
+You've seen how a reusable component can be nested within a component that represents the page.  It's possible for the nested, or <EM>child component</EM>, to invoke methods in its <EM>parent component</EM>. See <A href=../WebScript/WOAction.frame.html>Using the WOAction Object in Nested Components</A> for more information.
+
+Many of the examples that accompany this version of WebObjects make extensive use of reusable components.  See the CyberWind and Component examples in particular.
+
+
+
+</BODY>
+</HTML>

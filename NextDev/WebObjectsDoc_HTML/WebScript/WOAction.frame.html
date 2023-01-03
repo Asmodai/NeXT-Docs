@@ -1,0 +1,89 @@
+<HTML>
+<HEAD>
+<TITLE>Using the WOAction Object in Nested Components</TITLE>
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+
+
+<P><A HREF="WebScript.book.html"><IMG SRC="fm2html-toc.gif">Table of Contents</A>
+<A HREF="loadingRes.frame.html"><IMG SRC="fm2html-previous.gif">Previous Section</A>
+<!-- This file was created with the fm2html filter.
+The filter is copyright Norwegian Telecom Research and
+was programmed by Jon Stephenson von Tetzchner. -->
+
+
+<H2><A NAME="HDR7"><A NAME="WOAction">Using the WOAction Object in Nested Components</A></A></H2>
+<P></B>In the most common case, a component (that is, a unit that's constructed from a script, an HTML template, and a declarations file) corresponds to a single, dynamically generated page in an application. Sometimes, however, one component is nested inside of another. Such components, such as a calendar or a footer component, may be suited for use in a range of different applications.
+<P>WebScript provides a mechanism for constructing components that can be reused without having to be rewritten. This mechanism is WOAction, which allows you to separate a user action (such as   clicking on a hyperlink) from the method it invokes. This allows a nested (child) component to be used with different parent components by enabling each parent to respond to the user action in its own way.
+<P>The WOAction object allows nested child components to send callback messages to their parents. This is how it works:
+
+<OL>
+<P><LI>The parent page declares the component in its declarations file. 
+<BR>
+
+
+<P>For example, the Main page in the Component example (see the WebObjects examples) has this declaration in its <B>Main.wod</B> declarations file:
+<PRE>
+  PALETTE:Palette {
+    selection = number;
+    callBack = displaySelection;
+  };
+</PRE>
+<P>The <B>callBack</B> attribute specified in the declaration takes as its value a method (<B>displaySelection</B>) that is triggered when the child component sends the <B>callBack</B> object an <B>invoke</B> message. Through this mechanism the child component is able to message the parent (in this case, the Main page).
+
+
+
+<P><LI>The child component's script uses the <B>action</B> keyword to declare that the <B>callBack</B> attribute specified in the parent's declarations file is a WOAction object:
+<BR><PRE>
+action callBack;
+</PRE>
+
+<P><LI>The child component script then sends the WOAction object (in this example, <B>callBack</B>) an <B>invoke</B> message, which tells the object to invoke its associated method (in this example, <B>displaySelection</B>).
+<BR>
+
+
+<P>For example, here's an excerpt from the child component script <B>Palette.wos</B>:
+<PRE>
+action callBack;
+
+- click {
+    selection = digit;
+    return [callBack invoke];
+}
+</PRE>
+</OL>
+<P>When the user clicks on a digit in the browser, the child component's <B>click</B> method is triggered. This sets the value of the <B>selection</B> variable to the digit the user clicked on. Since the <B>selection</B> variable of the child component is tied to the <B>number</B> variable of the parent (in the <CODE>selection = number</CODE> statement in the declaration), the <B>number</B> variable is modified accordingly. Next, the <B>click</B> method sends the WOAction object <B>callBack</B> an <B>invoke</B> message. This in turn invokes the <B>displaySelection</B> method in the parent's script <B>Main.wos</B>. Finally, the <B>displaySelection</B> method generates a new HTML page that reflects the digit clicked by the user.
+<P>  You can use this technique in a single application in which multiple parent components interact with a child component differently. The following statements give examples of what this would entail in the parents' declarations files and the child's script:
+<P>
+<B>Component declaration in Parent1.wod</B>
+<PRE>
+COMPONENT:component {
+    childVar = parent1Var;
+    callBack = endWorldHunger;
+};
+</PRE>
+<P>
+<B>Component declaration in Parent2.wod</B>
+<PRE>
+COMPONENT:component {
+    childVar = parent2Var;
+    callBack = lookOutForNumberOne;
+};
+</PRE>
+<P>
+<B>The associated method in Child.wos</B>
+<PRE>
+action callBack;
+
+- click 
+{
+    childVar = newValue;
+    return [callBack invoke];
+}
+</PRE>
+
+<P><A HREF="WebScript.book.html"><IMG SRC="fm2html-toc.gif">Table of Contents</A>
+<A HREF="debugging.frame.html"><IMG SRC="fm2html-next.gif">Next Section</A>
+
+</BODY>
+</HTML>

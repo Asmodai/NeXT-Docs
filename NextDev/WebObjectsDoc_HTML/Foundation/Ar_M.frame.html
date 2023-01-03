@@ -1,0 +1,121 @@
+<HTML>
+<HEAD>
+<TITLE>Commonly Used Array Methods</TITLE>
+</HEAD>
+<BODY bgcolor="#FFFFFF">
+<P><A HREF="Foundation.book.html"><IMG SRC="fm2html-toc.gif">Table of Contents</A>
+<A HREF="Ar.frame.html"><IMG SRC="fm2html-previous.gif">Previous Section</A>
+<!-- This file was created with the fm2html filter.
+The filter is copyright Norwegian Telecom Research and
+was programmed by Jon Stephenson von Tetzchner. -->
+
+
+<H2><A NAME="REF90840">Commonly Used Array Methods</A></H2>
+<P></I>The following tables list the most commonly used NSArray and NSMutableArray methods. The methods covered are grouped in the following categories:
+<UL><LI><A HREF="Ar_M.frame.html#REF67293">Creating Arrays</A></LI>
+<LI><A HREF="Ar_M.frame.html#REF92306">Querying Arrays</A></LI>
+<LI><A HREF="Ar_M.frame.html#REF55526">Sorting Arrays</A></LI>
+<LI><A HREF="Ar_M.frame.html#REF92652">Adding and Removing Objects</A></LI>
+<LI><A HREF="Ar_M.frame.html#REF65343">Storing Arrays</A></LI>
+<LI><A HREF="Ar_M.frame.html#REF86557">Representing Arrays as Strings</A></LI></UL>
+<H3><A NAME="REF67293">Creating Arrays</A></H3>
+
+<P>The methods in this section are class methods, as denoted by the plus sign (+). You use class methods to send messages to a class---in this case, NSArray and NSMutableArray. For more information on class methods, see <A HREF="../WebScript/messaging.frame.html">Messaging in WebScript</A> in "Using WebScript."
+<DL><DT><DT> +  <B>array</DT>
+<DD></B>Returns an empty array. Usually used to create NSMutableArrays. NSArrays created with this method are permanently empty.</DD><BR><BR>
+<PRE>
+// Most common use
+id mutableArray = [NSMutableArray array];
+// May not be what you want
+id array = [NSArray array];
+</PRE>
+</DL><DL><DT><DT> +  <B>arrayWithObject:</DT>
+<DD></B>Returns an array containing the single specified object.</DD><BR><BR>
+</DL><DL><DT><DT> +  <B>arrayWithObjects:</DT>
+<DD></B>Returns an array containing the objects in the argument list. The argument list is a comma-separated list of objects ending with <B>nil</B>.</DD><BR><BR>
+<PRE>
+id array = [NSMutableArray arrayWithObjects:
+    @"Plates", @"Plasticware", @"Napkins", nil];
+</PRE>
+</DL><DL><DT><DT> +  <B>arrayWithArray:</DT>
+<DD></B>Returns an array containing the contents of a specified array. Usually used to create an NSMutableArray from an immutable NSArray. For example, the following statement:</DD><BR><BR>
+<PRE>
+id mutableArray = [NSMutableArray arrayWithArray:@("A", "B", "C")];
+</PRE>
+<DD>creates an NSMutableArray from a constant NSArray object.</DD><BR><BR>
+</DL><DL><DT><DT><A NAME="REF83278"> +  <B>arrayWithContentsOfFile:</A></DT>
+<DD></B>Returns an array initialized from the contents of a specified file. The specified file can be a full or relative pathname; the file that it names must contain a string representation of an array, such as that produced by the <B><A HREF="Ar_M.frame.html#REF15961">writeToFile:atomically:</A></B> method. See also <B><A HREF="Ar_M.frame.html#REF98130">description</A></B>.</DD><BR><BR></DL>
+
+<H3><A NAME="REF92306">Querying Arrays</A></H3>
+<DL><DT> -  <B>count</DT>
+<DD></B>Returns the number of objects in the array.</DD><BR><BR>
+</DL><DL><DT> -  <B>isEqual:</DT>
+<DD></B>Returns YES if the specified object is an array and has contents equivalent to the receiver, NO otherwise. Two arrays have equal contents if they each hold the same number of objects and objects at a given index in each array satisfy the <B>isEqual:</B> test </DD><BR><BR>
+</DL><DL><DT> -  <B>objectAtIndex:</DT>
+<DD></B>Returns the object located at a specified index. Arrays have a zero-based index. The first object in an array is at index 0, the second is at index 1, and so on. It is an error to specify an index that is out of bounds (greater than or equal to the array's count).</DD><BR><BR>
+</DL><DL><DT> -  <B>indexOfObject:</DT>
+<DD></B>Returns the index of the first object in the array that is equivalent to a specified object. To determine equality, each element of the array is sent an <B>isEqual:</B> message.</DD><BR><BR>
+</DL><DL><DT> -  <B>indexOfObjectIdenticalTo:</DT>
+<DD></B>Returns the index of the first occurrence of the a specified object.</DD><BR><BR></DL>
+<H3><A NAME="REF55526">Sorting Arrays</A></H3>
+<DL><DT> -  <B>sortedArrayUsingSelector:</DT>
+<DD></B>Returns an NSArray that lists the receiver's elements in ascending order, as determined by a specified method. This method is used to sort arrays containing strings and/or numbers. For example, the following code excerpt:</DD><BR><BR>
+<PRE>
+id guestArray = @("Suzy", "Alice", "John", "Peggy", "David");
+id sortedArray = [guestArray sortedArrayUsingSelector:@ "compare:"];
+</PRE>
+<DD>creates the NSArray <B>sortedArray</B> containing the string "Alice" at index 0, "David" at index 1, and so on.</DD><BR><BR></DL>
+
+<H3><A NAME="REF92652">Adding and Removing Objects</A></H3>
+<HR>
+<B> Warning:  The following methods are not supported by NSArray. They are only available for NSMutableArray objects.</B>
+
+<HR>
+<DL><DT> -  <B>addObject: </DT>
+<DD></B>Adds a specified object at the end of the receiver. It is an error to specify <B>nil</B> as an argument to this method. You can not add <B>nil</B> to an array.</DD><BR><BR>
+</DL><DL><DT> -  <B>insertObject:atIndex:</DT>
+<DD></B>Inserts an object at a specified index. Arrays have a zero-based index. The first object in an array is at index 0, the second is at index 1, and so on.</DD><BR><BR>
+<DD>It is an error to specify <B>nil</B> as an argument to this method. You can not add <B>nil</B> to an array. It is also an error to specify an index that is out of bounds (greater than or equal to the array's count).</DD><BR><BR>
+</DL><DL><DT> -  <B>removeObject:</DT>
+<DD></B>Removes all objects in the array equivalent to a specified object. Equivalency is determined using the <B>isEqual:</B> method.</DD><BR><BR>
+</DL><DL><DT> -  <B>removeObjectIdenticalTo:</DT>
+<DD></B>Removes all occurrences of a specified object.</DD><BR><BR>
+</DL><DL><DT> -  <B>removeObjectAtIndex:</DT>
+<DD></B>Removes the object at a specified index and moves all elements beyond the index up one slot to fill the gap. Arrays have a zero-based index. The first object in an array is at index 0, the second is at index 1, and so on.</DD><BR><BR>
+<DD>It is an error to specify an index that is out of bounds (greater than or equal to the array's count).</DD><BR><BR>
+</DL><DL><DT> -  <B>removeAllObjects</DT>
+<DD></B>Empties the receiver of all of its elements.</DD><BR><BR>
+</DL><DL><DT> -  <B>setArray:</DT>
+<DD></B>Empties the receiver of all its elements, then adds the contents of a specified array.</DD><BR><BR></DL>
+
+<H3><A NAME="REF65343">Storing Arrays</A></H3>
+<DL><DT><A NAME="REF15961"> -  <B>writeToFile:atomically:</A></DT>
+<DD></B>Writes the array's string representation to a specified file using the <B>description</B> method. Returns YES on success and NO on failure. If YES is specified for <B>atomically:</B>, this method attempts to write the file safely so that an existing file with the specified path is not overwritten, and it does not create a new file at the specified path unless the write is successful. The resulting file is suitable for use with <B><A HREF="Ar_M.frame.html#REF83278">arrayWithContentsOfFile:</A></B>. For example, the following code excerpt:</DD><BR><BR>
+<PRE>
+id guestArray = [NSMutableArray arrayWithContentsOfFile:path];
+[guestArray addObject:newGuest];
+[guestArray writeToFile:path atomically:YES];
+</PRE>
+<DD>creates <B>guestArray</B> with the contents of the specified file, adds a new guest, and saves the changes to the same file.</DD><BR><BR></DL>
+<H3><A NAME="REF86557">Representing Arrays as Strings</A></H3>
+<DL><DT><A NAME="REF98130"> -  <B>description</A></DT>
+<DD></B>Returns a string that represents the contents of the receiver. For example, the following code excerpt:</DD><BR><BR>
+<PRE>
+id array = [NSMutableArray arrayWithObjects:
+    @"Plates", @"Plasticware", @"Napkins", nil];
+id description = [array description];
+</PRE>
+<DD>produces the string "(Plates, Plasticware, Napkins)".</DD><BR><BR>
+</DL><DL><DT><A NAME="REF13460"> -  <B>componentsJoinedByString:</A></DT>
+<DD></B>Returns an NSString created by interposing a specified string between the elements of the receiver's objects. Each element of the array must be a string. If the receiver has no elements, an empty string is returned. See also <B><A HREF="St_M.frame.html#REF38561">componentsSeparatedByString:</A></B> (NSString and NSMutableString). For example, the following code excerpt:</DD><BR><BR>
+<PRE>
+id commaString = @"A, B, C";
+id array = [string componentsSeparatedByString:@","];
+id dash String = [array componentsJoinedByString:@ "-"];
+</PRE>
+<DD>creates the NSString <B>dashString</B> with the contents "A-B-C".</DD><BR><BR></DL>
+
+<P><A HREF="Foundation.book.html"><IMG SRC="fm2html-toc.gif">Table of Contents</A>
+<A HREF="Di.frame.html"><IMG SRC="fm2html-next.gif">Next Section</A>
+</BODY>
+</HTML>

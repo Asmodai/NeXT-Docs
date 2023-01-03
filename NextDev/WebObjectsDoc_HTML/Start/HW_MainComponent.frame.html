@@ -1,0 +1,87 @@
+<HTML>
+<HEAD>
+<TITLE> WebObjects Documentation </TITLE>
+</HEAD>
+<BODY bgcolor="#FFFFFF">
+<P><A HREF="Start.book.html"><IMG SRC="fm2html-toc.gif">Table of Contents</A>
+<A HREF="HW_Writing.frame.html"><IMG SRC="fm2html-previous.gif">Previous Section</A>
+<!-- This file was created with the fm2html filter.
+The filter is copyright Norwegian Telecom Research and
+was programmed by Jon Stephenson von Tetzchner. -->
+
+
+<H3><A NAME="HDR0">Main Component Files</A></H3>
+<P>The template for the Main page contains the following HTML elements:
+<PRE>
+&lt;HTML&gt;
+&lt;HEAD&gt;
+    &lt;TITLE&gt;Hello World!&lt;/TITLE&gt;
+&lt;/HEAD&gt;
+&lt;BODY&gt;
+  &lt;FORM&gt;
+  What's your name?
+  &lt;P&gt;
+  &lt;WEBOBJECT NAME = "NAME_FIELD"&gt;&lt;INPUT TYPE = "TEXT"&gt;&lt;/WEBOBJECT&gt;
+  &lt;WEBOBJECT NAME = "SUBMIT_BUTTON"&gt;&lt;INPUT TYPE = "SUBMIT"&gt;&lt;/WEBOBJECT&gt;
+  &lt;/P&gt;
+  &lt;/FORM&gt;
+&lt;/BODY&gt;
+&lt;/HTML&gt;
+</PRE>
+<P>The WEBOBJECT elements---a new kind of markup element introduced by WebObjects Framework---are replaced with dynamically generated HTML when the Hello World application returns the Main page. The declarations file specifies the kind of objects that perform the HTML substitutions.
+<P>The declarations file for the Main page contains the following declarations:
+<PRE>
+NAME_FIELD: WOTextField {value = nameString};
+SUBMIT_BUTTON: WOSubmitButton {action = sayHello};
+</PRE>
+<P>Each line is a declaration that corresponds to a WEBOBJECT element in the template. Each declaration declares an object---a WODynamicElement---to represent its corresponding WEBOBJECT element. The declaration specifies what kind of object will be created and how to configure the it. Specifically, a declaration associates a WODynamicElement with variables and actions defined in the corresponding script file.
+<P>The script for the Main page contains the following lines:
+<PRE>
+id nameString;
+- sayHello
+{
+  id nextPage;
+    
+  nextPage = [WOApp pageWithName:@"Hello"];  
+  [nextPage setNameString:nameString];
+  return nextPage;
+}
+
+</PRE>
+<P>Together, these three files (template, declarations, and script) establish what action to take when a user clicks Submit, which is to return the second page with a customized greeting. To accomplish this, the files must do two things:
+
+<UL>
+<P><LI>Store the name entered by the user.
+<BR>
+<P><LI>Return the Hello page.
+<BR></UL>
+
+
+<H4><A NAME="HDR1">Storing the Name</A></H4>
+<P>The declaration for the NAME_FIELD WEBOBJECT element:
+<PRE>
+NAME_FIELD: WOTextField {value = nameString};
+</PRE>
+<P>specifies how to store the name entered by the user. It associates the NAME_FIELD element with the <B>nameString</B> variable declared in Main.wos.
+<P>The declaration specifies that a WOTextField object will be created to generate HTML for the NAME_FIELD element, and that the variable assigned to the <B>value</B> attribute of the WOTextField object<B>---nameString</B>---will be used to store user input.
+<P><IMG SRC="HW_WOInput.gif">
+<P> Figure 7  Getting and Storing a Value
+<P>For more information on WOTextFields, see the "WOTextField" section in the <A HREF= "/cgi-bin/index.html">Using Dynamic Elements</A> chapter.
+<H4><A NAME="HDR2">Returning the Hello Page</A></H4>
+<P>The declaration for the SUBMIT_BUTTON WEBOBJECT element:
+<PRE>
+SUBMIT_BUTTON: WOSubmitButton {action = sayHello};
+
+</PRE>
+<P>specifies how to return the Hello page. It associates the SUBMIT_BUTTON element with the <B>sayHello</B> method defined in <B>Main.wos</B>.
+<P>The declaration specifies that a WOSubmitButton will be created to generate HTML for the SUBMIT_BUTTON element, and that the action assigned to the WOSubmitButton object, <B>sayHello</B>, will be invoked when a user submits the form.
+<P>The <B>sayHello</B> method finds or creates a component object to represent the Hello page by sending a <B>pageWithName:</B> message to WOApp---the global variable representing Hello World's application object. If an object representing the Hello page doesn't exist already, <B>pageWithName:</B> finds the <B>Hello.wo</B> component directory and creates a component object from it.
+<P>Next, <B>sayHello</B> sets the Hello component's <B>nameString </B>variable by sending a message to the Hello component. To access the variables declared in another script file, you use <I>accessor</I> methods. There are two kinds of accessor methods: "set" methods that set the value of a variable and "get" methods that return the value of a variable.
+<P>Set methods have the form <B>setVariableName:</B>, where <B>variableName</B> is the name of the script variable. For example, the Hello page declares the variable <B>nameString</B>, so the method <B>setNameString:</B> is automatically available to set its value. Notice that the "n" in the variable name is lowercase. In the method name, it is uppercase. The method name for a set method capitalizes the first letter of the variable name if it's not an uppercase letter, and then prepends the word "set" to it.
+<P>Get methods have the form <B>variableName</B>, where <B>variableName</B> is the name of the variable. For example, to get the value of the Hello component's <B>nameString</B> variable, you invoke a method of the same name. In WebScript, both set and get accessor methods are automatically available for all script variables. 
+<P> After setting the Hello component's <B>nameString</B> variable, <B>sayHello</B> returns the Hello component.
+
+<P><A HREF="Start.book.html"><IMG SRC="fm2html-toc.gif">Table of Contents</A>
+<A HREF="HW_HelloComponent.frame.html"><IMG SRC="fm2html-next.gif">Next Section</A>
+</BODY>
+</HTML>

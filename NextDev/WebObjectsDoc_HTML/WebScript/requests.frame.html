@@ -1,0 +1,44 @@
+<HTML>
+<HEAD>
+<TITLE>Handling Requests and Responses</TITLE>
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+
+
+<P><A HREF="WebScript.book.html"><IMG SRC="fm2html-toc.gif">Table of Contents</A>
+<A HREF="awake.frame.html"><IMG SRC="fm2html-previous.gif">Previous Section</A>
+<!-- This file was created with the fm2html filter.
+The filter is copyright Norwegian Telecom Research and
+was programmed by Jon Stephenson von Tetzchner. -->
+
+
+<H2><A NAME="HDR7"><A NAME="requests">Handling Requests and Responses</A></A></H2>
+<P></B>A WebScript application is organized around two recurring events: requests and responses. WebScript provides special methods for intervening at the request and response stages---for example, to provide your own validation or post-processing. The methods for doing this are:
+
+<UL>
+<LI>willPrepareForRequest:inContext:
+
+<LI>didPrepareForRequest:inContext:
+
+<LI>willGenerateResponse:inContext:
+
+<LI>didGenerateResponse:inContext:
+<BR></UL>
+
+
+<P>The following code excerpt initializes a list of items that will be used to create hyperlinks in a dynamically generated HTML page:
+<PRE>
+- willPrepareForRequest:aRequest inContext:aContext {
+    hotSpots = @("Home Page", "New Products", "Catalog");
+    return self;
+}
+</PRE>
+<P>While you typically use <B><A HREF="awake.frame.html#awake">awake</A></B> to initialize variables whose values remain static for the life of the page, these methods are useful for operating at a finer level of granularity---for example, to change a variable's value or to check form data before returning a response.
+
+
+<P><A HREF="WebScript.book.html"><IMG SRC="fm2html-toc.gif">Table of Contents</A>
+<A HREF="pageNav.frame.html"><IMG SRC="fm2html-next.gif">Next Section</A>
+
+</BODY>
+</HTML>
+

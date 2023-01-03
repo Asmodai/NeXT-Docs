@@ -1,0 +1,271 @@
+<HTML>
+<TITLE>
+    WebObjects-Beta Release Notes
+</TITLE>
+<BODY>
+<H1>WebObjects Release Notes</H1>
+This file contains notes concerning the Beta releases of WebObjects.  It will be updated periodically as new information comes to light, so please check back again. <P>
+Currently, there are two beta releases available:  WebObjects Beta 2 for Window NT platforms and WebObjects Beta 1 for Solaris and NEXTSTEP platforms. Webobjects Beta 2 will be made available for Solaris and NEXTSTEP platforms in the very near future.<P>
+
+<BR>
+<BR>
+<H2>Related Notes</H2>
+For information on the WebObjects server adaptor, see <A href=SysAdminServer.html>Serving WebObjects</A>.
+<BR>
+<BR>
+
+<H2>Server Compatibility</H2>
+WebObjects has been tested in these configurations.  The numbers in parentheses are references to bugs listed in the next section.<BR>
+
+<table border>
+	<tr>
+		<th>Tested Configurations</th><th>On NT Workstation or Server</th><th>On UNIX platforms</th>
+	</tr>
+	<tr>
+		<td>Netscape + CGI adaptor</td><td>works fine	(but see <EM>64029</EM>)</td><td>works fine</td>
+	</tr>
+	<tr>
+		<td>Netscape + NSAPI adaptor</td><td>works fine (but see <EM>65583</EM>)</td><td>works fine</td>
+	</tr>
+	<tr>
+		<td>IIS Server + CGI adaptor</td><td>works fine (but install as in <EM>65135</EM>)</td><td>N/A</td>
+	</tr>
+	<tr>
+		<td>WebSite</td><td>does not work</td><td>N/A</td>
+	</tr>
+	<tr>
+		<td>Purveyor</td><td>not tested with Beta 2</td><td>N/A</td>
+	</tr>
+	<tr>
+		<td>NCSA, CERN, Apache + CGI</td><td>N/A</td><td>works fine</td>
+	</tr>
+
+</table>
+
+<BR>
+<BR>
+<H2>Known Bugs</H2>
+These problems were known at the time of release.  The number in parentheses at the end of the summary line uniquely identifies the bug.  Please refer to this number if you need to contact NeXT about a bug's status.<P>
+<BLOCKQUOTE>
+
+<BR>
+<b>Summary:</b> On NT, Microsoft IIS Server requires a special installation of WebObjects (<i>65135</i>).<b><br>
+Description:</b> Microsoft IIS Server currently does not work properly on <b>NT Workstation</b>. On <b>NT Server</b>, if you install WebObjects under a <b>C:/NeXT </b>directory, the cgi adaptor won't autostart your applications correctly. The IIS Server creates subprocesses with a special user that has no privilege at all, and that has no access to the NEXT_ROOT environment variable. An autostarted application won't have any privilege either, and won't be able to locate NeXT resources (for example TimeZone files).<br>
+<b>Workaround:</b> <BR>
+<BLOCKQUOTE>
+First:
+<UL>
+<LI>Install all your NeXT software under the root directory. When the installer asks you for a directory name to be the root of all NeXT software, set it to the root directory of a drive (such as <b>C:\</b>). <br>
+<LI>When asked for your <b>cgi-bin</b> directory, you should enter the path of the <b>Scripts</b> directory.<br>
+</UL>
+After installation:
+<UL>
+<LI>In the <b>Scripts</b> directory rename <b>WebObjects</b> to <b>WebObjects.exe</b><br>
+<LI>In <b>C:\NextLibrary\WebObjects\Executables, </b>copy <b>DefaultApp</b> to <b>DefaultApp.exe</b><br>
+</UL>
+Then, either:
+<UL>
+<LI>Go to your WWW Server configuration panel and change the anonymous user to another user with administrator privileges. This will allow you to autostart web applications from the browser.<br>
+</UL>
+Or: 
+<UL>
+<LI>Start your web applications by hand.<br>
+</UL>
+<b><br>
+</BLOCKQUOTE>
+</b>Also, if you're using the IIS, the URL to your WebObjects application should contain <b>/Scripts/WebObjects.exe</b> instead of <b>/cgi-bin/WebObjects</b>, as the <b>cgi-bin</b> directory is actually called <b>Scripts</b>. For example, http://server/Scripts/WebObjects.exe/Examples/HelloWorld is the right way to invoke the HelloWorld application. <br>
+<b><br><br>
+
+Summary:</b> Incompatible <b>C:\temp</b> or <b>/tmp</b> file between WebObjects Beta1 and WebObjects Beta2.<i> (63809)<b></i><br>
+Description:</b> The format of the file <b>C:\temp\WebObjects.conf </b>on NT (or <b>/tmp/WebObjects.conf </b>on UNIX platforms) changed between Beta1 and this release. The new release won't be able to read an old file left over from a previous release installation. <b><br>
+Workaround:</b> - On NT, make sure you delete all <b>WebObjects.*</b> files from the <b>C:/temp</b> directory before running your new release.<br>
+		 - On UNIX platforms, delete all <b>WebObjects.*</b> files from the<b> /tmp</b> directory or just reboot after installing and the<b> /tmp</b> directory will be cleaned.<br>
+<b><br><br>
+
+Summary:</b> Load balancing doesn't work with certain HTTP servers running on NT and Web Applications on Unix (<i>64029</i>)<b><br>
+Description:</b> This concerns you if your server follows the CGI protocol but passes the CGI environment variable PATH_INFO with backslashes '\' instead of forward slashes '/' in the path. On the browser side, the error message is just "Did not receive any response from application."  The Web Application logs : "Raised in returning response to client."<br>
+<b>Workaround:</b> Currently there is no workaround. <br>
+<br><br>
+
+<b>Summary:</b> WebObjects may crash on NT while trying to autostart compiled examples (<i>65284</i>)<b><br>
+Description: </b>If you are logging the adaptor activity to <b>C:/temp/CGIMessenger.log</b> (which means you have a <b>C:/temp/logWebObjects</b> file),  when autostarting a compiled web application you won't get any response back in the browser. This comes from a bug in a logging call in the adaptor.<br>
+<b>Workaround: </b>There are two solutions:
+<UL>
+<LI>Just reload the first page. As the application has already been started, the first page will now load properly.<br>
+<LI>Switch off the adaptor logs by removing the <b>C:/temp/logWebObjects</b> file.<br>
+</UL>
+<br><br>
+
+<b>Summary:</b> Autostart for compiled examples in <b>/NextLibrary/WebObjects/Executables</b> does not seem to work (<i>65377</i>)<br>
+<b>Description: </b>The path to your binary under <b>WebObjects/Executables</b> must be the same as the path under <b>WebObjects</b> in your document root.  For example, your binary is called HelloWorldObjC. If you have your executable in <b>/NextLibrary/WebObjects/Executables/HelloWorldObjC</b>, and your URL is http://fqdn.com/cgi-bin/WebObjects/Examples/HelloWorldObjC, then it won't work. However, if your executable is in<b> /NextLibrary/WebObjects/Executables/Examples/HelloWorldObjC</b> then the above URL will work. <br>
+<b>Workaround:  </b>Either by copying or linking , create the same path to your binary under <b>/NextLibrary/WebObjects/Executables </b>as you have under <b><i>DocumentRoot</i>/WebObjects</b>.<br>
+<br><br>
+
+<b>Summary: </b>On<b> </b>NT with the Netscape server,  NSAPI adaptor doesn't load-balance properly (<i>65583</i>)<br>
+<b>Description: </b>This comes from the fact that the Netscape Server on NT is multithreaded and not multi-processed.<b><br>
+Workaround: </b>There are two different workarounds: <br>
+<UL>
+<LI>Use the cgi-adaptor with Netscape on NT.<br>
+<LI>Or fix the NSAPI adaptor source and recompile on NT by replacing line 117 of WOServerAdaptor.c with:
+</UL>
+<PRE>
+        #ifdef NeXT_DOLE
+        srandom(getpid()+(int)GetCurrentThreadId())
+        #else
+        srandom(getpid());
+        #endif 	
+</PRE>
+<br>
+<BR>
+<STRONG>Summary: </STRONG>Windows NT: Software group name with parenthesis crashes installer<EM> (64008)</EM>
+<BR><STRONG>Description: </STRONG>During installation the installer will ask you to specify a name for the software 
+	group on NT. Parenthesis in the name will crash the installer.
+<BR><STRONG>Workaround: </STRONG>Use the default group (as suggested by the installer). If you need to specify another group name, use alphanumeric characters only.
+<BR>
+<BR>
+
+<STRONG>Summary: </STRONG>Windows NT: Netscape HTTP servers on NT do not accept cgi programs with an '.exe' extension.			<EM> (64034)</EM>
+<BR><STRONG>Description: </STRONG>For the CGI server adaptor to work with the Netscape servers, the CGI adaptor (that is, the WebObjects program in the server cgi-bin directory) can't have any extension. Other NT HTTP servers may require the '.exe' extension.
+<BR><STRONG>Workaround: </STRONG>Add the '.exe' extension to the WebObjects program if your NT HTTP server requires it.
+<BR>
+<BR>
+
+<STRONG>Summary: </STRONG>Hyperlinks in forms will not invoke their action methods			<EM> (64012)</EM>
+<BR><STRONG>Description: </STRONG>If a WOHyperlink has an action attribute and is located within a form, the action will not be invoked.
+<BR><STRONG>Workaround: </STRONG>WOHyperlink's with action attributes must reside outside of forms.
+<BR>
+<BR>
+
+<STRONG>Summary: </STRONG>Application subpath from WebObjects to application name cannot exceed 64 characters.			<EM> (63809)</EM>
+<BR><STRONG>Description: </STRONG>Applications are identified by their "extended name", that is the path from <EM>&lt;document_root&gt;</EM><STRONG>/WebObjects</STRONG> to the application name (e.g.<STRONG>Examples/HelloWorld</STRONG> in <STRONG>/NextLibrary/WebServer/htdocs/WebObjects/Examples/HelloWorld</STRONG>). This identifier string should not exceed 64 characters.
+<BR><STRONG>Workaround: </STRONG>Make sure that the application extended name does not exceed the 64 characters limit.
+<BR>
+<BR>
+
+<STRONG>Summary: </STRONG>Windows NT: [WOApp pathForResource:@&quot;Database/DodgeData&quot; ofType:@&quot;dict&quot;] fails.			<EM> (63818)</EM>
+<BR><STRONG>Description: </STRONG>On NT, resources cannot be located in nested directories. 
+<BR><STRONG>Workaround: </STRONG>Resources should be kept right underneath the application directory (for example, in the DodgeLite example the database dictionary is kept in <EM>&lt;document_root&gt;</EM><STRONG>/WebObjects/Examples/DodgeLite/DodgeData.dict</STRONG> instead of <EM>&lt;document_root&gt;</EM><STRONG>/WebObjects/Examples/DodgeLite/Database/DodgeData.dict</STRONG>).
+<BR>
+<BR>
+
+<STRONG>Summary: </STRONG>NSMutableArray arrayWithContentsOfFile: does not work			<EM> (63927)</EM>
+<BR><STRONG>Description: </STRONG>[NSMutableArray arrayWithContentsOfFile:@&quot;<EM>aFileName</EM>&quot;] does not work.
+<BR><STRONG>Workaround: </STRONG>Use [NSMutableArray arrayWithArray:[NSArray arrayWithContentsOfFile:@&quot;<EM>aFileName</EM>&quot;]];
+<BR>
+<BR>
+
+<STRONG>Summary: </STRONG>Automatic set methods don't work when a variable is capitalized			<EM> (64001)</EM>
+<BR><STRONG>Description: </STRONG>WebScript has some problems using the automatic 'set' method to set variables
+	which begin with a capitalized letter.
+<BR><STRONG>Workaround: </STRONG>Start your variable name with a lowercase letter. If you have to use a variable name that starts with a capital letter, implement the 'set' accessor methods yourself (For example, if your variable is named <STRONG>MyVar</STRONG> implement the <STRONG>setMyVar:</STRONG> method).
+<BR>
+<BR>
+
+
+<STRONG>Summary: </STRONG>On Windows NT, DefaultApp can't be run from the DOS shell			<EM> (63978)</EM>
+<BR><STRONG>Description: </STRONG>NT expects executables to have the '.exe' extension when they are executed from
+	the DOS shell.
+<BR><STRONG>Workaround: </STRONG>Copy DefaultApp to DefaultApp.exe before you execute it in a DOS
+	shell.
+<BR>
+<BR>
+
+<STRONG>Summary: </STRONG>WOBrowser {value=...} has inconsistent behavior.			<EM> (63926)</EM>
+<BR><STRONG>Description: </STRONG>When using the <STRONG>value</STRONG> attribute in WOBrowser, under some circumstances the WOBrowser may not work properly (for example, the selection may be lost). This is especially true when the value is mapping multiple attributes of the browser items (see Buy Page, method <STRONG>descriptionForSailboard</STRONG> in the CyberWind example).
+<BR><STRONG>Workaround: </STRONG>Try to change the value to something different.
+<BR>
+<BR>
+
+<STRONG>Summary: </STRONG>Parsing error in <STRONG>while</STRONG>, <STRONG>for</STRONG>, and <STRONG>if</STRONG> statements that contain a single <STRONG>while</STRONG>, <STRONG>for</STRONG>, and <STRONG>if</STRONG> that is not inclosed in curly braces.
+<EM> (63818)</EM>
+<BR><STRONG>Description: </STRONG>    The following statement will raise and exception:
+<PRE>
+    if (x) while (!x) y=1;
+</PRE>
+
+<BR><STRONG>Workaround: </STRONG>Use curly braces (that is, if (x) { while (!x) y=1; })
+<BR>
+<BR>
+
+
+<STRONG>Summary: </STRONG>	WebScript does not respect numerical operation priorities for statements of the form ( (x+y) == z ).	<EM> (63597)</EM>
+<BR><STRONG>Description: </STRONG>A statement in the form: if ( ((x + 4 *3) + 5 * 6) == y) needs to be rewritten as: if ( ((x + 4 *3) + (5 * 6)) == y).
+<BR><STRONG>Workaround: </STRONG>Use balanced parentheses in conditions that involve numerical operations.
+<BR>
+<BR>
+
+<STRONG>Summary: </STRONG>Comments in the HTML template within optionally terminated elements confuses the HTML parser.<EM> (63774)</EM>
+<BR><STRONG>Description: </STRONG>Having comments in optionally terminated elements such as &lt;LI&gt; will corrupt the HTML parser.
+<BR><STRONG>Workaround: </STRONG>Do not use comments in optionally terminated HTML elements.
+<BR>
+<BR>
+
+<STRONG>Summary: </STRONG>Windows NT: Back slashes don't work in Bourne Shell with DefaultApp's -d option on Windows NT. <EM> (64007)</EM>
+<BR><STRONG>Description: </STRONG>This statement would not work in Bourne shell:
+<PRE>
+	DefaultApp -n 1 -p 3000 -d c:\\netscape\\ns-home\\docs Examples/HelloWorld
+</PRE>
+Command line parsing for NT expects forward slashes.
+<BR><STRONG>Workaround: </STRONG>Use forward slashes when in Bourne shell on NT.
+<BR>
+<BR>
+
+<STRONG>Summary: </STRONG>Applications won't autostart<EM> (65795)</EM>
+<BR><STRONG>Description: </STRONG>WebObjects application can be autostarted only if the HTTP server is running as a user with administrator privileges.
+<BR><STRONG>Workaround: </STRONG>One workaround is to reconfigure the server to run with administrator permissions. Another is to launch the application from the shell..
+<BR>
+<BR>
+
+
+
+
+
+</BLOCKQUOTE>
+
+<H2>Bugs Fixed in Beta 2</H2>
+These problems from the WebObjects Beta 1 release were fixed in the Beta 2 release.  <P>
+<BLOCKQUOTE>
+
+<BR><STRONG>Summary: </STRONG>Trailing slash in application name launches DefaultApp			<EM> (63973-fixed)</EM>
+<BR><STRONG>Description: </STRONG>If you type <STRONG>http://localhost/cgi-bin/WebObjects/Examples/HelloWorld/ </STRONG>instead of
+	<STRONG>http://localhost/cgi-bin/WebObjects/Examples/HelloWorld</STRONG>, a DefaultApp is 
+	started and you'll experience an error during subsequent transactions. This default application should be killed and the URL typed again without the trailing slash at the end.
+
+<BR><STRONG>Workaround: </STRONG>Do not start applications with the trailing slash.
+<BR>
+<BR>
+
+<STRONG>Summary: </STRONG>The WebObjects CGI server adaptor will crash when inadvertently launched from the command line.			<EM> (63779-fixed)</EM>
+<BR><STRONG>Description: </STRONG>The WebObjects program in the server cgi-bin directory should never be launched manually from the command line or by double clicking on it. This program is launched by the HTTP server when a request is received. When launched manually, the WebObjects cgi adaptor will generate a bus error.
+<BR><STRONG>Workaround: </STRONG>Do not manually launch the WebObjects server adaptor.
+<BR>
+<BR>
+
+<STRONG>Summary: </STRONG>Arguments such as ?a=b&c=d are lost in URL			<EM> (63876-fixed)</EM>
+<BR><STRONG>Description: </STRONG>&quot;GET&quot; type arguments in a URL are not passed to the WOF application.
+<BR><STRONG>Workaround: </STRONG>Do not specify the FORM method (in the HTML template or in the WOForm declaration), the default is always a POST method.
+<BR>
+<BR>
+
+<STRONG>Summary: </STRONG>Windows NT: WebObjects doesn't work with servers that require an '.exe' extension for the CGI program. <EM> (64886-fixed)</EM>
+<BR><STRONG>Description: </STRONG>Such is the case for the O'Rielly and Purveyor servers where URLs need to be in the form <STRONG>http://host/cgi-bin/WebObjects.exe/Examples/HelloWorld</STRONG>. To WebObjects, the extension looks like an erroneous version specifier, which confuses the URL parser.
+<BR><STRONG>Workaround: </STRONG>None. This problem will be fixed in the next release.
+<BR>
+<BR>
+
+<STRONG>Summary: </STRONG>Interaction problems with Microsoft's Internet Information Server. <EM> (65359-fixed)</EM> 
+
+<BR><STRONG>Description: </STRONG>The beta version of Microsoft's Internet Information Server (IIS) has interaction problems with WebObjects Beta 1.   
+
+<BR><STRONG>Workaround: </STRONG>Currently there is no workaround.  We are working closely with Microsoft, and a beta release fixing the problem will be provided in the near future.
+<BR>
+<BR>
+
+
+
+
+
+</BLOCKQUOTE>
+
+</BODY>
+</HTML>

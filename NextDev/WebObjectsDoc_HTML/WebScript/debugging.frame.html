@@ -1,0 +1,74 @@
+<HTML>
+<HEAD>
+<TITLE>Debugging</TITLE>
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+
+
+<P><A HREF="WebScript.book.html"><IMG SRC="fm2html-toc.gif">Table of Contents</A>
+<A HREF="WOAction.frame.html"><IMG SRC="fm2html-previous.gif">Previous Section</A>
+<!-- This file was created with the fm2html filter.
+The filter is copyright Norwegian Telecom Research and
+was programmed by Jon Stephenson von Tetzchner. -->
+
+
+<H2><A NAME="REF60084">Debugging</A></H2>
+<P></B>WebScript includes methods that are useful for debugging: <B>logWithFormat:</B>, and several trace methods. Using these methods in conjunction with launching your application from the command line provides you with a fairly complete picture of your running application.
+<H3><A NAME="HDR7">logWithFormat:</A></H3>
+<P>The WebScript method <B>logWithFormat:</B> writes a formatted string to <B>stderr</B>. Like the <B>printf()</B> function in C, this method takes a format string and optionally, a variable number of additional arguments. For example, the following code excerpt prints the string: "The value of myString is Elvis":
+<PRE>
+myString = @"Elvis";
+[self logWithFormat:@"The value of myString is %@", myString];
+</PRE>
+<P>When this code is parsed, the value of <B>myString</B> is substituted for the conversion specification %@. The conversion character @ indicates that the data type of the variable being substituted is an object (that is, of the <B><A HREF="idType.frame.html#id">id</A></B> data type).
+<P>Note that because WebScript only supports the data type <B>id</B>, the conversion specification you use must always be %@. Unlike <B>printf()</B>, you can't supply conversion specifications for primitive C data types such as %d, %s, %f, and so on.
+<P>To see the output from <B>logWithFormat:</B> statements, you have to run your application from a command shell as follows:
+
+<OL>
+<P><LI>cd to <B>/NextLibrary/WebObjects/Executables</B>.
+<BR>
+<P><LI>Type the following in the command shell:
+<BR><PRE>
+DefaultApp MyApp
+</PRE>
+<P>where <B>MyApp</B> is the name of your application. 
+
+
+<P><LI>In your browser, open the URL you'd normally use to launch your application:
+<BR><PRE>
+http://myHost/cgi-bin/WebObjects/MyApp
+</PRE>
+<P>As your application runs, the output from <B>logWithFormat:</B> and other information about your application is displayed in the command shell window. 
+</OL>
+<H3><A NAME="HDR8">Trace Methods</A></H3>
+<P>WebScript provides trace methods that log different kinds of information about your running application. The trace methods are described in the following table:
+<PRE>
+Method  		Description
+________________________________________________________________________
+
+trace:			Enables all tracing. 
+
+traceAssignments:	Logs information about all assignment statements.
+
+traceStatements:	Logs information about all statements.
+
+traceScriptedMessages:	Logs information when an application enters 
+			and exits a scripted method.
+________________________________________________________________________
+
+</PRE>
+<P>To use any of the trace methods, you must run your application from a command shell, as described above.
+<P>You use the trace methods in either the <B><A HREF="awake.frame.html#awake">awake</A></B> or the<A HREF="requests.frame.html#requests"> <B>willPrepareForRequest:inContext:</B></A> method:
+<PRE>
+- awake {
+  [self traceAssignments:YES];
+  [self traceScriptedMessages:YES];
+}
+</PRE>
+
+<P><A HREF="WebScript.book.html"><IMG SRC="fm2html-toc.gif">Table of Contents</A>
+<A HREF="langSummary.frame.html"><IMG SRC="fm2html-next.gif">Next Section</A>
+
+</BODY>
+</HTML>
+

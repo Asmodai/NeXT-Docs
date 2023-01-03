@@ -1,0 +1,252 @@
+<HTML>
+<TITLE>
+    Serving WebObjects
+</TITLE>
+<BODY>
+<h3>Network and System Administration</h3>
+<h1>Serving WebObjects </h1>
+
+
+<h2>Purpose</h2>
+
+WebObjects includes a WebObjects Adaptor program that provides a flexible interface between a variety of HTTP servers and WebObjects applications. <P> 
+
+The WebObjects Adaptor enables WebObjects Framework or a WebObjects application to be HTTP Server independent in the same way that an EOF Adaptor provides database independence.  
+
+
+<h2>Filesystem Information </h2>
+
+When you install WebObjects, in addition to the <STRONG>WebObjects</STRONG> directory, you get a <STRONG>WebServer</STRONG> directory that contains a few files and directories which you must copy to your own Web server's directory area.  For Windows NT users, this step is done automatically by the installer.<P>
+
+The <EM>WebObjects Adaptor</EM> exists as an executable file with a filename of WebObjects under the <STRONG>WebServer/cgi-bin</STRONG> directory.  Here are typical WebObjects Adaptor file
+names 
+<PRE>
+	Platform	Filename and extension
+
+	NEXTSTEP	WebObjects
+	Solaris		WebObjects
+	Windows NT	WebObjects
+</PRE>
+
+To install the Adaptor, move it from the WebServer/cgi-bin directory to your Web server's cgi-bin directory, if needed. 
+
+
+<h2>Conceptual Model</h2>
+
+Conceptually, the WebObjects Adaptor sits between the Server and the WebObject application. <P> 
+
+The Adaptor receives information from the Server according to the CGI protocol, using environment variables and a character string (stdin).  The Adaptor trades HTTP formatted information with the WebObjects application, passing HTTP responses containing HTML pages back to the Server.  <P>
+
+The Adaptor may start up a WebObjects application if needed.  <P>
+
+
+Structural Model 
+
+The WebObjects Adaptor consists of two parts, a Web server-side part and a WebObjects application part.  <P>
+
+The application part consists of special classes that are part of every WebObjects application. <P>
+
+The server-side part is a stand-alone CGI program.  Note, you should not attempt to start the CGI program, WebObjects, manually.  
+The Adaptor and Server must be located on the same computer.  <P>
+
+The WebObjects application may reside on the same computer or on a remote computer. <P>
+
+When a WebObjects application is requested with a URL such as:
+<PRE>
+	http://&lt;myServerHost&gt;/cgi-bin/WebObjects/Examples/HelloWorld
+
+</PRE>
+The WebObjects Adaptor can handle it in three different ways :<P>
+
+<STRONG>A. </STRONG>Autostart a WebObjects application and then contact it.<p>
+<STRONG>B. </STRONG>Contact an WebObjects application started manually from a terminal window.<p>
+<STRONG>C. </STRONG>Load balance requests between many WebObjects application started manually.<p>
+
+<h3>A. Autostarting :</h3>
+This feature is only available on your server host machine if WebObjects has been installed on it.<P>
+
+If the WebObjects application is not started yet, the adaptor will autostart it and then connect to it.<P>
+There is nothing the user should do to ask for this behavior, it occurs automatically after all other attempts to contact the application have failed. Please see D for the detailed order in which the attempts are made.<P>
+
+Autostarting uses the DefaultApp executable (located in /NextLibrary/WebObjects/Executables) with the following arguments :
+
+<PRE>	
+    DefaultApp -d <path-to-the-document-root> Examples/HelloWorld
+</PRE>
+
+The <path-to-the-document-root> argument passed by the WebObjects Adaptor was received from the server following the cgi-bin specification.<P>
+
+<h3>B. Starting a WebObjects application from a terminal window :</h3>
+
+For debugging or deployment reasons, you may want to start your WebObjects application by hand.<P>
+There are two ways of doing this from a terminal window. Both use the DefaultApp executable that's in /NextLibrary/WebObjects/Executables.<P>
+
+<h4>1. Starting a single instance of a WebObjects application :</h4>
+
+This feature is only available on your server host machine if WebObjects has been installed on it.<P>
+
+Change directories to  /NextLibrary/WebObjects/Executables and enter:<P>
+<PRE>
+	./DefaultApp Examples/HelloWorld
+
+</PRE>
+This will start a single instance of the WebObjects application HelloWorld located in your documentRoot/Examples/HelloWorld directory.
+This is the simplest way to start an application by hand, with the limitation that you can only have one application with this name running on the server host.<P>
+
+<h4>2. Starting multiple instances of a WebObjects application :
+</h4>
+This feature is available on any machine with WebObjects installed on it, including possibly the server host machine. It is done in two steps.<P>
+
+First, from a machine we'll call myHost, change directories to <STRONG>/NextLibrary/WebObjects/Executables </STRONG>and start the application in a terminal window by entering:
+<PRE>
+	./DefaultApp -p 3000 -n 1 Examples/HelloWorld
+
+</PRE>
+This will start instance1 of HelloWorld on port 3000 of myHost<P>
+
+Second, go to your server machine &lt;myServerHost&gt; and create/edit a file WebObjects.conf in your server's cgi-bin directory. Type this line in the file :<P>
+<PRE>
+    Examples/HelloWorld:1@myHost 3000
+</PRE>
+And save the file. This lets the WebObjects adaptor now that an application HelloWorld #1 is available on the machine myHost at port 3000 for serving requests. <P>
+
+Now try contacting with the same url as before your application :<P>
+<PRE>
+	http://&lt;myServerHost&gt;/cgi-bin/WebObjects/Examples/HelloWorld
+
+</PRE>
+All requests for Examples/HelloWorld will be forwarded on myHost to this WebObjects application.<P>
+You can as well force using one given application running on a host by typing in your browser :<P>
+<PRE>
+	http://&lt;myServerHost&gt;/cgi-bin/WebObjects/Examples/HelloWorld:1@myHost
+
+</PRE>
+<STRONG>advice:</STRONG> always pick ports greater than 1024 as ports under 1024 are reserved on UNIX platforms.<P>
+
+<h3>C. Load balancing example :
+</h3>
+You may want to add later three other instances of HelloWorld, one on the same &lt;myHost&gt; machine, one on another machine we'll call &lt;mySecondHost&gt;, and one on your server &lt;myServerHost&gt;. And also have another application called CyberWind on &lt;mySecondHost&gt;...<P>
+
+From &lt;myHost&gt;, start these applications in a terminal window by typing from the /NextLibrary/WebObjects/Executables :<P>
+<PRE>
+./DefaultApp -p 3000 -n 1 Examples/HelloWorld (if it is not already running)
+./DefaultApp -p 4000 -n 2 Examples/HelloWorld
+</PRE>
+From &lt;mySecondHost&gt;, start these applications in a terminal window by typing from the /NextLibrary/WebObjects/Executables :<P>
+
+<PRE>
+./DefaultApp -p 3000 -n 1 Examples/HelloWorld
+./DefaultApp -p 4000 -n 1 CyberWind
+</PRE>
+
+From &lt;myServerHost&gt;, if WebObjects was installed on it, start these applications in a terminal window by typing from the <STRONG>/NextLibrary/WebObjects/Executables</STRONG>:<P>
+<PRE>
+./DefaultApp -p 5000 -n 33 Examples/HelloWorld
+
+</PRE>
+Now on your server machine, edit the file WebObjects.conf in your server's cgi-bin directory. It should now be changed to look like this:<P>
+<PRE>
+    Examples/HelloWorld:1@&lt;myHost&gt; 3000
+    Examples/HelloWorld:2@&lt;myHost&gt; 4000
+    Examples/HelloWorld:1@&lt;mySecondHost&gt; 3000
+    CyberWind:1@&lt;mySecondHost&gt; 4000
+    Examples/HelloWorld:33@&lt;myServerHost&gt; 5000
+
+</PRE>
+Now try contacting with the same url as before your application:<P>
+<PRE>
+    http://&lt;myServerHost&gt;/cgi-bin/WebObjects/Examples/HelloWorld
+</PRE>
+The adaptor will pick one of the 4 HelloWorld applications it knows about, and try to contact it. If the application it tried to contact is not available (because serving someone else), it will wait. If the application it tried to contact died or was just not started, it will fail. <P>
+If your application carries state for the client between requests, the generated HTML pages will contain the complete path to return to the exact application that served the given client in his previous request, with links such as : <P>
+<PRE>
+
+http://&lt;myServerHost&gt;/cgi-bin/WebObjects/Examples/HelloWorld:33@&lt;myServerHost&gt;
+</PRE>
+
+and no load-balancing will be performed as long as the session lasts. Otherwise, if there is no state carried on, your application will automatically return HTML pages with links like:<P>
+<PRE>
+http://&lt;myServerHost&gt;/cgi-bin/WebObjects/Examples/HelloWorld
+
+</PRE>
+so that the adaptor can perform load balancing on the following requests, and possibly end up contacting another application.<P>
+
+You can as well contact the application CyberWind, but as there is only one application, there won't be any load balancing performed and all requests for CyberWind will always go to this same application.<P>
+
+Of course, you can have both autostarted applications and load-balanced applications (started by hand) at all time, as long as they don't have the same names. When names conflicts, the load-balanced applications will be picked rather than any previously autostarted application.<P>
+
+<h3>D. What is really happening when a request is sent ?
+</h3>
+<UL>
+<LI>The adaptors first checks if there is an instance number and a host specified in the url.
+
+<LI>If yes, then it looks for an application with this application-dir:instance@host key in the WebObjects.conf file to find the port on which this application is listening. It then tries to connect to it. If this fails, it fails.
+
+<LI>If no, it assumes that the application is listed in the WebObjects.conf file for load balancing.
+
+<LI>It looks in the WebObjects.conf file for all the applications listed with the same application dir.
+
+<LI>If it can find some, it picks one randomly, and tries to connect to it. If this fails, it fails.
+
+<LI>If it cannot find any application in the WebObjects.conf file matching the application in the request, it assumes that the application has been autostarted previously. It tries to connect to it.
+
+<LI>If no application under this application directory has been autostarted, it tries to match the application directory with an existing directory under /NextLibrary/WebObjects or <your-document-root>/WebObjects. 
+
+<LI>If it finds such a directory, it autostarts the application.
+
+<LI>If it could not find such a directory, it assumes you sent it a bogus application name, and fails.
+</UL>
+
+<h3>E. Debugging the deployment of an application.
+</h3>
+Many things can go wrong when deploying your web application on several machines and configuring your server to use WebObjects. To help you, we have added an extra debugging features in the WebObjects adaptor. To trigger the debugging mode, follow these instructions.
+
+As superuser, from a terminal window :
+<OL>
+<LI>create an empty /tmp/logWebObjects file. 
+<LI>enter: 
+</OL>
+<PRE>
+	tail -f /tmp/CGIMessenger.log
+
+</PRE>
+This will log any activity of the WebObjects adaptor, and you will be able to trace its behavior according to section D., and find out why you can not connect to the WebObjects application.
+Do not forget to remove the /tmp/logWebObjects file to stop the logs when you have successfully deployed your WebObjects application.
+
+<STRONG>Note for Windows NT users:</STRONG>  In order to enable debugging you should create the logWebObjects file in the directory specified by the TEMP environment variable.  You can use Notepad to view the resulting CGIMessenger.log file.  Keep in mind that the file will is changed during each request so you may need to close and reopen it in order to monitor adaptor activity.
+
+<h3>F. Appendix
+</h3>
+<STRONG>a.</STRONG> Some more details about the parameters passed to DefaultApp :
+<uL>
+
+<LI>The standard arguments for DefaultApp are :
+
+DefaultApp [-c] [-d DocumentRoot] [-v WebObjectsVersion] [-n InstanceNumber] [-p PortNumber] [-] ApplicationDirectory
+
+<LI>You do not have to specify the document root argument as long as your server complies with the cgi-bin specifications and passes the document root path to the WebObjects adaptor.
+
+<LI>The -c argument is used for caching information about the session in the pages returned.
+
+<LI>If you do not specify the instance number, the application is supposed to run on the server machine, and as a single instance application, as if it had been autostarted.
+</uL>
+
+<STRONG>Note for Windows NT users:</STRONG>  In the ApplicationDirectory, be sure to use forward slashes as opposed to a backslashes.  Since the ApplicationDirectory is used for building URLs, it should always contain forward slashes.  <p>
+ 
+<STRONG>b.</STRONG> Some more details about the configuration file :
+<uL>
+
+<LI>The format of a line in the configuration file WebObjects.conf is always :
+
+<PRE> &lt;application-directory&gt;:&lt;application-number&gt;@&lt;host-name&gt; &lt;application-port&gt;
+</PRE>
+
+<LI>You must include in the application name the path starting after the WebObjects directory in your document root, so that the adaptor can find your ressources : This makes the application directory
+
+<LI>You can have empty lines in the configuration file, they will be skipped.
+
+<LI>There can only be 256 applications with the same name listed in the file. The other ones won't be taken into account. Each line must be less than 256 characters long, anything longer won't be parsed.
+</uL>
+
+</BODY>
+</HTML>

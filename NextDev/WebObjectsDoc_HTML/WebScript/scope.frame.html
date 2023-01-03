@@ -1,0 +1,98 @@
+<HTML>
+<HEAD>
+<TITLE>Variables and Scope</TITLE>
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+
+
+<P><A HREF="WebScript.book.html"><IMG SRC="fm2html-toc.gif">Table of Contents</A>
+<A HREF="main_wos.frame.html"><IMG SRC="fm2html-previous.gif">Previous Section</A>
+<!-- This file was created with the fm2html filter.
+The filter is copyright Norwegian Telecom Research and
+was programmed by Jon Stephenson von Tetzchner. -->
+
+
+<H2><A NAME="REF81002">Variables and Scope</A></H2>
+<P></B>In WebScript, the scope of variables depends on where and how you declare them. The notion of scope in WebScript really encapsulates two different ideas: a variable's visibility and its lifetime.
+<P>The simplest kind of variable in WebScript is a local variable, which is declared inside a method as follows:
+<PRE>
+- aMethod {
+
+    id localVar;
+    /*...*/
+}
+</PRE>
+<P>Local variables have no visibility outside of the method in which they're declared, and no lifetime beyond the method's execution. For this reason, they're the only type of variable that can't be referenced in a declarations file.
+<P>Variables that have some degree of persistence within your application are called<I> scoped variables</I>. To understand the role of scoped variables, it's useful to think about the flow of activity in a WebObjects application. The life of a WebObjects application is marked by the continual recurrence of two events: <I>requests</I> (such as a user clicking on a control to initiate an action), and the subsequent <I>responses</I> (such as the server returning a dynamically generated HTML page in response to a request). Processing and variable scoping in a WebObjects application are organized around these two events.
+<P>Scoped variables behave differently depending on whether they're declared in an application script (where they're called session and global variables) or in a component script (where they're called transaction and persistent variables). 
+<H3><A NAME="HDR7">Scoped Variables in an Application Script</A></H3>
+<P>The scoped (that is, non-local) variables you declare in an application script are one of two types: global variables or session variables.
+<H4><A NAME="HDR8">Global variables</A></H4>
+<P>Global variables are visible to all users of an application, and they last for the duration of an application. A global variable is available in every page and across all sessions. There is one copy of the variable per application. Global variables are declared in the application script outside a method as follows:
+<PRE>
+id globalVar;
+
+</PRE>
+<H4><A NAME="HDR9">Session Variables</A></H4>
+<P><A NAME="session">Whereas all users of an application see a global variable with the same value, </A>each session has its own version of session variables. A variable with session scope lasts for the duration of a session. A session represents a browser (user) accessing a WebObjects application, which could be serving multiple users. A session is initiated when a browser (single user) connects to a WebObjects application, at which time the session is assigned a unique identifier. This session ID is stored in the pages associated with the application. The session ID lasts as long as the user's browser stores the pages associated with the application, even if the browser is used to navigate to pages not associated with the application.
+<P>A session variable is visible in every component script. Its value is archived and restored at the beginning and the end of each transaction. There is one copy of the variable per client (user session). Session variables are declared in the application script outside a method as follows:
+<PRE>
+session id sessionVar;
+</PRE>
+<P>Both global and session variables are persistent---that is, global variables last for the duration of the application, and session variables last for the duration of the associated user session.
+<P>Note that in a component script, you always access global and session variables through the WOApplication object, since it owns them:
+<PRE>
+id value = [WOApp mySessionVariable];
+[WOApp setMyGlobalVariable:newValue];  
+</PRE>
+<H3><A NAME="HDR10">Scoped Variables in a Component Script</A></H3>
+<P>The scoped (that is, non-local) variables you declare in a component script are one of two types: transaction variables or persistent variables.
+<H4><A NAME="HDR11">Transaction Variables</A></H4>
+<P>A transaction variable is declared outside a method, as follows:
+<PRE>
+id myVar;  
+</PRE>
+<P>A variable with transaction scope lasts for the duration of the transaction, or client request. A transaction is defined as a client request coming in and a response (usually an HTML page) going out. By the time the response is returned to the client, the variable no longer exists. Transaction variables are visible to all of the methods within the script in which they're declared.
+
+<H4><A NAME="HDR12">Persistent Variables</A></H4>
+<P><A NAME="persistent">A persistent variable is declared outside a method using the </A><B>persistent</B> keyword, as follows:
+<PRE>
+persistent id myVar;
+</PRE>
+<P>A persistent variable remains valid for a particular page for the duration of a session. It is archived when a response is generated for a user request and restored when the client performs an action on the new page. 
+<P>Whenever possible, you should refrain from using persistent variables in a component script since they tend to degrade performance. It's preferable to restore the variable for which you might otherwise maintain a persistent variable. For example, if you have a list of hyperlinks on a page, you should recreate them in the script's <B><A HREF="awake.frame.html#awake">awake</A></B> method instead of maintaining them in a persistent variable, for example:
+<PRE>
+id myLinks;   // just use a regular transaction variable...
+// ... then re-initialize it in the script's awake method
+- awake {
+    myLinks = @("My Autobiography", "Pictures of my Dog");
+    return self;
+}
+</PRE>
+<P>There are two cases in which you should use persistent variables in a component script:
+
+<UL>
+<P><LI>If you need to archive a variable whose value can be modified (that is, whose value can't be restored in <B>awake</B> by making a static assignment)
+<BR>
+<P><LI>If initializing a variable requires an expensive operation that shouldn't be performed unnecessarily, such as fetching rows from a database
+<BR></UL>
+
+
+<H3><A NAME="HDR13">Remember: Pages Aren't Persistent!</A></H3>
+<P>It's important to remember that pages aren't persistent in an application. They are created at the beginning of a transaction, and they disappear at the end. The life of a page actually spans two transactions:
+
+<OL>
+<P><LI>First, the WOWebScriptComponentController associated with the page generates a response for a given request.
+<BR>
+<P><LI>The WOWebScriptComponentController then handles the subsequent incoming request (such as a request triggered by a user clicking on a hyperlink). 
+<BR>
+</OL>
+
+
+<P>Between these two occurrences, the WOWebScriptComponentController associated with a page is destroyed and reconstructed. Any variables in your component script that aren't declared as persistent are lost. Consequently, variables whose values the page depends on need to either be made persistent or recreated in <B>awake</B>. The preferred approach is to recreate them in <B>awake</B>, as described in the preceding section.
+
+<P><A HREF="WebScript.book.html"><IMG SRC="fm2html-toc.gif">Table of Contents</A>
+<A HREF="accessingVars.frame.html"><IMG SRC="fm2html-next.gif">Next Section</A>
+
+</BODY>
+</HTML>
