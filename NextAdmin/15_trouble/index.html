@@ -1,0 +1,1270 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextAdmin/15_Trouble.rtfd -->
+<!-- Date: Sun Jan  1 13:56:47 2023 -->
+<head>
+<title>15_Trouble</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Release 3.3 Copyright</font> &copy;<font face="Times">1994 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap><font face="Helvetica" size="+4"><b>15</b></font></td>
+
+<td><font face="Times" size="+4"><i>General Troubleshooting</i></font></td></tr>
+
+<tr valign=top>
+
+<td width=36 height=80></td></tr>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">One of the most challenging tasks performed by a system administrator is troubleshooting. Because troubleshooting is so important, it's a good idea to gain basic knowledge of some troubleshooting tools. This chapter describes several such tools. How to monitor and control system processes--a frequent troubleshooting requirement--is covered, as well as how to display host and network statistics, which can be used to identify network problems. Checking a disk for free space is also included. The remainder of the chapter describes procedures you need only in special situations, including repairing a NetInfo database and replacing a lost <b>root</b> password.</font></td></tr>
+
+<tr valign=top>
+
+<td width=36 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">Keep in mind that each chapter in this manual contains troubleshooting tips. You find these tips in the last section of each chapter.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Process Monitoring and Control</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Each program that runs on the system is called a <i>process</i>. In case of trouble, you may need to examine the running processes and, in some cases, to destroy them. The Processes window (chosen from the Workspace Manager Tools menu) lets you monitor and destroy some processes. You can also use two UNIX commands: <b>ps</b>, to get detailed information about current processes, and <b>kill</b>, to destroy them.</font>
+
+<p><font face="Times" size="+1">A process is usually owned by the user who started it (although it can sometimes be owned by <b>root</b> or some other user). When a process is created, the program used to start that process (such as the Workspace Manager) is called its <i>parent process</i>. Similarly, the new process is called the <i>child</i> of that parent. In nearly all cases, a process has a parent and can create its own child processes. When using the <b>kill</b> command, this process hierarchy can be important, as described later in this chapter.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Examining Basic Process Information</b></font>
+
+<p><font face="Times" size="+1">The <b>ps</b> (process status) command lets you display a variety of information about the processes running on your system. Depending on the arguments you use when you execute <b>ps</b>, you can obtain a simple display or a highly complex one.</font>
+
+<p><font face="Times" size="+1">The simplest <b>ps</b> display lists the processes you own that are running on your terminal. The output of the <b>ps</b> command is similar to this:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">PID TT STAT&nbsp; TIME COMMAND</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">456 p1 S&nbsp;&nbsp;&nbsp;&nbsp; 0:01 -csh (csh)</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The fields displayed are:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Field</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">PID</font></td>
+
+<td><font face="Times" size="+1">Process ID. Number uniquely identifying a process.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">TT</font></td>
+
+<td><font face="Times" size="+1">Controlling terminal (or <b>tty</b>). Pseudoterminal to which the process is attached.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">STAT</font></td>
+
+<td><font face="Times" size="+1">State of the process. Field made up of 4 characters (two or three will probably be blank) indicating such things as a sleeping process, a process that's swapped out, and so on.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">TIME</font></td>
+
+<td><font face="Times" size="+1">Amount of CPU time used by the process.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">COMMAND</font></td>
+
+<td><font face="Times" size="+1">Indication of the command being executed. In the previous example, <b>csh</b> is the C Shell--the command interpreter being run by the Terminal application.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Examining a Long Process Listing</b></font>
+
+<p><font face="Times" size="+1">If you want more detailed information about your processes, you can use the <b>-l</b> argument. The output of <b>ps -l</b> looks like this:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=131 height=1><font face="Courier" size="-1">F&nbsp;&nbsp; UID&nbsp; PID&nbsp; PPID CP PRI BASE VSIZE RSIZE WCHAN STAT TT TIME COMMAND</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier" size="-1">201&nbsp; 201&nbsp; 141&nbsp; 140&nbsp; 0&nbsp; 10&nbsp; 10&nbsp;&nbsp; 1.26M&nbsp; 272K&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp; S&nbsp;&nbsp; p1 0:02 -csh (csh)</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The additional fields displayed in this output are:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Field</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">F</font></td>
+
+<td><font face="Times" size="+1">Flags. A series of digits indicating flags that are associated with the process. For a list of flags, see the UNIX manual page for <b>ps</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">UID</font></td>
+
+<td><font face="Times" size="+1">User ID number associated with the process.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">PPID</font></td>
+
+<td><font face="Times" size="+1">Parent process ID. Number that identifies the parent of the process.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">CP</font></td>
+
+<td><font face="Times" size="+1">CPU utilization factor.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">PRI</font></td>
+
+<td><font face="Times" size="+1">Scheduled priority level, derived from the base priority level.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">BASE</font></td>
+
+<td><font face="Times" size="+1">Base priority level. Priorities are in the range 0-31; lower numbers mean lower priority.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">VSIZE</font></td>
+
+<td><font face="Times" size="+1">Virtual size of the process (in kilobytes).</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">RSIZE</font></td>
+
+<td><font face="Times" size="+1">Real size of the process (in kilobytes).</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">WCHAN</font></td>
+
+<td><font face="Times" size="+1">Has no meaning on NeXT computers.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Examining Process Information for All Processes</b></font>
+
+<p><font face="Times" size="+1">Unless otherwise instructed, <b>ps</b> lists only processes that you've started in your current shell. To examine all the processes on the system, regardless of ownership, use the flags <b>ax</b>.</font>
+
+<p><font face="Times" size="+1">An example of the output from <b>ps -ax</b>:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">PID TT STAT&nbsp; TIME COMMAND</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">183 ?&nbsp; S&nbsp;&nbsp;&nbsp;&nbsp; 1:26 /NextApps/Terminal.app/Terminal -MachLaunch 7 27</font>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Terminating a Process</b></font>
+
+<p><font face="Times" size="+1">Terminating a process is a simple way to correct certain problems. For example, if a shell window freezes, you might be able to free it by destroying the processes associated with it.</font>
+
+<p><font face="Times" size="+1">There may be times when you need to stop processes that can't be killed with the Workspace Manager Processes window. The <b>kill</b> command sends a signal to a specific process. There are a number of possible signals; several result in the process terminating.</font>
+
+<p><font face="Times" size="+1">To terminate a process with the <b>kill</b> command:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Start up the Terminal application, located in <b>/NextApps</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Determine the process ID of the process you need to terminate by entering the following command:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>ps -ax</b></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Make a note of the number in the PID column associated with the problem process.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Terminate the process with the following (replace <i>PID</i> with the number you noted in the previous step):</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>kill</b> <i>PID</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">If you see an error message indicating that you are not the owner of the process, you'll need to use <b>su</b> to gain <b>root</b> access, then try again. You're only allowed to kill processes you own, but the superuser can kill just about any process.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Use the <b>ps</b> command to determine if the process is actually gone. If it's still around, try the following:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>kill -KILL</b> <i>PID</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">If the process won't die in response to <b>kill -KILL</b>, your only recourse is to reboot your computer.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Guidelines for Destroying Processes</b></font>
+
+<p><font face="Times" size="+1">When determining how to destroy a process, here are some guidelines to follow:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">1.</font></td>
+
+<td><font face="Times" size="+1">Always try <b>kill</b> before using <b>kill -KILL</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">Using <b>kill -KILL</b> sends a signal that can't be ignored and should terminate any process. You should attempt a plain <b>kill</b> first rather than <b>kill -KILL</b> because the latter doesn't permit the process to clean up after itself and delete temporary files.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">2.</font></td>
+
+<td><font face="Times" size="+1">Always kill the children of a process first.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">Killing a process high in the hierarchy may halt more processes than necessary to solve the problem. In addition, one or more of the children processes may not exit, possibly compounding your problem.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">3.</font></td>
+
+<td><font face="Times" size="+1">Become <b>root</b> only if necessary.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">A mistake made as a regular user is rarely catastrophic; a mistake made as <b>root</b> can have very unfortunate consequences.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">For more information, refer to the UNIX manual pages for <b>ps</b> and <b>kill</b>.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Displaying Host and Network Statistics</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Some utilities that display information that you may find useful for troubleshooting are: <b>hostinfo</b>, <b>ifconfig</b>, <b>netstat</b>, and <b>nidomain</b>. Each utility examines a different aspect of the network and then displays the resulting information. This section describes briefly how you might use each utility. For more detailed information, see the related UNIX manual pages.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>The hostinfo Command</b></font>
+
+<p><font face="Times" size="+1">The <b>hostinfo</b> utility gives you information about the NeXT computer you're logged into. After entering the command (which has no arguments), you see a screen display such as the following:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">Mach kernel version:</font><br>
+<img src="../images/sp.gif" width=138 height=1><font face="Courier">NeXT Mach 3.0: Mon Oct 8 18:52:05 PDT 1990;/ph1_sources/projects/mk-98/RELEASE</font>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">Kernel configured for a single processor only.</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">1 processor is physically available.</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">Processor type: MC680x0 (68040)</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">Processor active: 0</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">Primary memory available: 12.00 megabytes.</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">Default processor set: 44 tasks, 74 threads, 1 processors</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">Load average: 1.51, Mach factor: 0.09</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">This command makes it easy to find out how much memory you have available on your system. It also gives you a variety of information about the system processors, including how many processors were configured on the system, their logical slot numbers, and the CPU type.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>The ifconfig Command</b></font>
+
+<p><font face="Times" size="+1">The <b>ifconfig</b> utility can be used for many purposes, depending on the arguments used (for more details, see the UNIX manual page for <b>ifconfig</b>). For troubleshooting, you can use <b>ifconfig</b> with the <i>interface</i> argument to tell you how an Ethernet interface (or port) is configured and whether it's communicating with the network.</font>
+
+<p><font face="Times" size="+1">On NeXT computers, the Ethernet interface is always <b>en0</b>. Consequently, to get information about the Ethernet interface, enter the following:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier"><b>ifconfig</b> <i>en0</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">You'll see a display similar to the following:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">en0: flags=8023&lt;UP,BROADCAST,NOTRAILERS&gt;</font><br>
+<img src="../images/sp.gif" width=138 height=1><font face="Courier">inet 192.42.172.13 netmask ffffff00 broadcast 192.42.172.255</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">This display tells you that the Internet address is 192.42.172.13, the netmask number is ffffff00, and the broadcast address is 192.42.172.255 (for more information about these values, see Appendix C, &quot;Internet Addressing&quot;). The word &quot;UP&quot; indicates that the interface can communicate with the network.</font>
+
+<p><font face="Times" size="+1">If the system can't transmit messages through the interface, the word &quot;UP&quot; is omitted. You then see a display such as the following:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">en0: flags=62&lt;BROADCAST,NOTRAILERS&gt;</font><br>
+<img src="../images/sp.gif" width=180 height=1><font face="Courier">inet 0.0.0.0 netmask ff000000 broadcast 0.255.255.255</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">In this display, no Internet address is listed and the default broadcast address is used, indicating that no actual network was located.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>The netstat Command</b></font>
+
+<p><font face="Times" size="+1">The <b>netstat</b> utility displays information about network status. You can select from a variety of arguments that let you examine specific components of the network, such as the host table, the sockets, the routing tables, and so on. For a complete description of these arguments, see the UNIX manual page for <b>netstat</b>.</font>
+
+<p><font face="Times" size="+1">When used with the <b>-i</b> argument, <b>netstat</b> shows the state of the interfaces that have been autoconfigured. You see a display such as the following:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">Name&nbsp; Mtu&nbsp;&nbsp; Network&nbsp;&nbsp;&nbsp;&nbsp; Address&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Ipkts&nbsp; Ierrs&nbsp;&nbsp;&nbsp; Opkts Oerrs&nbsp; Coll</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">en0&nbsp;&nbsp; 1500&nbsp; 192.42.172&nbsp; elmo&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 215694&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp; 80396&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp; 0</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">lo0&nbsp;&nbsp; 1536&nbsp; loopback&nbsp;&nbsp;&nbsp; localhost&nbsp;&nbsp;&nbsp; 18032&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp; 18032&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp; 0</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">en0*&nbsp; 1500&nbsp; none&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; none&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 215920&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp; 80399&nbsp;&nbsp;&nbsp;&nbsp; 1&nbsp;&nbsp;&nbsp;&nbsp; 0</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">For debugging, you can examine the columns labeled <b>Ierrs</b> and <b>Oerrs</b>, which list the number of errors detected. Sometimes errors exist under normal conditions, so compare the number of errors you receive with other computers, and watch for more errors than usual on a specific machine. On older NeXT computers, the number of collisions reported (<b>Coll</b>) will always be zero.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>The nidomain Command</b></font>
+
+<p><font face="Times" size="+1">The command <b>nidomain -l</b> lets you find out information about the NetInfo domains served by a specified host (the <b>nidomain</b> utility can be used with other arguments; for a complete list, see the UNIX manual page for <b>nidomain</b>).</font>
+
+<p><font face="Times" size="+1">To get information about a particular host, enter the following (if you omit the host name, you receive information about the system you are currently logged into):</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier"><b>nidomain -l</b> <i>hostname</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">You see a display similar to the following:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">tag=local udp=698 tcp=700</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The <b>-l</b> argument displays the domains served by the specified host, along with the UDP port and TCP port used by <b>netinfod</b> for communication. Each domain is identified by its NetInfo tag. You might use this command if you suspect a corrupted NetInfo database. If a domain that should be listed is omitted, or an unexpected domain is included, a problem exists.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Checking for Available Disk Space</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">If you want to load data onto your disk but aren't sure if there's room, or if you want to see whether a disk partition is getting too full, you can look at the File Viewer, or you can use the <b>df</b> command to check for free disk space in file systems. You can display the amount of used and available space, as well as how much of the total capacity of the file system has been used.</font>
+
+<p><font face="Times" size="+1">When <b>df</b> is executed without an argument, it reports on all mounted file systems. Here's an example of the output:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">Filesystem&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; kbytes&nbsp;&nbsp;&nbsp; used&nbsp;&nbsp; avail capacity&nbsp; Mounted on</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">/dev/sd0a&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 345542&nbsp;&nbsp;&nbsp; 234167 76820&nbsp;&nbsp;&nbsp; 75%&nbsp;&nbsp;&nbsp; /</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">You'll notice that the amount of used space (<b>used</b>) added to the available space (<b>avail</b>) is less than the amount of space in the file system (<b>kbytes</b>). This discrepancy arises because the system reserves a fraction of the space in the file system for use by its file system allocation routines. The amount reserved is usually around 10%, but you can adjust the amount reserved with the <b>tunefs</b> command. For further information, see the UNIX manual pages for <b>tunefs</b> and <b>df</b>.</font>
+
+<p><font face="Times" size="+1">You can check for space on a particular disk partition by using <b>df</b> with the partition as an argument. For example, the command <b>df</b> <i>/dev/sd1a</i> results in output similar to the following:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">Filesystem&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; kbytes&nbsp;&nbsp;&nbsp; used&nbsp;&nbsp; avail capacity&nbsp; Mounted on</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">/dev/sd1a&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 345542&nbsp; 241823&nbsp;&nbsp; 69164&nbsp;&nbsp;&nbsp; 78%&nbsp;&nbsp;&nbsp; /Users</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">For additional information, see the UNIX manual page for <b>df</b>.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Fixing NetInfo Problems</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">All NeXT computers use NetInfo to maintain administrative information. This section explains some steps you can take if, for some reason, NetInfo fails. It describes two utilities, <b>nidomain</b> and <b>niutil</b>, that let you access the NetInfo database. The <b>nidomain</b> command tells you what domains are served on a given machine, and lets you create and destroy NetInfo databases. The <b>niutil</b> command lets you read from and write to a particular NetInfo domain.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=34></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Warning:</b></font></td>
+
+<td><font face="Times" size="+1">The debugging described in this section is for advanced administrators <i>only</i>. Errors made when working with the NetInfo database can have unforeseen results. This section assumes you're thoroughly familiar with UNIX and NetInfo. Before beginning, you should also read the UNIX manual pages for <b>niutil</b> and <b>nidomain</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Turn the computer off and then on, using the Power key.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">During the boot process, <i>immediately</i> after the &quot;Testing System&quot; message is replaced by the &quot;Loading from disk&quot; message, hold down the Command bar and press the ~ key (without pressing Shift). On keyboards with two Command keys, hold down the right Command key and press the ~ key. This displays the ROM monitor window containing the prompt NeXT&gt;.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Start up the computer in single-user mode by entering one of the following commands at the ROM monitor prompt:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td nowrap><font face="Courier"><b>bsd -s</b></font></td>
+
+<td><font face="Times" size="+1">(To boot from the hard disk)</font></td></tr>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td nowrap><font face="Courier"><b>bfd -s</b></font></td>
+
+<td><font face="Times" size="+1">(To boot from the internal floppy disk)</font></td></tr>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td nowrap><font face="Courier"><b>bod -s</b></font></td>
+
+<td><font face="Times" size="+1">(To boot from the optical disk)</font></td></tr>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td nowrap><font face="Courier"><b>ben -s</b></font></td>
+
+<td><font face="Times" size="+1">(To boot from the Ethernet)</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">When the startup process is complete, you'll see the single-user prompt #.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">At the single-user prompt, start up the system services by entering the following command:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>sh /etc/rc &amp;</b></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">You see a series of messages appear on the screen as the <b>rc</b> shell script executes. During this process, NetInfo is started. You won't see a shell prompt after these messages unless you press Return.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">List the domains served by your system by entering the following:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>nidomain -l</b></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">The system displays a list of existing domains, with one line per domain. If your system is not configured as a NetInfo server, you see just the local domain. If your system is a NetInfo server, you see all the domains served by this computer.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">To make corrections in a specific domain, use the <b>niutil</b> command to examine and modify the NetInfo data. Always use the <b>-t</b> option with the appropriate tag identifier to avoid doing any lookups that would otherwise cause <b>niutil</b> to hang.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">When you've fixed your data, restart the computer by powering it off and then on.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=53></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Warning:</b></font></td>
+
+<td><font face="Times" size="+1">Don't try to continue the boot into multiuser mode. If you do, you'll start duplicate system services, which will cause a number of problems. You must halt the system and reboot.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Here's an example that shows how to display the properties associated with a specific NetInfo directory and to correct them if you find a problem. Suppose that someone mistakenly changed the user ID for <b>root</b> from 0 to 1. You first examine the NetInfo directory <b>/users/root</b> (located on the computer with the Internet address 127.0.0.1, in the NetInfo database tagged <b>local</b>) to see what properties it has:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier"><b>niutil -read -t 127.0.0.1/local /users/root</b></font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">name: root</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">passwd: e14vm5ROyurqA</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">uid: 1</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">gid: 1</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">realname: Operator</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">home: /</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">shell: /bin/csh</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">_writers_passwd: root</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">In this example, <b>name</b>, <b>passwd</b>, <b>uid</b>, <b>gid</b>, <b>realname</b>, <b>home</b>, <b>shell</b>, and <b>_writers_passwd</b> are properties of the directory <b>/users/root</b>. Once you see that the value of the <b>uid</b> property is 1 (an error), you can change it back to 0 with the following command:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier"><b>niutil -createprop -t 127.0.0.1/local /users/root uid 0</b></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">For more information, see the UNIX manual pages for <b>nidomain</b> and <b>niutil</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">You can't directly change a clone server database using this technique, since these are read-only. In other words, if the configured Internet address of the machine is not the same as that of the master server (identified in the <b>master</b> property of the NetInfo directory &quot;/&quot;), this technique will not allow you to change the data. Instead, you can change the data on the master and then copy the database onto the clone using the command <b>nidomain -c</b>.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Lost root Password</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The <b>root</b> password is essential to system security and should always be safeguarded. Unfortunately, anything can be lost, and a password is no exception.</font>
+
+<p><font face="Times" size="+1">To assign a new <b>root</b> password when you're unable to log in as <b>root</b>, follow these procedures:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Turn the computer off and then on, using the Power key.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">During the boot process, <i>immediately</i> after the &quot;Testing System&quot; message is replaced by the &quot;Loading from disk&quot; message, hold down the Command bar and press the ~ key (without pressing Shift). On keyboards with two Command keys, hold down the right Command key and press the ~ key. This displays the ROM monitor window.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=53></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Warning:</b></font></td>
+
+<td><font face="Times" size="+1">If a hardware password has been set, you must supply this password before you can boot the computer. If you don't supply the hardware password, you'll be unable to complete the remainder of this procedure. (For more information on the hardware password, see &quot;The ROM Monitor&quot; in Chapter 9.)</font></td></tr>
+
+<tr valign=top>
+
+<td width=53 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=53></td>
+
+<td nowrap><img src="../images/sp.gif" width=52 height=1><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Start up the machine in single-user mode by entering one of the following commands at the ROM monitor prompt:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td nowrap><font face="Courier"><b>bsd -s</b></font></td>
+
+<td><font face="Times" size="+1">(To boot from the hard disk)</font></td></tr>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td nowrap><font face="Courier"><b>bfd -s</b></font></td>
+
+<td><font face="Times" size="+1">(To boot from the internal floppy disk)</font></td></tr>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td nowrap><font face="Courier"><b>bod -s</b></font></td>
+
+<td><font face="Times" size="+1">(To boot from the optical disk)</font></td></tr>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td nowrap><font face="Courier"><b>ben -s</b></font></td>
+
+<td><font face="Times" size="+1">(To boot from the Ethernet)</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">The system starts up, displaying a series of messages. When startup is complete, you see the single user prompt #.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">At the single user prompt, start up the system services by entering the following command:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>sh /etc/rc &amp;</b></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">You see a series of messages appear on the screen as the <b>rc</b> shell script executes. During this process, NetInfo is started. You won't see a shell prompt after these messages unless you press Return.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Set the <b>root</b> password. Enter:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>passwd root</b></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">You're prompted twice for the new password.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Turn the system off and then on again. After the system boots, you can resume normal operation with the new <b>root </b>password.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=53></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Warning:</b></font></td>
+
+<td><font face="Times" size="+1">Don't try to continue the boot into multiuser mode. If you do, you'll start duplicate system services, which will cause a number of problems. You must halt the system and reboot.</font></td></tr>
+
+</table>
+
+
+
+<p><br>
+
+</body>
+</html>

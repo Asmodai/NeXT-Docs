@@ -1,0 +1,481 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextAdmin/ReleaseNotes/RemoteUpgrade.rtfd -->
+<!-- Date: Sun Jan  1 13:56:50 2023 -->
+<head>
+<title>RemoteUpgrade</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Release 3.3, Prerelease 2&nbsp; Copyright</font> &copy;<font face="Times">1994 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+3">3.3 Release Notes:</font><br>
+<font face="Times" size="+3">Upgrading Remotely Across a Network</font>
+
+<p><br><br><br>
+
+<p><font face="Times" size="+1">If there are several computers on a network that you want to upgrade to Release 3.3, it may be easier to set up a network upgrade server than to connect a CD-ROM drive to each computer individually. Using the RemoteUpgrade utility, you can upgrade multiple computers across a network--even simultaneously--without having to run the Upgrader application on each computer.</font>
+
+<p><font face="Times" size="+1">The RemoteUpgrade utility is intended to be used to speed up the upgrade process for a network of computers with <i>identical</i> hardware and software configurations.&nbsp; If you use this utility to upgrade computers that don't have identical configurations, the upgrade may not be successful--in this case, use the Upgrader application on each individual computer instead.</font>
+
+<p><font face="Times" size="+1"><b>Note:</b> You can't use a NeXT computer as an upgrade server for Intel-based computers, or</font><br>
+<font face="Times" size="+1">vice versa. So if you want to upgrade both kinds of computers on your network, you must set up both a NeXT computer and an Intel-based computer as upgrade servers.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Helvetica" size="+1"><b>Creating an upgrade server</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">Start by creating an upgrade server, as described here.</font>
+
+<p><font face="Times" size="+1">Since the software installed on the upgrade server is copied to other computers, be sure not to customize the server's system software. (Files in the <b>/private</b> directory are treated specially during the upgrade procedure, so normal administrative changes don't pose a problem.)</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1">1.</font></td>
+
+<td><font face="Times" size="+1">Upgrade the server to Release 3.3 and then log in as root.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1">2.</font></td>
+
+<td><font face="Times" size="+1">Copy <b>Upgrader.app</b> from the NEXTSTEP CD-ROM to the server's root folder.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1">3.</font></td>
+
+<td><font face="Times" size="+1">Start up NFSManager (it's in <b>/NextAdmin</b>).</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><img src="F0.gif" width=414 height=449></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1">4.</font></td>
+
+<td><font face="Times" size="+1">Drag the server's root folder from the File Viewer to the icon well in the Exported Directories window.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1">5.</font></td>
+
+<td><font face="Times" size="+1">Check &quot;Allow unknown users.&quot;</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1">6.</font></td>
+
+<td><font face="Times" size="+1">Choose &quot;User with uid:&quot; from the pop-up list and type 0 in the field. Then click OK.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">------------------------------------------------------------------------------------</font><br>
+<font face="Times" size="+1"><b>Caution:</b> Setting the &quot;User with uid&quot; option to <b>0</b> removes security from the server's file system. Make sure that you've chosen a server where this lack of security is appropriate, and that you reset this option when you're done using the server for upgrading.</font><br>
+<font face="Times" size="+1">------------------------------------------------------------------------------------</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1">7.</font></td>
+
+<td><font face="Times" size="+1">Choose Import To from the NFSManager menu.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1">8.</font></td>
+
+<td><font face="Times" size="+1">In the Select the NetInfo Domain panel, select the domain that contains the computers you want to upgrade and click OK.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><img src="F1.gif" width=298 height=338></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1">9.</font></td>
+
+<td><font face="Times" size="+1">Click Add in the Imported Directories window.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1">10.</font></td>
+
+<td><img src="../../images/sp.gif" width=3 height=1><font face="Times" size="+1">In the Import Directory panel, type the name of the upgrade server and type <b>/</b> as the name of the remote directory. Then click OK.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">If you're on a small network, the NetInfo domain of the computers you're upgrading is probably the root NetInfo domain, named &quot;<b>/</b>&quot;.</font>
+
+<p><br><br>
+
+<p><img src="F2.gif" width=360 height=220></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1">11.</font></td>
+
+<td><font face="Times" size="+1">Restart the upgrade server.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Helvetica" size="+1"><b>Doing the template upgrade</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">Before upgrading a group of client computers, you need to perform a template upgrade on a single computer first.&nbsp; This upgrade provides RemoteUpgrade with the template files it needs for performing the subsequent client computer upgrades.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1">1.</font></td>
+
+<td><font face="Times" size="+1">Create a network upgrade server as described in <i>Upgrading to NEXTSTEP Release 3.3,</i></font><br>
+<font face="Times" size="+1"><i>Prerelease 2</i>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1">2.</font></td>
+
+<td><font face="Times" size="+1">Perform a standard upgrade on one computer as described in <i>Upgrading to NEXTSTEP Release 3.3, Prerelease 2</i>.&nbsp; (We'll refer to this computer as the <i>template computer</i>.)</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1">3.</font></td>
+
+<td><font face="Times" size="+1">Create a folder called <b>RemoteUpgradeFiles</b> on a partition that is NFS-mounted by all the NEXTSTEP computers you wish to upgrade. (We'll refer to this partition as the <i>upgrade partition</i>, and to the computer as the <i>upgrade server</i>.)</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1">4.</font></td>
+
+<td><font face="Times" size="+1">Copy the files <b>/Release3.3 Prerelease2.uplan</b> and <b>/Release3.3 Prerelease 2.uplan.bom</b> from the template computer into the <b>RemoteUpgradeFiles</b> folder on the upgrade server. Rename the two files to <b>/Release3.3.uplan</b> and <b>/Release3.3.uplan.bom</b> respectively.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1">5.</font></td>
+
+<td><font face="Times" size="+1">Copy the <b>/UpdatedBoms</b> folder from the template computer into the <b>RemoteUpgradeFiles</b> folder on the upgrade server.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1">6.</font></td>
+
+<td><font face="Times" size="+1">Copy the RemoteUpgrade utility from the root of the <i>NEXTSTEP 3.3</i> CD-ROM into the <b>RemoteUpgradeFiles</b> folder on the upgrade server.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Helvetica" size="+1"><b>Setting up client computers for remote command execution</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">To execute remote commands as the <b>root</b> user, you need to add a line to the <b>/.rhosts</b> file of each client computer containing the hostname of the server you will be running the RemoteUpgrade utility from. See the UNIX manual page for <b>hosts.equiv</b> for more details.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Helvetica" size="+1"><b>Performing remote upgrades</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">Once you've done a template upgrade and have set up the client computers for remote command execution, your ready to start upgrading! Log into the upgrade server and become <b>root</b> in a Terminal window. Run RemoteUpgrade once per client computer, using the following syntax:</font></td></tr>
+
+</table>
+
+<p><img src="../../images/sp.gif" width=90 height=1><font face="Courier"><i>path</i><b>/RemoteUpgrade</b> <i>client_computer upgrade_partition</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">where <i>path</i> is the full NFS-mounted path (visible from the client) to the <b>RemoteUpgradeFiles</b> folder, <i>client_computer</i> is the hostname of the client computer to be upgraded and <i>upgrade_partition</i> is the NFS-mounted path to the upgrade partition on the upgrade server.</font>
+
+<p><font face="Times" size="+1">------------------------------------------------------------------------------------</font><br>
+<font face="Times" size="+1"><b>Caution:</b> If you plan to upgrade more than one computer, start with a computer that isn't critical to your network's operation. Upgrading a test computer minimizes the time needed to diagnose and fix</font><br>
+<font face="Times" size="+1">problems. Once you're confident that you're ready to install Release 3.3 on all your computers, you can upgrade more important ones.</font><br>
+<font face="Times" size="+1">------------------------------------------------------------------------------------</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Helvetica" size="+1"><b>Performance considerations</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">For best upgrade performance, follow these guidelines:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The upgrade server should be on the same subnet as the client computers.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">You should perform no more than 20 upgrades concurrently, in order to avoid saturating the network bandwidth. Otherwise, performance degredation could cause the upgrade processes to fail.</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

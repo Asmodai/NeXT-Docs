@@ -1,0 +1,443 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/OperatingSystem/Part3_DriverKit/Reference/Functions/IntroDriverKitFunctions.rtf -->
+<!-- Date: Sun Jan  1 17:01:16 2023 -->
+<head>
+<title>IntroDriverKitFunctions</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p align=right><font face="Times" size="+4"><i>Functions</i></font>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">This section describes three types of functions and macros:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">General-purpose functions--to perform basic tasks</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Driver Debugging Module (DDM) functions--to help all drivers keep debugging information</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Miscellaneous functions--such as DMA alignment macros, functions that work only in the kernel, and functions specific to a particular machine architecture.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Unless noted otherwise, all of the functions described in this section work in both user-level and kernel-level drivers.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Other Functions Available to Drivers</b></font>
+
+<p><font face="Times" size="+1">Almost all Mach functions are available to kernel-level device drivers. If you don't find the appropriate functionality in a method or function, you can use a Mach function. For example, <b>port_allocate()</b> and <b>msg_send()</b> are used by many drivers.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">Instead of including the header file <b>mach/mach.h</b>, you must include <b>mach/mach_user_internal.h</b> and <b>mach/mach_interface.h</b>.</font>
+
+<p><font face="Times" size="+1">The <b>host_priv_self()</b> Mach function does <i>not</i> work in the kernel. You should use <b>IOHostPrivSelf()</b> instead.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>General-Purpose Functions</b></font>
+
+<p><font face="Times" size="+1">The general-purpose functions, defined in the header file <b>driverkit/generalFuncs.h</b>, provide a consistent interface for device drivers that may have to run in kernel space at one time (or in one configuration) and in user space at another time. Using these functions minimizes the work or porting between the two environments. All the Driver Kit classes, as well all NeXT kernel-level drivers that use the Driver Kit, were written using these functions so that they have one set of source files with minimal kernel and user mode differences.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=34></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Warning:</b></font></td>
+
+<td><font face="Times" size="+1">Before using any of the general-purpose functions, each user-level driver must call <b>IOInitGeneralFuncs()</b>. (Kernel-level drivers don't need to call it.)</font></td></tr>
+
+<tr valign=top>
+
+<td width=34 height=30></td></tr>
+
+<tr valign=top>
+
+<td width=34></td>
+
+<td nowrap></td>
+
+<td><font face="Helvetica" size="+2"><b>Thread Functions</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=34 height=13></td></tr>
+
+<tr valign=top>
+
+<td width=34></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">These functions provide the functionality of the C-thread functions in a uniform way in both user and kernel space.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">IOForkThread()</font><br>
+<font face="Times" size="+1">IOSuspendThread()</font><br>
+<font face="Times" size="+1">IOResumeThread()</font><br>
+<font face="Times" size="+1">IOExitThread()</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Timer Functions</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">IOSleep()</font><br>
+<font face="Times" size="+1">IODelay()</font><br>
+<font face="Times" size="+1">IOScheduleFunc()</font><br>
+<font face="Times" size="+1">IOUnscheduleFunc()</font><br>
+<font face="Times" size="+1">IOGetTimestamp()</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Memory Allocation and Copying Functions</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">IOCopyMemory()</font><br>
+<font face="Times" size="+1">IOMalloc()</font><br>
+<font face="Times" size="+1">IOFree()</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Miscellaneous General-Purpose Functions</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">IOInitGeneralFuncs()</font><br>
+<font face="Times" size="+1">IOFindNameForValue()</font><br>
+<font face="Times" size="+1">IOFindValueForName()</font><br>
+<font face="Times" size="+1">IOLog()</font><br>
+<font face="Times" size="+1">IOPanic()</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Driver Debugging Module (DDM) Functions</b></font>
+
+<p><font face="Times" size="+1">See the &quot;Adding Debugging Code&quot; section in Chapter 2 for information on using the DDM.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">IOAddDDMEntry()</font><br>
+<font face="Times" size="+1">IOClearDDM()</font><br>
+<font face="Times" size="+1">IOCopyString()</font><br>
+<font face="Times" size="+1">IODEBUG()</font><br>
+<font face="Times" size="+1">IOGetDDMEntry()</font><br>
+<font face="Times" size="+1">IOGetDDMMask()</font><br>
+<font face="Times" size="+1">IOInitDDM()</font><br>
+<font face="Times" size="+1">IONsTimeFromDDMMsg()</font><br>
+<font face="Times" size="+1">IOSetDDMMask()</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Miscellaneous Functions</b></font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Kernel-Only Functions</b></font>
+
+<p><font face="Times" size="+1">The function <b>IOConvertPort()</b> is necessary for some kernel-level drivers--and not for user-level drivers--because kernel-level drivers can execute in more than one task. The first thread of a kernel-level driver executes in the loadable kernel server's task, any threads that the driver creates execute in the kernel I/O task, and network drivers and drivers with UNIX entry points (at some stage) can execute in the context of an unknown task.</font>
+
+<p><font face="Times" size="+1"><b>IOGetObjectForDeviceName()</b> provides to kernel-level drivers some of the functionality provided to user-level programs by IODeviceMaster. Similarly, <b>IOHostPrivSelf()</b> is used by some kernel-level drivers that need the information normally returned by <b>host_priv_self()</b> (which is one of the few Mach functions that doesn't work in the kernel).</font>
+
+<p><font face="Times" size="+1">The function <b>IOVmTaskSelf()</b> supplies a <b>vm_task_t</b> for Mach function calls that expect one for the kernel; this is necessary because <b>vm_task_t</b> and <b>task_t</b> aren't the same in the kernel (as they are at user level). <b>IOVmTaskCurrent()</b> supplies a <b>vm_task_t</b> that's needed by some UNIX-style drivers. Finally, <b>IOVmTaskForBuf() </b>supplies a <b>vm_task_t</b> for the unknown task that is requesting UNIX-style I/O.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">IOConvertPort()</font><br>
+<font face="Times" size="+1">IOGetObjectForDeviceName()</font><br>
+<font face="Times" size="+1">IOHostPrivSelf()</font><br>
+<font face="Times" size="+1">IOPhysicalFromVirtual()</font><br>
+<font face="Times" size="+1">IOSetUNIXError()</font><br>
+<font face="Times" size="+1">IOVmTaskCurrent()</font><br>
+<font face="Times" size="+1">IOVmTaskForBuf()</font><br>
+<font face="Times" size="+1">IOVmTaskSelf()</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>DMA Alignment Macros</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">IOAlign()</font><br>
+<font face="Times" size="+1">IOIsAligned()</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Architecture-Specific Functions</b></font>
+
+<p><font face="Times" size="+1">The following functions are used by some Intel drivers to read and write I/O ports:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">inb()</font><br>
+<font face="Times" size="+1">inw()</font><br>
+<font face="Times" size="+1">inl()</font><br>
+<font face="Times" size="+1">outb()</font><br>
+<font face="Times" size="+1">outw()</font><br>
+<font face="Times" size="+1">outl()</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Some Intel drivers use the following function to help handle interrupts:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">IODisableInterrupt()</font><br>
+<font face="Times" size="+1">IOEnableInterrupt()</font><br>
+<font face="Times" size="+1">IOSendInterrupt()</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Some Intel devices require memory in the low 16 MB:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">IOMallocLow()</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Intel display drivers often use the following functions to read and write VGA registers:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">IOReadRegister()</font><br>
+<font face="Times" size="+1">IOReadModifyWriteRegister()</font><br>
+<font face="Times" size="+1">IOWriteRegister()</font></td></tr>
+
+</table>
+
+
+
+<p><br><br><br><br><br><br><br><br>
+
+</body>
+</html>

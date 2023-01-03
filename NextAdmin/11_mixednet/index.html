@@ -1,0 +1,5960 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextAdmin/11_MixedNet.rtfd -->
+<!-- Date: Sun Jan  1 13:56:45 2023 -->
+<head>
+<title>11_MixedNet</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Release 3.3 Copyright</font> &copy;<font face="Times">1994 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap><font face="Helvetica" size="+4"><b>11</b></font></td>
+
+<td><font face="Times" size="+4"><i>NEXTSTEP Computers in a Mixed Network</i></font></td></tr>
+
+<tr valign=top>
+
+<td width=36 height=80></td></tr>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">If you already have a network of computers at your site, you can connect your NEXTSTEP computers to the existing network and share files or printers. NeXT computers can communicate with existing UNIX or Novell NetWare networks. This chapter covers the procedures needed to incorporate a NEXTSTEP computer in a mixed network. It also discusses the use of DNS and SNMP.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>UNIX Networks</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">As NEXTSTEP computers are compatible with the 4.3BSD version of UNIX, they easily connect to other UNIX computers. In order to communicate with an existing UNIX network, that network must be using TCP/IP over Ethernet. The examples used here assume the non-NEXTSTEP computers are running a version of UNIX that is also compatible with 4.3BSD.</font>
+
+<p><font face="Times" size="+1">If your non-NEXTSTEP computers run some other variation of UNIX, you'll need to make adjustments to the procedures. If you're not the administrator of the existing non-NEXTSTEP UNIX network, make sure you involve that administrator in these procedures.</font>
+
+<p><font face="Times" size="+1">In addition, the procedures in this section assume a two-level NetInfo domain hierarchy. If you're incorporating a network with a multilevel NetInfo domain hierarchy, consider carefully which domain to use to store the various administrative information.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Planning</b></font>
+
+<p><font face="Times" size="+1">Before you jump in and begin incorporating your NEXTSTEP computers into an existing UNIX network, you need to find out how the existing network is administered and make some decisions about how the combined network will be maintained.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Network Services</b></font>
+
+<p><font face="Times" size="+1">The first thing you should do is determine what your goals are for the combined network. Ask yourself what administrative information you want to maintain across NEXTSTEP computers and the other UNIX computers. Decide which features you want users to be able to access. Here's a list of some possibilities:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Host information--At a minimum, you'll want to make sure that each computer has access to host information about all the other computers. Without this information, any kind of network communication requires knowing the Internet address of the remote computer, and which other network services you can provide are limited.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Shared file systems--Are there any file systems that you want users to be able to access from both NEXTSTEP computers and non-NEXTSTEP computers? Are there directories that should only be available to NEXTSTEP computers, or only to non-NEXTSTEP computers? Make a list of each.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Users and groups--Do you want users to be able to log into any computer on the network, or will you restrict access to specific computers? If you're going to share file systems, you'll probably want to set up network-wide user accounts and user groups as well.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Mail aliases--Do you want your mail aliases to be consistent across all computers?</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Mail service--Do you want to have one computer be the mail server for the entire network, or will you use multiple mail servers? If you will only use one mail server, will you use a NEXTSTEP computer for that purpose, or one of the non-NEXTSTEP computers?</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Printing--Are there printers attached to NEXTSTEP computers that you want to make available to the non-NEXTSTEP computers? Are there printers attached to the non-NEXTSTEP computers that you want to make available to the NEXTSTEP computers?</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Existing UNIX Administration</b></font>
+
+<p><font face="Times" size="+1">When you're incorporating NEXTSTEP computers into an existing UNIX network, your biggest concern is making sure that the administrative data is consistent across all computers. How you make this happen depends on what scheme is being used on the existing network. The most likely situations are:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Individual--Each computer on the UNIX network maintains its own set of administrative files: <b>/etc/hosts</b>, <b>/etc/passwd</b>, <b>/etc/group</b>, <b>/etc/aliases</b>, and so on.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Distributed--The administrative files are maintained on a central information server, and copies are made to the other computers at regular intervals. The information server might use NIS (Network Information Service) to maintain the administrative data.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>NetInfo Administration</b></font>
+
+<p><font face="Times" size="+1">Once you've determined how the other UNIX computers maintain administrative data, you need to decide how that information will be maintained on your NEXTSTEP computers.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">NetInfo and configuration server--This is the easiest way to maintain administrative data for your NEXTSTEP computers, just as it would be if the NEXTSTEP computers were connected in an isolated network. If you're connecting an existing NetInfo network to another UNIX network, you'll already have a NetInfo and configuration server for your NEXTSTEP computers.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">No NetInfo and configuration server--If you're connecting a single NEXTSTEP computer to an existing UNIX network, there's no need to set up a master NetInfo and configuration server. If you have more than one NeNeXTXT computer, you can set them up without a master server. However, administration will be easier if you maintain administrative data for the NEXTSTEP computers with a master NetInfo server.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">NIS--If the non-NEXTSTEP computers are using NIS to maintain administrative data, you might decide to set up your NEXTSTEP computers as NIS clients. With this scheme, all computers on the combined network get their administrative data from the same source.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Combined Administration</b></font>
+
+<p><font face="Times" size="+1">Now that you know how the non-NEXTSTEP computers maintain their administrative data, and you've decided how your NEXTSTEP computers will maintain theirs, you need to decide how the two sets of data will be kept consistent. Several possibilities are:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">NetInfo as the master--All administrative changes (adding hosts, adding users and groups, creating mail aliases, changing passwords) are performed with NetInfo. Then the information is copied from NetInfo to the non-NEXTSTEP computers. The non-NEXTSTEP computers might use NIS to maintain the data.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Non-NeXT as the master--All administrative changes are performed on the non-NEXTSTEP computers, then the information is copied into NetInfo for the NEXTSTEP computers. The administrative data for the non-NEXTSTEP computers might come from NIS.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">NIS--Administrative changes are handled with NIS for the entire combined network. In this situation, the NIS master server can be a NEXTSTEP computer or one of the non-NEXTSTEP computers.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Independent--Administrative changes are made anywhere. This scheme isn't recommended. When the administrative information is combined, it's almost impossible to determine which data is accurate. For example, is the user account information for the user <b>tom</b> on the NEXTSTEP computers the correct data, or is it the user account stored on the non-NEXTSTEP computers? What if <b>tom</b> changes his password while logged into a NEXTSTEP computer one month, then changes it while logged into a non-NEXTSTEP computer the next month? As you can see, allowing changes to be made on both the NEXTSTEP and non-NEXTSTEP computers can create an administrative nightmare.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Setting Up the NEXTSTEP Computers</b></font>
+
+<p><font face="Times" size="+1">If you're incorporating an existing NetInfo network, you can skip this section. If you're going to have a NetInfo and configuration server for your NEXTSTEP computers, set up the network following the instructions in Chapter 2, &quot;Setting Up a NetInfo Network,&quot; or Chapter 10, &quot;Configuring a Large Network.&quot; If you want to set up your NEXTSTEP computers <i>without</i> a NetInfo and configuration server, follow these procedures for each NEXTSTEP computer:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Start up the computer you want to add. If it's already physically connected to the existing UNIX network, a window appears with the following message:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">No response from network configuration server.</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">Type 'Ctrl-c' to start up computer without a network connection.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">Type Control-c to continue the boot process without connecting to the network.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Start up HostManager, located in <b>/NextAdmin</b>. If you're not logged in as <b>root</b>, HostManager displays a panel telling you that you must have superuser status to run this application. Enter the password for the <b>root</b> account and click Login.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Open the Local Configuration window by choosing Local from the main menu.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Set the host name of the local system by clicking the button next to the text field under Hostname. Enter the host name of this computer in the text field.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Set the Internet address of the local system by clicking the switch next to the text field under Internet Address. Edit the default address to be the address you want the computer to have. Make sure the number is unique and compatible with the Internet addresses used for the existing UNIX network. For more information, see Appendix C, &quot;Internet Addressing.&quot;</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Click Use Local Domain Only under NetInfo Binding. This prevents the host from looking for a parent NetInfo domain.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F57.gif" width=554 height=311></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Click the Set button to save the changes you've just made.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>8.</b></font></td>
+
+<td><font face="Times" size="+1">Since you're disabling the link between the local and parent NetInfo domains, HostManager presents a panel requiring you to confirm that you want to proceed. Click OK to proceed.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F5.gif" width=364 height=203></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>9.</b></font></td>
+
+<td><font face="Times" size="+1">HostManager then scans the local NetInfo domain for all connections to the parent domain. As it finds each one, you must confirm that you want to break the connection. In this case, only a confirmation panel for <b>broadcasthost </b>should appear. Click OK to proceed.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F6.gif" width=364 height=185></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>10.</b></font></td>
+
+<td><font face="Times" size="+1">You must restart the computer in order for the new host name and address to be configured. Click OK in the Reboot Confirmation panel that appears.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F7.gif" width=364 height=203></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>11.</b></font></td>
+
+<td><font face="Times" size="+1">If you're configuring multiple NEXTSTEP computers without a NetInfo and configuration server, you must use HostManager to add a host entry on each NEXTSTEP computer for each of the other NEXTSTEP computers:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>a.</b></font></td>
+
+<td><font face="Times" size="+1">Start up HostManager.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>b.</b></font></td>
+
+<td><font face="Times" size="+1">Choose New from the Host menu.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>c.</b></font></td>
+
+<td><font face="Times" size="+1">Enter the host name, Internet address, and Ethernet address for one of the other NEXTSTEP computers.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>d.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Save from the Host menu.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>e.</b></font></td>
+
+<td><font face="Times" size="+1">In the panel that appears, click &quot;This is host's parent domain&quot; to uncheck it.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F58.gif" width=298 height=551></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>f.</b></font></td>
+
+<td><font face="Times" size="+1">Click OK.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>g.</b></font></td>
+
+<td><font face="Times" size="+1">Repeat for each of the other NEXTSTEP computers.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">This computer is now connected to a non-NetInfo network, and it has access to host information for any other NEXTSTEP computers. If you have multiple NEXTSTEP computers without a NetInfo and configuration server, repeat this procedure for each.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Setting Up Consistent Administrative Data</b></font>
+
+<p><font face="Times" size="+1">With your NEXTSTEP and non-NEXTSTEP computers physically connected in a network, you're ready to combine the administrative data. The procedures in this section make sure that all the computers on the combined network initially have access to the same information. Once you've combined the initial administrative information, you need to set up procedures that will make sure that any future changes (new hosts, users, groups, and so on) will be made available to all computers.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">These procedures only cover hosts, users, groups, and mail aliases. If you want to share other administrative information, modify the procedures as needed.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Host Information</b></font>
+
+<p><font face="Times" size="+1">The first information you'll want to combine is the host information. This allows all the computers to identify each other, and permits setting up additional network services.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Log in as <b>root</b> on your NetInfo and configuration server. If you aren't using a NetInfo and configuration server, log into one of the NEXTSTEP computers.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Copy the host information for your NEXTSTEP computers into a file by entering the following command in a shell window:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>nidump hosts</b> / &gt; <i>nexthosts</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">This command dumps the host information from the NetInfo database and places it in a file named <i>nexthosts</i>. You'll use this file later to update the non-NEXTSTEP computers.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">If the non-NEXTSTEP information server is an NIS master, use <b>ypcat</b> to create a file containing the host information for the non-NEXTSTEP computers.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Use a file transfer program such as <b>ftp</b> to transfer a copy of the file <b>/etc/hosts</b> (or the file you created with <b>ypcat</b>) from the non-NEXTSTEP information server to your NEXTSTEP computer, naming the copy something like <i>otherhosts</i>. As your NEXTSTEP computer doesn't yet have access to the host name of the non-NEXTSTEP computer, you need to use its Internet address when making the connection with <b>ftp</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Use Edit to delete any lines in <i>otherhosts</i> that reference <b>localhost</b> or <b>broadcasthost</b>. If you find any other entries that conflict with the NEXTSTEP host information--duplicate host names or Internet addresses--you'll need to use HostManager to change the host information for your NEXTSTEP computers. Remember that the host names and Internet addresses must be unique.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Load the host information into your NetInfo domain by entering the following command into a shell window:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>niload hosts</b> / &lt; <i>otherhosts</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">Now the NEXTSTEP computers have access to host information for all the NEXTSTEP and non-NEXTSTEP computers on the network. If you're using multiple NEXTSTEP computers without a NetInfo and configuration server, repeat steps 4 through 6 on each NEXTSTEP computer.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">You can use HostManager to add non-NEXTSTEP hosts to NetInfo instead of these procedures. However, it's usually more convenient to use <b>niload</b> unless you have only one or two hosts to configure.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Make host information about the NEXTSTEP computers available to the non-NEXTSTEP computers, using whatever procedures are normally used to add hosts to the existing UNIX network. If you prefer, you can use the following procedure, which might be easier than adding individual host entries.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>a.</b></font></td>
+
+<td><font face="Times" size="+1">Edit <i>nexthosts</i> to remove entries for <b>localhost</b> and <b>broadcasthost</b> and to make sure there are no conflicts with the host information for the non-NEXTSTEP computers.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>b.</b></font></td>
+
+<td><font face="Times" size="+1">Use a file transfer program such as <b>ftp</b> to copy <i>nexthosts</i> to the non-NEXTSTEP information server. If there isn't a non-NEXTSTEP information server, copy the file to each non-NEXTSTEP computer in turn.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>c.</b></font></td>
+
+<td><font face="Times" size="+1">Log into the non-NEXTSTEP computer(s) as <b>root</b> and append the contents of <i>nexthosts</i> to <b>/etc/hosts</b> (or other file, as appropriate), making sure that you end up with entries for all computers, NEXTSTEP and non-NEXTSTEP.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>d.</b></font></td>
+
+<td><font face="Times" size="+1">If the non-NEXTSTEP information server is an NIS master server, enter the appropriate commands to update the NIS maps. For example, the following commands will work in some situations:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=162 height=1><font face="Courier"><b>cd /var/yp</b></font><br>
+<img src="../images/sp.gif" width=162 height=1><font face="Courier"><b>make</b></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">All computers on the network, both NEXTSTEP and non-NEXTSTEP, now have access to host information for all the other computers.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>User Account and Group Information</b></font>
+
+<p><font face="Times" size="+1">If there are any user accounts on either the non-NEXTSTEP computers or the NEXTSTEP computers that you want to make available to the combined network, you'll need to combine the user account and group information from both. In order for a user account to be available network-wide, the user's home directory must be on a shared file system available to the combined network.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Preparing NeXT User Accounts</b></font>
+
+<p><font face="Times" size="+1">Network user accounts on NEXTSTEP computers usually have their home directory on a shared file system that is mounted under <b>/Net</b>. Since this isn't a universal convention, non-NEXTSTEP computers might not mount shared file systems in the same way. If there are any existing NEXTSTEP user accounts that you want to make available to the combined network, you must first modify them. If you don't have any existing user accounts on the NEXTSTEP computer that you want to make available to the combined network, you can skip this section.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Log into the NEXTSTEP home directory server as <b>root</b> and start up UserManager.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Open User from the User Record menu. In the Open in NetInfo Domain panel, click the appropriate domain, then click the user you want to make available to the combined network. Click OK.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Modify the Home Directory field so that the path of the home directory is appropriate for a shared file system on the combined network. For example, if the home directory is <b>/Net/earth/Users/mary</b>, you might modify the field to read <b>/Users/mary</b>.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F59.gif" width=514 height=257></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">If you have multiple home directory servers, you'll need to mount each remote directory in a different place. For example, you might create a directory named <b>/Homes</b> on each computer, then mount the various home directories under it, perhaps as <b>/Homes</b>/<i>server</i><b>/Users</b>. Make sure that you're consistent on all computers. See Chapter 4, &quot;Setting Up the Network File System,&quot; for more information.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Save from the User Record menu. Review the information in the attention panel that appears, then click OK.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Click Yes in the panel that appears to create a new home directory for the user.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Quit UserManager.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Start up NFSManager. Choose Import To from the main menu. In the Select NetInfo Domain panel that appears, click <b>/</b> in the left column, then click OK.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>8.</b></font></td>
+
+<td><font face="Times" size="+1">In the list of imported directories, click the directory that's used for home directories.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F60.gif" width=515 height=291></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>9.</b></font></td>
+
+<td><font face="Times" size="+1">Modify the Mount point field so that it isn't mounted under <b>/Net</b>. For example, if the mount point is <b>/Net/earth/Users</b>, modify the field to read <b>/Users</b>, or maybe <b>/Homes</b>/<i>server</i><b>/Users</b>. Click OK.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F61.gif" width=515 height=291></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>10.</b></font></td>
+
+<td><font face="Times" size="+1">Repeat these steps for each NEXTSTEP user account.</font></td></tr>
+
+<tr valign=top>
+
+<td width=96 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>11.</b></font></td>
+
+<td><font face="Times" size="+1">Copy the user account information into a file by entering the following command in a shell window:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>nidump passwd</b> / &gt; <i>nextusers</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">This command dumps the user account information from the NetInfo database and copies it into a file named <i>nextusers</i>. You'll use this file later to update the non-NEXTSTEP computers.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>12.</b></font></td>
+
+<td><font face="Times" size="+1">Copy the group information into a file by entering the following command in a shell window:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>nidump group</b> / &gt; <i>nextgroups</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">This command dumps the group information from the NetInfo database and copies it into a file named <i>nextgroups</i>. You'll use this file later to update the non-NEXTSTEP computers.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>Combining User and Group Information</b></font>
+
+<p><font face="Times" size="+1">Now transfer the user and group information.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">If the non-NEXTSTEP information server is a master NIS server, log into the NIS master server and use <b>ypcat</b> to create files containing the user account and group information.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Log into the NetInfo master server as <b>root</b>. If you aren't using a NetInfo server, log into one of the NEXTSTEP computers.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Use a file transfer program such as <b>ftp</b> to transfer a copy of the files <b>/etc/passwd</b> and <b>/etc/group</b> (or the files you created with <b>ypcat</b>) from the non-NEXTSTEP information server to your NEXTSTEP computer, naming the copies something like <i>otherusers</i> and <i>othergroups</i>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Use Edit to delete any user accounts in <i>otherusers</i> that already exist on the NEXTSTEP computer(s)--<b>root</b>, for example. If you find any other entries that conflict with the NEXTSTEP user information--duplicate user names or user IDs--you'll need to use UserManager to change the user account information on your NEXTSTEP computers. Remember that the user names and user IDs must be unique.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Use Edit to delete any groups in <i>othergroups</i> that already exist on the NEXTSTEP computer(s). If you find any entries that conflict with the NEXTSTEP group information--duplicate group names or group IDs--you'll need to use UserManager to change the group information on your NEXTSTEP computers. Remember that the group names and group IDs must be unique.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Load the user and group information into your NetInfo domain by entering the following commands in a shell window:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>niload passwd</b> / &lt; <i>otherusers</i></font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>niload group</b> / &lt; <i>othergroups</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">Now the NEXTSTEP computers have access to user account and group account information from the non-NEXTSTEP computers. If you're using multiple NEXTSTEP computers without a NetInfo and configuration server, repeat steps 3 through 6 on each NEXTSTEP computer.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">You can use UserManager to add user account and group information to NetInfo instead of these procedures. However, it's usually more convenient to use <b>niload</b> unless you only have one or two user and group accounts to add.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">If you have existing user or group accounts on the NEXTSTEP computers, make the information available to the non-NEXTSTEP computers:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>a.</b></font></td>
+
+<td><font face="Times" size="+1">Edit <i>nextusers</i> to remove entries for any accounts that already exist on the non-NEXTSTEP computers, such as <b>root</b>, and to make sure there are no conflicts with the existing non-NEXTSTEP user accounts.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>b.</b></font></td>
+
+<td><font face="Times" size="+1">Edit <i>nextgroups</i> to remove entries for any groups that already exist on the non-NEXTSTEP computers, and to make sure there are no conflicts with the existing non-NEXTSTEP groups.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>c.</b></font></td>
+
+<td><font face="Times" size="+1">Use a transfer program such as <b>ftp</b> to copy <i>nextusers</i> and <i>nextgroups</i> to the non-NEXTSTEP information server. If you aren't using a non-NEXTSTEP information server, copy the file to each non-NEXTSTEP computer in turn.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>d.</b></font></td>
+
+<td><font face="Times" size="+1">Log into the non-NEXTSTEP computer(s) and merge the contents of <i>nextusers</i> with <b>/etc/passwd</b>, and the contents of <i>nextgroups</i> with <b>/etc/group</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>e.</b></font></td>
+
+<td><font face="Times" size="+1">If the non-NEXTSTEP information server is an NIS master server, enter the appropriate commands to update the NIS maps.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Mail Aliases</b></font>
+
+<p><font face="Times" size="+1">If you currently have mail aliases defined on either the NEXTSTEP or non-NEXTSTEP computers, you'll need to make these aliases available to the combined network so that mail will work properly.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Log into your NetInfo and configuration server as <b>root</b>. If you're not using a NetInfo and configuration server, log into any NEXTSTEP computer.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">If you have existing aliases on your NEXTSTEP computers that you want to make available to the rest of the network, copy the alias information into a file with the following command:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>nidump aliases / &gt;</b> <i>nextaliases</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">If the non-NeNEXTSTEPXT information server is a master NIS server, log into that server and use <b>ypcat</b> to create a file containing the alias information.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Transfer a copy of the file <b>/etc/aliases</b> (or the file you created with <b>ypcat</b>) from the non-NEXTSTEP information server to the NEXTSTEP computer.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Use Edit to delete any aliases that are duplicated in NetInfo.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Load <i>the aliases information</i> into your NetInfo domain by entering the following command in a shell window:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>niload aliases / &lt;</b> <i>otheraliases</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">If you have existing aliases on the NEXTSTEP computers that you want to make available across the combined network, you need to transfer them.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>a.</b></font></td>
+
+<td><font face="Times" size="+1">Edit <i>nextaliases</i> to remove any aliases that are already defined on the non-NEXTSTEP computers.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>b.</b></font></td>
+
+<td><font face="Times" size="+1">Use a file transfer program such as <b>ftp</b> to transfer <i>nextaliases</i> to the non-NEXTSTEP information server. If you don't have a non-NEXTSTEP information server, transfer the file to each non-NEXTSTEP computer in turn.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>c.</b></font></td>
+
+<td><font face="Times" size="+1">Append the contents of <i>nextaliases</i> to <b>/etc/aliases</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>d.</b></font></td>
+
+<td><font face="Times" size="+1">If the non-NEXTSTEP information server is an NIS server, enter the appropriate commands to update the NIS maps.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Shared Files</b></font>
+
+<p><font face="Times" size="+1">You can share directories across the entire combined network using NFS. If you're using network-wide user accounts, you'll have to set up a shared directory to hold the home directories.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Sharing a NEXTSTEP File</b></font>
+
+<p><font face="Times" size="+1">Follow these steps to make a directory exported from a NEXTSTEP file server available to the non-NEXTSTEP computers:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Use NFSManager to make sure that the exported directory is available to the non-NEXTSTEP computers. For more information on exporting directories with NFSManager, see Chapter 4, &quot;Setting Up the Network File System.&quot;</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Use NFSManager to make sure that the exported directory is mounted somewhere other than under <b>/Net</b> on the NEXTSTEP computers. Since <b>/Net</b> is not a universal convention, mounting a directory here may be inconsistent with the non-NEXTSTEP computers.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Edit <b>/etc/fstab</b> on each non-NEXTSTEP computer to include the mount information for the directory exported from the NEXTSTEP computer. An entry will look something like this:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><i>server</i>:/<i>directory</i> /<i>mountpoint</i> nfs ro,bg,intr,nosuid 0 0</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">In this entry, <i>server</i> is the host name of the NEXTSTEP computer exporting the directory <i>directory</i>, and <i>/mountpoint </i>is where the directory will appear on the non-NEXTSTEP computer. For more information about this entry, including the options, see the UNIX manual pages for <b>mount</b> and <b>fstab</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">If necessary, use the <b>mkdir</b> command to create the mount point directory on the non-NEXTSTEP computer.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">Since there are variations in the NFS configuration procedures for different types of non-NEXTSTEP computers, check the requirements for your particular site for specific NFS configuration information.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>Sharing a Non-NEXTSTEP File</b></font>
+
+<p><font face="Times" size="+1">Follow these steps to make a directory exported from a non-NEXTSTEP file server available to your NEXTSTEP computers:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Edit the file <b>/etc/exports</b> on the non-NEXTSTEP file server to make sure the entry for the exported directory allows access to the NEXTSTEP computers. For more information, see the UNIX manual pages for <b>exports</b> and <b>exportfs</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Use NFSManager on the NEXTSTEP computers to mount the remote directory. In order for the remote directory to be consistent across the combined network, don't mount it under <b>/Net</b>. For more information, see Chapter 4.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Mail Service</b></font>
+
+<p><font face="Times" size="+1">In order for mail to operate correctly, you need to coordinate mail service for the entire combined network. You can set up a single mail server--either a NEXTSTEP computer or a non-NEXTSTEP computer--or you can use multiple servers. This section describes how to set up a single mail server.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Using a Non-NEXTSTEP Mail Server</b></font>
+
+<p><font face="Times" size="+1">Follow these procedures to use an existing non-NEXTSTEP mail server for the combined network:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">If you have a NEXTSTEP computer that's set up as a mail server, follow these steps to turn it into a mail client:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>a.</b></font></td>
+
+<td><font face="Times" size="+1">Log into the NEXTSTEP mail server. Start up HostManager, then choose Open from the Host menu.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>b.</b></font></td>
+
+<td><font face="Times" size="+1">Choose the root domain by clicking <b>/</b> in the top half of the Open in NetInfo Domain window, then click the host name of the NEXTSTEP mail server in the bottom half. Click OK.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F73.gif" width=514 height=338></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>c.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>mailhost</b> in the Host Name Aliases list, then click the Remove button below the list. Choose Save from the Host menu.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>d.</b></font></td>
+
+<td><font face="Times" size="+1">Start up NetInfoManager.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>e.</b></font></td>
+
+<td><font face="Times" size="+1">In the local domain window, click <b>/locations</b>, then click <b>sendmail</b>.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F62.gif" width=529 height=263></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>f.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Delete from the Domain menu, then click Delete Anyway in the attention panel that appears.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>g.</b></font></td>
+
+<td><font face="Times" size="+1">Start up NFSManager. In the Exported Directories window, click <b>/LocalLibrary/Images/People</b>, then click the Remove button. Remove the entry for <b>/usr/spool/mail</b> as well.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>h.</b></font></td>
+
+<td><font face="Times" size="+1">If there are any files in <b>/usr/spool/mail</b> on the NEXTSTEP mail server containing mail, transfer these files to <b>/usr/spool/mail</b> on the non-NEXTSTEP mail server. (Don't overwrite any existing files--merge them instead.)</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>i.</b></font></td>
+
+<td><font face="Times" size="+1">Log into the non-NEXTSTEP information server and edit <b>/etc/hosts</b> to remove <b>mailhost</b> from the entry for the NEXTSTEP mail server. If the non-NEXTSTEP information server is an NIS master server, remake the maps. If there isn't a non-NEXTSTEP information server, modify the <b>hosts</b> file on each non-NEXTSTEP computer.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Start up HostManager and open the host entry for the non-NEXTSTEP mail server.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Verify that the non-NEXTSTEP mail server includes <b>mailhost</b> as a host name alias. If it doesn't, add the alias <b>mailhost</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Log into the non-NEXTSTEP mail server as <b>root</b>, and create a directory named <b>/LocalLibrary/Images/People</b>. This directory is used by NeXTmail to store alias and mail picture files.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">In <b>/LocalLibrary/Images/People</b>, create a file named <b>passwd</b> that contains a copy of the combined user account database, and another named <b>aliases</b> that contains a copy of the combined mail aliases database. If you want your NEXTSTEP users to have mail pictures, create TIFF images following the instructions in Chapter 6, &quot;Managing Electronic Mail,&quot; and store them in the same directory. If you already have mail picture files on a NEXTSTEP computer, simply transfer them to the non-NEXTSTEP mail server.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">In order for NeXTmail to have access to current aliases, the files in <b>/LocalLibrary/Images/People</b> must be updated whenever a new user or alias is added. See &quot;Maintaining Consistent Administrative Data&quot; later in this chapter.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Open <b>/etc/exports</b>. Make sure that <b>/usr/spool/mail</b> is exported so that the NEXTSTEP computers will have access to it. Add an entry for <b>/LocalLibrary/Images/People</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Log into one of the NEXTSTEP computers and start up NFSManager. Choose Import To from the main menu, then click <b>/</b> in the Select in NetInfo Domain panel. If you don't have a master NetInfo server, select the local domain. Click OK.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>8.</b></font></td>
+
+<td><font face="Times" size="+1">If you already had aNeXTmail server configured, there will be entries for <b>/usr/spool/mail</b> and <b>/LocalLibrary/Images/People</b> in this list. Remove both.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>9.</b></font></td>
+
+<td><font face="Times" size="+1">Click the Add button. In the panel that appears, enter the host name of the non-NEXTSTEP mail server in the Server name field, and enter <b>/usr/spool/mail</b> in the Remote directory field. Click OK.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F74.gif" width=515 height=291></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>10.</b></font></td>
+
+<td><font face="Times" size="+1">Enter <b>/usr/spool/mail</b> in the &quot;Mount point&quot; field. Adjust the pop-up lists, if necessary, so that the directory will be mounted read/write and in foreground. Click OK.</font></td></tr>
+
+<tr valign=top>
+
+<td width=96 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>11.</b></font></td>
+
+<td><font face="Times" size="+1">Click the Add button. In the panel that appears, enter the host name of the non-NEXTSTEP mail server in the Server name field, and enter <b>/LocalLibrary/Images/People</b> in the Remote directory field. Click OK.</font></td></tr>
+
+<tr valign=top>
+
+<td width=96 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>12.</b></font></td>
+
+<td><font face="Times" size="+1">Enter <b>/LocalLibrary/Images/People</b> in the &quot;Mount point&quot; field. Adjust the pop-up lists, if necessary, so that the directory will be mounted read/write and in foreground. Click OK.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F75.gif" width=515 height=291></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>13.</b></font></td>
+
+<td><font face="Times" size="+1">Reboot all the NEXTSTEP computers so that they will be mail clients of the non-NeXNEXTSTEPT mail server.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Using the NeXTMail Server</b></font>
+
+<p><font face="Times" size="+1">Follow these procedures to use the existing NeXTmail server as the mail server for the entire combined network.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Log into the non-NEXTSTEP mail server as <b>root</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Have the former mail server use the correct <b>sendmail</b> configuration file, probably by making <b>sendmail.cf</b> a copy of, or link to, some other configuration file.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">If there are any files in <b>/usr/spool/mail</b> on the non-NEXTSTEP mail server containing mail, copy these files to <b>/usr/spool/mail</b> on the NeXTmail server. (Don't overwrite any existing mail files --merge them instead.)</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Remove the entry for <b>/usr/spool/mail</b> from <b>/etc/exports</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Log into the non-NEXTSTEP information server and edit <b>/etc/hosts</b> to remove <b>mailhost</b> from the entry for the non-NEXTSTEP mail server. Add <b>mailhost</b> to the entry for the NeXTmail server, if necessary. If the non-NEXTSTEP information server is an NIS master server, remake the maps. If there isn't a non-NEXTSTEP information server, make the same modifications to <b>/etc/hosts</b> on each non-NEXTSTEP computer in turn.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Modify the contents of <b>/etc/fstab</b> so that <b>/usr/spool/mail</b> is mounted from the NeXTmail server.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Reboot all the non-NEXTSTEP computers so that they become mail clients of the NeXTmail server.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>8.</b></font></td>
+
+<td><font face="Times" size="+1">Log into a NEXTSTEP computer and use HostManager to remove the alias <b>mailhost</b> from the entry for the non-NEXTSTEP mail server.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Printers</b></font>
+
+<p><font face="Times" size="+1">With a combined network, you can allow the NEXTSTEP computers to access printers attached to the non-NEXTSTEP computers, and the non-NEXTSTEP computers to access printers attached to the NEXTSTEP computers. Keep in mind that accessing a non-PostScript printer from a NeXT computer is only useful for printing ASCII text with a UNIX command. Accessing a NEXTSTEP printer from a non-NEXTSTEP computer is only useful for applications that produce PostScript output.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Using Non-NEXTSTEP Printers from a NEXTSTEP Computer</b></font>
+
+<p><font face="Times" size="+1">To configure a non-NEXTSTEP printer for use from a NEXTSTEP computer, use the following procedures:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Set the appropriate permissions to permit access to the remote printer. This usually involves entering the host names of your NEXTSTEP computers in <b>/etc/hosts.lpd</b> on the non-NEXTSTEP print server.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Log into one of the NEXTSTEP computers and create a file named something like <i>yourprintcap</i> containing an entry similar to the following:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><i>PrinterName</i>|<i>alias</i>:\</font><br>
+<img src="../images/sp.gif" width=171 height=1><font face="Courier">:lp=:rm=<i>remotehost</i>:rp=<i>remoteprinter</i>:\</font><br>
+<img src="../images/sp.gif" width=171 height=1><font face="Courier">:sd=/usr/spool/NeXT/<i>PrinterName</i>:\</font><br>
+<img src="../images/sp.gif" width=171 height=1><font face="Courier">:ty=<i>printertype</i>:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">Here's a description of the variables used in this example:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><i>PrinterName</i>--Name that will appear in the Print panel on the NEXTSTEP computers</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><i>alias</i>--Optional alias for the remote printer</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><i>remotehost</i>--Host name of the remote print server</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><i>remoteprinter</i>--Name of the printer as it appears in <b>/etc/printcap</b> on the remote system</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><i>printertype</i>--Comment string that will appear in the Print panel under Type; usually describes the type of printer (&quot;PostScript,&quot; for example)</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">For more information, see the UNIX manual page for <b>printcap</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Load the file <i>yourprintcap</i> into your NetInfo domain by entering the following command in a shell window as <b>root </b>(if you want to load this information into a different domain, replace &quot;/&quot; with &quot;<b>.</b>&quot; or &quot;<b>..</b>&quot; as appropriate):</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>niload printcap</b> / &lt; <i>yourprintcap</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Restart the NEXTSTEP computer(s). This starts <b>lpd</b> print daemons for the remote printers.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>Using NEXTSTEP Printers from a Non-NEXTSTEP Computer</b></font>
+
+<p><font face="Times" size="+1">To configure a printer attached to a NEXTSTEP computer for use from non-NEXTSTEP computers, use the following procedures:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Log into the NEXTSTEP print server and add the host names of the non-NEXTSTEP computers to <b>/etc/hosts.lpd</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Log into each non-NEXTSTEP computer in turn and add an entry to <b>/etc/printcap</b> that looks something like this:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><i>PrinterName</i>|<i>alias</i>:\</font><br>
+<img src="../images/sp.gif" width=171 height=1><font face="Courier">:lp=:rm=<i>remotehost</i>:rp=<i>remoteprinter</i>:\</font><br>
+<img src="../images/sp.gif" width=171 height=1><font face="Courier">:sd=/usr/spool/lpd/<i>PrinterName</i>:\</font><br>
+<img src="../images/sp.gif" width=171 height=1><font face="Courier">:ty=<i>printertype</i>:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">Here's a description of the fields used in this example:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><i>PrinterName</i>--Name the non-NEXTSTEP computers will use to access the printer</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><i>alias</i>--Optional alias for the printer</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><i>remotehost</i>--Host name of the NEXTSTEP print server</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><i>remoteprinter</i>--Name of the printer as listed in the NetInfo <b>/printers</b> directory</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><i>printertype</i>--Comment string that usually describes the type of printer (&quot;PostScript,&quot; for example)</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Create a spool directory on each non-NEXTSTEP computer, as specified in the <b>sd</b> parameter of the printcap entry for the NEXTSTEP printer. You will need one spool directory for each printer you add.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>cd</b> /usr/spool/lpd</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>mkdir</b> <i>Printername</i></font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>chmod 770</b> <i>Printername</i></font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>chown daemon.daemon</b> <i>Printername</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">Some UNIX systems require that you set additional permissions on the spool directory. Check the requirements of your particular site.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Restart the non-NEXTSTEP computers. This starts <b>lpd</b> print daemons for the remote printers.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Maintaining Consistent Administrative Data</b></font>
+
+<p><font face="Times" size="+1">Now that you've given all your computers access to an initial set of consistent administrative data, you'll need to implement a scheme that will maintain this data. In order to avoid an administrative nightmare, you should choose a master administrative service, and then make changes using <i>only</i> that service. For example, you might decide to use the NetInfo manager applications to add all new hosts, users, groups, and mail aliases, then distribute that information to the non-NEXTSTEP computers.</font>
+
+<p><font face="Times" size="+1">There are five different administration schemes discussed in this section:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">NetInfo as master service, non-NEXTSTEP computers maintain individual flat files</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">NetInfo as master service, non-NEXTSTEP information server distributes data to the other computers</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">NetInfo as master service, NIS master server maintains data for the non-NEXTSTEP computers</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Non-NEXTSTEP information server as master service (with or without NIS), NetInfo maintains data for the NEXTSTEP computers</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">NIS maintains data for the entire combined network</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>Important:</b></font>&nbsp; <font face="Times" size="+1">The procedures in this section should only be considered guidelines. Some important considerations to note are:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The procedures used on the non-NEXTSTEP computers at your site may require that you modify the suggestions. For example, if your NIS master server uses flat files stored somewhere other than <b>/etc</b> to make its maps, you'll need to modify the distribution script.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Only the administrative information for hosts, users, groups, and mail aliases is covered. Similar procedures can be used for any other administrative data you want to share.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The examples assume that the non-NEXTSTEP UNIX computers have access to <b>rsh</b> and <b>rcp</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">All the examples distribute complete administrative data every 15 minutes. If you have a large number of computers, or a large amount of administrative information, distributing the data every 15 minutes can degrade network performance. Some administrative data changes more frequently than others (the user account information changes when a user changes a password, host information only changes when a new computer or host alias is added to the network). Consider carefully whether to distribute information less frequently, or even set up multiple scripts to distribute the different types of data separately, and run each at different intervals.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Distributing Data from NetInfo to Multiple Non-NEXTSTEP Computers</b></font>
+
+<p><font face="Times" size="+1">If you're using NetInfo as your master administrative service, you need to copy administrative data out of the NetInfo database to the non-NEXTSTEP computers. The procedures in this section apply when data is maintained individually on the non-NEXTSTEP computers.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">On each non-NEXTSTEP computer, edit <b>/.rhosts</b> to include the host name of the master NetInfo server. This allows the NEXTSTEP computer to access the non-NEXTSTEP computer and execute commands as <b>root</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Log into the master NetInfo server as <b>root</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Use Edit to create a file named something like <i>/etc/pushinfo</i> containing the following lines, replacing <i>host1</i>... <i>host4 </i>with the host names of the non-NEXTSTEP computers:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">CLIENTS='<i>host1 host2 host3 host4</i>'</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">nidump passwd / &gt; /etc/passwd</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">nidump group / &gt; /etc/group</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">nidump hosts / &gt; /etc/hosts</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">nidump aliases / &gt; /etc/aliases</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">for HOST in $CLIENTS</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">do</font><br>
+<img src="../images/sp.gif" width=171 height=1><font face="Courier">rcp /etc/passwd $HOST:/etc/passwd</font><br>
+<img src="../images/sp.gif" width=171 height=1><font face="Courier">rcp /etc/group $HOST:/etc/group</font><br>
+<img src="../images/sp.gif" width=171 height=1><font face="Courier">rcp /etc/hosts $HOST:/etc/hosts</font><br>
+<img src="../images/sp.gif" width=171 height=1><font face="Courier">rcp /etc/aliases $HOST:/etc/aliases</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">done</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Edit <b>/usr/lib/crontab.local</b> (create it, if necessary) and add a line similar to the following:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">0,15,20,45 * * * * root /etc/pushinfo</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">This entry runs the script <b>/etc/pushinfo</b> as <b>root</b> every 15 minutes.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Distributing Data from NetInfo to a Non-NEXTSTEP Information Server</b></font>
+
+<p><font face="Times" size="+1">If you've chosen to use NetInfo as the master administrative service, and you have a non-NEXTSTEP information server, administrative data needs to be distributed from NetInfo to the non-NEXTSTEP information server.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">On the non-NEXTSTEP information server, edit <b>/.rhosts</b> to include the host name of the master NetInfo server. This allows the NEXTSTEP computer to access the non-NEXTSTEP computer and execute commands as <b>root</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Log into the master NetInfo server as <b>root</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Use Edit to create a file named something like <i>/etc/pushinfo</i> containing the following lines, replacing <i>otherserver </i>with the host name of the non-NEXTSTEP information server.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">HOST='<i>otherserver</i>'</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">nidump passwd / &gt; /etc/passwd</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">nidump group / &gt; /etc/group</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">nidump hosts / &gt; /etc/hosts</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">nidump aliases / &gt; /etc/aliases</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">rcp /etc/passwd $HOST:/etc/passwd</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">rcp /etc/group $HOST:/etc/group</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">rcp /etc/hosts $HOST:/etc/hosts</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">rcp /etc/aliases $HOST:/etc/aliases</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Edit <b>/usr/lib/crontab.local</b> and add a line similar to the following:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">0,15,20,45 * * * * root <i>/etc/pushinfo</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">This entry runs the script <b>/etc/pushinfo</b> as <b>root</b> every 15 minutes.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Distributing Data from NetInfo to NIS</b></font>
+
+<p><font face="Times" size="+1">If you've chosen NetInfo as your master administrative service, and NIS is used to maintain data for the non-NEXTSTEP computers, you'll need to copy data from NetInfo to the NIS server.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">On the non-NEXTSTEP master NIS server, edit <b>/.rhosts</b> to include the host name of the NEXTSTEP computer that distributes data. This allows the NEXTSTEP computer to access the non-NEXTSTEP computer and execute commands as <b>root</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Log into the master NetInfo server as <b>root</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Use Edit to create a file named something similar to <i>/etc/pushinfo</i> and containing the following lines, replacing <i>nis_server</i> with the host name of the NIS master server, and <i>commands to make the NIS maps</i> with whatever commands are appropriate at your site:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">HOST='<i>nis_server</i>'</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">nidump passwd / &gt; /etc/passwd</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">nidump group / &gt; /etc/group</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">nidump hosts / &gt; /etc/hosts</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">nidump aliases / &gt; /etc/aliases</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">rcp /etc/passwd $HOST:/etc/passwd</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">rcp /etc/group $HOST:/etc/group</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">rcp /etc/hosts $HOST:/etc/hosts</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">rcp /etc/aliases $HOST:/etc/aliases</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">rsh $HOST &#34;<i>commands to make NIS maps</i>&#34;</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Edit <b>/etc/crontab.local</b> and add a line similar to the following:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">0,15,20,45 * * * * root <i>/etc/pushinfo</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">This entry distributes information to the NIS server every 15 minutes.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Using a NEXTSTEP Computer as the Master NIS Server</b></font>
+
+<p><font face="Times" size="+1">If you have chosen to use NetInfo as the master administrative service, and the non-NEXTSTEP computers use NIS to maintain information, you can centralize all your administrative information on one computer by configuring the master NetInfo server to be the master NIS server as well.</font>
+
+<p><font face="Times" size="+1">To configure a NEXTSTEP computer as an NIS master server:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Follow the instructions in your NIS documentation to make the existing non-NEXTSTEP NIS master server be a slave server, and one of your NEXTSTEP computers the master server for the NIS domain.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Log into the new NEXTSTEP NIS master server and create a file named something like <i>/etc/pushinfo</i> containing the following lines:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">nidump passwd / &gt; /etc/passwd</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">nidump group / &gt; /etc/group</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">nidump hosts / &gt; /etc/hosts</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">nidump aliases / &gt; /etc/aliases</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">cd /etc/yp</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">make</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Add a line to <b>/etc/crontab.local</b> (create it, if necessary) similar to the following:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">0,15,20,45 * * * * root <i>/etc/pushinfo</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">This entry loads information into NIS every 15 minutes. Consider whether you should distribute less frequently, or distribute the different kinds of information separately.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Distributing Data from a Non-NEXTSTEP Server to NetInfo</b></font>
+
+<p><font face="Times" size="+1">If you've chosen to perform administrative tasks on the non-NEXTSTEP computers, and use a master NetInfo server to maintain the data for the NEXTSTEP computers, you'll need to distribute administrative data to the NetInfo server. The procedures in this section work whether the non-NEXTSTEP information server uses flat files or NIS to administer data.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Edit the file <b>/.rhosts</b> on the NetInfo and configuration server so that it includes the host name of the non-NEXTSTEP computer that will distribute information.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Log into the non-NEXTSTEP information server and create a file named something like <i>/etc/pushinfo</i> containing the following lines. Replace <i>nextserver</i> with the host name of the master NetInfo server.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">HOST='<i>nextserver</i>'</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">rcp /etc/passwd $HOST:/etc/passwd</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">rcp /etc/group $HOST:/etc/group</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">rcp /etc/hosts $HOST:/etc/hosts</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">rcp /etc/aliases $HOST:/etc/aliases</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">rsh $HOST &#34;niload passwd / &lt; /etc/passwd&#34;</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">rsh $HOST &#34;niload passwd / &lt; /etc/passwd&#34;</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">rsh $HOST &#34;niload passwd / &lt; /etc/passwd&#34;</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">rsh $HOST &#34;niload passwd / &lt; /etc/passwd&#34;</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Edit <b>/etc/crontab</b> (or other appropriate <b>cron</b> file) and add a line similar to the following:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">0,15,20,45 * * * * root <i>/etc/pushinfo</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">This entry distributes information to the NEXTSTEP computer every 15 minutes. Consider whether you should distribute less frequently, or distribute the different kinds of information separately.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>NEXTSTEP as NIS Clients</b></font>
+
+<p><font face="Times" size="+1">If your non-NEXTSTEP information server is an NIS master server, you might decide to have all the NEXTSTEP computers be clients of NIS. Once configured as an NIS client, any requests for administrative data, such as user account information, are first sent to NetInfo. If the information isn't found there, the request is sent on to NIS. If you use NIS as your master information server for the combined network, you don't need to set up a script to distribute data, since NIS does that itself.</font>
+
+<p><font face="Times" size="+1">Perform the following steps on each NEXTSTEP computer to make them NIS clients:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Start up your NEXTSTEP computer and log in as <b>root</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Edit the files <b>/etc/passwd</b> and <b>/etc/group</b> to add the characters &quot;+:&quot; as the last line in each file. These characters tell the NEXTSTEP computer to use the NIS user and group information. For example, the last few lines of the <b>/etc/passwd</b> file might resemble this:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">sybase:*:8:8:Sybase Administrator:/usr/sybase:/bin/csh</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">me::20:20:My Account:/me:/bin/csh</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">+:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Start up SimpleNetworkStarter and click Other Options.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Click the button next to the text field under NIS Domain Name. Enter the name of the NIS domain in the text field.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F76.gif" width=364 height=311></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Click the OK button.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Click Configure this Host.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>Tip:</b></font>&nbsp; <font face="Times" size="+1">You can probably improve network performance by following the instructions in your NIS documentation to set up one of your NEXTSTEP computers as an NIS slave server.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Considerations</b></font>
+
+<p><font face="Times" size="+1">A few important points to consider while working in a combined network are covered in this section.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Using Mail</b></font>
+
+<p><font face="Times" size="+1">When you have a network made up of NEXTSTEP and non-NeNEXTSTEPXT UNIX computers, mail becomes an issue in two ways. First, any attachments to mail messages created with NeXTmail, such as graphics or voice, can't be read on a non-NEXTSTEP computer. Users sending mail from a NEXTSTEP computer should be warned of this, so they don't distribute unreadable mail to users on the non-NEXTSTEP computers.</font>
+
+<p><font face="Times" size="+1">Second, incoming mail for users is temporarily stored in <b>/usr/spool/mail</b> on both NEXTSTEP and non-NEXTSTEP UNIX computers. However, standard UNIX mail copies the mail into a file named <b>mbox</b> in the user's home directory, while NeXTmail separates incoming mail into text and attachments and stores the files in <b>Mailboxes/Active.mbox</b> in the home directory.</font>
+
+<p><font face="Times" size="+1">A user who reads mail on a non-NEXTSTEP computer, and who then reads mail on a NEXTSTEP computer (or vice versa,) won't have access to all their mail messages. Mail messages are stored in different places, depending on which method is used to access mail. Users can do a couple of things to help keep their mail consistent. In some cases, when a user has read mail with standard UNIX <b>mail</b>, the messages can be sent back to <b>/usr/spool/mail</b> with the <b>mail </b>command <b>pre</b>. Your implementation of UNIX mail might use this command, or another like it. Such messages will still be available through NeXTmail. If a user wants to use standard UNIX <b>mail</b> to read messages that are already stored in the NeXTmail mailbox, a command similar to the following will access the correct file:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier"><b>mail -f</b> Mailboxes/Active.mbox/mbox</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Attachments still aren't available through standard UNIX mail.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Changing Passwords</b></font>
+
+<p><font face="Times" size="+1">It's important that users change their password using the master administrative service. If, for example, NetInfo is the master administrative server and the user <b>mary</b> changes her password on a non-NEXTSTEP computer, the user account information will be overwritten with her old password the next time <b>pushinfo</b> is executed from the NEXTSTEP server. If NetInfo is maintaining administrative data, users should only change their password when logged into a NEXTSTEP computer. If some other service is the master, users should only change their password when logged into a non-NEXTSTEP computer.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Delays In Changes</b></font>
+
+<p><font face="Times" size="+1">Since administrative data is distributed only periodically, there will be a delay between when a change is made and the new information shows up on the other computers. For example, if the user <b>tom</b> changes his password on a NEXTSTEP computer, and then immediately logs into a non-NEXTSTEP computer, he will probably need to use his old password. The user account data won't reflect the new password until <b>pushinfo</b> is executed from the NEXTSTEP server. This is true of any other administrative changes, such as adding a new user account or deleting a mail alias.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Using DNS</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">DNS (Domain Name Service) is a distributed service that provides <i>name resolution</i>, a process that translates host names into Internet addresses. On NEXTSTEP computers, host names are resolved first by NetInfo, which is usually all that's required on a NEXTSTEP-only network. However, in a mixed network, and especially if you're connecting to the Internet, name resolution may be performed by DNS. Whenever a NEXTSTEP computer needs to resolve a host name, a search is made first in NetINfo, then DNS (if it's configured), then NIS (if it's configured).</font>
+
+<p><font face="Times" size="+1">When you register your Internet address (see Appendix C), you can also register your official domain name. The word &quot;domain&quot; in this context refers to a hierarchical naming scheme defined by the DNS. For example, the official domain name for NeXT Computer, Inc. is <b>next.com</b>. The extension <b>.com</b> refers to the generic commercial domain. A more complex domain name is <b>ummts.cc.umich.edu</b>. The extension <b>.edu</b> indicates that this host is in the generic education domain. Moving left, <b>umich</b> indicates the organization (the University of Michigan). Within the <b>umich</b> domain, there is yet another qualifier--<b>cc</b>--which indicates a department (Computing Center). Finally, the first part of the domain name, <b>ummts</b>, is the host name of the computer.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>NEXTSTEP Computer as a DNS client</b></font>
+
+<p><font face="Times" size="+1">NEXTSTEP computers are fully equipped to operate in a DNS environment. To enable DNS, the only step required is to create a file called <b>/etc/resolv.conf</b>. This file has the following format:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">domain <i>officialdomain</i></font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">nameserver <i>ipaddress</i></font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">nameserver <i>ipaddress</i></font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">...</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The <i>officialdomain</i> parameter is your Internet domain name. The <i>ipaddress</i> parameter is the Internet address of a DNS server (inquire about available DNS servers when you register your Internet address).</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>NEXTSTEP Computer as a Secondary DNS Server</b></font>
+
+<p><font face="Times" size="+1">A secondary DNS server maintains copies of information provided by primary DNS servers. To set up a NEXTSTEP computer as a secondary DNS server, follow these steps:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Add the following line to <b>/etc/rc.local</b>:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">/usr/etc/named</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Create the file <b>/etc/named.boot</b> containing information similar to the following:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">; Information to the right of a semicolon is considered a comment by</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">; named.</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">; directory <i>directoryname.</i> This line species the working directory</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">; in which named will maintain files.</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">directory <i>/etc/DNS</i></font>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">; cache . <i>domainname file.</i> This line specifies the location of</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">; the &#34;root&#34; domain cache. This file is for optimization, and should</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">; be used to &#34;prime&#34; the cache with the addresses of the root name</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">; servers.</font>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">cache . root. <i>cache</i></font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">; secondary&nbsp; <i>domainname&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ipaddr1 ipaddr2</i> ...&nbsp;&nbsp; <i>domain.zone.file</i></font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">; This line specifies that this computer is a secondary server for</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">; <i>domainname</i>. The Internet addresses indicate what servers should be</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">; contacted to obtain this information. The last argument specifies</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">; the file where this information should be cached.</font>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">secondary&nbsp; <i>microbrain.com&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 140.211.128.5 140.211.128.7 mb.zone</i></font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">; secondary&nbsp; <i>network</i>.IN-ADDR.ARPA <i>ipaddr1 ipaddr2 ... domain.rev.file</i></font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">; This line specifies the location of the inverse address mapping</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">; information. This is useful for finding a host's name given only</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">; its Internet address. The network is specified in reverse order.</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">secondary&nbsp; <i>0.0.211.140.</i>IN-ADDR.ARPA <i>140.211.128.5 140.211.128.7 mb.reverse.zone</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Create the working directory specified in <b>named.boot</b> (in this example, it's <b>/etc/DNS</b>).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Create the root cache file in the working directory (in this case, <b>/etc/DNS/cache</b>). This file should contain the Internet addresses of root domain DNS servers. It's not absolutely necessary to create this file, but it can improve performance by reducing the amount of searching needed to reach a root domain server.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The other files named in <b>/etc/named.boot</b> will be created and maintained by <b>named</b>.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Novell NetWare</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Each NEXTSTEP computer includes client software for Novell NetWare. This software allows NEXTSTEP computers to access files and printers on the NetWare network. If you're not the administrator of the Novell network, you'll need to involve the NetWare administrator in the configuration procedures.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Configuring the NetWare Network</b></font>
+
+<p><font face="Times" size="+1">To access Novell NetWare servers from a NEXTSTEP computer, you first need to do some setup on the NetWare servers. Then you'll be able to use network files and printers from your NEXTSTEP computers.</font>
+
+<p><font face="Times" size="+1">To take advantage of the Novell client software, you need a network running NetWare 286 version 2.15c or later, or NetWare 386 version 3.1 or later.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Connect your NEXTSTEP computer(s) and Novell servers to the same network. If necessary, connect Ethernet segments with bridges and/or routers.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">On each of the NetWare servers, create a user account for each of the NEXTSTEP users that will be accessing those servers. Make sure the NetWare users belong to the group EVERYONE; if you don't, the NetWare file and directory permissions won't map correctly to the UNIX permissions.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Configuring the NEXTSTEP Computers</b></font>
+
+<p><font face="Times" size="+1">To have a NEXTSTEP computer take advantage of the NetWare services is simply a matter of enabling NetWare.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Log into the NEXTSTEP computer using any valid account.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Start up NetWareManager, located in <b>/NextAdmin</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">A panel appears telling you that NetWare isn't enabled and asking if you want to enable it. Click Enable.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F77.gif" width=364 height=185></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Another panel appears informing you that the NetWare service will be turned on after you reboot your computer. Click OK.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F78.gif" width=364 height=185></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Reboot the NEXTSTEP computer.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Accessing Files</b></font>
+
+<p><font face="Times" size="+1">Once the NEXTSTEP computer has been configured as a NetWare client, the files on a NetWare server appear in the File Viewer.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Log into the NEXTSTEP computer that's been configured as a NetWare client.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Select <b>/Net</b> in the File Viewer, then click <b>NetWare</b>. The subdirectories listed under <b>NetWare</b> are the names of the available NetWare servers.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F1.gif" width=604 height=438></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Click the name of the NetWare server you want to access. The Authentication panel appears.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F2.gif" width=379 height=232></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Enter the name of an account that's been set up on the NetWare server, then enter the password. Click OK.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">The password is limited to 16 characters, regardless of the length of the password on the NetWare server.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">The files on the NetWare server now appear in the File Viewer, and can be accessed just as you would a local file.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F3.gif" width=604 height=438></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Restricting Visible Servers</b></font>
+
+<p><font face="Times" size="+1">If your Novell network has a large number of servers, performance on your NEXTSTEP computer can be seriously degraded when it displays all the servers in the file viewer. You can help improve performance by defining a list of servers to be displayed in the File Viewer. Servers not included in this list won't show up in the File Viewer.</font>
+
+<p><font face="Times" size="+1">Create the list of visible servers with NetInfoManager:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Start up NetInfomanager.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>/locations</b> in the local domain. If you want to restrict visible servers for more than the local computer, open the root domain (or a midlevel domain, if appropriate), then click <b>/locations</b>.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F88.gif" width=529 height=263></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Choose New Subdirectory from the Domain window.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Double-click <b>newValue</b> to open the Directory window.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F89.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>newValue</b> in the Values column, enter <b>NetWare</b> into the text field, and press Return.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F90.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>name</b> in the Properties column, then choose Append Property from the Directory menu.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Enter <b>VisibleServers</b> into the text field and press Return.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>8.</b></font></td>
+
+<td><font face="Times" size="+1">Choose New Value from the Directory menu.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F91.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>9.</b></font></td>
+
+<td><font face="Times" size="+1">Enter the name of one of the NetWare servers you want to be visible in the File Viewer and press Return.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>10.</b></font></td>
+
+<td><font face="Times" size="+1">For each additional server you want to make visible in the File Viewer, choose Append Value from the Directory menu, enter the server name in the text field and press Return.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F92.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>11.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Save from the Domain menu.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">From now on, only those NetWare servers listed in the <b>VisibleServers</b> property will appear in the File Viewer.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Authentication</b></font>
+
+<p><font face="Times" size="+1">When you log into a NetWare file server, you stay logged in until you reboot your NEXTSTEP computer. If you want to access the file server as some other NetWare user, perhaps to perform activities that require supervisor access, you use NetWare Manager.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Start up NetWareManager. The viewer displays a list of NetWare servers and the name of the NetWare user that's logged into that server, if any.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">To change which user is logged into a particular server, click the name of the server in the list.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F4.gif" width=440 height=203></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Reauthenticate from the Server menu. The Authenticate panel appears.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F39.gif" width=303 height=206></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Enter the name of the NetWare user account and the associated password. Click Login.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">The list reflects the new NetWare user, and any further access to the NetWare file server will be with that NetWare user's permissions.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Sometimes you may want to log into a NetWare file server with a second NEXTSTEP user account. For example, if you're logged in as <b>george</b> but want to run a process as <b>root</b> that will access the NetWare files, you'll need to log <b>root </b>into the file server as well.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Start up NetWareManager.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Choose New User from the Viewer menu.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F66.gif" width=322 height=236></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Log into this panel as another NEXTSTEP user. A second viewer appears for this user.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F80.gif" width=440 height=203></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Log into the NetWare file servers for the second NEXTSTEP user by clicking the name of the file server and choosing Authenticate from the Server menu, or by double-clicking the server name.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F81.gif" width=303 height=206></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Enter the NetWare user account and password, then click OK.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F82.gif" width=440 height=203></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">Whenever a process that's run as this second user accesses the Novell file server, the files will be accessed as the NetWare user you chose.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Printing</b></font>
+
+<p><font face="Times" size="+1">You also use NetWareManager to manage access to NetWare printers. The procedures are described in the <i>User's Guide</i>.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>File Names and Permissions</b></font>
+
+<p><font face="Times" size="+1">When you access NetWare files from a NEXTSTEP computer, file names and permissions are handled quite differently than for UNIX files. How names and permissions are handled depends on whether the NetWare servers are using the DOS namespace or the UNIX namespace. Servers running NetWare 386 version 3.11 or later can be set up to use the UNIX namespace (see &quot;UNIX Namespace&quot; later in this section). Servers running NetWare 286, or servers running NetWare 386 that haven't been configured to use the UNIX namespace, will use the DOS namespace.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>DOS Namespace</b></font>
+
+<p><font face="Times" size="+1">This section describes how file names and permission are handled for NetWare servers using the DOS namespace.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>File Names</b></font>
+
+<p><font face="Times" size="+1">DOS file names are restricted to 8 characters with a 3-character extension (like <i>filename.dos</i>). If you create a file on a NEXTSTEP computer and save it to a NetWare server, the file name must be within the DOS file name restrictions.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Permissions</b></font>
+
+<p><font face="Times" size="+1">When a NEXTSTEP user accesses files on a NetWare server using the DOS namespace, the files appear to be owned by the NEXTSTEP user (similar to files on a removable disk). The only permissions that apply in this situation are the owner permissions (group and other permissions are ignored). There isn't a direct relationship between UNIX file permissions and the permissions used on NetWare servers. The following table describes the relationship between NetWare file permission in the DOS namespace and UNIX file permissions.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>NetWare File Permissions</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>UNIX File Permissions</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">Read (R) and File Scan (F)</font></td>
+
+<td><font face="Times" size="+1">Read</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">Write (W)</font></td>
+
+<td><font face="Times" size="+1">Write</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">Doesn't apply</font></td>
+
+<td><font face="Times" size="+1">Execute</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">Access Control (A)</font></td>
+
+<td><font face="Times" size="+1">Assigned to file owner</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">All others</font></td>
+
+<td><font face="Times" size="+1">Don't apply</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The following table compares the DOS namespace directory permissions with equivalent UNIX directory permissions.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>NetWare Directory</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>UNIX Directory</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Permissions</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Permissions</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">Read (R) and File Scan (F)</font></td>
+
+<td><font face="Times" size="+1">Read and Execute</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">Create (C)</font></td>
+
+<td><font face="Times" size="+1">Write</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">Erase (E)</font></td>
+
+<td></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">Modify (M)</font></td>
+
+<td></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">Access Control (A)</font></td>
+
+<td><font face="Times" size="+1">Assigned to directory owner</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">Supervisory (S) and</font></td>
+
+<td><font face="Times" size="+1">Don't apply</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">Write (W)</font></td>
+
+<td></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>UNIX Namespace</b></font>
+
+<p><font face="Times" size="+1">Your NetWare administrator can configure servers running NetWare 386 version 3.11 or later to support UNIX file names and permissions.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Configuring the NetWare Servers</b></font>
+
+<p><font face="Times" size="+1">Follow these steps to configure a NetWare server to use the UNIX namespace:</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">The following procedure will work for a PC-based NetWare 3.11 server. You may need to modify the procedure to suit your specific needs.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Copy <b>nfs.nam</b> to the DOS partition on the server.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Add the command <b>load nfs</b> to the end of the script <b>STARTUP.NCF</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Copy <b>nuc.nlm</b> to <b>SYS:\SYSTEM</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Add the command <b>load nuc</b> to the script <b>AUTOEXEC.NCF</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Reboot the server.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Helvetica" size="+1"><b>Important:</b></font>&nbsp; <font face="Times" size="+1">Watch the server boot to make sure that <b>nfs.nam</b> and <b>nuc.nlm</b> are loaded successfully. Fix any problems before proceeding. If you don't, your server may not boot.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">At the server console, enter the following command, replacing <i>volume_name</i> with the name of the volume where you want to add the UNIX namespace:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">ADD NAME SPACE NFS TO VOLUME <i>volume_name</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">This command adds NFS (UNIX) file name support to the volume <i>volume_name</i>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=53></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Warning:</b></font></td>
+
+<td><font face="Times" size="+1">Plan carefully which volumes you want to configure with the NFS namespace. Once you have added the NFS namespace to a volume, it can only be removed by using VREPAIR.</font></td></tr>
+
+<tr valign=top>
+
+<td width=53 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=53></td>
+
+<td nowrap><img src="../images/sp.gif" width=52 height=1><font face="Helvetica" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Make sure each NEXTSTEP user that will be accessing the server has a corresponding NetWare user account. Then, create the file <b>etc/nfsusers</b> on the <b>SYS:</b> volume. Edit this file to contain a list of NEXTSTEP user IDs with the corresponding NetWare user names. Each line should contain one pair, similar to the following:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">101 CARLA</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>8.</b></font></td>
+
+<td><font face="Times" size="+1">Make sure that NEXTSTEP user groups have corresponding NetWare user groups. At a minimum, create a NetWare user group for the default group for each NEXTSTEP user that will access the NetWare server. Then, create the file <b>etc/nfsgroup</b> on the <b>SYS:</b> volume. This file maps a list of NEXTSTEP group IDs with the corresponding NetWare group names:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">20 EVERYONE</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>Important:</b></font>&nbsp; <font face="Times" size="+1">When you create a directory on the NetWare server to be accessed by NEXTSTEP users, log into a NEXTSTEP computer and use the <b>chgrp</b> command to change the group associated with the directory. By default, NetWare directories are assigned the group <b>nogroup</b>, and all files and directories created under the directory will inherit this group. By changing the group on the parent directory, you make sure that any subdirectories created from a NEXTSTEP computer inherit an appropriate group assignment. If you don't change the group associated with the directory, users may not be granted permissions to rename or delete any files they create.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>File Names</b></font>
+
+<p><font face="Times" size="+1">With the NetWare server configured to use the UNIX namespace, the files and directories you create from a NEXTSTEP computer aren't restricted to the DOS file naming conventions.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Permissions</b></font>
+
+<p><font face="Times" size="+1">When a NEXTSTEP user attempts to access a file on a NetWare server that's been configured with the UNIX namespace, the UNIX permissions are checked first. If these permissions permit access, the NetWare permissions are checked. If these also permit access, access is granted. When file permissions are changed from a NEXTSTEP computer, the NetWare permissions are modified to correspond. Likewise, when the permissions are changed from a NetWare computer, the UNIX permissions are modified to correspond.</font>
+
+<p><font face="Times" size="+1">The following table describes how NetWare permissions are translated to UNIX permission in the UNIX namespace.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>NetWare File Permissions</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>UNIX File Permissions</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">Read (R)</font></td>
+
+<td><font face="Times" size="+1">Read</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">Write (W)</font></td>
+
+<td><font face="Times" size="+1">Write</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The next table describes how UNIX namespace directory permissions are translated to UNIX directory permissions.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>NetWare Directory</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>UNIX Directory</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Permissions</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Permissions</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">File Scan (F)</font></td>
+
+<td><font face="Times" size="+1">Read and Execute</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">Create (C) and</font></td>
+
+<td><font face="Times" size="+1">Write</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">Erase (E)</font></td>
+
+<td></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Here's a list of some additional rules that apply for translating NetWare permissions to UNIX permissions:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">If the user ID or group ID isn't listed in NFSUSERS or NFSGROUP, the user ID or group ID is converted to -2, which corresponds to NOBODY or NOGROUP.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">If the file or directory has the NetWare attribute READ ONLY, all write permissions are removed.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">If the file or directory has the NetWare attribute TRANSACTIONAL, all write permissions are removed from the parent directory (unless the parent directory is &quot;/&quot;).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">For a subdirectory, the presence or absence of NetWare EF (Erase and File Scan) rights is duplicated in all files or directories contained in the subdirectory.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The next two tables describe the translation of UNIX permissions to NetWare permissions.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>UNIX File Permissions</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>NetWare File Permissions</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">Read</font></td>
+
+<td><font face="Times" size="+1">Read (R) and File Scan (F)</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">Write</font></td>
+
+<td><font face="Times" size="+1">Write (W) and File Scan (F)</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>UNIX Directory</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>NetWare Directory</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Permissions</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Permissions</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">Read</font></td>
+
+<td><font face="Times" size="+1">Read (R) and File Scan (F)</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">Write</font></td>
+
+<td><font face="Times" size="+1">Write (W), Create (C), and File Scan (F)</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Here's a list of some additional rules for translating UNIX permissions to NetWare permissions:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The owner of a file or directory is granted the Netware permission Access Control (A).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">If the user ID or group ID associated with a file or directory is different from the corresponding ID on its parent directory, the NetWare Inherited Rights Mask (IRM) is set to S---E-F-.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">If permissions on a file are updated from a NEXTSTEP computer, the NetWare rights S--CEMF- are retained for the file.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">If permissions on a directory are updated from a NEXTSTEP computer, the NetWare rights SRW-EM-- are retained for the directory.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">If the parent of a file or directory isn't <b>/</b>, the NetWare rights Erase (E) and File Scan (F) are granted if they are set on the parent directory.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">If there are no write permissions for anybody (owner, group, other) on the file or directory, the NetWare attribute READ ONLY is set.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">When a file or directory is created from a NEXTSTEP computer, NetWare rights are assigned based on the following rules:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Owner of the new file is owner of parent directory--If the owner has write permission for the parent directory, the owner is granted the NetWare rights Erase (E) and Modify (M) for the new file. If the owner has read and execute permission for the parent directory, the owner is granted the NetWare right File Scan (F).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Owner of the new file is not owner of parent directory, but is a member of the group assigned to parent directory--If the group is granted write permission for the parent directory, the group is assigned EM NetWare rights on the new file. If the group has read and execute permission for the parent directory, the group is assigned F permission on the new file.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Parent directory of new file has write permission set for other (world)--If other (world) has write permission on the parent directory, EM Netware rights are assigned to other (world) on the new file. If other has read and execute permissions on the parent directory, F NetWare rights are assigned to other on the new file.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Examining the NetInfo Database</b></font>
+
+<p><font face="Times" size="+1">When you enable NetWare, information is stored in the NetInfo database. Follow these steps to examine the resulting change:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Start up NetInfoManager. Open the local domain if a domain window for the local domain isn't already open.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>/localconfig</b>, then <b>NetWare</b>. Double-click <b>NetWare</b> to open a Directory window.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F79.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Click the property <b>enable</b>. Notice that the value is <b>YES</b>, indicating that the NetWare daemons should be started when the computer boots.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>AppleTalk</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">NeXT computers come with client software that allows them to access files and printers on an AppleTalk network. To take advantage of these features. you must connect your NeXT computer(s) to an AppleTalk network running EtherTalk.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Enabling AppleTalk</b></font>
+
+<p><font face="Times" size="+1">You set up AppleTalk networking with the Preferences application:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Click the Apple button in the Preferences application to access the AppleTalk preferences.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Click the check box labeled Enable AppleTalk Networking. A message appears in the panel telling you that you must reboot the computer for the change to take effect.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F83.gif" width=394 height=321></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Reboot the computer.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Your computer now has access to AppleShare files and AppleTalk printers.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>File Sharing</b></font>
+
+<p><font face="Times" size="+1">With AppleTalk enabled, you can now access files on an AppleShare server from a NeXT computer.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>/Net</b> in the File Viewer, then <b>AppleShare</b>. The directories listed here are the available AppleShare zones. Beneath each zone directory is a list of the AppleShare servers within that zone. If there aren't any zones, servers will be listed directly under <b>/Net/AppleShare</b>.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F84.gif" width=604 height=438></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Click the name of one of the AppleShare servers. A panel appears, asking you to log into the server.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F85.gif" width=379 height=272></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Log into the server, either as a guest or registered user, by clicking the appropriate button and entering a user name and password. Click OK.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F86.gif" width=604 height=438></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">The files on the AppleShare server are now available through the File Viewer.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">If you want to log out from an AppleShare server, follow these steps:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>a.</b></font></td>
+
+<td><font face="Times" size="+1">Click the Apple button in Preferences.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>b.</b></font></td>
+
+<td><font face="Times" size="+1">Click the name of the server in the AppleShare section of the panel.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>c.</b></font></td>
+
+<td><font face="Times" size="+1">Click Logout to log out the current user.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">The next time you access the server in the File Viewer, you can log in as a different user.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">To change the password of the AppleTalk user, follow these steps:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>a.</b></font></td>
+
+<td><font face="Times" size="+1">In Preferences, click Change Password.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>b.</b></font></td>
+
+<td><font face="Times" size="+1">In the panel that appears, enter the old password and click OK.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>c.</b></font></td>
+
+<td><font face="Times" size="+1">Enter the new password twice, as prompted.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Printing</b></font>
+
+<p><font face="Times" size="+1">You use PrintManager to configure an AppleTalk printer, just as you would any other printer. The procedures are described in the <i>User's Guide</i>.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Considerations</b></font>
+
+<p><font face="Times" size="+1">When you access AppleShare files from your NeXT computer, you're working with Apple files, not UNIX files. This has several important ramifications.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Resource Forks</b></font>
+
+<p><font face="Times" size="+1">Apple files are made up of a data fork, a resource fork, or both. The data fork holds the file contents, while the resource fork includes system information, such as the name of the application used to create the file. On a NeXT computer, a data fork appears with the same file name as on the AppleShare server, while resource forks appears as <i>.filename.rsrc</i>. For example, a file named <b>Milestones</b> that has both a data fork and a resource fork will appear on a NeXT computer as <b>Milestones</b> and <b>.Milestones.rsrc</b>.</font>
+
+<p><font face="Times" size="+1">Resource forks have no purpose on a NeXT computer. However, if you transfer an AppleShare file from your NeXT computer to an Apple computer, perhaps by copying it onto a floppy disk, be sure to include the resource fork.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Application Ownership</b></font>
+
+<p><font face="Times" size="+1">The application associated with a given file is indicated on a NeXT computer by a file name extension, such as <b>.frame </b>or <b>.imp</b>. In order to have the correct application open an AppleShare file, you'll need to change its name in the File Viewer. For example, if <b>Milestones</b> is a WriteNow file, you would use the File Viewer to change its name to <b>Milestones.wn</b>. Double-clicking its name will open the document in WriteNow. Since end-of-line translation isn't performed on the AppleShare files, you may find some unexpected formatting within a document, depending on the application.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>File Permissions</b></font>
+
+<p><font face="Times" size="+1">File ownerships and permissions are handled quite differently on AppleShare files and UNIX files. When you access AppleShare files from a NeXT computer, the files all appear to be owned by the current user, just as files on a removable disk are treated. However, files that have been designated private on the AppleShare server remain inaccessible on a NeXT computer.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Examining the NetInfo Database</b></font>
+
+<p><font face="Times" size="+1">When you enable AppleTalk networking, the NetInfo database is modified to reflect this. Use NetInfoManager to examine the changes:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Start up NetInfoManager.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>/localconfig</b> in the Domain window. This directory stores information that only applies to the local computer, including information about monitors, keyboards, and AppleShare networks.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F68.gif" width=529 height=263></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>AppleTalk</b>, then double-click it to open a Directory window.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F69.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>Enabled</b>. The value <b>YES</b> indicates that the AppleTalk protocols and daemon should be started at boot time.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>AppleTalkPhase</b>. The value of this property indicates whether you're connecting to a network running AppleTalk Phase 1 or 2 (2 is the default).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>NetID</b>.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F70.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">The value of this property is the first network ID to be tried when the NeXT computer boots and connects to the AppleTalk network. If the value is invalid or the specified network ID is unavailable at boot time, the NeXT computer will connect using the first available network ID.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>NodeID</b>. The value of this property is the first node ID to be tried when the NeXT computer boots and connects to the AppleTalk network. If the specified node ID is unavailable, the NeXT computer will connect using the first available ID.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>8.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>ZoneName</b>. If this property has a value, it indicates the name of the zone to use when connecting to the AppleTalk network. If this property has no value, or the indicated zone isn't available, the NeXT computer will use the default zone.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>9.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>AppleShare</b> in the domain window, then double-click it to open a Directory window.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F71.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>10.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>Enabled</b>. The value <b>YES</b> indicates that the AppleShare protocols and daemon should be started at boot time.</font></td></tr>
+
+<tr valign=top>
+
+<td width=96 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>11.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>CharacterEncoding</b>.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F72.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">The value of this property indicates the keyboard mapping to be used to display AppleShare file names in the File Viewer. The only valid values are <b>MAC-ROMAN</b> and <b>SHIFT-JIS</b> (only used with the Japanese version of NeXTSTEP).</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>12.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>ResourceForks</b>. This property is reserved for future use.</font></td></tr>
+
+<tr valign=top>
+
+<td width=96 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>13.</b></font></td>
+
+<td><font face="Times" size="+1">Close the Directory windows.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>SNMP</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">SNMP (simple network management protocol) is a facility that allows you to collect statistics for a network of computers. You might already have a network management program running on your computers that uses SNMP to collect information. If you do, you can enable SNMP on your NEXTSTEP computers so that your management program will include the NEXTSTEP computers in its data collection. If you don't already have such a management program on your computers, there's no need to enable SNMP on your NEXTSTEP computers.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Enabling SNMP</b></font>
+
+<p><font face="Times" size="+1">The daemon process <b>/usr/etc/snmpd</b> is run to enable SNMP on a NEXTSTEP computer. The <b>snmpd</b> daemon is started with the <b>-N</b> flag from <b>/etc/rc</b> during system boot. When <b>snmpd</b> is executed with the <b>-N</b> flag, it checks the NetInfo databases for configuration information. If none is found, <b>snmpd</b> exits.</font>
+
+<p><font face="Times" size="+1">Follow these steps to modify the NetInfo database so that SNMP is enabled when the computer boots:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Start up NetInfoManager.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">In the local domain window, click <b>/locations</b> (if you want to enable SNMP for more than one NEXTSTEP computer, open the root domain or an appropriate midlevel domain).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Choose New Subdirectory from the Domain menu. A directory named <b>newValue</b> is created.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F27.gif" width=529 height=263></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Double-click newValue to open a Directory window.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>newValue</b>, enter <b>snmp</b> in the text field and press Return.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>name</b>, then choose Append Property from the Directory menu.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>new_property</b>, then enter <b>enabled</b> in the text field and press Return.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>8.</b></font></td>
+
+<td><font face="Times" size="+1">Choose New Value from the Directory menu.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>9.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>new_value</b> in the Values column, then enter <b>yes</b> in the text field and press Return.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F29.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>10.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Save from the Directory menu to save the changes to the new directory. Enter the <b>root</b> password, if prompted.</font></td></tr>
+
+<tr valign=top>
+
+<td width=96 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">When <b>snmpd</b> is started with the <b>-N</b> option, it checks for the <b>enabled</b> property in the <b>/locations/snmp</b> NetInfo directory. With the value of this property set to <b>yes</b>, <b>snmpd</b> will run the next time this computer is booted.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Defining Communities</b></font>
+
+<p><font face="Times" size="+1">An <b>snmp</b> community is a collection of computers or networks the members of which have access to network information about the other members. You define communities with NetInfoManager.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>/locations/snmp</b> in the domain window.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Choose New Subdirectory from the Domain menu. Double-click the new subdirectory to open a Directory window.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>newValue</b> in the Values column, enter <b>communities</b> in the text field, and press Return. Choose Save from the Directory menu.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F30.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Close the Directory window, then click <b>/locations/snmp/communities</b> in the domain window.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F31.gif" width=529 height=263></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Choose New Subdirectory from the Domain menu, then double-click <b>newValue</b> to open a Directory window.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>newValue</b> in the Values column, enter <b>public</b> in the text field, then press Return.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>name</b>, then choose Append Property from the Directory menu.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F32.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">This property will determine which hosts or networks will have access to the information provided by SNMP.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>8.</b></font></td>
+
+<td><font face="Times" size="+1">Enter either <b>hosts</b> or <b>networks</b> into the text field. Enter <b>hosts</b> if you will specify access by individual hosts, <b>networks</b> if you will specify access by networks. Press Return.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>9.</b></font></td>
+
+<td><font face="Times" size="+1">Choose New Value from the Directory menu. If you named the property <b>hosts</b>, enter a host name or Internet address in the text field. If you named the property <b>networks</b>, enter a network name or address, such as <b>192.72.142</b> (no trailing period). If you want to allow access to all hosts or all networks, enter &quot;*&quot; instead. Press Return.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F33.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>10.</b></font></td>
+
+<td><font face="Times" size="+1">If you are specifying access by individual host names or network addresses, choose Append Value from the Directory menu. Enter a host name or network address in the text field and press Return. Repeat for all other host names or network addresses that you're granting access to.</font></td></tr>
+
+<tr valign=top>
+
+<td width=96 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>11.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Save from the Directory menu, then close the Directory window.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F34.gif" width=529 height=263></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>12.</b></font></td>
+
+<td><font face="Times" size="+1">Reboot the computer (or computers, if you put the directories in the root domain). The <b>snmpd</b> daemon will be started, granting access to those hosts or networks you specified in the <b>public</b> directory.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>Tip:</b></font>&nbsp; <font face="Times" size="+1">If you want to enable SNMP temporarily, you can enter <b>/usr/etc/snmpd -A</b> in a shell window. This starts the SNMP daemon without any access control.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>SNMP Commands</b></font>
+
+<p><font face="Times" size="+1">Two commands are available to report information from SNMP. The commands <b>snmp</b> and <b>snmpnetstat</b> (both located in <b>/usr/bin</b>) allow you to inspect the status of a networked machine, such as a computer or gateway. For example, you can verify that SNMP communication is working properly by entering the following command in a shell window, replacing <i>hostname</i> with the host name of a computer running SNMP:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier"><b>snmp status</b> <i>hostname</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The output from this command should be something like this:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">NeXT Mach 3.0: Wed Apr&nbsp; 1 17:44:27 PST 1992;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">root(kodak):mk-127.5.1/BUILD/RELEASE_M68K</font>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">Name&nbsp;&nbsp;&nbsp;&nbsp; Speed Type&nbsp;&nbsp;&nbsp;&nbsp; Stat Ibyte Obyte Ierr Oerr&nbsp; Physical Address</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">en0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; other&nbsp;&nbsp;&nbsp; up&nbsp;&nbsp; 4.3MB 6.9MB &lt;.1% &lt;.1%&nbsp; 00:00:0F:00:32:41</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">lo0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; other&nbsp;&nbsp;&nbsp; up&nbsp;&nbsp; 1.6MB 1.6MB &lt;.1% &lt;.1%</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">en0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; other&nbsp;&nbsp;&nbsp; down 5.9KB 5.9KB &lt;.1% &lt;.1%</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">en0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 10Mb ethernet up&nbsp;&nbsp; 4.3MB 6.9MB &lt;.1% &lt;.1%</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">More information can be found in the UNIX manual pages for <b>snmp</b>, <b>snmpd</b>, and <b>snmpnetstat</b>.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Troubleshooting</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Problems can arise in a mixed network due to a number of causes. If you're encountering difficulties, review the steps you took to configure the network. Double-check all configuration files and NetInfo entries--a small error can have far-reaching consequences. Here are a couple of common problem areas:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Permissions--If users are having problems accessing files, make sure that there is a corresponding user account for each NEXTSTEP user on the UNIX or NetWare servers. Also check that group accounts are duplicated on both sides of the network. On UNIX networks, make sure that each user name, user ID, group name, and group ID is unique and exactly matches the corresponding information on the other side of the network. On NetWare servers, make sure that the files NFSUSERS and NFSGROUP have accurate entries for the NEXTSTEP user IDs and group IDs.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Mounting--If you're having problems accessing NFS directories on a UNIX network, make sure that each directory is exported correctly. Check NFSManager on the NeXT computers and <b>/etc/exports</b> on the non-NEXTSTEP computers. Make sure the mounting information is accurate on both the NEXTSTEP (NFSManager) and non-NEXTSTEP (<b>/etc/fstab</b>) computers and that it's in the correct domain on the NEXTSTEP computers.</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

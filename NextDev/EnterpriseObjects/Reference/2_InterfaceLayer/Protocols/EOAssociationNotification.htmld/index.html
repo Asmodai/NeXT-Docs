@@ -1,0 +1,307 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/EnterpriseObjects/Reference/2_InterfaceLayer/Protocols/EOAssociationNotification.rtf -->
+<!-- Date: Sun Jan  1 17:05:26 2023 -->
+<head>
+<title>EOAssociationNotification</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>EOAssociationNotification</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Adopted By:</b></font></td>
+
+<td><font face="Times" size="+1">EOAssociation</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">eointerface/EOController.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Protocol Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The EOAssociationNotification protocol declares methods sent by an EOController to tell its EOAssocations about changes to its enterprise objects. Whenever an object is modified by a controller, whether by being inserted, deleted, or updated, the controller sends each of its EOAssociations a <b>contentsDidChange</b> message, allowing the association to display any new values. If the change to the controller also involves a change of selection, it sends <b>selectionDidChange</b> to each association, so that the association can display values for the proper object, or highlight the selected objects if its user interface object displays multiple values.</font>
+
+<p><font face="Times" size="+1">The controller also informs its associations when an operation it's performing would invalidate any cached values for the user interface objects. When the controller saves or discards its buffered edits, it renders any edited values cached by its associations irrelevant--and so it sends each association a <b>discardEdits</b> message. For example, an NXTableView doesn't actually store the values it displays, but gets them through another object, such as an EOColumnAssociation. The association object actually stores any edited values for the column, and <b>discardEdits</b> informs the association that the cached values it has are no longer applicable.</font>
+
+<p><font face="Times" size="+1">Any other operation the controller performs--fetching, inserting a new object, setting an undo mark--requires editing of a user interface object to end.&nbsp; In this case, the controller sends <b>endEditing</b> to each of its associations, so that they can finish editing, reclaim any shared resources (such as a window's field editor), and notify the controller with <b>associationDidEdit:</b>.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Implementing the EOAssociationNotification Protocol</b></font>
+
+<p><font face="Times" size="+1">The descriptions in this specification provide all the details of what the methods should do, but there are a few issues in implementing them that you need to be aware of. Because an association not only receives messages from its controller, but sends them to its controller as well, a recursive loop could result if your association subclass sends messages back to its controller from one of the notification methods of this protocol. For example, if your association needs to alter the controller's selection in its own <b>selectionDidChange</b> message, it will be sent another <b>selectionDidChange</b> message while still handling the first. You should either implement your association not to affect the controller's selection or values, or you should devise a mechanism for preventing the association notification methods from being recursively invoked.</font>
+
+<p><font face="Times" size="+1">Another slight consideration stems from the intimate relationship between an association and its user interface object. An association is usually so simple, and its implementation so tied to the specific behavior of its user interface object class, that it's usually easier to implement a new association as a subclass of EOAssociation rather than one of its subclasses.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Synchronizing values</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">contentsDidChange</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">selectionDidChange</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Handling edits</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">discardEdits</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">endEditing</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>contentsDidChange</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>contentsDidChange</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sent to an EOAssociation by its controller whenever the controller's objects have changed; for example, when an object is edited, inserted, or deleted, or when the controller performs a fetch operation. The association should determine whether any values it's responsible for have changed, and if so should update its user interface object.</font>
+
+<p><font face="Times" size="+1">An association may be sent both a <b>contentsDidChange</b> and a <b>selectionDidChange</b> method for a single change in the controller.&nbsp; For example, if a selected object is deleted, both the contents and the selection change.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>discardEdits</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>discardEdits</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">An EOController sends this method to its controllers before fetching, to notify them that any edited values they cache for their user interface objects should be disposed of.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>endEditing</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>endEditing</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Informs the EOAssociation that it should formally end any editing in its user interface object and inform the controller of any pending edit by sending <b>associationDidEdit:</b>. This also usually results in the user interface object resigning first responder.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>endEditingFor:</b> (Window class of the Application Kit)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>selectionDidChange</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>selectionDidChange</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sent to an EOAssociation by its controller whenever the controller's selection indexes have changed. The association should have its user interface object redisplay itself to reflect the change in selection. For a user interface object that displays a single value, the association sets that object's value to the property value for the first selected object in the controller. For a user interface object that displays multiple values, the association has the object highlight its values in accordance with the selection.</font>
+
+<p><font face="Times" size="+1">An association may be sent both a <b>contentsDidChange</b> and a <b>selectionDidChange</b> method for a single change in the controller.&nbsp; For example, if a selected object is deleted, both the contents and the selection change.</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

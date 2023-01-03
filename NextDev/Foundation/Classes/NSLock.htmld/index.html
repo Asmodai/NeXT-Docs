@@ -1,0 +1,236 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/Foundation/Classes/NSLock.rtf -->
+<!-- Date: Sun Jan  1 17:05:13 2023 -->
+<head>
+<title>NSLock</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>NSLock</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Inherits From:</b></font></td>
+
+<td><font face="Times" size="+1">NSObject</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Conforms To:</b></font></td>
+
+<td><font face="Times" size="+1">NSLocking</font><br>
+<font face="Times" size="+1">NSObject (NSObject)</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">foundation/NSLock.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The NSLock class defines an object that coordinates the operation of multiple threads of execution within the same application. An NSLock object can be used to mediate access to an application's global data or to protect a critical section of code, allowing it to run atomically.</font>
+
+<p><font face="Times" size="+1">An NSLock object represents a lock that can be acquired by only a single thread at a time. When one thread has acquired the lock, any other thread is prevented from doing so until the owner relinquishes the lock. An application can have multiple NSLock objects, each protecting different sections of code. However, each NSLock must be created before the application becomes multithreaded.</font>
+
+<p><font face="Times" size="+1">The basic interface to NSLock is declared by the NSLocking protocol, which declares the <b>lock</b> and <b>unlock</b> methods. To this base, the NSLock class adds the <b>tryLock</b> and <b>lockBeforeDate:</b> methods. The <b>lock</b> method declared in the protocol doesn't return until it is successful. The methods declared in this class add more flexible means of acquiring a lock.</font>
+
+<p><font face="Times" size="+1">An NSLock could be used to coordinate the updating of a visual display shared by a number of threads involved in a single calculation:</font></td></tr>
+
+</table>
+
+<p><img src="../../../Images/sp.gif" width=124 height=1><font face="Courier">BOOL moreToDo = YES;</font><br>
+<img src="../../../Images/sp.gif" width=124 height=1><font face="Courier">NSLock&nbsp; *theLock = [[NSLock alloc] init];</font><br>
+<img src="../../../Images/sp.gif" width=124 height=1><font face="Courier">...</font><br>
+<img src="../../../Images/sp.gif" width=124 height=1><font face="Courier">while (moreToDo) {</font><br>
+<img src="../../../Images/sp.gif" width=156 height=1><font face="Courier">if ([theLock tryLock]) {</font><br>
+<img src="../../../Images/sp.gif" width=181 height=1><font face="Courier">/* update display used by all threads */</font><br>
+<img src="../../../Images/sp.gif" width=181 height=1><font face="Courier">[theLock unlock];</font><br>
+<img src="../../../Images/sp.gif" width=156 height=1><font face="Courier">}</font><br>
+<img src="../../../Images/sp.gif" width=156 height=1><font face="Courier">/* do another increment of calculation */</font><br>
+<img src="../../../Images/sp.gif" width=156 height=1><font face="Courier">/* until there's no more to do */</font><br>
+<img src="../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The NSLock, NSConditionLock, and NSRecursiveLock classes all implement the NSLocking protocol and offer various additional features and performance characteristics. See the NSConditionLock and NSRecursiveLock class descriptions for more information.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Adopted Protocols</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">NSLocking</font></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">lock</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">unlock</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Acquiring a Lock</font></td>
+
+<td><font face="Times" size="+1">- lockBeforeDate:</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>lockBeforeDate:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>lockBeforeDate:</b>(NSDate *)<i>limit</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Attempts to acquire a lock before the date represented by <i>limit</i>. Returns YES if the lock is acquired within this time limit. Returns NO if the time limit expires before a lock can be acquired.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>lock</b> (NSLocking protocol),</font> <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>unlock</b> (NSLocking protocol)</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

@@ -1,0 +1,1916 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/OperatingSystem/Part3_DriverKit/Reference/Classes/IOAudio.rtf -->
+<!-- Date: Sun Jan  1 17:01:08 2023 -->
+<head>
+<title>IOAudio</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>IOAudio</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Inherits From:</b></font></td>
+
+<td><font face="Times" size="+1">IODirectDevice : IODevice : Object</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">driverkit/IOAudio.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">IOAudio is an abstract class for controlling sound cards. It works closely with the Sound Kit, interpreting messages from user-level programs into method invocations in the driver. IOAudio has three threads--one that listens for messages from user-level programs, one that waits for sound-related keyboard events such as Insert (which raises the volume), and one that serves as the I/O thread. Only the I/O thread is used to invoke subclass methods that might need access to the hardware.</font>
+
+<p><font face="Times" size="+1">Audio drivers have some restrictions. Because they're closely tied to the Window Server, for security reasons, you can't start up an audio driver at just any time. Instead, it's easiest to reboot to load a new version of an audio driver. Because the Sound Kit currently has no way to choose between audio drivers, only one IOAudio driver instance at a time can run.</font>
+
+<p><font face="Times" size="+1">To play (output) sound data, IOAudio mixes together the data (obtained from NXPlayStreams) into a circular DMA buffer. If a DMA transfer isn't already in progress, IOAudio invokes <b>startDMAForChannel:read:buffer:bufferSizeForInterrupts:</b> (a hardware-specific method). After the number of bytes specified by <b>bufferSizeForInterrupts</b> has been transferred, the hardware interrupts; IOAudio zeros out the just-transferred part of the buffer and puts more data into it, if possible. In this way, DMA proceeds continuously until no more data is left to be transferred. When no more data is left (all the NXPlayStreams have completed), IOAudio invokes <b>stopDMAForChannel:read:</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">The word &quot;channel&quot; has two meanings in sound-related API. It can refer to a DMA channel, or to a <i>sound channel</i>. A sound channel is a transmission path for sound. IOAudio currently supports either 1 (mono) or 2 (stereo) sound channels for each DMA transfer.</font>
+
+<p><font face="Times" size="+1">The sample rate, data encoding, and number of sound channels used for a DMA transfer remain the same from the time <b>startDMA...</b> is invoked until the time <b>stopDMA...</b> is invoked. Their values are taken from the first NXPlayStream associated with the DMA transfer.</font>
+
+<p><font face="Times" size="+1">Recording sound data is similar to playing it. One DMA buffer exists for playing sound, and one for recording it. The buffers can share a DMA channel, or they can each have their own. Either way, IOAudio currently schedules transfers on only one channel at a time; that is, simultaneous playback and recording isn't allowed. In the future, support may be added for using both channels simultaneously.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=40></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Warning:</b></font></td>
+
+<td><font face="Times" size="+1">Currently, the DMA buffer size is 64KB for ISA-based systems and 128K for EISA-based systems, and the interrupt interval is 8KB. You should <i>not</i> depend on either the size or number of these buffers--they will change in future releases.</font></td></tr>
+
+<tr valign=top>
+
+<td width=40 height=24></td></tr>
+
+<tr valign=top>
+
+<td width=40></td>
+
+<td nowrap></td>
+
+<td><font face="Helvetica" size="+1"><b>Implementing a Subclass</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=40 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=40></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">Your subclass of IOAudio must implement the following methods:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">probe: (IODevice class method)</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">reset</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">startDMAForChannel:read:buffer:bufferSizeForInterrupts:</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">stopDMAForChannel:read:</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">interruptClearFunc (and its associated function)</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">interruptOccurredForInput:forOutput:</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">channelCountLimit</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">getDataEncodings:count:</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">getSamplingRatesLow:high:</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">getSamplingRates:count:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Your subclass should implement the following methods if the hardware supports the associated feature. For example, if your hardware supports loudness enhancement, you should implement <b>updateLoudnessEnhanced</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">updateLoudnessEnhanced</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">updateInputGainLeft</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">updateInputGainRight</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">updateOutputMute</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">updateOutputAttenuationLeft</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">updateOutputAttenuationRight</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Besides implementing the methods listed above, you might also need to implement the following:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">acceptsContinuousSamplingRates</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">timeoutOccurred</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">In the future, subclasses may be able to override methods that interpret NXSoundParameterTags passed from user-level programs. This mechanism will allow your subclass to interpret device-specific parameters.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Variables</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">None declared in this class.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Creating and freeing instances</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">initFromDeviceDescription:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">free</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">reset</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Starting and stopping DMA</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">startDMAForChannel:read:buffer:</font><br>
+<img src="../../../../../Images/sp.gif" width=176 height=1><font face="Times" size="+1">bufferSizeForInterrupts:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">stopDMAForChannel:read:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Getting DMA buffer address and size</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">getInputChannelBuffer:size:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">getOutputChannelBuffer:size:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Handling interrupts</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">interruptOccurredForInput:forOutput:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">interruptClearFunc</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Getting notification of I/O thread difficulties</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">timeoutOccurred</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Getting and setting information about sound channels</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">channelCountLimit</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">isInputActive</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">isOutputActive</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Getting supported sampling rates</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">acceptsContinuousSamplingRates</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">getSamplingRates:count:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">getSamplingRatesLow:high:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Getting supported data encodings</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">getDataEncodings:count:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Getting device settings</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">channelCount</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">dataEncoding</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">sampleRate</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Determining what hardware settings are or should be</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">inputGainLeft</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">inputGainRight</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">isOutputMuted</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">isLoudnessEnhanced</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">outputAttenuationLeft</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">outputAttenuationRight</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Setting hardware state</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">updateInputGainLeft</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">updateInputGainRight</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">updateOutputMute</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">updateLoudnessEnhanced</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">updateOutputAttenuationLeft</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">updateOutputAttenuationRight</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>acceptsContinuousSamplingRates</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>acceptsContinuousSamplingRates</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns NO. Drivers that accept continuous sampling rates, as opposed to accepting a few, discrete sampling rates, should implement this method so that it returns YES. For example, if a device has a low rate of 2000 Hz and a high rate of 44100 Hz and supports every sampling rate in between, its implementation of this method should return YES.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>getSamplingRates:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>getSamplingRatesLow:High:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>channelCount</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(unsigned int)<b>channelCount</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the number of sound channels to be used for the audio data that's about to be played or recorded. This value, which can be either 1 (for mono) or 2 (for stereo), is determined during mixing and is set before <b>startDMAForChannel:...</b> is invoked.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">The number of sound channels has nothing to do with the number of DMA channels used by the device.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>dataEncoding</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>sampleRate</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>channelCountLimit</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(unsigned int)<b>channelCountLimit</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns zero. Drivers must implement this method so that it returns either 1 (if only mono is supported) or 2 (if both mono and stereo are supported).</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>channelCount</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>dataEncoding</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NXSoundParameterTag)<b>dataEncoding</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the data encoding to be used for the audio data that's about to be played or recorded. This value is determined during mixing and is set before <b>startDMAForChannel:...</b> is invoked. Possible values (defined in the header file <b>soundkit/NXSoundParameterTags.h</b>) are currently NX_SoundStreamDataEncoding_Linear16, NX_SoundStreamDataEncoding_Linear8, NX_SoundStreamDataEncoding_Mulaw8, and NX_SoundStreamDataEncoding_Alaw8.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>channelCount</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>sampleRate</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>free</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>free</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Frees the instance and returns <b>nil</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>getDataEncodings:count:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>getDataEncodings:</b>(NXSoundParameterTag *)<i>encodings</i> <b>count:</b>(unsigned int *)<i>numEncodings</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns zero in <i>numEncodings</i>. Subclasses must override this method to supply an array of supported data encodings. Possible values (defined in the header file <b>soundkit/NXSoundParameterTags.h</b>) are currently NX_SoundStreamDataEncoding_Linear16, NX_SoundStreamDataEncoding_Linear8, NX_SoundStreamDataEncoding_Mulaw8, and NX_SoundStreamDataEncoding_Alaw8. Below is an example of implementing this method. Note that you don't have to allocate memory for <i>encodings</i>; it already has enough space to hold all possible encodings.</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">- (void)getDataEncodings: (NXSoundParameterTag *)encodings</font><br>
+<img src="../../../../../Images/sp.gif" width=257 height=1><font face="Courier">count:(unsigned int *)numEncodings</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">{</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">encodings[0] = NX_SoundStreamDataEncoding_Linear16;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">encodings[1] = NX_SoundStreamDataEncoding_Linear8;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">*numEncodings = 2;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>getInputChannelBuffer:size:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>getInputChannelBuffer:</b>(void *)<i>address</i> <b>size:</b>(unsigned int *)<i>byteCount</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Gets the starting address and size of the (already allocated) DMA buffer for the input channel. This method allows the driver to access data in the audio buffer directly.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>getOutputChannelBuffer:size:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>getOutputChannelBuffer:size:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>getOutputChannelBuffer:</b>(void *)<i>address</i> <b>size:</b>(unsigned int *)<i>byteCount</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Gets the starting address and size of the (already allocated) DMA buffer for the output channel. This method allows the driver to access data in the audio buffer directly.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>getInputChannelBuffer:size:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>getSamplingRates:count:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>getSamplingRates:</b>(int *)<i>rates</i> <b>count:</b>(unsigned int *)<i>numRates</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns zero in <i>numRates</i>. Subclasses must override this method to supply the supported sampling rates in <i>rates</i> array, which has room for up to 256 entries. If the driver supports continuous sampling rates, this method should return some common sampling rates, as shown below.</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">- (void)getSamplingRates:(int *)rates</font><br>
+<img src="../../../../../Images/sp.gif" width=257 height=1><font face="Courier">count:(unsigned int *)numRates</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">{</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Return a few common rates */</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">rates[0] = 2000;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">rates[1] = 8000;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">rates[2] = 11025;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">rates[3] = 16000;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">rates[4] = 22050;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">rates[5] = 32000;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">rates[6] = 44100;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">*numRates = 7;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>acceptsContinuousSamplingRates</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>getSamplingRatesLow:High:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>getSamplingRatesLow:high:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>getSamplingRatesLow:</b>(int *)<i>lowRate</i> <b>high:</b>(int *)<i>highRate</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns zero in <i>lowRate</i> and <i>highRate</i>. Subclasses must override this method to supply their highest and lowest supported sampling rates. Here's an example of implementing this method.</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">- (void)getSamplingRatesLow:(int *)lowRate</font><br>
+<img src="../../../../../Images/sp.gif" width=285 height=1><font face="Courier">high:(int *)highRate</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">{</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">*lowRate = 2000;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">*highRate = 44100;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>acceptsContinuousSamplingRates</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>getSamplingRates:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>initFromDeviceDescription:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>initFromDeviceDescription:</b><i>description</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Initializes a newly allocated IOAudio instance. Subclasses don't generally override this method; they merely invoke it in their <b>probe:</b> method. Subclasses perform device-specific initialization in their implementation of the <b>reset</b> method.</font>
+
+<p><font face="Times" size="+1">IOAudio's implementation of <b>initFromDeviceDescription:</b> invokes <b>super</b>'s version of <b>initFromDeviceDescription:</b>, invokes <b>attachInterruptPort</b>, sets the interrupt port to have a maximum backlog, and then performs the <b>reset</b> method. Next, it creates and initializes the private objects that perform much of the driver's work, creates private ports, and forks threads to listen to requests on the ports. Finally, it invokes <b>registerDevice</b>. Returns <b>nil</b> if initialization was unsuccessful; otherwise, returns the IOAudio instance.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>inputGainLeft</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(unsigned int)<b>inputGainLeft</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the general scaling factor that's applied to the left channel of the incoming sound. This value can be anywhere from 0 to 32768, where 0 is no gain and 32768 is maximum gain. User-level programs specify the gain using the Sound Kit. To support input gain, you must implement <b>updateInputGainLeft</b> and <b>updateInputGainRight</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>inputGainRight</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>inputGainRight</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(unsigned int)<b>inputGainRight</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the general scaling factor that's applied to the right channel of the incoming sound. This value can be anywhere from 0 to 32768, where 0 is no gain and 32768 is maximum gain. User-level programs specify the gain using the Sound Kit. To support input gain, you must implement <b>updateInputGainLeft</b> and <b>updateInputGainRight</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>inputGainLeft</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>interruptClearFunc</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(IOAudioInterruptClearFunc)<b>interruptClearFunc</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Does nothing and returns zero. Subclasses must implement this method so that it returns the address of a function that clears interrupts on the card. The function is called only when the audio system needs to guarantee that your card has no pending interrupts. If you don't implement this method and function, your card is likely to suffer from poor performance with some applications. The function runs at interrupt level, so it must not block.</font>
+
+<p><font face="Times" size="+1">Here's an example of implementing this method.</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">static void clearInterrupts(void)</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">{</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier"><i>/* Driver-specific code that clears the card's interrupt</i></font><br>
+<img src="../../../../../Images/sp.gif" width=159 height=1><font face="Courier"><i>* register(s) goes here. */</i></font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">- (IOAudioInterruptClearFunc) interruptClearFunc</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">{</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">return clearInterrupts;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>interruptOccurredForInput:forOutput:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>interruptOccurredForInput:</b>(BOOL *)<i>serviceInput</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>forOutput:</b>(BOOL *)<i>serviceOutput</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Notifies the instance that an interrupt occurred for its hardware. The IOAudio version of this method generates an error message; each subclass must implement this method.</font>
+
+<p><font face="Times" size="+1">The subclass implementation of this method should try to determine whether the hardware really has interrupted. If so, this method should clear the card's interrupt state, set <i>serviceInput</i> to YES if the interrupt was for input, and set <i>serviceOutput</i> to YES if the interrupt was for output. (The values of <i>serviceInput</i> and <i>serviceOutput</i> are initialized to NO.)</font>
+
+<p><font face="Times" size="+1">After invoking this method, IOAudio checks whether any more data is available for DMA on the channels that require service. If none is available, <b>stopDMAForChannel:read:</b> is invoked. IOAudio always invokes this method from the I/O thread.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>isInputActive</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>isInputActive</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if data is being read from the hardware using DMA; otherwise, returns NO.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>isOutputActive</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>isLoudnessEnhanced</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>isLoudnessEnhanced</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if loudness is enhanced; otherwise, returns NO. Loudness enhancement refers to the ability of some hardware to help compensate for the decreased sensitivity of the human ear by boosting the gain at low and high frequencies as the volume is decreased. User-level programs specify whether to use loudness enhancement with the NX_SoundDeviceOutputLoudness parameter. To support loudness enhancement, you must implement <b>updateLoudnessEnhanced</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>isOutputActive</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>isOutputActive</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if data is being sent to the hardware using DMA; otherwise, returns NO.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>isInputActive</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>isOutputMuted</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>isOutputMuted</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if output is muted; otherwise, returns NO. The user can mute audio output by holding down the Command key and pressing the Delete key. User-level programs can mute output using the Sound Kit.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>updateOutputMute</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>outputAttenuationLeft</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(int)<b>outputAttenuationLeft</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the attenuation setting of the left channel of the device. The user modifies the left and right attenuation simultaneously using the Volume slider in the Preferences application or with the Insert and Delete keys on the keyboard. User-level programs can specify the attenuation using the Sound Kit. The range is -84 decibels (inaudible) to 0 decibels (no attenuation).</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>updateOutputAttenuationLeft</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>outputAttenuationRight</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>outputAttenuationRight</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(int)<b>outputAttenuationRight</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the attenuation setting of the right channel of the device. The user modifies the left and right attenuation simultaneously using the Volume slider in the Preferences application or with the Insert and Delete keys on the keyboard. User-level programs can specify the attenuation using the Sound Kit. The range is -84 decibels (inaudible) to 0 decibels (no attenuation).</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>updateOutputAttenuationRight</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>outputAttenuationLeft</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>reset</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>reset</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Generates an error message and returns NO. Subclasses must implement this method so that it resets and initializes the hardware. This method is invoked from <b>initFromDeviceDescription:</b>, as described above.</font>
+
+<p><font face="Times" size="+1">This method should initialize basic information by invoking <b>setName:</b> and <b>setDeviceKind:</b>. It should then check whether its interrupt (IRQ) and DMA channels (all obtained from its IODeviceDescription) have valid values. After initializing the hardware, this method should disable its DMA channels and then set any DMA parameters necessary, such as the transfer width.</font>
+
+<p><font face="Times" size="+1">This method should return YES on success; otherwise, it should return NO, which will cause <b>initFromDeviceDescription:</b> to return <b>nil</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>initFromDeviceDescription:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setName:</b> (IODevice),</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setDeviceKind:</b> (IODevice)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>sampleRate</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(unsigned int)<b>sampleRate</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the sample rate to be used for the audio data that's about to be played or recorded. This value is determined during mixing and is set before <b>startDMAForChannel:...</b> is invoked.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>channelCount</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>dataEncoding</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>startDMAForChannel:read:buffer:bufferSizeForInterrupts:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>startDMAForChannel:</b>(unsigned int)<i>localChannel</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>read:</b>(BOOL)<i>isRead</i></font><br>
+<font face="Times" size="+1"><b>buffer:</b>(IODMABuffer)<i>buffer</i></font><br>
+<font face="Times" size="+1"><b>bufferSizeForInterrupts:</b>(unsigned int)<i>bufferSize</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Generates an error message and returns NO. Subclasses must override this method.</font>
+
+<p><font face="Times" size="+1">This method should perform DMA after configuring the hardware to reflect the values returned by <b>sampleRate</b>, <b>dataEncoding</b>, and <b>channelCount</b>. The DMA should be set up so that it generates an interrupt after every <i>bufferSize</i> byte interval. If <i>isRead</i> is YES, then the DMA is from the card to memory; otherwise, DMA is from memory to the card. See the example IOAudio driver for an implementation of this method.</font>
+
+<p><font face="Times" size="+1">IOAudio invokes this method from the I/O thread. You should never invoke this method in an IOAudio subclass implementation.</font>
+
+<p><font face="Times" size="+1">This method should return YES if it started DMA successfully; otherwise, it should return NO.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>startDMAForBuffer:channel</b> (IODirectDevice architecture-specific category),</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>enableChannel </b>(IODirectDevice architecture-specific category),</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>enableAllInterrupts</b> (IODirectDevice architecture-specific category)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>stopDMAForChannel:read:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>stopDMAForChannel:</b>(unsigned int)<i>localChannel</i> <b>read:</b>(BOOL)<i>isRead</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Generates an error message. Subclasses must override this method.</font>
+
+<p><font face="Times" size="+1">This method should disable the specified DMA channel, disable interrupts, and do anything else necessary to stop the DMA in progress on <i>localChannel</i>. See the example IOAudio driver for an implementation of this method.</font>
+
+<p><font face="Times" size="+1">IOAudio invokes this method from the I/O thread. You should never invoke this method in an IOAudio subclass implementation.</font>
+
+<p><font face="Times" size="+1">This method is invoked when an interrupt occurs and no more data is available to be transferred. It's also invoked any time that <b>startDMAForChannel:...</b> returns NO.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>startDMAForChannel:read:buffer:bufferSizeForInterrupts:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>disableChannel</b> (IODirectDevice architecture-specific category),</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>disableAllInterrupts</b> (IODirectDevice architecture-specific category)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>timeoutOccurred</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>timeoutOccurred</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Notifies the instance that although a DMA transaction is in progress, no interrupts have been detected for a long time (currently one second). The IOAudio version of this method does nothing; each subclass can implement it or not.</font>
+
+<p><font face="Times" size="+1">The subclass implementation of this method might reset the hardware. IOAudio invokes this method from the I/O thread.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>updateInputGainLeft</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>updateInputGainLeft</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Does nothing. Subclasses should implement this method so that it updates the hardware to the value returned by <b>inputGainLeft</b>. You generally have to convert the device-independent value returned by <b>inputGainLeft</b> to the appropriate value for your device.</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">- (void) updateInputGainLeft</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">{</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Convert gain (0 - 32768) into attenuation (0 - 31). */</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">unsigned int gain = [self inputGainLeft] / 1057;</font>
+
+<p><img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">setInputAttenuation(MICROPHONE, LEFT_CHANNEL,</font><br>
+<img src="../../../../../Images/sp.gif" width=292 height=1><font face="Courier">(unsigned char) gain);</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">setInputAttenuation(EXTERNAL_LINE_IN, LEFT_CHANNEL,</font><br>
+<img src="../../../../../Images/sp.gif" width=292 height=1><font face="Courier">(unsigned char) gain);</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">IOAudio invokes this method from the I/O thread.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>updateInputGainRight</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>updateInputGainRight</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>updateInputGainRight</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Does nothing. Subclasses should implement this method so that it updates the hardware to match the value returned by <b>inputGainRight</b>. You generally have to convert the device-independent value returned by <b>inputGainRight</b> to the appropriate value for your device. IOAudio invokes this method from the I/O thread.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>updateInputGainLeft</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>updateLoudnessEnhanced</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>updateLoudnessEnhanced</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Does nothing. Subclasses that support loudness enhancement should implement this method so that it updates the hardware to match the value returned by <b>isLoudnessEnhanced</b>. IOAudio invokes this method from the I/O thread.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>updateOutputAttenuationLeft</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>updateOutputAttenuationLeft</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Does nothing. Subclasses should implement this method so that it updates the hardware to match the value returned by <b>outputAttenuationLeft</b>. You generally have to convert the device-independent value returned by <b>outputAttenuationLeft</b> to the appropriate value for your device. Here's an example of implementing this method.</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">- (void) updateOutputAttenuationLeft</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">{</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Get the software value and convert it from the software range</font><br>
+<img src="../../../../../Images/sp.gif" width=159 height=1><font face="Courier">* (0 - -84) to the device range (0 - 31, for this card). */</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">unsigned int attenuation = [self outputAttenuationLeft] + 84;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">attenuation = ((attenuation * 10)/27);</font>
+
+<p><img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier"><i>/* Device-specific code sets the output attention of the left</i></font><br>
+<img src="../../../../../Images/sp.gif" width=159 height=1><font face="Courier"><i>* sound channel to the value of the attenuation variable. */</i></font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">IOAudio invokes this method from the I/O thread.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>updateOutputAttenuationRight</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>updateOutputAttenuationRight</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>updateOutputAttenuationRight</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Does nothing. Subclasses should implement this method so that it updates the hardware to match the value returned by <b>outputAttenuationRight</b>. You generally have to convert the device-independent value returned by <b>outputAttenuationRight</b> to the appropriate value for your device. IOAudio invokes this method from the I/O thread.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>updateOutputAttenuationLeft</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>updateOutputMute</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>updateOutputMute</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Does nothing. Subclasses should implement this method so that it mutes the output if <b>isOutputMuted</b> returns YES and unmutes the output if <b>isOutputMuted</b> returns NO. IOAudio invokes this method from the I/O thread.</font></td></tr>
+
+</table>
+
+
+
+<p><br>
+
+</body>
+</html>

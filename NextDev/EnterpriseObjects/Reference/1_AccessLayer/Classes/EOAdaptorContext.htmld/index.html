@@ -1,0 +1,1061 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/EnterpriseObjects/Reference/1_AccessLayer/Classes/EOAdaptorContext.rtf -->
+<!-- Date: Sun Jan  1 17:05:17 2023 -->
+<head>
+<title>EOAdaptorContext</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>EOAdaptorContext</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Inherits From:</b></font></td>
+
+<td><font face="Times" size="+1">NSObject</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">eoaccess/EOAdaptorContext.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">An EOAdaptorContext represents a single transaction scope (logical user) on the database server to which its EOAdaptor object is connected. If the server supports multiple concurrent transaction sessions, the EOAdaptor may have several adaptor contexts. An EOAdaptorContext may in turn have several EOAdaptorChannels, which handle actual access to the data on the server. An EOAdaptorContext by default has no EOAdaptorChannels; to create a new channel send your EOAdaptorContext a <b>createAdaptorChannel</b> message.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">When you use multiple EOAdaptorContexts, you can have several transactions occurring simultaneously on the database server. You should be aware of the issues involved in concurrent access if you do this.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Controlling Transactions</b></font>
+
+<p><font face="Times" size="+1">EOAdaptorContext defines a simple set of messages for explicitly controlling transactions: <b>beginTransaction</b>, <b>commitTransaction</b>, and <b>rollbackTransaction</b>. Each of these messages confirms the requested action with the adaptor context's delegate, then performs the action if possible. There's also a set of messages for notifying an adaptor context that a transaction has been started, committed, or rolled back by something else, such as another object, a stored procedure in the server, and so on. You use these notification messages to keep an adaptor context synchronized with the state of the server: <b>transactionDidBegin</b>, <b>transactionDidCommit</b>, and <b>transactionDidRollback</b> (these methods don't notify the delegate).</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Notifying the Adaptor Context's Delegate</b></font>
+
+<p><font face="Times" size="+1">The transaction-controlling methods--<b>beginTransaction</b>, <b>commitTransaction</b>, and <b>rollbackTransaction</b>--notify the adaptor context's delegate before and after a transaction operation is performed. The delegate needs only to implement a method to receive notification. The &quot;before&quot; messages ask the delegate if it's all right to continue with the requested operation, sending an <b>adaptorContextWillBegin:</b>, <b>adaptorContextWillCommit:</b>, or an <b>adaptorContextWillRollback:</b> message. The return type of each of these messages is <b>EODelegateResponse</b>, which allows the delegate to approve, reject, or override the transaction operation requested. An adaptor context interprets the return value of a delegate message as follows:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Return Value</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Interpretation</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">EODelegateRejects</font></td>
+
+<td><font face="Times" size="+1">Abort the requested operation and return a failure result.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">EODelegateApproves</font></td>
+
+<td><font face="Times" size="+1">Continue the requested operation and return an appropriate result</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">EODelegateOverrides</font></td>
+
+<td><font face="Times" size="+1">Do nothing, but return a success result.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">When a delegate overrides an operation, it's responsible for ensuring that the result of that operation is achieved. For example, if the delegate returns <b>EODelegateOverrides</b> from an <b>adaptorContextWillBegin:</b> message, it must see itself that a transaction actually does begin.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Variables</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">None declared in this class.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Getting the adaptor</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">adaptor</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Creating a new channel</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">createAdaptorChannel</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Finding open channels</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">hasBusyChannels</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Controlling transactions</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">beginTransaction</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">commitTransaction</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">rollbackTransaction</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Notifying of other transactions</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">transactionDidBegin</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">transactionDidCommit</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">transactionDidRollback</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Nesting transactions</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">canNestTransactions</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">transactionNestingLevel</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Setting the delegate</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setDelegate:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">delegate</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>adaptor</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(EOAdaptor *)<b>adaptor</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the EOAdaptorContext's EOAdaptor.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>beginTransaction</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>beginTransaction</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Attempts to begin a new transaction, nested within the current one if nested transactions are supported. Returns YES if successful and NO if not (specifically, if nested transactions aren't supported or the delegate refuses).</font>
+
+<p><font face="Times" size="+1">This method invokes the delegate methods <b>adaptorContextWillBegin:</b> and <b>adaptorContextDidBegin:</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>transactionDidBegin</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>commitTransaction</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>rollbackTransaction</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>canNestTransactions</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>canNestTransactions</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>canNestTransactions</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if the database server and the adaptor context can nest transactions, NO otherwise.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>commitTransaction</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>commitTransaction</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Attempts to commit the last transaction begun, returning YES if successful. <b>commitTransaction</b> will return NO if:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">a transaction is not open</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">fetches are in progress</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">the delegate returns EODelegateRejects in adaptorContextWillCommit</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">the database server fails to commit (and may rollback)</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">In the first three cases, the transaction is not rolled back.&nbsp; In the fourth, it is.&nbsp; There is no way to tell which case caused <b>commitTransaction</b> to return NO.</font>
+
+<p><font face="Times" size="+1">This method invokes the delegate methods <b>adaptorContextWillCommit:</b> and <b>adaptorContextDidCommit:</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>transactionDidCommit</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>beginTransaction</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>rollbackTransaction</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>createAdaptorChannel</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(EOAdaptorChannel *)<b>createAdaptorChannel</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns a new EOAdaptorChannel, or <b>nil</b> if a new channel cannot be created. The newly created channel retains its context.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>delegate</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>delegate</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the adaptor context's delegate. A subclass of EOAdaptorContext doesn't need to override this method.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>hasBusyChannels</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>hasBusyChannels</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if any of the receiver's channels have outstanding operations (that is, have a fetch in progress), NO otherwise.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>isFetchInProgress</b> (EOAdaptorChannel)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>rollbackTransaction</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>rollbackTransaction</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Attempts to roll back the last transaction begun, returning YES if successful and NO if not. This method invokes the delegate methods <b>adaptorContextWillRollback:</b> and <b>adaptorContextDidRollback:</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>transactionDidRollback</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>beginTransaction</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>commitTransaction</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setDelegate:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setDelegate:</b><i>anObject</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the adaptor context's delegate to <i>anObject</i> and retains it. A subclass of EOAdaptorContext doesn't need to override this method.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>transactionDidBegin</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>transactionDidBegin</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Informs the adaptor context that the server has begun a transaction, so that it can update its state to reflect this fact. Your application should invoke this method whenever it begins a transaction other than by sending a <b>beginTransaction</b> message (for example, by using EOAdaptorChannel's <b>evaluateExpression:</b>).</font>
+
+<p><font face="Times" size="+1">This method doesn't send any messages to the delegate; you should explicitly notify the delegate if necessary.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>transactionDidCommit</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>transactionDidCommit</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Informs the receiver that the server has committed a transaction, so that it can update its state to reflect this fact. Your application should invoke this method whenever it commits a transaction other than by sending a <b>commitTransaction</b> message (for example, by using EOAdaptorChannel's <b>evaluateExpression:</b>).</font>
+
+<p><font face="Times" size="+1">This method doesn't send any messages to the delegate; you should explicitly notify the delegate if necessary.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>transactionDidRollback</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>transactionDidRollback</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Informs the receiver that the server has rolled back a transaction, so that it can update its state to reflect this fact. Your application should invoke this method whenever it rolls back a transaction other than by sending a <b>rollbackTransaction </b>message (for example, by using EOAdaptorChannel's <b>evaluateExpression:</b>).</font>
+
+<p><font face="Times" size="+1">This method doesn't send any messages to the delegate; you should explicitly notify the delegate if necessary.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>transactionNestingLevel</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(unsigned int)<b>transactionNestingLevel</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the number of transactions in progress. If the database server and the adaptor support nested transactions, this number may be greater than 1.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Methods Implemented by the Delegate</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>adaptorContextDidBegin:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>adaptorContextDidBegin:</b><i>context</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked from <b>beginTransaction</b> to tell the delegate that <i>context</i> has begun a transaction. The delegate may take whatever action it needs based on this information.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>adaptorContextDidCommit:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>adaptorContextDidCommit:</b><i>context</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked from <b>commitTransaction</b> to tell the delegate that <i>context</i> has committed a transaction. The delegate may take whatever action it needs based on this information.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>adaptorContextDidRollback:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>adaptorContextDidRollback:</b><i>context</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked from <b>rollbackTransaction</b> to tell the delegate that <i>context</i> has rolled back a transaction. The delegate may take whatever action it needs based on this information.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>adaptorContextWillBegin:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(EODelegateResponse)<b>adaptorContextWillBegin:</b><i>context</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked from <b>beginTransaction</b> to tell the delegate that <i>context</i> is starting a transaction. See &quot;Notifying the Adaptor Context's Delegate&quot; in the class description for an explanation of the possible return values.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>adaptorContextWillCommit:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(EODelegateResponse)<b>adaptorContextWillCommit:</b><i>context</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked from <b>commitTransaction</b> to tell the delegate that <i>context</i> is committing a transaction. See &quot;Notifying the Adaptor Context's Delegate&quot; in the class description for an explanation of the possible return values.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>adaptorContextWillRollback:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(EODelegateResponse)<b>adaptorContextWillRollback:</b><i>context</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked from <b>rollbackTransaction</b> to tell the delegate that <i>context</i> is rolling back a transaction. See &quot;Notifying the Adaptor Context's Delegate&quot; in the class description for an explanation of the possible return values.</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

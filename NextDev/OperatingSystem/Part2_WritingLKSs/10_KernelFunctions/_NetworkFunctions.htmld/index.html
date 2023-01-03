@@ -1,0 +1,2060 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/OperatingSystem/Part2_WritingLKSs/10_KernelFunctions/_NetworkFunctions.rtf -->
+<!-- Date: Sun Jan  1 17:01:05 2023 -->
+<head>
+<title>_NetworkFunctions</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Network Functions</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>htonl(), htons(), ntohl(), ntohs()</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SUMMARY </b></font><font face="Times" size="+1">Convert values between host and network byte order</font>
+
+<p><font face="Helvetica" size="-1"><b>SYNOPSIS </b></font><font face="Times" size="+1"><b>#import &lt;netinet/in.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">u_long <b>htonl(</b>u_long <i>hostlong</i><b>)</b></font><br>
+<font face="Times" size="+1">u_short <b>htons(</b>u_short <i>hostshort</i><b>)</b></font><br>
+<font face="Times" size="+1">u_long <b>ntohl(</b>u_long <i>netlong</i><b>)</b></font><br>
+<font face="Times" size="+1">u_short <b>ntohs(</b>u_short <i>netshort</i><b>)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>DESCRIPTION </b></font><font face="Times" size="+1">These functions and macros simulate the C library functions of the same name.&nbsp; See the UNIX manual page for <b>byteorder</b> for more information.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>if_attach()</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SUMMARY </b></font><font face="Times" size="+1">Initialize and install a new netif</font>
+
+<p><font face="Helvetica" size="-1"><b>SYNOPSIS </b></font><font face="Times" size="+1"><b>#import &lt;net/netif.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">netif_t <b>if_attach(</b>if_init_func_t <i>init_func</i>, if_input_func_t <i>input_func</i>, if_output_func_t <i>output_func</i>, if_getbuf_func_t <i>getbuf_func</i>, if_control_func_t <i>control_func</i>, const char *<i>name</i>, unsigned int <i>unit</i>, const char *<i>type</i>, unsigned int <i>mtu</i>, unsigned int <i>flags</i>, netif_class_t <i>class</i>, void *<i>private</i><b>)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>ARGUMENTS </b></font><font face="Times" size="+1"><i>init_func</i>:&nbsp; The initialization function of this module.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><i>input_func</i>:&nbsp; The input function of this module.</font>
+
+<p><font face="Times" size="+1"><i>output_func</i>:&nbsp; The output function of this module.</font>
+
+<p><font face="Times" size="+1"><i>getbuf_func</i>:&nbsp; The buffer allocation function of this module.</font>
+
+<p><font face="Times" size="+1"><i>control_func</i>:&nbsp; The control function of this module.</font>
+
+<p><font face="Times" size="+1"><i>name</i>:&nbsp; A constant string that names this module (for example, &quot;en&quot;).</font>
+
+<p><font face="Times" size="+1"><i>unit</i>:&nbsp; The unit number of this module (for example, <b>0</b>).</font>
+
+<p><font face="Times" size="+1"><i>type</i>:&nbsp; A constant string that describes the type of this module (for example, &quot;10MB Ethernet&quot;).</font>
+
+<p><font face="Times" size="+1"><i>mtu</i>:&nbsp; The maximum transfer unit (for example, <b>1500</b> for Ethernet).&nbsp; This is the maximum amount of data your module can send or receive.&nbsp; Note that protocol-level modules must return the minimum of either the protocol limit or the network device driver's limit (minus header information).</font>
+
+<p><font face="Times" size="+1"><i>flags</i>:&nbsp; Initial flags for the interface.&nbsp; Possible values are:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">IFF_UP:</font></td>
+
+<td><font face="Times" size="+1">If true, this interface is working.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">IFF_BROADCAST:</font></td>
+
+<td><font face="Times" size="+1">If true, this interface supports broadcast.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">IFF_LOOPBACK:</font></td>
+
+<td><font face="Times" size="+1">If true, this interface is local only.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">IFF_POINTTOPOINT:</font></td>
+
+<td><font face="Times" size="+1">If true, this is a point-to-point interface.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><i>class</i>:&nbsp; The class of this interface.&nbsp; Possible values are:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">NETIFCLASS_REAL:</font></td>
+
+<td><font face="Times" size="+1">Network driver (a module that manipulates the hardware).</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">NETIFCLASS_VIRTUAL:</font></td>
+
+<td><font face="Times" size="+1">Protocol handler (a module that doesn't talk to hardware).</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">NETIFCLASS_SNIFFER:</font></td>
+
+<td><font face="Times" size="+1">Packet sniffer (a module that merely examines packets).</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><i>private</i>:&nbsp; Private data, which can be retrieved using <b>if_private()</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>DESCRIPTION </b></font><font face="Times" size="+1">Initializes a new netif and installs it, returning the resulting netif.&nbsp; Network device drivers should call this function at load time. Protocol handlers and packet sniffers should instead call <b>if_registervirtual()</b> at load time, supplying as an argument the callback function that calls <b>if_attach()</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The first five arguments are the functions that are associated with netifs.&nbsp; These functions are described in Chapter 8, &quot;Network Modules.&quot;</font>
+
+<p><font face="Times" size="+1">This function doesn't check any of its arguments, so it always succeeds.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>EXAMPLE </b></font><font face="Courier">ifp = if_attach(NULL, myhandler_input, myhandler_output,</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">myhandler_getbuf, myhandler_control, name, unit, IFTYPE_IP,</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">MYMTU, IFF_BROADCAST, NETIFCLASS_VIRTUAL, ifprivate);</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SEE ALSO </b></font><font face="Times" size="+1"><b>if_flags()</b>, <b>if_output()</b>, <b>if_init()</b>, <b>if_control()</b>, <b>if_ioctl()</b>, <b>if_getbuf()</b>, <b>if_handle_input()</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>if_class()</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SUMMARY </b></font><font face="Times" size="+1">Get the class of a netif</font>
+
+<p><font face="Helvetica" size="-1"><b>SYNOPSIS </b></font><font face="Times" size="+1"><b>#import &lt;net/netif.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">netif_class_t <b>if_class(</b>netif_t <i>netif</i><b>)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>ARGUMENTS </b></font><font face="Times" size="+1"><i>netif</i>:&nbsp; The module to get the class for.</font>
+
+<p><font face="Helvetica" size="-1"><b>DESCRIPTION </b></font><font face="Times" size="+1">This function returns the class of <i>netif</i>.&nbsp; The value returned is one of the following:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">NETIFCLASS_REAL</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">NETIFCLASS_VIRTUAL</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">NETIFCLASS_SNIFFER</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>EXAMPLE </b></font><font face="Courier">netif_t ni;</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">for (ni = iflist_first(); ni != NULL; ni = iflist_next(ni)) {</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">printf(&#34;name: %s%d, class: %s\n&#34;, if_name(ni), if_unit(ni),</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">(if_class(ni) == NETIFCLASS_REAL) ? &#34;real&#34; :</font><br>
+<img src="../../../../Images/sp.gif" width=189 height=1><font face="Courier">((if_class(ni) == NETIFCLASS_VIRTUAL) ? &#34;virtual&#34; :</font><br>
+<img src="../../../../Images/sp.gif" width=189 height=1><font face="Courier">((if_class(ni) == NETIFCLASS_SNIFFER) ? &#34;sniffer&#34; : &#34;unknown&#34;)));</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SEE ALSO </b></font><font face="Times" size="+1"><b>iflist_first()</b>, <b>iflist_next()</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>if_collisions(), if_collisions_set()</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SUMMARY </b></font><font face="Times" size="+1">Get or set the number of collisions</font>
+
+<p><font face="Helvetica" size="-1"><b>SYNOPSIS </b></font><font face="Times" size="+1"><b>#import &lt;net/netif.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">unsigned int <b>if_collisions(</b>netif_t <i>netif</i><b>)</b></font><br>
+<font face="Times" size="+1">void <b>if_collisions_set(</b>netif_t <i>netif</i>, unsigned int <i>collisions</i><b>)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>ARGUMENTS </b></font><font face="Times" size="+1"><i>netif</i>:&nbsp; The module to get or set collision data for.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><i>collisions</i>:&nbsp; The new number of collisions.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>DESCRIPTION </b></font><font face="Times" size="+1">The functions <b>if_collisions()</b> and <b>if_collisions_set()</b> get and set, respectively, the number of collisions encountered.&nbsp; Only the module corresponding to <i>netif</i> should call <b>if_collisions_set()</b>.</font>
+
+<p><font face="Helvetica" size="-1"><b>EXAMPLE </b></font><font face="Courier">printf(&#34;Number of collisions encountered so far:&nbsp; %d\n&#34;,</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=140 height=1><font face="Courier">if_collisions(netif));</font>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>if_control(), if_getbuf(), if_init(), if_ioctl(), if_output()</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SUMMARY </b></font><font face="Times" size="+1">Call one of the functions associated with a netif</font>
+
+<p><font face="Helvetica" size="-1"><b>SYNOPSIS </b></font><font face="Times" size="+1"><b>#import &lt;net/netif.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">int <b>if_control(</b>netif_t <i>netif</i>, const char *<i>command</i>, void *<i>data</i><b>)</b></font><br>
+<font face="Times" size="+1">netbuf_t <b>if_getbuf(</b>netif_t <i>netif</i><b>)</b></font><br>
+<font face="Times" size="+1">int <b>if_init(</b>netif_t <i>netif</i><b>)</b></font><br>
+<font face="Times" size="+1">int <b>if_ioctl(</b>netif_t <i>netif</i>, unsigned int <i>command</i>, void *<i>data</i><b>)</b></font><br>
+<font face="Times" size="+1">int <b>if_output(</b>netif_t <i>netif</i>, netbuf_t <i>packet</i>, void *<i>address</i><b>)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>ARGUMENTS </b></font><font face="Times" size="+1"><i>netif</i>:&nbsp; The module whose function should be called.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><i>command</i>:&nbsp; The control command that should be executed.</font>
+
+<p><font face="Times" size="+1"><i>data</i>:&nbsp; Data specific to the control command.</font>
+
+<p><font face="Times" size="+1"><i>packet</i>:&nbsp; The packet that should be passed to <i>netif</i>'s output function.</font>
+
+<p><font face="Times" size="+1"><i>address</i>:&nbsp; The address that should be specified in the call to <i>netif</i>'s output function.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>DESCRIPTION </b></font><font face="Times" size="+1">The <b>if_control()</b> function calls <i>netif</i>'s control function, <b>if_getbuf()</b> calls <i>netif</i>'s buffer allocation function, <b>if_init()</b> calls <i>netif</i>'s initialization function, and <b>if_output()</b> calls <i>netif</i>'s output function.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">It is recommended that you don't use <b>if_ioctl()</b>; it's provided only for compatibility with UNIX code that operates using <b>ioctl</b>. The <b>if_ioctl()</b> function calls <i>netif</i>'s control function.</font>
+
+<p><font face="Times" size="+1">Except for <b>if_getbuf()</b>, these functions return ENXIO if the corresponding function isn't implemented in <i>netif</i>; otherwise they return the value returned by the call to the corresponding function.&nbsp; The <b>if_getbuf()</b> function returns NULL if the corresponding function isn't implemented.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>EXAMPLE </b></font><font face="Courier">nb = if_getbuf(ifp);</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">if (nb == NULL)</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">return ENOBUFS;</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SEE ALSO </b></font><font face="Times" size="+1"><b>if_attach()</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>if_detach()</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SUMMARY </b></font><font face="Times" size="+1">Detach a netif so it can be unloaded</font>
+
+<p><font face="Helvetica" size="-1"><b>SYNOPSIS </b></font><font face="Times" size="+1"><b>#import &lt;net/netif.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">void <b>if_detach(</b>netif_t <i>netif</i><b>)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>ARGUMENTS </b></font><font face="Times" size="+1"><i>netif</i>:&nbsp; The module to detach.</font>
+
+<p><font face="Helvetica" size="-1"><b>DESCRIPTION </b></font><font face="Times" size="+1">The <b>if_detach()</b> function removes <i>netif</i> from the system lists of attached netifs.&nbsp; You should call this function before unloading a network module.</font>
+
+<p><font face="Helvetica" size="-1"><b>EXAMPLE </b></font><font face="Courier">netif_t ni;</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">for (ni = iflist_first(); ni != NULL; ni = iflist_next(ni)) {</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">if (if_unit(ni) == myunit &amp;&amp; if_type(ni) == mytype &amp;&amp;</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">strcmp(if_name(ni), myname) == 0) {</font><br>
+<img src="../../../../Images/sp.gif" width=189 height=1><font face="Courier">if_detach(ni);</font><br>
+<img src="../../../../Images/sp.gif" width=189 height=1><font face="Courier">break;</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">}</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">}</font>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>if_flags(), if_flags_set()</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SUMMARY </b></font><font face="Times" size="+1">Get or set the flags associated with a netif</font>
+
+<p><font face="Helvetica" size="-1"><b>SYNOPSIS </b></font><font face="Times" size="+1"><b>#import &lt;net/netif.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">unsigned int <b>if_flags(</b>netif_t <i>netif</i><b>)</b></font><br>
+<font face="Times" size="+1">void <b>if_flags_set(</b>netif_t <i>netif</i>, unsigned int <i>flags</i><b>)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>ARGUMENTS </b></font><font face="Times" size="+1"><i>netif</i>:&nbsp; The module to get or set flags for.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><i>flags</i>:&nbsp; The new flags.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>DESCRIPTION </b></font><font face="Times" size="+1">The functions <b>if_flags()</b> and <b>if_flags_set()</b> get and set, respectively, the flags associated with <i>netif</i>.&nbsp; Only the module corresponding to <i>netif</i> should use <b>if_flags_set()</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Possible flag values are:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">IFF_UP:</font></td>
+
+<td><font face="Times" size="+1">If true, this interface is working.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">IFF_BROADCAST:</font></td>
+
+<td><font face="Times" size="+1">If true, this interface supports broadcast.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">IFF_LOOPBACK:</font></td>
+
+<td><font face="Times" size="+1">If true, this interface is local only.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">IFF_POINTTOPOINT:</font></td>
+
+<td><font face="Times" size="+1">If true, this is a point-to-point interface.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>EXAMPLE </b></font><font face="Courier">if_flags_set(ifp, if_flags(ifp) | IFF_UP);</font>
+
+<p><font face="Helvetica" size="-1"><b>SEE ALSO </b></font><font face="Times" size="+1"><b>if_attach()</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>if_handle_input()</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SUMMARY </b></font><font face="Times" size="+1">Dispatch an input packet to a protocol handler</font>
+
+<p><font face="Helvetica" size="-1"><b>SYNOPSIS </b></font><font face="Times" size="+1"><b>#import &lt;net/netif.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">int <b>if_handle_input(</b>netif_t <i>netif</i>, netbuf_t <i>packet</i>, void *<i>extra</i><b>)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>ARGUMENTS </b></font><font face="Times" size="+1"><i>netif</i>:&nbsp; This module, which must be a network device driver.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><i>packet</i>:&nbsp; The input packet.</font>
+
+<p><font face="Times" size="+1"><i>extra</i>:&nbsp; Any extra data that might be needed by the protocol handler.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>DESCRIPTION </b></font><font face="Times" size="+1">Call this in a network device driver to have an input packet dispatched to a protocol handler.&nbsp; This function calls the input functions of one or more protocol handlers, passing along the <i>packet</i> and <i>extra</i> arguments.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This function returns EAFNOSUPPORT if no protocol handler accepts the packet.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>EXAMPLE </b></font><font face="Courier">if (nb == 0) {</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">printf (&#34;Error:&nbsp; buffer is null\n&#34;);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">goto resetup;</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">}</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">else {</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">if_handle_input(netif, nb, NULL);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">}</font>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>if_ierrors(), if_ierrors_set(), if_oerrors(), if_oerrors_set()</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SUMMARY </b></font><font face="Times" size="+1">Get or set the number of input or output errors</font>
+
+<p><font face="Helvetica" size="-1"><b>SYNOPSIS </b></font><font face="Times" size="+1"><b>#import &lt;net/netif.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">unsigned int <b>if_ierrors(</b>netif_t <i>netif</i><b>)</b></font><br>
+<font face="Times" size="+1">void <b>if_ierrors_set(</b>netif_t <i>netif</i>, unsigned int <i>ierrors</i><b>)</b></font><br>
+<font face="Times" size="+1">unsigned int <b>if_oerrors(</b>netif_t <i>netif</i><b>)</b></font><br>
+<font face="Times" size="+1">void <b>if_oerrors_set(</b>netif_t <i>netif</i>, unsigned int <i>oerrors</i><b>)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>ARGUMENTS </b></font><font face="Times" size="+1"><i>netif</i>:&nbsp; The module for which to access the number of errors.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><i>ierrors</i>:&nbsp; The number of input errors.</font>
+
+<p><font face="Times" size="+1"><i>oerrors</i>:&nbsp; The number of output errors.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>DESCRIPTION </b></font><font face="Times" size="+1">The functions <b>if_ierrors()</b> and <b>if_ierrors_set()</b> get and set, respectively, the number of input errors encountered.&nbsp; Only the module corresponding to <i>netif</i> should call <b>if_ierrors_set().</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The <b>if_oerrors()</b> function and the <b>if_oerrors_set()</b> function get and set the number of output errors encountered.&nbsp; Again, only the <i>netif</i>'s module should call <b>if_oerrors_set()</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>EXAMPLE </b></font><font face="Courier">error = if_output(lowernetif, nb, (void *)addr);</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">if (error == 0)</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">if_opackets_set(netif, if_opackets(netif) + 1);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">else</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">if_oerrors_set(netif, if_oerrors(netif) + 1);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">return (error);</font>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>if_ipackets(), if_ipackets_set(), if_opackets(), if_opackets_set()</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SUMMARY </b></font><font face="Times" size="+1">Get or set the number of packets received or sent</font>
+
+<p><font face="Helvetica" size="-1"><b>SYNOPSIS </b></font><font face="Times" size="+1"><b>#import &lt;net/netif.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">unsigned int <b>if_ipackets(</b>netif_t <i>netif</i><b>)</b></font><br>
+<font face="Times" size="+1">void <b>if_ipackets_set(</b>netif_t <i>netif</i>, unsigned int <i>ipackets</i><b>)</b></font><br>
+<font face="Times" size="+1">unsigned int <b>if_opackets(</b>netif_t <i>netif</i><b>)</b></font><br>
+<font face="Times" size="+1">void <b>if_opackets_set(</b>netif_t <i>netif</i>, unsigned int <i>opackets</i><b>)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>ARGUMENTS </b></font><font face="Times" size="+1"><i>netif</i>:&nbsp; The module whose packet information is to be accessed.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><i>ipackets</i>:&nbsp; The number of input packets handled by this module since it was loaded.</font>
+
+<p><font face="Times" size="+1"><i>opackets</i>:&nbsp; The number of packets sent to a lower level by this module since it was loaded.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>DESCRIPTION </b></font><font face="Times" size="+1">The <b>if_ipackets()</b> function gets and the <b>if_ipackets_set()</b> function sets the number of input packets handled.&nbsp; Only the module specified by <i>netif</i> should call <b>if_ipackets_set()</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Similarly, <b>if_opackets()</b> gets and <b>if_opackets_set()</b> sets the number of output packets sent.&nbsp; Only <i>netif</i>'s module should call <b>if_opackets_set()</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>EXAMPLE </b></font><font face="Courier">error = if_output(lowernetif, nb, (void *)addr);</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">if (error == 0) {</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">if_opackets_set(netif, if_opackets(netif) + 1);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">} else {</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">if_oerrors_set(netif, if_oerrors(netif) + 1);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">}</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">return (error);</font>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>if_mtu(), if_name(), if_private(), if_type(), if_unit()</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SUMMARY </b></font><font face="Times" size="+1">Get information about a netif</font>
+
+<p><font face="Helvetica" size="-1"><b>SYNOPSIS </b></font><font face="Times" size="+1"><b>#import &lt;net/netif.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">unsigned int <b>if_mtu(</b>netif_t <i>netif</i><b>)</b></font><br>
+<font face="Times" size="+1">const char *<b>if_name(</b>netif_t <i>netif</i><b>)</b></font><br>
+<font face="Times" size="+1">void *<b>if_private(</b>netif_t <i>netif</i><b>)</b></font><br>
+<font face="Times" size="+1">const char *<b>if_type(</b>netif_t <i>netif</i><b>)</b></font><br>
+<font face="Times" size="+1">unsigned int <b>if_unit(</b>netif_t <i>netif</i><b>)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>ARGUMENTS </b></font><font face="Times" size="+1"><i>netif</i>:&nbsp; The netif whose data is being requested.</font>
+
+<p><font face="Helvetica" size="-1"><b>DESCRIPTION </b></font><font face="Times" size="+1">These functions return the following information about <i>netif</i>:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>if_mtu()</b>:</font></td>
+
+<td><font face="Times" size="+1">Its maximum transfer unit (for example, <b>1500</b> for Ethernet).</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>if_name()</b>:</font></td>
+
+<td><font face="Times" size="+1">Its name (for example, &quot;en&quot;).</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>if_private()</b>:</font></td>
+
+<td><font face="Times" size="+1">Its private data.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>if_type()</b>:</font></td>
+
+<td><font face="Times" size="+1">Its type string (for example, &quot;10MB Ethernet&quot;).</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>if_unit()</b>:</font></td>
+
+<td><font face="Times" size="+1">Its unit number (for example, <b>0</b>).</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">See Chapter 8 for more information on netifs.&nbsp; Only the module specified by <i>netif</i> should call <b>if_private()</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>EXAMPLE </b></font><font face="Courier">((venip_private_t *)if_private(netif))-&gt;lowernetif = realnetif;</font>
+
+<p><font face="Helvetica" size="-1"><b>SEE ALSO </b></font><font face="Times" size="+1"><b>if_flags()</b>, <b>if_flags_set()</b>, <b>if_attach()</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>if_registervirtual()</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SUMMARY </b></font><font face="Times" size="+1">Register a callback function that calls <b>if_attach()</b></font>
+
+<p><font face="Helvetica" size="-1"><b>SYNOPSIS </b></font><font face="Times" size="+1"><b>#import &lt;net/netif.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">void <b>if_registervirtual(</b>if_attach_func_t <i>attach_func</i>, void *<i>private</i><b>)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>ARGUMENTS </b></font><font face="Times" size="+1"><i>attach_func</i>:&nbsp; The callback function.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><i>private</i>:&nbsp; Data to be passed to the callback function.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>DESCRIPTION </b></font><font face="Times" size="+1">For use by protocol handlers and packet sniffers.&nbsp; This function registers a callback function that should call <b>if_attach()</b>.&nbsp; See Chapter 8 for more information on implementing this callback function.</font>
+
+<p><font face="Helvetica" size="-1"><b>EXAMPLE </b></font><font face="Courier">if_registervirtual(myhandler_attach, NULL);</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>iflist_first(), iflist_next()</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SUMMARY </b></font><font face="Times" size="+1">Find the first or next netif in the system netif list</font>
+
+<p><font face="Helvetica" size="-1"><b>SYNOPSIS </b></font><font face="Times" size="+1"><b>#import &lt;net/netif.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">netif_t <b>iflist_first(</b>void<b>)</b></font><br>
+<font face="Times" size="+1">netif_t <b>iflist_next(</b>netif_t <i>netif</i><b>)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>ARGUMENTS </b></font><font face="Times" size="+1"><i>netif</i>:&nbsp; The previous netif in the list.</font>
+
+<p><font face="Helvetica" size="-1"><b>DESCRIPTION </b></font><font face="Times" size="+1">These functions are useful for cycling through the system list of attached netifs.&nbsp; The <b>iflist_first()</b> function returns the first netif in the list.&nbsp; The <b>iflist_next()</b> function returns the netif after <i>netif</i> in the list.</font>
+
+<p><font face="Helvetica" size="-1"><b>EXAMPLE </b></font><font face="Courier">netif_t ni;</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">for (ni = iflist_first(); ni != NULL; ni = iflist_next(ni)) {</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">printf(&#34;name: %s%d, type: %s\n&#34;, if_name(ni), if_type(ni));</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">}</font>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>inet_queue()</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SUMMARY </b></font><font face="Times" size="+1">Give an IP input packet to the kernel for processing</font>
+
+<p><font face="Helvetica" size="-1"><b>SYNOPSIS </b></font><font face="Times" size="+1"><b>#import &lt;net/netif.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><b>#import &lt;net/netbuf.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">void <b>inet_queue(</b>netif_t <i>netif</i>, netbuf_t <i>netbuf</i><b>)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>ARGUMENTS </b></font><font face="Times" size="+1"><i>netif</i>:&nbsp; The protocol handler.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><i>netbuf</i>:&nbsp; The packet to hand over.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>DESCRIPTION </b></font><font face="Times" size="+1">IP protocol handlers wishing to hand over their input packets to the kernel for processing should call this function.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">You can safely call this function from an interrupt handler, since it doesn't block.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>EXAMPLE </b></font><font face="Courier">nb_shrink_top(netbuf, HDRSIZE);</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">if_ipackets_set(netif, if_ipackets(netif) + 1);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">inet_queue(netif, netbuf);</font>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>nb_alloc(), nb_alloc_wrapper()</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SUMMARY </b></font><font face="Times" size="+1">Allocate a netbuf or a netbuf wrapper</font>
+
+<p><font face="Helvetica" size="-1"><b>SYNOPSIS </b></font><font face="Times" size="+1"><b>#import &lt;net/netbuf.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">netbuf_t <b>nb_alloc(</b>unsigned int <i>size</i><b>)</b></font><br>
+<font face="Times" size="+1">netbuf_t <b>nb_alloc_wrapper(</b>void *<i>data</i>, unsigned int <i>size</i>, void <i>freefunc</i>(void *), void *<i>freefunc_arg</i><b>)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>ARGUMENTS </b></font><font face="Times" size="+1"><i>size&reg;</i>:&nbsp; The size of the data to be stored.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><i>data</i>:&nbsp; The data to be stored.</font>
+
+<p><font face="Times" size="+1"><i>freefunc</i>:&nbsp; The function to be called when the netbuf is freed.</font>
+
+<p><font face="Times" size="+1"><i>freefunc_arg</i>:&nbsp; The argument to be passed to <i>freefunc</i>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>DESCRIPTION </b></font><font face="Times" size="+1">The <b>nb_alloc()</b> function allocates a netbuf containing <i>size</i> bytes.&nbsp; It returns the netbuf.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The <b>nb_alloc_wrapper()</b> function allocates only a wrapper for a netbuf.&nbsp; Use this function when you have already allocated space for the packet.&nbsp; The returned netbuf's original start of data is <i>data</i>, and its bottom pointer is initialized to <i>data</i> + <i>size</i></font> <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font><font face="Times" size="+1">1.&nbsp; If <b>nb_free()</b> is called on the returned netbuf, <i>freefunc</i> will be called with the argument <i>freefunc_arg</i>.&nbsp; The value of <i>freefunc</i> can't be null.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">Don't call either <b>nb_alloc()</b> or <b>nb_alloc_wrapper()</b> from an interrupt handler.&nbsp; (Both functions can sleep.)</font>
+
+<p><font face="Times" size="+1">Both <b>nb_alloc()</b> and <b>nb_alloc_wrapper()</b> return a null pointer if they fail.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>EXAMPLE </b></font><font face="Courier">nb = nb_alloc_wrapper((void *)buf, HDR_SIZE + MYMTU,</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">mydriver_buf_put, (void *)buf);</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SEE ALSO </b></font><font face="Times" size="+1"><b>nb_free()</b>, <b>nb_free_wrapper()</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>nb_free(), nb_free_wrapper()</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SUMMARY </b></font><font face="Times" size="+1">Free a netbuf or only its wrapper</font>
+
+<p><font face="Helvetica" size="-1"><b>SYNOPSIS </b></font><font face="Times" size="+1"><b>#import &lt;net/netbuf.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">void <b>nb_free(</b>netbuf_t <i>nb</i><b>)</b></font><br>
+<font face="Times" size="+1">void <b>nb_free_wrapper(</b>netbuf_t <i>nb</i><b>)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>ARGUMENTS </b></font><font face="Times" size="+1"><i>nb</i>:&nbsp; The netbuf to be freed (or whose wrapper is to be freed).</font>
+
+<p><font face="Helvetica" size="-1"><b>DESCRIPTION </b></font><font face="Times" size="+1">The <b>nb_free()</b> function frees the netbuf <i>nb</i>.&nbsp; The <b>nb_free_wrapper()</b> function frees only the wrapper of <i>nb</i>, leaving its data area intact.</font>
+
+<p><font face="Helvetica" size="-1"><b>EXAMPLE </b></font><font face="Courier">nb_free_wrapper(nb);</font>
+
+<p><font face="Helvetica" size="-1"><b>SEE ALSO </b></font><font face="Times" size="+1"><b>nb_alloc()</b>, <b>nb_alloc_wrapper()</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>nb_grow_bot(), nb_shrink_bot(), nb_grow_top(), nb_shrink_top()</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SUMMARY </b></font><font face="Times" size="+1">Change the size of a netbuf</font>
+
+<p><font face="Helvetica" size="-1"><b>SYNOPSIS </b></font><font face="Times" size="+1"><b>#import &lt;net/netbuf.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">int <b>nb_grow_bot(</b>netbuf_t <i>nb</i>, unsigned int <i>size</i><b>)</b></font><br>
+<font face="Times" size="+1">int <b>nb_shrink_bot(</b>netbuf_t <i>nb</i>, unsigned int <i>size</i><b>)</b></font><br>
+<font face="Times" size="+1">int <b>nb_grow_top(</b>netbuf_t <i>nb</i>, unsigned int <i>size</i><b>)</b></font><br>
+<font face="Times" size="+1">int <b>nb_shrink_top(</b>netbuf_t <i>nb</i>, unsigned int <i>size</i><b>)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>ARGUMENTS </b></font><font face="Times" size="+1"><i>nb</i>:&nbsp; The netbuf to be affected.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><i>size</i>:&nbsp; The number of bytes to add or delete from the top or bottom pointer.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>DESCRIPTION </b></font><font face="Times" size="+1">The <b>nb_grow_bot()</b> function moves the bottom pointer down.&nbsp; After this call, the data is assumed to end <i>size</i> bytes after where it used to end (the data area has effectively grown).</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The <b>nb_shrink_bot()</b> function moves the bottom pointer up, effectively shrinking the data area.&nbsp; After this call, the data is assumed to end <i>size</i> bytes before where it used to end.</font>
+
+<p><font face="Times" size="+1">The <b>nb_grow_top()</b> function moves the top pointer up, enlarging the data area.&nbsp; After this call, the data is assumed to start <i>size </i>bytes before where it used to start.</font>
+
+<p><font face="Times" size="+1">The <b>nb_shrink_top()</b> function moves the top pointer down, shrinking the data area.&nbsp; After this call, the data is assumed to start <i>size</i> bytes beyond where it used to start.</font>
+
+<p><font face="Times" size="+1">These functions perform no error checking, so they always succeed and return zero.</font>
+
+<p><font face="Helvetica" size="+1"><b>Warning:</b></font>&nbsp; <font face="Times" size="+1">Writing to space outside of the original starting and ending points will cause serious errors, since the extra memory doesn't belong to the netbuf data section.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>EXAMPLE </b></font><font face="Courier">nb_shrink_top(netbuf, HDRSIZE);</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">if_ipackets_set(netif, if_ipackets(netif) + 1);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">inet_queue(netif, netbuf);</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SEE ALSO </b></font><font face="Times" size="+1"><b>nb_size()</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>nb_map()</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SUMMARY </b></font><font face="Times" size="+1">Get a pointer to the data stored in a netbuf</font>
+
+<p><font face="Helvetica" size="-1"><b>SYNOPSIS </b></font><font face="Times" size="+1"><b>#import &lt;net/netbuf.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">char *<b>nb_map(</b>netbuf_t <i>nb</i><b>)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>ARGUMENTS </b></font><font face="Times" size="+1"><i>nb</i>:&nbsp; The netbuf whose data you want.</font>
+
+<p><font face="Helvetica" size="-1"><b>DESCRIPTION </b></font><font face="Times" size="+1">Returns a pointer to the data stored in <i>nb</i>.&nbsp; The pointer is valid only until another <b>nb_*()</b> function is called on <i>nb</i>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This function returns a null pointer if it fails.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>EXAMPLE </b></font><font face="Courier">char *map = nb_map(nb);</font>
+
+<p><font face="Helvetica" size="-1"><b>SEE ALSO </b></font><font face="Times" size="+1"><b>nb_read()</b>, <b>nb_write()</b>, <b>nb_size()</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>nb_read(), nb_write()</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SUMMARY </b></font><font face="Times" size="+1">Access data in a netbuf</font>
+
+<p><font face="Helvetica" size="-1"><b>SYNOPSIS </b></font><font face="Times" size="+1"><b>#import &lt;net/netbuf.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">int <b>nb_read(</b>netbuf_t <i>nb</i>, unsigned int <i>offset</i>, unsigned int <i>size</i>, void *<i>target</i><b>)</b></font><br>
+<font face="Times" size="+1">int <b>nb_write(</b>netbuf_t <i>nb</i>, unsigned int <i>offset</i>, unsigned int <i>size</i>, void *<i>source</i><b>)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>ARGUMENTS </b></font><font face="Times" size="+1"><i>nb</i>:&nbsp; The netbuf whose data you want to read or write.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><i>offset</i>:&nbsp; The offset of the start of data from the beginning of the netbuf.</font>
+
+<p><font face="Times" size="+1"><i>size</i>:&nbsp; The number of bytes to be read or written.</font>
+
+<p><font face="Times" size="+1"><i>target</i>:&nbsp; The place to put the data.</font>
+
+<p><font face="Times" size="+1"><i>source</i>:&nbsp; The place to read the data from.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>DESCRIPTION </b></font><font face="Times" size="+1">The <b>nb_read()</b> function reads data from <i>nb</i> into <i>target</i>.&nbsp; It starts at offset <i>offset</i> from the starting point in the data and reads <i>size </i>bytes into <i>target</i>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The <b>nb_write()</b> function writes data into <i>nb</i>.&nbsp; It starts writing at offset <i>offset</i> from the starting point in the data and writes <i>size </i>bytes from <i>source</i>.</font>
+
+<p><font face="Times" size="+1">Both <b>nb_read()</b> and <b>nb_write()</b> return zero if the call was successful; otherwise, they return a nonzero value.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>EXAMPLE </b></font><font face="Courier">char&nbsp;&nbsp;&nbsp; buf[MAXTRAILERBUF];</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">/*</font><br>
+<img src="../../../../Images/sp.gif" width=112 height=1><font face="Courier">* Save copy of data.</font><br>
+<img src="../../../../Images/sp.gif" width=112 height=1><font face="Courier">*/</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">nb_read(nb, HDRSIZE, offset, &amp;buf);</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SEE ALSO </b></font><font face="Times" size="+1"><b>nb_map()</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>nb_size()</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SUMMARY </b></font><font face="Times" size="+1">Get the size of the data stored in a netbuf</font>
+
+<p><font face="Helvetica" size="-1"><b>SYNOPSIS </b></font><font face="Times" size="+1"><b>#import &lt;net/netbuf.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">unsigned int <b>nb_size(</b>netbuf_t <i>nb</i><b>)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>ARGUMENTS </b></font><font face="Times" size="+1"><i>nb</i>:&nbsp; The netbuf to get the size of.</font>
+
+<p><font face="Helvetica" size="-1"><b>DESCRIPTION </b></font><font face="Times" size="+1">Returns the size (in bytes) of the data stored by <i>nb</i>.</font>
+
+<p><font face="Helvetica" size="-1"><b>EXAMPLE </b></font><font face="Courier">if (HDRSIZE + offset + size &gt; nb_size(nb)) {</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">return (EAFNOSUPPORT);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SEE ALSO </b></font><font face="Times" size="+1"><b>nb_grow_bot()</b>, <b>nb_shrink_bot()</b>, <b>nb_grow_top()</b>, <b>nb_shrink_top()</b>, <b>nb_map()</b></font></td></tr>
+
+</table>
+
+
+
+<p><br><br>
+
+</body>
+</html>

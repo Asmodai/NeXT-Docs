@@ -1,0 +1,1236 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/EnterpriseObjects/Reference/1_AccessLayer/Classes/EORelationship.rtf -->
+<!-- Date: Sun Jan  1 17:05:22 2023 -->
+<head>
+<title>EORelationship</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>EORelationship</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Inherits From:</b></font></td>
+
+<td><font face="Times" size="+1">NSObject</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">eoaccess/EORelationship.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">An EORelationship describes a relationship from one EOEntity to another, based on attributes of the two entities. By defining EORelationships in your application's EOModel, you can cause the relationships defined in the database to be automatically resolved as enterprise objects are fetched. For example, an</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entity may contain its department ID as an attribute, but without an EORelationship this will only appear in an employee enterprise object as a number. With an EORelationship explicitly connecting the</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entity to the</font> <font face="Helvetica" size="+1">Department</font> <font face="Times" size="+1">entity, an employee enterprise object will automatically be given its department enterprise object when an EODatabaseChannel fetches it from the database.</font>
+
+<p><font face="Times" size="+1">You usually define relationships in your EOModel with the EOModeler application, which is documented in the <i>Enterprise Objects Framework Developer's Guide</i>, Chapter 5, &quot;Using EOModeler.&quot; EORelationships are primarily for use by the Enterprise Objects Framework; unless you have special needs you shouldn't need to access them in your application's code.</font>
+
+<p><font face="Times" size="+1">A relationship is directional: One entity is considered the source, and the other is considered the destination. The relationship belongs to the source entity, and may only be traversed from source to destination. To simulate a two-way relationship you have to create an EORelationship for each direction.</font>
+
+<p><font face="Times" size="+1">Most relationships simply relate the objects of one entity to those of another by comparing attribute values between them. Such a relationship must be defined as to-one or to-many based on how many objects of the destination match each object of the source. This is called the <i>cardinality</i> of the relationship. In a to-one relationship, there must be exactly one destination object for each source object; in a to-many relationship there can be any number of destination objects for each source object. See &quot;Creating a Simple Relationship&quot; below for more information.</font>
+
+<p><font face="Times" size="+1">A chain of relationships across several entities can be <i>flattened</i>, creating a single relationship that spans them all. For example, a relationship between employees and departments and a relationship between departments and facilities can be flattened into a relationship going directly from employees to facilities. A flattened relationship is determined to be to-many or to-one based on the relationships it spans; if all are to-one, then the flattened relationship is to-one, but if any of them is to-many the flattened relationship is to-many. See &quot;Creating a Flattened Relationship&quot; below for more information.</font>
+
+<p><font face="Times" size="+1">Like the other major modeling classes, EORelationship provides a user dictionary for the application to store any auxiliary information it needs.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Creating a Simple Relationship</b></font>
+
+<p><font face="Times" size="+1">A simple relationship is defined by the attributes it compares in connecting its source and destination entities. Each source-destination pair of attributes is encapsulated in an EOJoin object, which also defines the way that the attributes should be compared and how the relationship should be evaluated. For example, to create a relationship from the</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entity to the </font><font face="Helvetica" size="+1">Department</font> <font face="Times" size="+1">entity, a join has to be created from the</font> <font face="Helvetica" size="+1">deptID</font> <font face="Times" size="+1">attribute of the</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entity to the same attribute of the </font><font face="Helvetica" size="+1">Department</font> <font face="Times" size="+1">entity). The values of these two attributes must be equal for a match to result. Note that</font> <font face="Helvetica" size="+1">deptID</font> <font face="Times" size="+1">is the primary key attribute for the</font> <font face="Helvetica" size="+1">Department</font> <font face="Times" size="+1">entity, so there can only be one department per employee; this relationship is therefore to-one.</font>
+
+<p><font face="Times" size="+1">This code excerpt creates an EORelationship for the relationship described above and adds it to the EOEntity for the</font> <font face="Helvetica" size="+1">Employee </font><font face="Times" size="+1">entity:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOEntity *employeeEntity;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOEntity *deptEntity;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAttribute *empDeptIDAttribute;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAttribute *deptIDAttribute;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOJoin *toDeptJoin;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EORelationship *toDeptRelationship;</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">empDeptIDAttribute = [employeeEntity attributeNamed:@&#34;deptID&#34;];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">deptIDAttribute = [deptEntity attributeNamed:@&#34;deptID&#34;];</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">toDeptJoin = [[[EOJoin alloc]</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">initWithSourceAttribute:empDeptIDAttribute</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">destinationAttribute:deptIDAttribute</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">joinOperatior:EOJoinEqualTo</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">joinSemantic:EOInnerJoin] autorelease];</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">toDeptRelationship = [[[EORelationship alloc]</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">initWithName:@&#34;toDepartment&#34;]] autorelease];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[toDeptRelationship addJoin:toDeptJoin];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[toDeptRelationship setToMany:NO];</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[employeeEntity addRelationship:toDeptRelationship];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This code first gets the attributes from the source and destination entities, and then creates an EOJoin with them. <b>EOJoinEqualTo</b> indicates that the values of the attributes must be equal for a match, and <b>EOInnerJoin</b> indicates that only objects that actually have a matching destination object will be included in the result when the relationship is traversed. Next, a new EORelationship is created, the EOJoin is added to it, and it's set as to-one. <b>employeeEntity</b> is then assigned the new EORelationship.</font>
+
+<p><font face="Times" size="+1">Creating a to-many relationship in the opposite direction merely swaps the source and destination attributes, and assigns the relationship to the EOEntity for the</font> <font face="Helvetica" size="+1">Department</font> <font face="Times" size="+1">entity:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOJoin *toEmployeesJoin;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EORelationship *toEmployeesRelationship;</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">toEmployeesJoin = [[[EOJoin alloc]</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">initWithSourceAttribute:deptIDAttribute</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">destinationAttribute:empDeptIDAttribute</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">joinOperatior:EOJoinEqualTo</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">joinSemantic:EOInnerJoin] autorelease];</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">toEmployeesRelationship = [[[EORelationship alloc]</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">initWithName:@&#34;toDepartment&#34;] autorelease];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[toEmployeesRelationship addJoin:toEmployeesJoin];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[toEmployeesRelationship setToMany:YES];</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[deptEntity addRelationship:toEmployeesRelationship];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Note that this relationship is to-many precisely because the destination attribute isn't the primary key for its entity (</font><font face="Helvetica" size="+1">Employee</font><font face="Times" size="+1">), and therefore isn't unique with regard to that entity.</font>
+
+<p><font face="Times" size="+1">A relationship isn't restricted to only one EOJoin. It's entirely possible for a relationship to be defined based on two or more attributes in the source and destination entities. For example, if the employees database contains a picture of each employee identified by first and last name (a contrived example, to be sure), you define the relationship by joining each of the first and last names in the</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entity to the same attribute in the</font> <font face="Helvetica" size="+1">EmpPhoto</font> <font face="Times" size="+1">attribute.</font>
+
+<p><font face="Times" size="+1">A simple relationship is considered to <i>reference</i> all of the attributes in its joins. You can use the <b>referencesProperty:</b> method to find out if an EORelationship references a particular attribute.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Creating a Flattened Relationship</b></font>
+
+<p><font face="Times" size="+1">A flattened relationship depends on several simple relationships already existing. Assuming that several do exist, creating a flattened relationship is straightforward. Suppose that, in addition to the</font> <font face="Helvetica" size="+1">toDepartment</font> <font face="Times" size="+1">relationship used above, the </font><font face="Helvetica" size="+1">Department</font> <font face="Times" size="+1">entity has a relationship to its facility (building)--the</font> <font face="Helvetica" size="+1">toFacility</font> <font face="Times" size="+1">relationship. This code excerpt creates a flattened relationship directly from</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">to each employee's facility:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOEntity *employeeEntity;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EORelationship *toFacilityRelationship;</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">toFacilityRelationship = [[EORelationship alloc]</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">initWithName:@&#34;toFacility&#34;];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[toFacilityRelationship setEntity:employeeEntity];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[toFacilityRelationship setDefinition:@&#34;toDepartment.toFacility&#34;];</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[employeeEntity addRelationship:toFacilityRelationship];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">All that's needed to establish the relationship is a <i>data path</i> (also called the <i>definition</i>) naming each component relationship connected, with the names separated by periods. Note that because the cardinality of a flattened relationship is determinable from its components, no <b>setToMany:</b> message is required here.</font>
+
+<p><font face="Times" size="+1">A simple relationship is considered to reference all of the relationships in its definition, plus every attribute referenced by the component relationships. You can use the <b>referencesProperty:</b> method to find out if an EORelationship references another relationship or attribute.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Variables</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">None declared in this class.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Initializing instances</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">initWithName:</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Setting the name</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setName:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">name</font><br>
+<font face="Times" size="+1">+ isValidName:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Using joins</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">addJoin:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">removeJoin:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">joins</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Getting attributes joined on</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">sourceAttributes</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">destinationAttributes</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Getting the definition</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">componentRelationships</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setDefinition:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">definition</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Getting the entities joined</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setEntity:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">entity</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">destinationEntity</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Checking type</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">isCompound</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">isFlattened</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Setting to-many</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setToMany:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">isToMany</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Checking references</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">referencesProperty:</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Setting the user dictionary</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setUserDictionary:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">userDictionary</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>isValidName</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ (BOOL)<b>isValidName:</b>(NSString *)<i>name</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if <i>name</i> is a legal name for a relationship, NO otherwise. This method merely sends <b>isValidName:</b> to the EOEntity class with <i>name</i> as the argument.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>addJoin:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>addJoin:</b>(EOJoin *)<i>aJoin</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Adds a source-destination attribute pair to the relationship. Returns YES if successful, NO if either of <i>aJoin</i>'s attributes already belongs to another join of the relationship or if the relationship is flattened.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>joins,</b></font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>isFlattened</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setDefinition:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>componentRelationships</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSArray *)<b>componentRelationships</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the array of sub-relationships that make up a flattened relationship, or nil if the relationship is not flattened.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>definition</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSString *)<b>definition</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the data path of a flattened relationship; for example &quot;toDepartment.toFacility&quot;. If the relationship isn't flattened, returns <b>nil</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>destinationAttributes</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSArray *)<b>destinationAttributes</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the destination EOAttributes of a simple (nonflattened) relationship. These correspond one-to-one with the attributes returned by <b>sourceAttributes</b>. Returns <b>nil</b> if the relationship is flattened.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>joins</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>destinationEntity</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(EOEntity *)<b>destinationEntity</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the relationship's destination entity, which is determined by the destination entity of its joins for a simple relationship, and by whatever ends the data path for a flattened relationship. For example, if a flattened relationship's definition is &quot;toDepartment.toFacility&quot; the destination entity is the</font> <font face="Helvetica" size="+1">Facility</font> <font face="Times" size="+1">entity.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>entity</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>entity</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(EOEntity *)<b>entity</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the relationship's source entity.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>destinationEntity</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>addRelationship:</b> (EOEntity)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>initWithName:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>initWithName:</b>(NSString *)<i>name</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Initializes a newly allocated EORelationship with <i>name</i> as its name. The EORelationship needs to have at least one join or a definition before it's usable. This is the designated initializer for the EORelationship class. Returns <b>self</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>isCompound</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>isCompound</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if the relationship has more than one join (that is, if it joins more than one pair of attributes), NO if it has only one join or is a flattened relationship. See &quot;Creating a Simple Relationship&quot; in the class description for information on compound relationships.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>isFlattened</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>isFlattened</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if the relationship traverses more than two entities, NO otherwise. See &quot;Creating a Flattened Relationship&quot; in the class description for an example of a flattened relationship.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>isToMany</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>isToMany</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if the relationship is to-many, NO if it's to-one.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setToMany:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>joins</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSArray *)<b>joins</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns all joins used by the relationship, or <b>nil</b> if the relationship is flattened.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>sourceAttributes</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>destinationAttributes</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>name</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSString *)<b>name</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the relationship's name.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>referencesProperty:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>referencesProperty:</b><i>aProperty</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if <i>aProperty</i> is an EORelationship in the relationship's data path or is an EOAttribute belonging to one of the relationship's joins, NO otherwise. See the class description for information of how relationships reference properties.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>referencesProperty:</b> (EOEntity)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>removeJoin:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>removeJoin:</b>(EOJoin *)<i>aJoin</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Deletes <i>aJoin</i> from the relationship. Does nothing if the relationship is flattened.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setDefinition:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setDefinition:</b>(NSString *)<i>definition</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Changes the relationship to a flattened relationship by releasing all of its joins and setting <i>definition</i> as its data path; for example &quot;toDepartment.toFacility&quot;. If the relationship doesn't have an entity, this method does nothing. See &quot;Creating a Flattened Relationship&quot; in the class description for more information on flattened relationships.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setEntity:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setEntity:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setEntity:</b>(EOEntity *)<i>anEntity</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the entity of the relationship to <i>anEntity</i>. You only need to use this method when creating a flattened relationship; use EOEntity's <b>addRelationship:</b> to associate an existing relationship with an entity.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setDefinition:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setName:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>setName:</b>(NSString *)<i>name</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the relationship's name to <i>name</i>. Returns YES if successful, NO if <i>name</i> is already in use by another attribute or relationship of the same entity.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setToMany:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>setToMany:</b>(BOOL)<i>flag</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets a simple relationship as to-many according to <i>flag</i>, and returns YES. Does nothing and returns NO if the receiver is flattened. See the class description for considerations in setting this flag.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>isFlattened</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setUserDictionary:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setUserDictionary:</b>(NSDictionary *)<i>aDictionary</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the dictionary of auxiliary data, which your application can use for whatever it needs. <i>aDictionary</i> must be a property list (that is, it must contain only NSString, NSData, NSArray, and NSDictionary objects).</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>sourceAttributes</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSArray *)<b>sourceAttributes</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the source EOAttributes of a simple (nonflattened) relationship. These correspond one-to-one with the attributes returned by <b>destinationAttributes</b>. Returns <b>nil</b> if the relationship is flattened.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>joins</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>userDictionary</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSDictionary *)<b>userDictionary</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns a dictionary of user data. Your application can use this data for whatever it needs. This dictionary is a property list (that is, it contains only NSString, NSData, NSArray, and NSDictionary objects).</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

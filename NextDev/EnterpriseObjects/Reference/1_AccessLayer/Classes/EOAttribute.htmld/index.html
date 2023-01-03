@@ -1,0 +1,1888 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/EnterpriseObjects/Reference/1_AccessLayer/Classes/EOAttribute.rtf -->
+<!-- Date: Sun Jan  1 17:05:17 2023 -->
+<head>
+<title>EOAttribute</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>EOAttribute</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Inherits From:</b></font></td>
+
+<td><font face="Times" size="+1">NSObject</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">eoaccess/EOAttribute.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">An EOAttribute represents a value property of an EOEntity, and associates an internal name used by the client application with an external name or definition used by the database (usually a column in a table). The property an EOAttribute represents may be a meaningful value, such as a salary or a name, or it may be an arbitrary value used for identification but with no real-world applicability (ID numbers and foreign keys for relationships fall into this category). An EOAttribute maintains type information for binding values to the instance variables of enterprise objects.</font>
+
+<p><font face="Times" size="+1">You usually define attributes in your EOModel with the EOModeler application, which is documented in the <i>Enterprise Objects Framework Developer's Guide</i>, Chapter 5, &quot;Using EOModeler.&quot; EOAttributes are primarily used by the Enterprise Objects Framework for generation of proper SQL; your code will probably make limited use of EOAttributes unless you're working at the adaptor level.</font>
+
+<p><font face="Times" size="+1">An attribute may be <i>simple</i>, <i>derived</i>, or <i>flattened</i>. A simple attribute corresponds to a single column in the database, and may be read or updated directly from or to the database. A simple EOAttribute may also be set as read-only with its <b>setReadOnly: </b>method. Read-only attributes of enterprise objects are never updated, and aren't inserted with new objects.</font>
+
+<p><font face="Times" size="+1">A derived attribute doesn't correspond to a single database column in its entity's database table, and is usually based on some other attribute, which is modified in some way. For example, if an</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entity has a simple monthly</font> <font face="Helvetica" size="+1">salary</font> <font face="Times" size="+1">attribute, you can define a derived</font> <font face="Helvetica" size="+1">annualSalary</font> <font face="Times" size="+1">attribute as &quot;salary * 12&quot;. Derived attributes, since they don't correspond to actual values in the database, are effectively read-only; it makes no sense to write a derived value.</font>
+
+<p><font face="Times" size="+1">A flattened attribute of an entity is actually an attribute of some other entity reached through a relationship; as such it's considered a kind of derived attribute. A flattened attribute's external definition is a data path ending in an attribute name. For example, if the</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entity has the relationship</font> <font face="Helvetica" size="+1">toDepartment</font> <font face="Times" size="+1">and the</font> <font face="Helvetica" size="+1">Department</font> <font face="Times" size="+1">entity has the attribute</font> <font face="Helvetica" size="+1">name</font><font face="Times" size="+1">, you can define</font> <font face="Helvetica" size="+1">deptName</font> <font face="Times" size="+1">as an attribute of your</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">EOEntity by creating an EOAttribute for it with a definition of &quot;toDepartment.name&quot;. Flattened attributes are also read-only, because of an ambiguity that arises should one be edited: Is the attribute to be changed in the object to which it belongs, or does the editing mean that the object to which the attribute refers should be changed? The Framework doesn't make this decision, leaving it to you to edit the object that owns the flattened attribute or to change the value for the relationship through which the flattened attribute is defined.</font>
+
+<p><font face="Times" size="+1">Like the other major modeling classes, EOAttribute provides a user dictionary for the application to store any auxiliary information it needs.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Mapping from Database to Objects</b></font>
+
+<p><font face="Times" size="+1">Every EOAttribute has an external type, which is the type used by the database to store its associated data, and an Objective C class used as the type for that data in the client application. The type used by the database is accessed with the <b>setExternalType:</b> and <b>externalType</b> methods. The class type used by the application is accessed with the <b>setValueClassName:</b> and <b>valueClassName</b> methods. You can map database types to a set of standard value classes, which includes:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">NSString</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">NSNumber</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">NSData</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">NSCalendarDate</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Database-specific adaptors automatically handle value conversions for these classes. You can also create your own custom value class, so long as you define a format that it uses to interpret data. The methods for setting this custom value type are <b>setValueType:</b> and <b>valueType</b>. Your value class must also implement the EODatabaseCustomValues protocol to work as a custom value; see that protocol specification for more information.</font>
+
+<p><font face="Times" size="+1">The handling of dates assumes by default that both the database server and the client application are running in the same, local, time zone. You can alter either time zone with the <b>setClientTimeZone:</b> and <b>setServerTimeZone:</b>. If the server and client time zones are different, the adaptor automatically converts dates as they pass into and out of the server. An attribute can also define a string format for dates with the <b>setCalendarFormat:</b> method, so that enterprise objects can properly display dates to the user of the application. A calendar format specifies how the components of a date are to be displayed; for example, as &quot;July 10, 1984&quot; or &quot;07/10/84.&quot; See the NSDate class specification in the Foundation Kit for more information.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>SQL Statement Formats</b></font>
+
+<p><font face="Times" size="+1">In addition to mapping database values to object values, an EOAttribute can alter the way values are selected, inserted, and updated in the database by defining special format strings. These format strings allow a client application to extend its reach right down to the server for certain operations. For example, you might want to view an employee's salary on a yearly basis, without defining a derived attribute as in a previous example. In this case, you could set the</font> <font face="Helvetica" size="+1">salary</font> <font face="Times" size="+1">attribute's SELECT statement format to &quot;salary * 12&quot; and the INSERT and UPDATE statement formats to &quot;salary / 12&quot;. Thus, whenever your application retrieves values for the</font> <font face="Helvetica" size="+1">salary</font> <font face="Times" size="+1">attribute they're multiplied by 12, and when it writes values back to the database they're divided by 12.</font>
+
+<p><font face="Times" size="+1">Your application can use any legal SQL value expression in a format string, and can even access server-specific features such as stored procedures. Accessing server-specific features can offer your application great flexibility in dealing with its server, but does limit its portability. You're responsible for ensuring that your SQL is well-formed and will be understood by the database server.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Creating a Simple Attribute</b></font>
+
+<p><font face="Times" size="+1">A simple attribute needs at least the following characteristics:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">A name unique within its EOEntity</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The name of a column in the database table for its entity (the external name)</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">A declaration of the type of that column as defined by the database and adaptor (the external type)</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">A declaration of the Objective C class used to represent values in the application</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">For Objective C value classes that require it, a subtype for such distinctions as between numeric types</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">For attributes defined as dates, a calendar format and time zone</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">You also have to set whether the attribute is part of its entity's primary key, is a class property, or is used for locking. See the EOEntity class description for more information on these three groups of attributes. This code excerpt gives an example of creating a simple EOAttribute and adding it to an EOEntity:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOEntity *employeeEntity;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAttribute *salaryAttribute;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSArray *empClassProps;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSArray *empLockAttributes;</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">salaryAttribute = [[EOAttribute alloc] initWithName:@&#34;salary&#34;];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[salaryAttribute setColumnName:@&#34;SALARY&#34;];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[salaryAttribute setExternalType:@&#34;money&#34;];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[salaryAttribute setValueClassName:&#34;NSNumber&#34;];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[salaryAttribute setValueType:@&#34;d&#34;];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[employeeEntity addAttribute:salaryAttribute];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[salaryAttribute release];</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">empClassProps = [[employeeEntity classProperties] mutableCopy];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[empClassProps addObject:salaryAttribute];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[employeeEntity setClassProperties:empClassProps];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[empClassProps release];</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">empLockAttributes = [[employeeEntity attributesUsedForLocking]</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">mutableCopy];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[empLockAttributes addObject:salaryAttribute];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[employeeEntity setAttributesUsedForLocking:empLockAttributes];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[empLockAttributes release];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This example doesn't illustrate calendar formats or time zones. See the descriptions of the <b>setCalendarFormat:</b>, <b>setServerTimeZone:</b>, and <b>setClientTimeZone:</b> methods for information on these characteristics.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Creating a Derived Attribute</b></font>
+
+<p><font face="Times" size="+1">A derived attribute depends on another attribute, so you base it on a definition including that attribute's name rather than on an external name. Because a derived attribute isn't mapped directly to anything in the database, you shouldn't include it in the entity's set of primary key attributes or attributes used for locking:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOEntity *employeeEntity;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAttribute *bonusAttribute;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSArray *empClassProps;</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">bonusAttribute = [[EOAttribute alloc] initWithName:@&#34;bonus&#34;];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[bonusAttribute setDefinition:@&#34;salary * 0.5&#34;];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[bonusAttribute setValueClassName:&#34;NSNumber&#34;];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[bonusAttribute setValueType:@&#34;d&#34;];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[employeeEntity addAttribute:bonusAttribute];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[bonusAttribute release];</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">empClassProps = [[employeeEntity classProperties] mutableCopy];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[empClassProps addObject:bonusAttribute];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[employeeEntity setClassProperties:empClassProps];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[empClassProps release];</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Creating a Flattened Attribute</b></font>
+
+<p><font face="Times" size="+1">A flattened attribute depends on a relationship, so you base it on a definition including that relationship's name rather than on an external name. Because a flattened attribute doesn't correspond directly to anything in its entity's table, you don't have to specify an external name, and shouldn't include it in the entity's set of primary key attributes or attributes used for locking:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOEntity *employeeEntity;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAttribute *deptNameAttribute;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSArray *empClassProps;</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">deptNameAttribute = [[EOAttribute alloc]</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">initWithName:@&#34;departmentName&#34;];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[deptNameAttribute setExternalType:@&#34;varchar&#34;];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[deptNameAttribute setDefinition:@&#34;toDepartment.name&#34;];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[deptNameAttribute setValueClassName:&#34;NSString&#34;];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[deptNameAttribute setExternalType:@&#34;varchar&#34;];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[employeeEntity addAttribute:deptNameAttribute];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[deptNameAttribute release];</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">empClassProps = [[employeeEntity classProperties] mutableCopy];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[empClassProps addObject:deptNameAttribute];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[employeeEntity setClassProperties:empClassProps];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[empClassProps release];</font>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Variables</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">None declared in this class.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types</b></font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Initializing new instances</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">initWithName:</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Getting the entity</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setEntity:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">entity</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Setting the name</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setName:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">name</font><br>
+<font face="Times" size="+1">+ isValidName:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Setting date information</font></td>
+
+<td><font face="Times" size="+1">+ defaultCalendarFormat</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setCalendarFormat:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">calendarFormat</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setClientTimeZone:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">clientTimeZone</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setServerTimeZone:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">serverTimeZone</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Setting external definitions</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setColumnName:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">columnName</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setDefinition:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">definition</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setExternalType:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">externalType</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Setting value type information</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setValueClassName:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">valueClassName</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setValueType:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">valueType</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Checking type information</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">referencesProperty:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">isDerived</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">isFlattened</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setReadOnly:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">isReadOnly</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Setting SQL statement formats</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setInsertFormat:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">insertFormat</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setSelectFormat:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">selectFormat</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setUpdateFormat:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">updateFormat</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Setting the user dictionary</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setUserDictionary:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">userDictionary</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>defaultCalendarFormat</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ (NSString *)<b>defaultCalendarFormat</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns a default calendar date format that's used when the EOAttribute doesn't have a calendar date format of its own. This default format is <b>%b %d %Y %H:%M</b>. See the NSDate class specification in the Foundation Kit for more information.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setCalendarFormat:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>isValidName:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ (BOOL)<b>isValidName:</b>(NSString *)<i>name</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if <i>name</i> is a legal name for an attribute, NO otherwise. This method merely sends <b>isValidName:</b> to the EOEntity class with <i>name</i> as the argument.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>calendarFormat</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSString *)<b>calendarFormat</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the format used when an NSDate object is initialized from a string (typed by the user of a client application, for example), or <b>nil</b> if it hasn't been set. A calendar format applies only to attributes that represent dates. See the NSDate class specification in the Foundation Kit for more information.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1">+ <b>defaultCalendarFormat</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>valueClassName</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>clientTimeZone</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSTimeZone *)<b>clientTimeZone</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the time zone used for NSDates in the client application, or the local time zone if one hasn't been set. An EOAdaptorChannel automatically converts dates between the time zones used by the database server and the client when fetching and saving values. Applies only to attributes that represent dates.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>serverTimeZone</b>, + <b>localTimeZone</b> (NSTimeZone)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>columnName</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSString *)<b>columnName</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the name of the attribute used in communication with the database server, or <b>nil</b> if the attribute isn't simple (that is, if it's derived or flattened). An adaptor uses this name to identify the column corresponding to the attribute. Your application should never need to use this name.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>definition</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>externalType</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>definition</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSString *)<b>definition</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns a derived or flattened attribute's definition, or <b>nil</b> if the attribute is simple. An attribute's definition is either a value expression defining a derived attribute, such as &quot;salary * 12&quot;, or a data path for a flattened attribute, such as &quot;toAuthor.name&quot;.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>columnName</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>externalType</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>entity</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(EOEntity *)<b>entity</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the entity that contains the attribute.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>externalType</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSString *)<b>externalType</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the name the adaptor uses for the attribute's type as it's stored in the database; for example, a Sybase &quot;varchar&quot; or an Oracle &quot;NUMBER&quot;.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>columnName</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>initWithName:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>initWithName:</b>(NSString *)<i>name</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Initializes a newly allocated EOAttribute with <i>name</i> as its name. The EOAttribute needs to belong to an EOEntity and have a column name or definition before it's usable. This is the designated initializer for the EOAttribute class. Returns <b>self</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>addAttribute:</b> (EOEntity),</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setColumnName:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setDefinition:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>insertFormat</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSString *)<b>insertFormat</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the format string used for including the attribute's value in a SQL INSERT statement. A <b>%V</b> in this string is replaced by the attribute's value when an INSERT statement is generated.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>selectFormat</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>updateFormat</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>isDerived</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>isDerived</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns NO if the attribute corresponds exactly to one column in the table associated with its entity, and YES if it doesn't. For example, an attribute with a definition of &quot;<i>otherAttributeName</i> + 1&quot; is derived. A derived attribute is always read-only.</font>
+
+<p><font face="Times" size="+1">Note that flattened attributes are also considered as derived attributes.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>isReadOnly</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>isFlattened</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setDefinition:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>isFlattened</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>isFlattened</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if the attribute is flattened, NO otherwise. A flattened attribute is one that's accessed through an entity's relationships but belongs to another entity.</font>
+
+<p><font face="Times" size="+1">Note that flattened attributes are also considered as derived attributes.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>isDerived</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setDefinition:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>isReadOnly</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>isReadOnly</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if the value of the attribute can't be modified, NO if it can. Derived and flattened attributes are always read-only.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>isDerived</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>name</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSString *)<b>name</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the attribute's name.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>columnName</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>definition</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>referencesProperty:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>referencesProperty:</b><i>aProperty</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if <i>aProperty</i> (an EOAttribute or EORelationship) is used in the attribute's external definition, NO otherwise. Only derived attributes reference other properties.</font>
+
+<p><font face="Times" size="+1">An attribute references a relationship if it's flattened through that relationship. For example, the flattened attribute for an employee's department name (as described in the class description) references the</font> <font face="Helvetica" size="+1">toDepartment</font> <font face="Times" size="+1">relationship of the</font> <font face="Helvetica" size="+1">Employee </font><font face="Times" size="+1">entity and the</font> <font face="Helvetica" size="+1">name</font> <font face="Times" size="+1">attribute of the</font> <font face="Helvetica" size="+1">Department</font> <font face="Times" size="+1">entity.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>isDerived</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>selectFormat</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSString *)<b>selectFormat</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the format string used for including the attribute's value in a SQL SELECT statement. A <b>%A</b> in this string is replaced by the attribute's external name when a SELECT statement is generated.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>insertFormat</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>updateFormat</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>serverTimeZone</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSTimeZone *)<b>serverTimeZone</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the time zone assumed for NSDates in the database server, or the local time zone if one hasn't been set. An EOAdaptorChannel automatically converts dates between the time zones used by the server and the client when fetching and saving values. Applies only to attributes that represent dates.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>clientTimeZone</b>, + <b>localTimeZone</b> (NSTimeZone)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setCalendarFormat:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setCalendarFormat:</b>(NSString *)<i>format</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets to <i>format</i> the format used when an NSDate object is initialized from a string (typed by the user of a client application, for example). This only applies to attributes that represent dates. See the NSDate class specification in the Foundation Kit for more information.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1">+ <b>defaultCalendarFormat</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setClientTimeZone:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setClientTimeZone:</b>(NSTimeZone *)<i>aTimeZone</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets to <i>aTimeZone</i> the time zone used for NSDates in the client application. If <i>aTimeZone</i> is <b>nil</b> then the local time zone is used by default. An EOAdaptorChannel automatically converts dates between the time zones used by the database server and the client when fetching and saving values. Applies only to attributes that represent dates.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setServerTimeZone:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setColumnName:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setColumnName:</b>(NSString *)<i>name</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets to <i>name</i> the name of the attribute used in communication with the database server. An adaptor uses this name to identify the column corresponding to the attribute; this name must match the name of a column in the database table corresponding to the attribute's entity.</font>
+
+<p><font face="Times" size="+1">This method makes a derived or flattened attribute simple; the definition is released and the column name takes its place for use with the server.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setDefiniton:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setDefinition:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setDefinition:</b>(NSString *)<i>definition</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets to <i>format</i> the attribute's definition as recognized by the database server. <i>format</i> should be either a value expression defining a derived attribute, such as &quot;salary * 12&quot;, or a data path for a flattened attribute, such as &quot;toAuthor.name&quot;.</font>
+
+<p><font face="Times" size="+1">This method converts a simple attribute into a derived or flattened attribute; the column name is released and the definition takes its place for use with the server.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setColumnName:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setEntity:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setEntity:</b>(EOEntity *)<i>anEntity</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the entity of the attribute to <i>anEntity</i>. You only need to use this method when creating a flattened or derived attribute; use EOEntity's <b>addAttribute:</b> to associate an existing attribute with an entity.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setDefinition:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setExternalType:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>setExternalType:</b>(NSString *)<i>typeName</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets to <i>typeName</i> the type used for the attribute in the database adaptor; for example, a Sybase &quot;varchar&quot; or an Oracle7 &quot;NUMBER&quot;. Each adaptor defines the set of types that can be supplied to <b>setExternalType:</b>. The external type you specify for a given attribute must correspond to the type used in the database server.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setInsertFormat:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setInsertFormat:</b>(NSString *)<i>aString</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets to <i>aString</i> the format string used for including the attribute's value in a SQL INSERT statement. A <b>%V</b> in this string is replaced by the attribute's value when an INSERT statement is generated. For example, an attribute with an insert format of &quot;%V + 5&quot; has its value increased by 5 when any enterprise object or row is inserted into the database.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setSelectFormat:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setUpdateFormat:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setName:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>setName:</b>(NSString *)<i>name</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the attribute's name to <i>name</i>. Returns YES if successful, NO if <i>name</i> is already in use by another attribute or relationship of the same entity.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setReadOnly:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>setReadOnly:</b>(BOOL)<i>flag</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets whether the value of the attribute can be modified according to <i>flag</i> and returns YES if successful. Derived and flattened attributes are always read-only; if you try to set one as read-write this method returns NO.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>isDerived</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setSelectFormat:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setSelectFormat:</b>(NSString *)<i>aString</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets to <i>aString</i> the format string used for including the attribute's value in a SQL SELECT statement. A <b>%A</b> in this string is replaced by the attribute's external name when a SELECT statement is generated. For example, setting the</font> <font face="Helvetica" size="+1">salary</font> <font face="Times" size="+1">attribute's select format to &quot;%A * 12&quot; causes its value to be multiplied by 12 as soon as it's fetched from the server.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setInsertFormat:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setUpdateFormat:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setServerTimeZone:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setServerTimeZone:</b>(NSTimeZone *)<i>aTimeZone</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets to <i>aTimeZone</i> the time zone used for NSDates in the database server. If <i>aTimeZone</i> is <b>nil</b> then the local time zone is used by default. An EOAdaptorChannel automatically converts dates between the time zones used by the server and the client when fetching and saving values. Applies only to attributes that represent dates.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setClientTimeZone:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setUpdateFormat:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setUpdateFormat:</b>(NSString *)<i>aString</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets to <i>aString</i> the format string used for including the attribute's value in a SQL UPDATE statement. A <b>%V</b> in this string is replaced by the attribute's value when an UPDATE statement is generated. For example, an attribute with an update format of &quot;%V + 5&quot; has its value increased by 5 when it's updated in the database.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setInsertFormat:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setSelectFormat:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setUserDictionary:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setUserDictionary:</b>(NSDictionary *)<i>aDictionary</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the dictionary of auxiliary data, which your application can use for whatever it needs. The dictionary must be a property list (that is, it must contain only NSString, NSData, NSArray, or NSDictionary objects).</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setValueClassName:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setValueClassName:</b>(const char *)<i>name</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the attribute's value class name to <i>name</i>. When an EOAdaptorChannel fetches data for the attribute, it's presented to the application as an instance of this class.</font>
+
+<p><font face="Times" size="+1">The class need not exist in the run-time system when this message is sent, but it must exist when an adaptor channel performs a fetch; if the class isn't present the result depends on the adaptor. See your adaptor's documentation for information on how absent value classes are handled.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setValueType:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setValueType:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setValueType:</b>(NSString *)<i>typeName</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets to <i>typeName</i> the format type for custom value classes, such as &quot;TIFF&quot; or &quot;RTF&quot;. This type name is used with the EODatabaseCustomValues protocol to identify data formats for custom values.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setValueClassName:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>updateFormat</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSString *)<b>updateFormat</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the format string used for including the attribute's value in a SQL UPDATE statement. A <b>%V</b> in this string is replaced by the attribute's value when an UPDATE statement is generated.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>insertFormat</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>selectFormat</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>userDictionary</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSDictionary *)<b>userDictionary</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns a dictionary of user data. Your application can use this to store any auxiliary information it needs. This dictionary is a property list (that is, it contains only NSString, NSData, NSArray, or NSDictionary objects).</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>valueClassName</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(const char *)<b>valueClassName</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the name of the class for value types (standard or custom). When data is fetched for the attribute, it's presented to the application as an instance of this class. For example, if a column from the database is represented by instances of NXImage this method returns &quot;NXImage&quot;.</font>
+
+<p><font face="Times" size="+1">This class must be present in the run-time system when an EOAdaptorChannel fetches data for the attribute; if the class isn't present the result depends on the adaptor. See your adaptor's documentation for information on how absent value classes are handled.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>valueType</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>valueType</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSString *)<b>valueType</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the format type for custom value classes, such as &quot;TIFF&quot; or &quot;RTF&quot;. This type name is used with the EODatabaseCustomValues protocol to identify data formats for custom values.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>valueClassName</b></font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

@@ -1,0 +1,3751 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/OperatingSystem/Part3_DriverKit/Reference/Classes/IODirectDevice.rtf -->
+<!-- Date: Sun Jan  1 17:01:10 2023 -->
+<head>
+<title>IODirectDevice</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>IODirectDevice</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Inherits From:</b></font></td>
+
+<td><font face="Times" size="+1">IODevice : Object</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">driverkit/IODirectDevice.h</font><br>
+<font face="Times" size="+1">driverkit/<i>architecture</i>/directDevice.h</font><br>
+<font face="Times" size="+1">driverkit/<i>architecture</i>/IOPCIDirectDevice.h</font><br>
+<font face="Times" size="+1">driverkit/<i>architecture</i>/IOPCMCIADirectDevice.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">IODirectDevice is a device-independent abstract class that is the superclass of all direct device driver classes. Most of the functionality of IODirectDevice is provided by device-dependent categories, which are described in detail below. IODirectDevice provides:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">An implementation of the <b>deviceStyle</b> IODevice class method, so IODirectDevice subclasses don't have to override it</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Methods for getting and setting IODirectDevice information, such as the interrupt port and the IODeviceDescription</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">A default I/O thread that listens for messages to the interrupt port</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">An efficient way to receive messages, to be used by drivers that provide their own I/O thread (see the <b>waitForInterrupt: </b>method description)</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">To use the default I/O thread, subclasses invoke one of the <b>startIOThread...</b> methods and implement one or more of the following methods:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>interruptOccurred</b> or <b>interruptOccurredAt:</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></b></font></td>
+
+<td><font face="Times" size="+1"><b>timeoutOccurred</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></b></font></td>
+
+<td><font face="Times" size="+1"><b>commandRequestOccurred</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></b></font></td>
+
+<td><font face="Times" size="+1"><b>otherOccurred:</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></b></font></td>
+
+<td><font face="Times" size="+1"><b>receiveMsg</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Each of these methods is invoked when the I/O thread receives a corresponding Mach message on its interrupt port. For example, when the kernel sends an IO_DEVICE_INTERRUPT_MSG Mach message to the interrupt port, the I/O thread receives it and invokes <b>interruptOccurred</b>. The documentation for <b>startIOThread</b> describes in detail how the I/O thread listens for Mach messages and which methods it invokes in response to which Mach messages.</font>
+
+<p><font face="Times" size="+1">Interrupt messages are the only Mach messages that the kernel automatically sends. If you want to receive other types of Mach messages, your driver or some other module it works with must explicitly send them. For example, if you want your driver's <b>timeoutOccurred</b> method to be invoked by the I/O thread, you must ensure that your driver sends an IO_TIMEOUT_MSG at some point. Some classes, such as IOEthernet, have this functionality built in. Others, such as IOSCSIController, don't. See the IOSCSIController class description for an example of how to send a message.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>ISA and EISA IODirectDevices</b></font>
+
+<p><font face="Times" size="+1">The IOEISADirectDevice category of IODirectDevice defined in the header file <b>driverkit/i386/directDevice.h</b> provides the following additional functionality for IODirectDevices that control hardware on ISA or EISA Intel-based computers:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Reserving and releasing ranges of I/O ports</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Reserving, releasing, enabling, and disabling interrupts (also known as <i>IRQs</i>)</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">A way of providing an interrupt handler, if interrupt messages aren't sufficient</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Mapping device memory into virtual memory</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Reserving and releasing DMA channels</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Starting DMA and dealing with DMA buffers</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Determining whether the computer has EISA slots</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">The ISA/EISA category works for all hardware attached to ISA and EISA computers--ISA slots, EISA slots, VL-Bus, and so on. Remember that EISA computers can have ISA slots, but ISA computers don't have EISA slots.</font>
+
+<p><font face="Times" size="+1">I/O ports, interrupts, device memory ranges, and DMA channels are collectively known as <i>resources</i>.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>PCI IODirectDevices</b></font>
+
+<p><font face="Times" size="+1">The IOPCIDirectDevice category of IODirectDevice defined in the header file <b>driverkit/i386/IOPCIDirectDevice.h</b> provides the following additional functionality for IODirectDevices that control hardware on PCI Intel-based computers:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Indicating whether the PCI bus is enabled or not</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Reading and writing the device's configuration space</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The PCI configuration space is memory available for configuation information for each device. A 256-byte portion is available for each device, addressed by the PCI anchor, which consists of three fields:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Device number between 0 and 31</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Function number between 0 and 7</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Bus number between 0 and 255</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Methods can either read or write the entire configuraion space or access individual 32-bit pieces, accessing it by a <i>register address</i>--a byte address into the 256-byte portion.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>PCMCIA IODirectDevices</b></font>
+
+<p><font face="Times" size="+1">The IOPCMCIADirectDevice category of IODirectDevice defined in the header file <b>driverkit/i386/IOPCMCIADirectDevice.h</b> provides the following additional functionality for IODirectDevices that control hardware on PCMCIA Intel-based computers:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Mapping and unmapping attribute memory</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Attribute memory resides on the PCMCIA card and contains tuples, i.e., configuration information that's stored on the card. To access attribute memory, you must map the memory using the mapping method; when you've completed your access, you must unmap it with the method provided. If you attempt to map the memory and it's already mapped, the mapping method returns failure status.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Local Equivalents of Resources</b></font>
+
+<p><font face="Times" size="+1">The ISA/EISA category refers to resources not by their actual numbers or addresses, but by their <i>local equivalent</i>. The local equivalent of a resource is the position (starting at 0) of that resource in the configuration list of all resources of that type.</font>
+
+<p><font face="Times" size="+1">For example, if a device is configured to have one DMA channel (DMA channel 6, for example), the local equivalent of that channel is 0. If a device is configured to have two DMA channels (specified in order as 4 and 6, for example), then channel 4 has the local equivalent of 0, and channel 6 has the local equivalent of 1.</font>
+
+<p><font face="Times" size="+1">Similarly, the first range of I/O ports in a device's configuration has the local equivalent of 0, the second range is 1, and so on.</font>
+
+<p><font face="Times" size="+1">The local equivalent is used in all ISA/EISA methods that refer to DMA channels, specific interrupts, I/O ports, and memory ranges. For example, to enable the first DMA channel in a device's configuration, a driver sends an <b>enableChannel:</b> message to <b>self</b>, specifying 0 as the channel.</font>
+
+<p><font face="Times" size="+1">See Chapter 4 and Chapter 5, &quot;Configuation Keys&quot; in &quot;Other Features&quot; for information on configuration files.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Implementing a Subclass</b></font>
+
+<p><font face="Times" size="+1">The IODirectDevice methods you must implement in a subclass depend on your driver's capabilities. To start with, you must implement all the methods that IODevice requires, except for <b>deviceStyle</b>, which is implemented by IODirectDevice. You must also implement <b>initFromDeviceDescription:</b> to perform any driver- or device-specific initialization.</font>
+
+<p><font face="Times" size="+1">If your device performs DMA, you must implement <b>startDMAForBuffer:channel:</b>.</font>
+
+<p><font face="Times" size="+1">If your device can interrupt, you generally need to implement either <b>interruptOccurred</b> (if your device uses only one interrupt) or <b>interruptOccurredAt:</b>. If your driver needs to handle some interrupts directly, instead of receiving interrupt notification by Mach messages, you must implement <b>getHandler:level:argument:forInterrupt:</b>.</font>
+
+<p><font face="Times" size="+1">If your driver uses other Mach messages, you might also need to implement <b>timeoutOccurred</b>, <b>commandRequestOccurred</b>, <b>otherOccurred:</b>, or <b>receiveMsg</b>.</font>
+
+<p><font face="Times" size="+1">Most drivers need an I/O thread, as discussed in Chapter 1. All Driver Kit subclasses of IODirectDevice (such as IOEthernet) provide an I/O thread for you, if necessary. However, if your class is a direct subclass of IODirectDevice, you need to provide your own I/O thread. You can do so by invoking one of the <b>startIOThread...</b> methods.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Variables</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">None declared in this class.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types (Architecture-Independent)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Freeing instances</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">free</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Registering the class</font></td>
+
+<td><font face="Times" size="+1">+ deviceStyle</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Getting and setting the interrupt port</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">attachInterruptPort</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">interruptPort</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Handling messages to the interrupt port</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">commandRequestOccurred</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">interruptOccurred</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">interruptOccurredAt:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">receiveMsg</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">timeoutOccurred</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">waitForInterrupt:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Running an I/O thread</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">startIOThread</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">startIOThreadWithPriority:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">startIOThreadWithFixedPriority:</td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Getting and setting the IODeviceDescription</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">deviceDescription</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setDeviceDescription:</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types (ISA/EISA Architecture)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Initializing instances</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">initFromDeviceDescription:</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Reserving I/O ports</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">reservePortRange:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">releasePortRange:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Dealing with interrupts</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">enableAllInterrupts</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">disableAllInterrupts</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">reserveInterrupt:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">releaseInterrupt:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">enableInterrupt:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">disableInterrupt:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">getHandler:level:argument:forInterrupt:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Mapping memory</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">mapMemoryRange:to:findSpace:cache:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">unmapMemoryRange:from:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Dealing with DMA channels</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">enableChannel:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">disableChannel:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">reserveChannel:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">releaseChannel:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Dealing with DMA buffers</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">startDMAForBuffer:channel:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">createDMABufferFor:length:read:needsLowMemory:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=333></td>
+
+<td><font face="Times" size="+1">limitSize:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">freeDMABuffer:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">abortDMABuffer:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Setting the DMA mode</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setTransferMode:forChannel:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setAutoinitialize:forChannel:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setIncrementMode:forChannel:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Using the EISA extended mode register</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setDMATransferWidth:forChannel:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setDMATiming:forChannel:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setEOPAsOutput:forChannel:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setStopRegisterMode:forChannel:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Getting a DMA channel's status</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">currentAddressForChannel:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">currentCountForChannel:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">getDMATransferWidth:forChannel:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">isDMADone:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Optional DMA locking</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">reserveDMALock</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">releaseDMALock</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Getting information about EISA slots</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">isEISAPresent</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">getEISAId:forSlot:</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types (PCI Architecture)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Determining if PCI bus support is enabled</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font face="Times" size="+1">+ isPCIPresent</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">isPCIPresent</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Reading and writing the entire configuration space</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font face="Times" size="+1">+ getPCIConfigSpace:withDeviceDescription:</font><br>
+<font face="Times" size="+1">+ setPCIConfigSpace:withDeviceDescription:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">getPCIConfigSpace:withDeviceDescription:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setPCIConfigSpace:withDeviceDescription:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Reading and writing the configuration space</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font face="Times" size="+1">+ getPCIConfigData:atRegister:withDeviceDescription:</font><br>
+<font face="Times" size="+1">+ setPCIConfigData:atRegister:withDeviceDescription:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">getPCIConfigData:atRegister:withDeviceDescription:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setPCIConfigData:atRegister:withDeviceDescription:</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types (PCMCIA Architecture)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Managing attribute memory</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">mapAttributeMemoryTo:findSpace:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">unmapAttributeMemory:</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Methods (Architecture-Independent)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>deviceStyle</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ (IODeviceStyle)<b>deviceStyle</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Reports the basic style of driver as IO_DirectDevice. Because IODirectDevice implements this method, its subclasses don't have to.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1">+ <b>deviceStyle</b> (IODevice)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods (Architecture-Independent)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>attachInterruptPort</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(IOReturn)<b>attachInterruptPort</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Creates the interrupt port, if none exists already, and requests that the interrupt port receive all interrupt messages for the device's reserved interrupts. This method is invoked whenever an interrupt is enabled. Returns IO_R_SUCCESS if successful; otherwise, returns IO_R_NOT_ATTACHED.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>interruptPort</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>enableAllInterrupts</b> (&quot;Instance Methods (ISA/EISA Architecture)&quot;)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>commandRequestOccurred</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>commandRequestOccurred</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Does nothing; subclasses can implement this method if desired. This method is invoked by the default I/O thread (implemented by <b>startIOThread...</b>) whenever it receives a bodyless message with ID IO_COMMAND_MSG. The part of a driver that handles user requests can use this message to notify the I/O thread that it should execute a command that's been placed in global data.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>startIOThread</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>deviceDescription</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>deviceDescription</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the IODeviceDescription associated with this instance.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setDeviceDescription:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>free</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>free</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Deallocates the IODirectDevice's memory and its interrupt port, if one exists. Returns <b>nil</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>interruptOccurred</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>interruptOccurred</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invokes <b>interruptOccurredAt:</b> with an argument of zero. This method is invoked by the default I/O thread (implemented by <b>startIOThread...</b>) whenever it receives a bodyless Mach message with the ID IO_DEVICE_INTERRUPT_MSG. Subclasses that support only one interrupt should implement this method so that it processes the hardware interrupt, as described in Chapter 1 and 2.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>interruptOccurredAt:,</b></font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>startIOThread</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>interruptOccurredAt:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>interruptOccurredAt:</b>(int)<i>localInterrupt</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Does nothing; subclasses that need to handle interrupts should implement this method so that it processes the hardware interrupt, as described in Chapter 1. This method is invoked by the default I/O thread (implemented by <b>startIOThread...</b>) whenever it receives a bodyless Mach message with an ID between IO_DEVICE_INTERRUPT_MSG_FIRST and IO_DEVICE_INTERRUPT_MSG_LAST (excluding IO_DEVICE_INTERRUPT_MSG).</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>interruptOccurred,</b></font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>startIOThread</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>interruptPort</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(port_t)<b>interruptPort</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the Mach port on which the IODirectDevice should receive interrupt messages. The returned <b>port_t</b> is in the context of the kernel I/O task.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>attachInterruptPort:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>otherOccurred:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>otherOccurred:</b>(int)<i>msgID</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Does nothing; subclasses can implement this method if desired. This method is invoked by the default I/O thread (implemented by <b>startIOThread...</b>) whenever it receives a bodyless message with an unrecognized ID. The ID is given in <i>msgID</i>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>receiveMsg</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>startIOThread</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>receiveMsg</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>receiveMsg</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Dequeues the next Mach message from the interrupt port and throws it away; subclasses can implement this method if desired to handle custom messages. This method is invoked by the default I/O thread (implemented by <b>startIOThread...</b>) whenever it tries to receive a message that has a body. To implement this message, you need to call <b>msg_receive()</b> on the interrupt port. In this sample implementation, fill in the italicized text between angle brackets, that is &lt;&lt; &gt;&gt;, with device-specific code:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">- (void)receiveMsg</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">{</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">IOReturn&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">port_t&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; inPort;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">MyMsg&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; myMsg;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">kern_return_t&nbsp;&nbsp; result;</font>
+
+<p><img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">inPort = [self interruptPort];</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">if (inPort == PORT_NULL) {</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">&lt;&lt; <i>React to having no interrupt port.</i> &gt;&gt;</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">return;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">myMsg.header.msg_size = sizeof (myMsg);</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">myMsg.header.msg_local_port = inPort;</font>
+
+<p><img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">result = msg_receive(&amp;myMsg.header, (msg_option_t)RCV_TIMEOUT, 0);</font>
+
+<p><img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">if (result != RCV_SUCCESS) {</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">IOLog(&#34;%s receiveMsg:&nbsp; msg_receive returns %d\n&#34;, result);</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">return;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">}</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">else {</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">switch (myMsg.header.msg_id) {</font><br>
+<img src="../../../../../Images/sp.gif" width=208 height=1><font face="Courier">case MyMsg1:</font><br>
+<img src="../../../../../Images/sp.gif" width=236 height=1><font face="Courier">[self handleMsg1];</font><br>
+<img src="../../../../../Images/sp.gif" width=236 height=1><font face="Courier">break;</font>
+
+<p><img src="../../../../../Images/sp.gif" width=208 height=1><font face="Courier">case MyMsg2:</font><br>
+<img src="../../../../../Images/sp.gif" width=236 height=1><font face="Courier">[self handleMsg2];</font><br>
+<img src="../../../../../Images/sp.gif" width=236 height=1><font face="Courier">break;</font><br>
+<img src="../../../../../Images/sp.gif" width=208 height=1><font face="Courier">.</font><br>
+<img src="../../../../../Images/sp.gif" width=208 height=1><font face="Courier">.</font><br>
+<img src="../../../../../Images/sp.gif" width=208 height=1><font face="Courier">.</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">}</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">}</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>otherOccurred:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>startIOThread</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setDeviceDescription:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setDeviceDescription:</b><i>deviceDescription</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Records <i>deviceDescription</i> as the IODeviceDescription associated with this instance. ISA/EISA-architecture devices don't need to invoke this method because <b>initFromDeviceDescription:</b> already does so.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>deviceDescription</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>startIOThread</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(IOReturn)<b>startIOThread</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invokes <b>attachInterruptPort</b> and, if attaching the interrupt port was successful, forks a thread to serve as the instance's I/O thread. This thread, which is appropriate for most drivers, sits in an endless loop that does the following:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Waits for a Mach message on the interrupt port by invoking <b>waitForInterrupt:</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">If the message couldn't be dequeued because it was too large, invokes <b>receiveMsg</b> so that the subclass can dequeue and handle the message itself</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">If the message is dequeued successfully, invokes one of five methods, depending on the message ID:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Message ID</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Method Invoked</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">IO_TIMEOUT_MSG</font></td>
+
+<td><font face="Times" size="+1">timeoutOccurred</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">IO_COMMAND_MSG</font></td>
+
+<td><font face="Times" size="+1">commandRequestOccurred</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">IO_DEVICE_INTERRUPT_MSG</font></td>
+
+<td><font face="Times" size="+1">interruptOccurred</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">IO_DEVICE_INTERRUPT_MSG_FIRST</font></td>
+
+<td><font face="Times" size="+1">interruptOccurredAt:</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">to IO_DEVICE_INTERRUPT_MSG_LAST</font></td>
+
+<td></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">(anything else)</font></td>
+
+<td><font face="Times" size="+1">otherOccurred:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the value returned by <b>attachInterruptPort</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>startIOThreadWithFixedPriority:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>startIOThreadWithPriority:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>startIOThreadWithFixedPriority:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(IOReturn)<b>startIOThreadWithFixedPriority:</b>(int)<i>priority</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The same as <b>startIOThreadWithPriority:</b>, except that the I/O thread's priority never lessens due to aging. This method lets you do performance tuning by disabling priority aging.</font>
+
+<p><font face="Times" size="+1">For more information about scheduling policies and priorities, see Chapter 1 of the <i>NEXTSTEP Operating System Software </i>manual.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>startIOThread</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>startIOThreadWithPriority:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>startIOThreadWithPriority:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(IOReturn)<b>startIOThreadWithPriority:</b>(int)<i>priority</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The same as <b>startIOThread</b>, except that the I/O thread runs at the specified priority. This method lets you do performance tuning by raising or lowering the thread's scheduling priority. By default, kernel I/O threads start with a priority equal to the maximum user priority (currently 18).</font>
+
+<p><font face="Times" size="+1">For more information about priorities, see Chapter 1 of the <i>NEXTSTEP Operating System Software</i> manual.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>startIOThread</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>startIOThreadWithFixedPriority:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>timeoutOccurred</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>timeoutOccurred</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Does nothing; subclasses that support timeouts can implement this method. See the IOEthernet class for an example of implementing this method as part of timeout support. This method is invoked by the default I/O thread (implemented by <b>startIOThread...</b>) whenever it receives a bodyless Mach message with an ID of IO_TIMEOUT_MSG. See the IOSCSIController class for an example of sending Mach messages.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>startIOThread</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>waitForInterrupt:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(IOReturn)<b>waitForInterrupt:</b>(int *)<i>msgID</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Listens to the interrupt port until it detects a Mach message; dequeues the message if possible. This method should be invoked by the I/O thread whenever the thread needs to listen to the interrupt port. The default I/O thread provided by IODirectDevice invokes this message as described under <b>startIOThread</b>.</font>
+
+<p><font face="Times" size="+1">If the interrupt port hasn't been set, this message returns IO_R_NO_INTERRUPT. If the message has a body, this method leaves the message on the queue and returns IO_R_MSG_TOO_LARGE. If the message couldn't be dequeued due to another reason, this method returns IO_R_IPC_FAILURE and logs an error message.</font>
+
+<p><font face="Times" size="+1">If a message is already on the queue when this method is invoked, this method dequeues the message and then attempts to give up the processor before returning. Without this precaution, a thread with many messages queued could prevent other kernel threads from being executed.</font>
+
+<p><font face="Times" size="+1">If this method successfully detects and dequeues a message, it sets <i>msgId</i> to the message's ID and returns IO_R_SUCCESS.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>startIOThread</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods (ISA/EISA Architecture)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>abortDMABuffer:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>abortDMABuffer:</b>(IOEISADMABuffer)<i>buffer</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Frees the memory allocated to <i>buffer</i>. If a read transfer is in progress, the data read is lost.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>freeDMABuffer:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>createDMABufferFor:length:read:needsLowMemory:limitSize:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(IOEISADMABuffer)<b>createDMABufferFor:</b>(unsigned int *)<i>physicalAddress</i> <b>length:</b>(unsigned int)<i>numBytes</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>read:</b>(BOOL)<i>isRead</i></font><br>
+<font face="Times" size="+1"><b>needsLowMemory:</b>(BOOL)<i>lowerMem</i></font><br>
+<font face="Times" size="+1"><b>limitSize:</b>(BOOL)<i>limitSize</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns a DMA buffer for the contents of physical memory starting at <i>physicalAddress</i> and continuing for <i>numBytes</i> bytes. You should specify YES for <i>isRead</i> if the data will be read from the device; if the data will be written to the device, specify NO. <i>lowerMem</i> should be YES if the transfer must be from or to the first 16MB of physical memory (as required by some ISA devices); otherwise, it should be NO. To limit the size of the transfer to 64KB, specify <i>limitSize</i> as YES; otherwise, <i>limitSize </i>should be NO.</font>
+
+<p><font face="Times" size="+1">This method changes the physical address if necessary to accommodate the ISA bus. When the physical address is changed, the data is copied to the new physical address (if the transfer is a write), and the new physical address is returned in <i>physicalAddress</i>.</font>
+
+<p><font face="Times" size="+1">Returns NULL if kernel memory for the buffer couldn't be allocated.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>freeDMABuffer:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>currentAddressForChannel:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(unsigned int)<b>currentAddressForChannel:</b>(unsigned int)<i>localChannel</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the physical address currently in the address register of the specified DMA channel. This method can be invoked at any time--even when DMA is in progress. This method is often used along with autoinitialize mode. It's also used to help diagnose errors when a device or channel aborts a DMA transfer.</font>
+
+<p><font face="Times" size="+1">Because this method uses a local equivalent of a resource, it can't be invoked until after this category's implementation of <b>initFromDeviceDescription:</b> is invoked.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>currentCountForChannel:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setAutoinitialize:forChannel:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>currentCountForChannel:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(unsigned int)<b>currentCountForChannel:</b>(unsigned int)<i>localChannel</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the number of bytes remaining to be transferred on the specified channel. The maximum number returned is equal to the length of the DMA buffer currently being handled by the channel. This method is often used along with autoinitialize mode. It's also used to help diagnose errors when a device or channel aborts a DMA transfer.</font>
+
+<p><font face="Times" size="+1">Because this method uses a local equivalent of a resource, it can't be invoked until after this category's implementation of <b>initFromDeviceDescription:</b> is invoked.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>currentAddressForChannel:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setAutoinitialize:forChannel:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>disableAllInterrupts</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>disableAllInterrupts</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Disables all interrupts associated with this IODirectDevice, so that no interrupts can be generated by the hardware. Returns IO_R_NO_INTERRUPT if no interrupt port is attached; otherwise, returns IO_R_SUCCESS.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">Even after invoking <b>disableAllInterrupts:</b> successfully, your driver may still receive interrupt messages for interrupts that occurred before they were disabled.</font>
+
+<p><font face="Times" size="+1">Because this method uses a local equivalent of a resource, it can't be invoked until after this category's implementation of <b>initFromDeviceDescription:</b> is invoked.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>enableAllInterrupts</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>disableInterrupt:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>disableChannel:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>disableChannel:</b>(unsigned int)<i>localChannel</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">If the DMA channel corresponding to <i>localChannel</i> is reserved by this device, this method disables the channel. You typically disable the channel just before changing its setting. You need to invoke <b>enableChannel:</b> once the channel is set up so that transfers can occur.</font>
+
+<p><font face="Times" size="+1">Because this method uses a local equivalent of a resource, it can't be invoked until after this category's implementation of <b>initFromDeviceDescription:</b> is invoked.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>enableChannel:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>disableInterrupt:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>disableInterrupt:</b>(unsigned int)<i>localInterrupt</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Disables the interrupt corresponding to <i>localInterrupt</i>.</font>
+
+<p><font face="Times" size="+1">Because this method uses a local equivalent of a resource, it can't be invoked until after this category's implementation of <b>initFromDeviceDescription:</b> is invoked.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>disableAllInterrupts</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>enableInterrupt:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>enableAllInterrupts</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(IOReturn)<b>enableAllInterrupts</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Creates and attaches an interrupt port, if one isn't already attached, and enables all interrupts associated with this IODirectDevice. Returns IO_R_NO_INTERRUPT if the interrupt port couldn't be attached; otherwise, returns IO_R_SUCCESS.</font>
+
+<p><font face="Times" size="+1">Because this method uses a local equivalent of a resource, it can't be invoked until after this category's implementation of <b>initFromDeviceDescription:</b> is invoked.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>attachInterruptPort</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>disableAllInterrupts</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>enableInterrupt:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>enableChannel:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(IOReturn)<b>enableChannel:</b>(unsigned int)<i>localChannel</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Enables transfers on the DMA channel corresponding to <i>localChannel</i>. Returns IO_R_NOT_ATTACHED if <i>localChannel </i>doesn't correspond to a DMA channel or if the DMA channel isn't reserved by this device. Otherwise, returns IO_R_SUCCESS.</font>
+
+<p><font face="Times" size="+1">Because this method uses a local equivalent of a resource, it can't be invoked until after this category's implementation of <b>initFromDeviceDescription:</b> is invoked.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>disableChannel:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>startDMAForBuffer:channel:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>enableInterrupt:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(IOReturn)<b>enableInterrupt:</b>(unsigned int)<i>localInterrupt</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invokes <b>attachInterruptPort</b> and, if <b>attachInterruptPort</b> succeeds, enables the interrupt corresponding to <i>localInterrupt</i> and returns IO_R_SUCCESS. If <b>attachInterruptPort</b> doesn't succeed, returns IO_R_NOT_ATTACHED.</font>
+
+<p><font face="Times" size="+1">Because this method uses a local equivalent of a resource, it can't be invoked until after this category's implementation of <b>initFromDeviceDescription:</b> is invoked.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>disableInterrupt:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>enableAllInterrupts</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>freeDMABuffer:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>freeDMABuffer:</b>(IOEISADMABuffer)<i>buffer</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Completes the transfer associated with <i>buffer</i> and frees the buffer. <i>buffer</i> should be a value returned by <b>createDMABufferFor:...</b>. If <b>createDMABufferFor:...</b> changed the physical address and the transfer is a read, this method moves the data from the new physical address to the old one. In other words, any data that's read appears at the address passed to <b>createDMABufferFor:...</b> in the <i>physicalAddress</i> argument, not at the address returned in <i>physicalAddress</i>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>abortDMABuffer:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>createDMABufferFor:length:read:needsLowMemory:limitSize:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>getDMATransferWidth:forChannel:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(IOReturn)<b>getDMATransferWidth:</b>(IOEISADMATransferWidth *)<i>width</i> <b>forChannel:</b>(unsigned int)<i>localChannel</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns in <i>width</i> the width currently used for DMA transfers on the specified channel. The width can be 8-bit (IO_8Bit), 16-bit (IO_16BitByteCount), or 32-bit (IO_32Bit). On EISA systems, you can set the width using <b>setDMATransferWidth:forChannel:</b>.</font>
+
+<p><font face="Times" size="+1">If <i>localChannel</i> doesn't correspond to a DMA channel, this method does nothing and returns IO_R_INVALID_ARG. If the DMA channel isn't reserved by this device, this method does nothing and returns IO_R_NOT_ATTACHED. Otherwise, this method returns IO_R_SUCCESS.</font>
+
+<p><font face="Times" size="+1">Because this method uses a local equivalent of a resource, it can't be invoked until after this category's implementation of <b>initFromDeviceDescription:</b> is invoked.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setDMATransferWidth:forChannel:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>getEISAId:forSlot:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>getEISAId:</b>(unsigned int *)<i>id</i> <b>forSlot:</b>(int)<i>slotNumber</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns in <i>id</i> the EISA id for the specified slot. Returns YES if the slot is a valid EISA slot; otherwise, returns NO. You can use this method to loop through the computer's slots, testing each slot for whether it contains a particular card. For example, the following code is executed in the QVision display driver's <b>initFromDeviceDescription:</b> method to determine whether QVision hardware is present in the system.</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">adapter = UnknownAdapter;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">for (slot = 1; slot &lt;= 0xF; slot++) {</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">if ([self getEISAId:&amp;product_id forSlot:slot] == YES) {</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">switch (product_id) {</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">case QVISION_EISA_ID:</font><br>
+<img src="../../../../../Images/sp.gif" width=208 height=1><font face="Courier">adapter = QVisionAdapter;</font><br>
+<img src="../../../../../Images/sp.gif" width=208 height=1><font face="Courier">break;</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">case ORION_EISA_ID:</font><br>
+<img src="../../../../../Images/sp.gif" width=208 height=1><font face="Courier">adapter = OrionAdapter;</font><br>
+<img src="../../../../../Images/sp.gif" width=208 height=1><font face="Courier">break;</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">case ORION12_EISA_ID:</font><br>
+<img src="../../../../../Images/sp.gif" width=208 height=1><font face="Courier">adapter = Orion12Adapter;</font><br>
+<img src="../../../../../Images/sp.gif" width=208 height=1><font face="Courier">break;</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">case QVISION_ISA_ID:</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">case ORION_ISA_ID:</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">case ORION12_ISA_ID:</font><br>
+<img src="../../../../../Images/sp.gif" width=208 height=1><font face="Courier">IOLog(&#34;%s: Sorry, ISA cards are not supported.\n&#34;,</font><br>
+<img src="../../../../../Images/sp.gif" width=264 height=1><font face="Courier">[self name]);</font><br>
+<img src="../../../../../Images/sp.gif" width=208 height=1><font face="Courier">break;</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">}</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">break;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">}</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>isEISAPresent</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>getHandler:level:argument:forInterrupt:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>getHandler:</b>(IOInterruptHandler *)<i>handler</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>level:</b>(unsigned int *)<i>ipl</i></font><br>
+<font face="Times" size="+1"><b>argument:</b>(unsigned int *)<i>arg</i></font><br>
+<font face="Times" size="+1"><b>forInterrupt:</b>(unsigned int)<i>localInterrupt</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Does nothing and returns NO. Subclasses can implement this method to specify a function to directly handle the interrupt specified by <i>localInterrupt</i>. This method is invoked every time an interrupt is enabled.</font>
+
+<p><font face="Times" size="+1">If this method returns YES, interrupts from the device result directly in a call to <i>handler</i>, with the driver-dependent argument <i>arg</i>, at interrupt level <i>ipl</i>. Otherwise, interrupts result in a Mach message to the instance's interrupt port.</font>
+
+<p><font face="Times" size="+1">If you implement this method, you should use interrupt level 3 (IPLDEVICE, as defined in <b>kernserv/i386/spl.h</b>) unless a higher interrupt level is absolutely necessary. Using interrupt levels greater than 3 requires great care and a good grasp of NeXT kernel internals.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">The interrupt level is different from the interrupt number (which is also known as the IRQ). The kernel handles interrupts on each of the 15 IRQs at an interrupt level between 0 and 7; the default is 3. The interrupt level determines which devices can interrupt; specifically, only devices with an interrupt level higher than the current interrupt level can interrupt. For example, a device that interrupts using IRQ 9 might have a direct interrupt handler that runs at interrupt level 3. While this interrupt handler is running, other devices with handlers that run at interrupt level 3 can't interrupt the CPU.</font>
+
+<p><font face="Times" size="+1">Here's a typical implementation of this method:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">- (BOOL) getHandler:(IOEISAInterruptHandler *)handler</font><br>
+<img src="../../../../../Images/sp.gif" width=173 height=1><font face="Courier">level:(unsigned int *) ipl</font><br>
+<img src="../../../../../Images/sp.gif" width=173 height=1><font face="Courier">argument:(unsigned int *) arg</font><br>
+<img src="../../../../../Images/sp.gif" width=173 height=1><font face="Courier">forInterrupt:(unsigned int) localInterrupt</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">{</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">*handler = myIntHandler;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">*ipl = IPLDEVICE;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">*arg = 0;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">return YES;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">In the example above, <b>myIntHandler</b> is the function that handles the interrupt. It might be implemented as follows (fill in the italicized text between angle brackets, that is &lt;&lt; &gt;&gt;, with device-specific code):</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">static void myIntHandler(void *identity, void *state,</font><br>
+<img src="../../../../../Images/sp.gif" width=299 height=1><font face="Courier">unsigned int arg)</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">{</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">&lt;&lt; <i>. . . Do what we must at interrupt level . . .</i> &gt;&gt;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">if (&lt;&lt; <i>I/O thread doesn't need to know about this interrupt</i> &gt;&gt;)</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">return;</font>
+
+<p><img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Forward this to the I/O thread for further handling. */</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">IOSendInterrupt(identity, state, IO_DEVICE_INTERRUPT_MSG);</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1"><b>IOSendInterrupt()</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>initFromDeviceDescription:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>initFromDeviceDescription:</b><i>deviceDescription</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Initializes and returns the IODirectDevice instance. Records <i>deviceDescription</i> as the IODeviceDescription corresponding to this IODirectDevice. Reserves all the interrupts, DMA channels, and I/O ports specified in <i>deviceDescription</i>. If any resources can't be reserved, releases all resources and returns <b>nil</b>.</font>
+
+<p><font face="Times" size="+1">This method must be invoked before any methods that require local equivalents of resources can be used. For example, <b>mapMemoryRange:...</b> requires that you specify the local equivalent of a memory range. However, IODirectDevices don't know what memory ranges they can use until <b>initFromDeviceDescription:</b> has been invoked. This means, for example, that subclass implementations of <b>initFromDeviceDescription:</b> must invoke the superclass's implementation of <b>initFromDeviceDescription:</b> before they can map any memory ranges or do anything else that requires access to resources.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>isDMADone:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>isDMADone:</b>(unsigned int)<i>localChannel</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if DMA has completed on the specified channel; otherwise, returns NO. If <i>localChannel</i> doesn't correspond to a DMA channel, this method does nothing and returns IO_R_INVALID_ARG.</font>
+
+<p><font face="Times" size="+1">Because this method uses a local equivalent of a resource, it can't be invoked until after this category's implementation of <b>initFromDeviceDescription:</b> is invoked.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>isEISAPresent</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>isEISAPresent</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if the computer conforms to the EISA specification; otherwise, returns NO.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>getEISAId:forSlot:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>mapMemoryRange:to:findSpace:cache:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(IOReturn)<b>mapMemoryRange:</b>(unsigned int)<i>localMemoryRange</i> <b>to:</b>(vm_address_t *)<i>destinationAddress</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>findSpace:</b>(BOOL)<i>findSpace</i></font><br>
+<font face="Times" size="+1"><b>cache:</b>(IOCache)<i>caching</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Maps the device memory corresponding to <i>localMemoryRange</i> into the calling task's address space. <i>localMemoryRange</i> is the local range number in the device description.</font>
+
+<p><font face="Times" size="+1">If <i>findSpace</i> is TRUE, this method ignores the <i>destinationAddress</i> and determines where the mapped memory should go, returning the value in <i>destinationAddress</i>. If <i>findSpace</i> is FALSE, this method truncates <i>destinationAddress</i> to the nearest page boundary, maps the memory to the truncated address, and returns the truncated address.</font>
+
+<p><font face="Times" size="+1">The <i>caching</i> argument determines how the memory is cached. Usually, it should be IO_WriteThrough. However, if caching seems to be causing problems, try using IO_CacheOff instead.</font>
+
+<p><font face="Times" size="+1">If <i>localMemoryRange</i> doesn't correspond to one of this device's memory ranges, IO_R_INVALID_ARG is returned. There must also be more than one I/O port range associated with the device (i.e. [deviceDescription numPortRanges] &gt; 1); otherwise IO_R_INVALID_ARG is returned. If the mapping couldn't be performed for another reason, IO_R_NO_SPACE is returned. If the mapping was successful, returns IO_R_SUCCESS.</font>
+
+<p><font face="Times" size="+1">Because this method uses a local equivalent of a resource, it can't be invoked until after this category's implementation of <b>initFromDeviceDescription:</b> is invoked.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>unmapMemoryRange:from:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>releaseChannel:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>releaseChannel:</b>(unsigned int)<i>localChannel</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Releases the DMA channel corresponding to <i>localChannel</i> so that another device can use the channel.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>reserveChannel:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>releaseDMALock</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>releaseDMALock</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Releases the lock associated with DMA. This method panics if this IODirectDevice doesn't hold the DMA lock.</font>
+
+<p><font face="Times" size="+1">Most drivers don't need to use DMA locking. However, the floppy drive (and possibly other devices) tends to have DMA underruns when the bus is saturated. As a result, the floppy driver and drivers for devices that tend to saturate the bus use DMA locking to avoid performing I/O at the same time. DMA locking is ignored by all other device drivers.</font>
+
+<p><font face="Times" size="+1">You don't have to use DMA locking unless your device is having DMA underruns or is causing another device to have underruns. Sometimes these underruns occur on ISA computers, but not EISA ones. If your device is causing the floppy drive to have underruns, you'll see the following error on the console while your device is performing I/O:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">fd0: DMA Over/underrun</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>reserveDMALock</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>releaseInterrupt:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>releaseInterrupt:</b>(unsigned int)<i>localInterrupt</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Releases the interrupt corresponding to <i>localInterrupt</i> so that another device can use the interrupt.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>reserveInterrupt:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>releasePortRange:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>releasePortRange:</b>(unsigned int)<i>localPortRange</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Releases the range of I/O ports corresponding to <i>localPortRange</i>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>reservePortRange:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>reserveChannel:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(IOReturn)<b>reserveChannel:</b>(unsigned int)<i>localChannel</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Reserves the DMA channel corresponding to <i>localChannel</i> so that no other device can use the channel. Returns IO_R_NOT_ATTACHED if <i>localChannel</i> doesn't correspond to a DMA channel or if the DMA channel is reserved by another device. Otherwise, returns IO_R_SUCCESS.</font>
+
+<p><font face="Times" size="+1">You don't normally have to invoke this method, since <b>initFromDeviceDescription:</b> reserves all the device's DMA channels.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>releaseChannel:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>reserveDMALock</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>reserveDMALock</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Reserves the lock associated with DMA. See <b>releaseDMALock</b> for information on DMA locking.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>reserveInterrupt:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(IOReturn)<b>reserveInterrupt:</b>(unsigned int)<i>localInterrupt</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Reserves the interrupt corresponding to <i>localInterrupt</i> so that no other device can use it. Returns IO_R_NOT_ATTACHED if <i>localInterrupt</i> doesn't correspond to an interrupt or if another device has already reserved the interrupt. Otherwise, returns IO_R_SUCCESS.</font>
+
+<p><font face="Times" size="+1">You don't normally have to invoke this method, since <b>initFromDeviceDescription:</b> reserves all the device's interrupts.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>releaseInterrupt:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>reservePortRange:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(IOReturn)<b>reservePortRange:</b>(unsigned int)<i>localPortRange</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Releases the range of I/O ports corresponding to <i>localPortRange</i> and returns IO_R_SUCCESS.</font>
+
+<p><font face="Times" size="+1">You don't normally have to invoke this method, since <b>initFromDeviceDescription:</b> reserves all the device's I/O ports.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>releasePortRange:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setAutoinitialize:forChannel:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(IOReturn)<b>setAutoinitialize:</b>(BOOL)<i>flag</i> <b>forChannel:</b>(unsigned int)<i>localChannel</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the specified channel's autoinitialize DMA mode to on if <i>flag</i> is YES; otherwise, sets it off. The new autoinitialize mode stays in effect until this method is invoked again or the computer is rebooted. By default, autoinitialize mode is disabled.</font>
+
+<p><font face="Times" size="+1">If <i>localChannel</i> doesn't correspond to a DMA channel, this method does nothing and returns IO_R_INVALID_ARG. If the DMA channel isn't reserved by this device, this method does nothing and returns IO_R_NOT_ATTACHED. Otherwise, this method returns IO_R_SUCCESS.</font>
+
+<p><font face="Times" size="+1">Because this method uses a local equivalent of a resource, it can't be invoked until after this category's implementation of <b>initFromDeviceDescription:</b> is invoked.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setIncrementMode:forChannel:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setTransferMode:forChannel:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setDMATiming:forChannel:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(IOReturn)<b>setDMATiming:</b>(IOEISADMATiming)<i>timing</i> <b>forChannel:</b>(unsigned int)<i>localChannel</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Makes the specified channel use the specified DMA bus cycle--ISA-compatible (IO_Compatible), Type A (IO_TypeA), Type B (IO_TypeB), or burst (IO_Burst), which is also known as Type C. This method is valid only on EISA systems<i>.</i></font>
+
+<p><font face="Times" size="+1">If the system is ISA-based, this method does nothing and returns IO_R_UNSUPPORTED. If <i>localChannel</i> doesn't correspond to a DMA channel, this method does nothing and returns IO_R_INVALID_ARG. If the DMA channel isn't reserved by this device, this method does nothing and returns IO_R_NOT_ATTACHED. Otherwise, this method returns IO_R_SUCCESS.</font>
+
+<p><font face="Times" size="+1">Because this method uses a local equivalent of a resource, it can't be invoked until after this category's implementation of <b>initFromDeviceDescription:</b> is invoked.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setDMATransferWidth:forChannel:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(IOReturn)<b>setDMATransferWidth:</b>(IOEISADMATransferWidth)<i>width</i> <b>forChannel:</b>(unsigned int)<i>localChannel</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Makes the specified channel use the specified width for DMA transfers. The width can be 8-bit (IO_8Bit), 16-bit (IO_16BitByteCount), or 32-bit (IO_32Bit). The 16-bit mode requires byte counting, not word counting (which is unsupported). This method is valid only on EISA systems.</font>
+
+<p><font face="Times" size="+1">If the system is ISA-based, this method does nothing and returns IO_R_UNSUPPORTED. If <i>localChannel</i> doesn't correspond to a DMA channel, this method does nothing and returns IO_R_INVALID_ARG. If the DMA channel isn't reserved by this device, this method does nothing and returns IO_R_NOT_ATTACHED. Otherwise, this method returns IO_R_SUCCESS.</font>
+
+<p><font face="Times" size="+1">Because this method uses a local equivalent of a resource, it can't be invoked until after this category's implementation of <b>initFromDeviceDescription:</b> is invoked.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setEOPAsOutput:forChannel:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(IOReturn)<b>setEOPAsOutput:</b>(BOOL)<i>flag</i> <b>forChannel:</b>(unsigned int)<i>localChannel</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Selects whether the specified channel's EOP pin is an output signal (the default) or an input signal. This method is valid only on EISA systems.</font>
+
+<p><font face="Times" size="+1">If the system is ISA-based, this method does nothing and returns IO_R_UNSUPPORTED. If <i>localChannel</i> doesn't correspond to a DMA channel, this method does nothing and returns IO_R_INVALID_ARG. If the DMA channel isn't reserved by this device, this method does nothing and returns IO_R_NOT_ATTACHED. Otherwise, this method returns IO_R_SUCCESS.</font>
+
+<p><font face="Times" size="+1">Because this method uses a local equivalent of a resource, it can't be invoked until after this category's implementation of <b>initFromDeviceDescription:</b> is invoked.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setIncrementMode:forChannel:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(IOReturn)<b>setIncrementMode:</b>(IOIncrementMode)<i>mode</i> <b>forChannel:</b>(unsigned int)<i>localChannel</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This method lets the driver specify how the start address and length of its DMA buffers should be interpreted. By default, the increment mode is IO_Increment, so each DMA buffer is interpreted so that if the start address is <i>n</i> and the length is <i>m</i>, the data in addresses <i>n</i> through <i>n</i> + <i>m</i></font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">1 are transferred. By setting the increment mode to IO_Decrement, however, the driver specifies that the affected addresses should be <i>n</i> through <i>n</i></font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><i>m</i> + 1. The new increment mode is in effect until this method is invoked again or until the computer is rebooted.</font>
+
+<p><font face="Times" size="+1">If <i>localChannel</i> doesn't correspond to a DMA channel, this method does nothing and returns IO_R_INVALID_ARG. If the DMA channel isn't reserved by this device, this method does nothing and returns IO_R_NOT_ATTACHED. Otherwise, this method returns IO_R_SUCCESS.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">IO_Decrement mode is not currently supported.</font>
+
+<p><font face="Times" size="+1">Because this method uses a local equivalent of a resource, it can't be invoked until after this category's implementation of <b>initFromDeviceDescription:</b> is invoked.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setAutoinitialize:forChannel:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setTransferMode:forChannel:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setStopRegisterMode:forChannel:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(IOReturn)<b>setStopRegisterMode:</b>(IOEISAStopRegisterMode)<i>mode</i> <b>forChannel:</b>(unsigned int)<i>localChannel</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Enables or disables the specified channel's Stop register. By default, the Stop register is disabled. You can enable it by specifying <i>mode</i> to be IO_StopRegisterEnable. This method is valid only on EISA systems.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">Enabling the Stop register isn't currently supported.</font>
+
+<p><font face="Times" size="+1">If the system is ISA-based or <i>mode</i> is IO_StopRegisterEnable, this method does nothing and returns IO_R_UNSUPPORTED. If <i>localChannel</i> doesn't correspond to a DMA channel, this method does nothing and returns IO_R_INVALID_ARG. If the DMA channel isn't reserved by this device, this method does nothing and returns IO_R_NOT_ATTACHED. Otherwise, this method returns IO_R_SUCCESS.</font>
+
+<p><font face="Times" size="+1">Because this method uses a local equivalent of a resource, it can't be invoked until after this category's implementation of <b>initFromDeviceDescription:</b> is invoked.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setTransferMode:forChannel:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(IOReturn)<b>setTransferMode:</b>(IODMATransferMode)<i>mode</i> <b>forChannel:</b>(unsigned int)<i>localChannel</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the specified channel's transfer mode to <i>mode</i>. The new transfer mode stays in effect until this method is invoked again or the computer is rebooted.</font>
+
+<p><font face="Times" size="+1">If <i>localChannel</i> doesn't correspond to a DMA channel, this method does nothing and returns IO_R_INVALID_ARG. If the DMA channel isn't reserved by this device, this method does nothing and returns IO_R_NOT_ATTACHED. Otherwise, this method returns IO_R_SUCCESS.</font>
+
+<p><font face="Times" size="+1">Because this method uses a local equivalent of a resource, it can't be invoked until after this category's implementation of <b>initFromDeviceDescription:</b> is invoked.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setAutoinitialize:forChannel:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setIncrementMode:forChannel:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>startDMAForBuffer:channel:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(IOReturn)<b>startDMAForBuffer:</b>(IOEISADMABuffer)<i>buffer</i> <b>channel:</b>(unsigned int)<i>localChannel</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Begins DMA with <i>buffer</i> on the DMA channel specified by <i>localChannel</i>, and returns IO_R_SUCCESS. DMA isn't started if <i>localChannel</i> doesn't correspond to a DMA channel (in which case IO_R_INVALID_ARG is returned), if the DMA channel isn't assigned, or if no DMA frames could be allocated (IO_R_NO_FRAMES is returned).</font>
+
+<p><font face="Times" size="+1">Because this method uses a local equivalent of a resource, it can't be invoked until after this category's implementation of <b>initFromDeviceDescription:</b> is invoked.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>unmapMemoryRange:from:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>unmapMemoryRange:</b>(unsigned int)<i>localMemoryRange</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>from:</b>(vm_address_t)<i>address</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Unmaps the device memory corresponding to <i>localMemoryRange</i> from the calling task's address space. The value of <i>address </i>must be the same as the value returned by the <i>destinationAddress</i> argument of <b>mapMemoryRange:to:findSpace:cache</b>: for the same <i>localMemoryRange</i>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>mapMemoryRange:to:findSpace:cache:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Methods (PCI Architecture)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>getPCIConfigData:atRegister:withDeviceDescription:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ (IOReturn)<b>getPCIConfigData:</b>(unsigned long *)<i>data</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>atRegister:</b>(unsigned char)<i>address</i></font><br>
+<font face="Times" size="+1"><b>withDeviceDescription:</b><i>description</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Reads from the device's configuration space at the byte address <i>address</i> using the IOPCIDeviceDescription <i>description</i>. All accesses are 32 bits wide and <i>address</i> must be aligned as such.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>getPCIConfigSpace:withDeviceDescription:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ (IOReturn)<b>getPCIConfigSpace:</b>(IOPCIConfigSpace *)<i>configurationSpace</i> <b>withDeviceDescription:</b><i>description</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Reads the device's entire configuration space using the IOPCIDeviceDescription <i>description</i>. Returns IO_R_SUCCESS if successful. If this method fails, the driver should make no assumptions about the state of the data returned in the IOPCIConfigSpace <b>struct</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>isPCIPresent</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ (BOOL)<b>isPCIPresent</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if PCI Bus support is enabled. Returns NO otherwise.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setPCIConfigData:atRegister:withDeviceDescription:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ (IOReturn)<b>setPCIConfigData:</b>(unsigned long)<i>data</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>atRegister:</b>(unsigned char)<i>address</i></font><br>
+<font face="Times" size="+1"><b>withDeviceDescription:</b><i>description</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Writes to the device's configuration space at the byte address <i>address</i> using the IOPCIDeviceDescription <i>description</i>. All accesses are 32 bits wide and <i>address</i> must be aligned as such.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setPCIConfigSpace:withDeviceDescription:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ (IOReturn)<b>setPCIConfigSpace:</b>(IOPCIConfigSpace *)<i>configurationSpace</i> <b>withDeviceDescription:</b><i>description</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Writes the device's entire configuration space using the IOPCIDeviceDescription <i>description</i>. Returns IO_R_SUCCESS if successful. If this method fails, the driver should make no assumptions about the state of the device's configuration space.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods (PCI Architecture)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>getPCIConfigData:atRegister:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(IOReturn)<b>getPCIConfigData:</b>(unsigned long *)<i>data</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>atRegister:</b>(unsigned char)<i>address</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Reads from the device's configuration space at the byte address <i>address</i>. All accesses are 32 bits wide and <i>address</i> must be aligned as such.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>getPCIConfigSpace:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(IOReturn)<b>getPCIConfigSpace:</b>(IOPCIConfigSpace *)<i>configurationSpace</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Reads the device's entire configuration space. Returns IO_R_SUCCESS if successful. If this method fails, the driver should make no assumptions about the state of the data returned in the IOPCIConfigSpace <b>struct</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>isPCIPresent</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>isPCIPresent</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if PCI Bus support is enabled. Returns NO otherwise.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setPCIConfigData:atRegister:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(IOReturn)<b>setPCIConfigData:</b>(unsigned long)<i>data</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>atRegister:</b>(unsigned char)<i>address</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Writes to the device's configuration space at the byte address <i>address</i>. All accesses are 32 bits wide and <i>address</i> must be aligned as such.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setPCIConfigSpace:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(IOReturn)<b>setPCIConfigSpace:</b>(IOPCIConfigSpace *)<i>configurationSpace</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Writes the device's entire configuration space. Returns IO_R_SUCCESS if successful. If this method fails, the driver should make no assumptions about the state of the device's configuration space.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods (PCMCIA Architecture)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>mapAttributeMemoryTo:findSpace:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(IOReturn)<b>mapAttributeMemoryTo:</b>(vm_address_t *)<i>destinationAddress</i></font></td>
+
+<td><font face="Times" size="+1"><b>findSpace:</b>(BOOL)<i>findSpace</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Maps attribute memory to <i>destinationAddress</i> in <i>findSpace</i>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>unmapAttributeMemory:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>unmapAttributeMemory:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>unmapAttributeMemory</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Unmaps attribute memory.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>mapAttributeMemoryTo:findSpace:</b></font></td></tr>
+
+</table>
+
+
+
+<p><br>
+
+</body>
+</html>

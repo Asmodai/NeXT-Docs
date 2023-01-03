@@ -1,0 +1,922 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/OperatingSystem/Part3_DriverKit/Reference/Classes/IODeviceInspector.rtf -->
+<!-- Date: Sun Jan  1 17:01:09 2023 -->
+<head>
+<title>IODeviceInspector</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>IODeviceInspector</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Inherits From:</b></font></td>
+
+<td><font face="Times" size="+1">Object</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Conforms To:</b></font></td>
+
+<td><font face="Times" size="+1">IOConfigurationInspector</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">driverkit/IODeviceInspector.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This class provides the default Configure inspector used for devices. IODeviceInspector lets the user select which resources--DMA channels, interrupts, I/O ports, and memory ranges--a device should use. IODeviceInspector also provides an accessory View, in which you can put additional controls.</font>
+
+<p><font face="Times" size="+1">You shouldn't need to use this class unless you're providing an accessory View. To provide an accessory View, you should first create the View in Interface Builder and then subclass IODeviceInspector so that it displays the View.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">When creating an accessory View, try to keep it no more than 80 pixels high. Configure's window is already about 400 pixels high; adding more than 80 pixels to it means that the window won't fit on the smallest supported screens (which are 640 pixels wide by 480 high).</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Implementing a Subclass</b></font>
+
+<p><font face="Times" size="+1">To provide an accessory View, you should create an IODeviceInspector subclass that does the following:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Overrides Object's <b>init</b> method so that it loads the nib file that contains the accessory View by invoking <b>loadMainNibFile </b>and initializing (but not displaying) the interrupt and DMA matrices.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Implement the <b>setTable:</b> method so that it invokes <b>[super setTable:]</b>, invokes <b>setAccessoryView:</b> to specify its accessory View, and initializes the accessory View</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Modifies the configuration table as necessary, in response to the user's actions in the accessory View. For example, you might need to insert a key in the configuration table.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Here's an example of changing the configuration table when the user operates a control. In this case, the control sends a <b>connectorChanged:</b> message to its target (which is the IODeviceInspector subclass). The <b>table</b> instance variable is the NXStringTable corresponding to the configuration table.</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">- connectorChanged:sender</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">{</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">[table insertKey:CONNECTOR</font><br>
+<img src="../../../../../Images/sp.gif" width=208 height=1><font face="Courier">value:connectorType[sender selectedTag]];</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">return self;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">If you have localizable strings displayed in your accessory View, be careful to use the strings from the driver's configuration bundle, not from the Configure application's bundle. Here's an example taken from an IODeviceInspector subclass's <b>init </b>method.</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">#define LOCAL_CONNECTOR_STRING(bundle)&nbsp; NXLocalStringFromTableInBundle(NULL, bundle, &#34;Connector&#34;, NULL, &#34;The interface connector on the EtherExpress16 adaptor which will be used to access the network.&#34;)</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">.</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">.</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">.</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">char&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; buffer[MAXPATHLEN];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">NXBundle *myBundle = [NXBundle bundleForClass:[self class]];</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[super init];</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">if (![myBundle getPath:buffer forResource:MYNAME ofType:NIB_TYPE]) {</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">[self free];</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">return nil;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">if (![NXApp loadNibFile:buffer owner:self withNames:NO]) {</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">[self free];</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">return nil;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[connectorBox setTitle:LOCAL_CONNECTOR_STRING(myBundle)];</font>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Variables</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">id <b>accessoryHolder</b>;</font>
+
+<p><font face="Times" size="+1">id <b>statusTitle</b>;</font>
+
+<p><font face="Times" size="+1">id <b>origWindow</b>;</font>
+
+<p><font face="Times" size="+1">id <b>dmaBox</b>;</font>
+
+<p><font face="Times" size="+1">id <b>dmaMatrix</b>;</font>
+
+<p><font face="Times" size="+1">id <b>irqBox</b>;</font>
+
+<p><font face="Times" size="+1">id <b>irqMatrix</b>;</font>
+
+<p><font face="Times" size="+1">id <b>memoryBox</b>;</font>
+
+<p><font face="Times" size="+1">id <b>memoryController</b>;</font>
+
+<p><font face="Times" size="+1">id <b>portsBox</b>;</font>
+
+<p><font face="Times" size="+1">id <b>portsController</b>;</font>
+
+<p><font face="Times" size="+1">id <b>inspectionView</b>;</font>
+
+<p><font face="Times" size="+1">id <b>infoButton</b>;</font>
+
+<p><font face="Times" size="+1">id <b>infoPanel</b>;</font>
+
+<p><font face="Times" size="+1">id <b>infoText</b>;</font>
+
+<p><font face="Times" size="+1">NXStringTable *<b>table</b>;</font>
+
+<p><font face="Times" size="+1">int <b>numInterrupts</b>;</font>
+
+<p><font face="Times" size="+1">int <b>numChannels</b>;</font>
+
+<p><font face="Times" size="+1">int <b>portRangeLength</b>;</font>
+
+<p><font face="Times" size="+1">int <b>memoryRangeLength</b>;</font>
+
+<p><font face="Times" size="+1">BOOL <b>infoTextLoaded</b>;</font>
+
+<p><font face="Times" size="+1">BOOL <b>knowsDetails</b>;</font>
+
+<p><font face="Times" size="+1">IOConfigurationConflict <b>portConflict</b>;</font>
+
+<p><font face="Times" size="+1">IOConfigurationConflict <b>memoryConflict</b>;</font>
+
+<p><font face="Times" size="+1">IOConfigurationConflict <b>totalConflict</b>;</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">accessoryHolder</font></td>
+
+<td><font face="Times" size="+1">View where the accessory View is placed</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">statusTitle</font></td>
+
+<td><font face="Times" size="+1">At top of window</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">origWindow</font></td>
+
+<td><font face="Times" size="+1">For getting contentView</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">dmaMatrix</font></td>
+
+<td><font face="Times" size="+1">Buttons for DMA channels</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">dmaBox</font></td>
+
+<td><font face="Times" size="+1">In case no DMA channels</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">irqMatrix</font></td>
+
+<td><font face="Times" size="+1">Buttons for IRQ levels</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">irqBox</font></td>
+
+<td><font face="Times" size="+1">In case no IRQ levels</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">memoryController</font></td>
+
+<td><font face="Times" size="+1">Handles ranges</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">memoryBox</font></td>
+
+<td><font face="Times" size="+1">In case no mapped memory</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">portsController</font></td>
+
+<td><font face="Times" size="+1">Handles ranges</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">portsBox</font></td>
+
+<td><font face="Times" size="+1">In case no port addresses</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">inspectionView</font></td>
+
+<td><font face="Times" size="+1">The inspection View</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">infoButton</font></td>
+
+<td><font face="Times" size="+1">Brings up device info panel</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">infoPanel</font></td>
+
+<td><font face="Times" size="+1">Contains text about the device</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">infoText</font></td>
+
+<td><font face="Times" size="+1">Text object for info file</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">table</font></td>
+
+<td><font face="Times" size="+1">The NXStringTable we're editing</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">numInterrupts</font></td>
+
+<td><font face="Times" size="+1">How many IRQs to configure</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">numChannels</font></td>
+
+<td><font face="Times" size="+1">How many DMA channels to configure</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">portRangeLength</font></td>
+
+<td><font face="Times" size="+1">Number of I/O ports in the range</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">memoryRangeLength</font></td>
+
+<td><font face="Times" size="+1">Length of the memory map</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">infoTextLoaded</font></td>
+
+<td><font face="Times" size="+1">YES if the info panel has been loaded</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">knowsDetails</font></td>
+
+<td><font face="Times" size="+1">YES if we already know the device's requirements</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">portConflict</font></td>
+
+<td><font face="Times" size="+1">I/O port conflict state</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">memoryConflict</font></td>
+
+<td><font face="Times" size="+1">Memory range conflict state</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">totalConflict</font></td>
+
+<td><font face="Times" size="+1">Overall conflict state</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Adopted Protocols</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">IOConfigurationInspector</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">inspectionView</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">resourcesChanged:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setTable:</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Displaying the IODeviceInspector</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">loadMainNibFile</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">showInfo:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Setting initial resource values</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setNumInterrupts:numChannels:portRangeLength:</font><br>
+<img src="../../../../../Images/sp.gif" width=176 height=1><font face="Times" size="+1">memoryRangeLength:</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Notification of resource changes</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">channelOrInterruptPicked:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">rangeDidChange:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Customizing the IODeviceInspector</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setAccessoryView:</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>channelOrInterruptPicked:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>channelOrInterruptPicked:</b><i>sender</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Notifies the receiver that a DMA channel or interrupt has been picked. IODeviceInspector changes the appearance the associated button and updates the configuration table, if appropriate. Returns <b>self</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>loadMainNibFile</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>loadMainNibFile</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Loads the nib file for the IODeviceInspector. This method should be invoked by <b>init</b>. Returns <b>nil</b> on failure; otherwise, returns <b>self</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>rangeDidChange:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>rangeDidChange:</b><i>sender</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Notifies the receiver that a range of I/O ports or memory has been changed. This method updates the configuration table. Returns <b>self</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setAccessoryView:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setAccessoryView:</b><i>aView</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Adds <i>aView</i> to the IODeviceInspector's View hierarchy. The inspector is automatically resized to accommodate <i>aView</i>. Returns <b>self</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setNumInterrupts:numChannels:portRangeLength: memoryRangeLength:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setNumInterrupts:</b>(int)<i>numInterrupts</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>numChannels:</b>(int)<i>numChannels</i></font><br>
+<font face="Times" size="+1"><b>portRangeLength:</b>(int)<i>numPorts</i></font><br>
+<font face="Times" size="+1"><b>memoryRangeLength:</b>(int)<i>numMaps</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked once by <b>setTable:</b> to initialize the number of each kind of resource that the device uses.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>showInfo:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>showInfo:</b><i>sender</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Brings up a panel containing information about the device.</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

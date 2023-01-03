@@ -1,0 +1,1212 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/GeneralRef/17_3DKit/Classes/N3DRIBImageRep.rtf -->
+<!-- Date: Sun Jan  1 17:04:04 2023 -->
+<head>
+<title>N3DRIBImageRep</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>N3DRIBImageRep</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Inherits From:</b></font></td>
+
+<td><font face="Times" size="+1">NXImageRep : Object</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">3Dkit/N3DRIBImageRep.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">An N3DRIBImageRep is an object that can render images from RenderMan Interface Bytestream (RIB) files.&nbsp; The file loaded by an N3DRIBImageRep must be a structured RIB file:&nbsp; That is, it must begin with the line:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">##RenderMan RIB-Structure 1.0</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The N3DRIBImageRep includes methods for specifying the hider and surface types and for setting the background color.&nbsp; The size of the image is set to the size specified in the RenderMan <b>Format</b> call in the RIB file.&nbsp; Other information about the image should be supplied using inherited NXImageRep methods.</font>
+
+<p><font face="Times" size="+1">Like most other kinds of NXImageReps, an N3DRIBImageRep is generally used indirectly, through an NXImage object. N3DRIBImageRep overrides various NXImageRep methods to ensure that it is automatically instantiated from files with the .rib extension, from pasteboards containing NX_RIBPasteboardType data, and from streams containing RIB code.</font>
+
+<p><font face="Times" size="+1">Two factors--surface and hider--determine the quality of the rendered image.&nbsp; When displaying a RIB image representation, the interactive renderer uses the selected surface and hider for the image.&nbsp; When printing a RIB image representation, the RenderMan renderer uses shading attributes set in the RIB file; if no surface attributes are set explicitly in the RIB file, the image representation surface and hider factors are applied.&nbsp; These factors are set using the <b>setSurfaceType:</b> and <b>setHider: </b>methods.</font>
+
+<p><font face="Times" size="+1">For more information on the use of image representations, see the NXImage and NXImageRep classes in the Application Kit.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Variables</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">N3DHider <b>hider</b>;</font>
+
+<p><font face="Times" size="+1">N3DSurfaceType <b>surface</b>;</font>
+
+<p><font face="Times" size="+1">NXColor <b>backgroundColor</b>;</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">hider</font></td>
+
+<td><font face="Times" size="+1">The hider used when rendering on screen</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">surface</font></td>
+
+<td><font face="Times" size="+1">The surface type used when rendering on screen</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">backgroundColor</font></td>
+
+<td><font face="Times" size="+1">The color drawn behind the rendering</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Initializing and Freeing</font></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">initFromFile:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">initFromStream:</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">free</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Declaring data types</font></td>
+
+<td><font size="+1"><img src="../../../../Images/c2B.gif" width=8 height=7></font> <font face="Times" size="+1">imageUnfilteredFileTypes</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../Images/c2B.gif" width=8 height=7></font> <font face="Times" size="+1">imageUnfilteredPasteboardTypes</font><br>
+<font face="Times" size="+1">+ canLoadFromStream:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Drawing</font></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">drawAt:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">drawIn:</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">draw</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Size</font></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">getBoundingBox:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">getSize:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Background Color</font></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setBackgroundColor:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">backgroundColor</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Hidden Surface Removal Type</font></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">hider</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setHider:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Surface Type</font></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setSurfaceType:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">surfaceType</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Archiving</font></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">read:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">write:</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>canLoadFromStream:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ (BOOL)<b>canLoadFromStream:</b>(NXStream *)<i>ribStream</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Tests <i>ribStream</i> for RIB data.&nbsp; Returns YES if the stream contains RIB data, NO if not.&nbsp; This method is invoked by NXImage to test for the appropriate NXImageRep subclass to handle a particular data stream.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>imageUnfilteredFileTypes</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ (const char *const *)<b>imageUnfilteredFileTypes</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns a NULL terminated array of characters whose only member is &quot;rib&quot;.&nbsp; Invoked by NXImage's <b>imageRepForFileType: </b>method to find the NXImageRep subclass capable of handling files with a particular extension.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>imageUnfilteredPasteboardTypes</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ (const NXAtom *)<b>imageUnfilteredPasteboardTypes</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns N3DRIBPasteboardType.&nbsp; Invoked by NXImage's <b>imageRepForPasteboardType:</b> method to find the NXImageRep subclass capable of handling pasteboards containing RIB.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>backgroundColor</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NXColor)<b>backgroundColor</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the receiver's background color.&nbsp; By default, the background color is NX_COLORBLACK.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setBackgroundColor:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>draw</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>draw</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Draws the image at (0.0, 0.0) in the current coordinate system on the current device.&nbsp; This method invokes <b>drawIn:</b> with its bounding rectangle as the <i>rect</i> argument.&nbsp; Returns YES if successful in rendering the image, and NO if not.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>drawAt:</b>,</font> <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>drawIn:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>drawAt:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>drawAt:</b>(const NXPoint *)<i>point</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Draws the image at <i>point</i> in the current coordinate system of the current device.&nbsp; This method invokes <b>drawIn:</b> with the origin of <i>rect</i> at <i>point</i>, and the size of <i>rect</i> set to the size of the image representation.&nbsp; Returns YES if successful in rendering the image, and NO if not.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>drawIn:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>drawIn:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>drawIn:</b>(const NXRect *)<i>rect</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Draws the image so that it fits inside the rectangle referred to by <i>rect</i>.&nbsp; This method returns YES if successful in rendering the image, and NO if not.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>free</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>free</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Deallocates the N3DRIBImageRep.&nbsp; Returns <b>nil</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>getBoundingBox:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>getBoundingBox:</b>(NXRect *)<i>rectangle</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns, by reference in <i>rectangle</i>, the rectangle that bounds the image.&nbsp; The origin of <i>rectangle</i> is at (0.0, 0.0).&nbsp; The size is taken from the RenderMan <b>Format</b> call in the RIB from which the N3DRIBImageRep is instantiated.&nbsp; If no <b>Format</b> call appears in the RIB, an arbitrary width and height are set (256 wide, 192 high).</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>getSize:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>getSize:</b>(NXSize *)<i>theSize</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns, by reference in <i>theSize</i>, the size of the N3DImageRep as described in the <b>getBoundingBox:</b> method description.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>getBoundingBox:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>hider</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(N3DHider)<b>hider</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the hider used by the N3DRIBImageRep.&nbsp; The 3D Graphics Kit's hider types are listed with the <b>setHider:</b> method.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setHider:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>init</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Generates an error message.&nbsp; This method can't be used to initialize an N3DRIBImageRep.&nbsp; Use one of the other <b>init</b>...&nbsp; methods instead.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>initFromFile:</b>,</font> <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>initFromStream:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>initFromFile:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>initFromFile:</b>(const char *)<i>ribFile</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Initializes the receiver, a newly allocated N3DRIBImageRep object, with the RIB image found in <i>ribFile</i>.&nbsp; Some information about the rendering environment is read from the RIB file, but the RIB code won't be read until it's needed to render the image.</font>
+
+<p><font face="Times" size="+1">If the new object can't be initialized for any reason (for example, <i>ribfile</i> doesn't exist or doesn't contain RIB code), this method frees it and returns <b>nil</b>.&nbsp; Otherwise, it returns <b>self</b>.</font>
+
+<p><font face="Times" size="+1">This method is the designated initializer for N3DRIBImageReps that read image data from a file.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>initFromStream:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>initFromStream:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>initFromStream:</b>(NXStream *)<i>ribStream</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Initializes the receiver, a newly allocated N3DRIBImageRep object, with the RIB image read from <i>ribStream</i>.&nbsp; If the new object can't be initialized for any reason (for example, <i>ribStream</i> doesn't contain RIB code), this method frees it and returns <b>nil</b>. Otherwise, it returns <b>self</b>.</font>
+
+<p><font face="Times" size="+1">This method is the designated initializer for N3DRIBImageReps that read image data from a stream.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>initFromFile:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>read:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>read:</b>(NXTypedStream *)<i>stream</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Reads the N3DRIBImageRep from the typed stream <i>stream</i>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>write:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setBackgroundColor:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setBackgroundColor:</b>(NXColor)<i>aColor</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the receiver's background color to <i>aColor</i>.&nbsp; Returns <b>self</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>backgroundColor</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setHider:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setHider:</b>(N3DHider)<i>aHider</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the hider, returns <b>self</b>.&nbsp; The hider determines the hidden-surface algorithm used when rendering the image.&nbsp; <i>aHider</i> may be:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">N3D_HiddenRendering</font></td>
+
+<td><font face="Times" size="+1">Determines hidden surfaces and renders only visible surfaces</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">N3D_InOrderRendering</font></td>
+
+<td><font face="Times" size="+1">Renders objects in the order in which they occur in the RIB stream, regardless of position in the scene</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">N3D_NoRendering</font></td>
+
+<td><font face="Times" size="+1">Produces no output</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">See &quot;Determining Rendering Order&quot; in the N3DCamera class specification for more on hiders.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>hider</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setSurfaceType:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setSurfaceType:</b>(N3DSurfaceType)<i>surfaceType</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the surface type for rendering.&nbsp; <i>surfaceType</i> may be:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">N3D_PointCloud</font></td>
+
+<td><font face="Times" size="+1">Renders the points passed by the RenderMan geometry calls in the RIB stream</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">N3D_WireFrame</font></td>
+
+<td><font face="Times" size="+1">Renders the edges connecting points in the scene, but renders no surfaces</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">N3D_ShadedWireFrame</font></td>
+
+<td><font face="Times" size="+1">Renders edges with depth cueing</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">N3D_FacetedSolids</font></td>
+
+<td><font face="Times" size="+1">Renders a faceted surface on all geometric primitives</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">N3D_SmoothSolids</font></td>
+
+<td><font face="Times" size="+1">Renders a smooth surface on all geometric primitives</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>surfaceType</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>surfaceType</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(N3DSurfaceType)<b>surfaceType</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the surface type set with <b>setSurfaceType:</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setSurfaceType:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>write:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>write:</b>(NXTypedStream *)<i>stream</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Writes the N3DRIBImageRep to the typed stream <i>stream</i>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>read:</b></font></td></tr>
+
+</table>
+
+
+
+<p><br>
+
+</body>
+</html>

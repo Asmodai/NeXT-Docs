@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/EnterpriseObjects/Reference/1_AccessLayer/Protocols/EODatabaseChannelNotification.rtf -->
+<!-- Date: Sun Jan  1 17:05:23 2023 -->
+<head>
+<title>EODatabaseChannelNotification</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>EODatabaseChannelNotification</b></font><br>
+<font face="Helvetica" size="+1"><b>(informal protocol)</b></font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Category Of:</b></font></td>
+
+<td><font face="Times" size="+1">NSObject</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">eoaccess/EODatabaseChannel.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Category Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This category on NSObject declares the <b>awakeForDatabaseChannel:</b> method. An EODatabaseChannel sends this message to any enterprise object that responds to it after fetching the object from the database. This allows the enterprise object to perform whatever additional initialization it needs.</font>
+
+<p><font face="Times" size="+1">Note that a channel sends this message as each object is fetched. There's no standard notification to objects after the entire set has been fetched. If you need such a notification and are working at the database level, you can send a message after your fetch loop to every enterprise object fetched (see the EODatabaseChannel class specification). If you're working with a data source object, you can send a message to every enterprise object fetched after sending <b>fetchObjects</b> to your data source object. With an EOController you can define a delegate that implements the <b>controller:didFetchObjects:</b> method to notify enterprise objects after they've all been fetched. In all three cases, however, you define the form of the notification method.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>awakeForDatabaseChannel:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>awakeForDatabaseChannel:</b>(EODatabaseChannel *)<i>channel</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Informs the receiver that it's been fetched from a database by <i>channel</i>. The receiver can perform any extra initialization it needs, except for fetching other enterprise objects with <i>channel. channel</i> is in the process of fetching when this method is sent, so any database operations the receiver needs to perform must be postponed. The receiver can, however, create an object that will be fetched later (see the EOFault class specification) or possibly use a different EODatabaseChannel to perform its own fetches.</font>
+
+<p><font face="Times" size="+1">This message is sent each time the receiver is fetched, not just the first time. The receiver should be sure it needs to act; for example, if an instance variable has a non-<b>nil</b> value it probably doesn't need to be reinitialized.</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

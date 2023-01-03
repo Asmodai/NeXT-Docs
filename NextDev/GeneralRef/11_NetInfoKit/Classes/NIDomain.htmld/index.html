@@ -1,0 +1,1224 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/GeneralRef/11_NetInfoKit/Classes/NIDomain.rtf -->
+<!-- Date: Sun Jan  1 17:04:09 2023 -->
+<head>
+<title>NIDomain</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>NIDomain</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Inherits From:</b></font></td>
+
+<td><font face="Times" size="+1">Object</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">nikit/NIDomain.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">NIDomain provides a connection to and interface with a NetInfo domain.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Variables</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">char *<b>fullPath</b>;</font>
+
+<p><font face="Times" size="+1">char *<b>masterServer</b>;</font>
+
+<p><font face="Times" size="+1">char *<b>currentServer</b>;</font>
+
+<p><font face="Times" size="+1">char *<b>domainTag</b>;</font>
+
+<p><font face="Times" size="+1">id <b>parentDomain</b>;</font>
+
+<p><font face="Times" size="+1">id <b>delegate</b>;
+
+<p><br><br><br><br>
+
+<p></font><font face="Times" size="+1">char *<b>parentDomainName</b>;</font>
+
+<p><font face="Times" size="+1">void *<b>domainHandle</b>;</font>
+
+<p><font face="Times" size="+1">ni_status <b>whatHappened</b>;</font>
+
+<p><font face="Times" size="+1">BOOL <b>connected</b>;</font>
+
+<p><font face="Times" size="+1">ni_id&nbsp; <b>rootDirectory</b>;</font>
+
+<p><font face="Times" size="+1">ni_fancyopenargs <b>fancyStuff</b>;</font>
+
+<p><font face="Times" size="+1">struct sockaddr_in&nbsp; <b>hostSocket</b>;
+
+<p></font><font face="Times" size="+1">struct hostent *<b>serverHostEnt</b>;</font>
+
+<p><font face="Times" size="+1">NXZone *<b>domainZone</b>;</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">fullPath</font></td>
+
+<td><font face="Times" size="+1">The fully qualified pathname of the domain.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">masterServer</font></td>
+
+<td><font face="Times" size="+1">The host name of the master server of the domain.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">currentServer</font></td>
+
+<td><font face="Times" size="+1">The host name of the current server with which the object is communicating.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">domainTag</font></td>
+
+<td><font face="Times" size="+1">The domain tag.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">parentDomain</font></td>
+
+<td><font face="Times" size="+1">The parent domain object, if it's been opened.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">delegate</font></td>
+
+<td><font face="Times" size="+1">The delegate of the NIDomain object.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">parentDomainName</font></td>
+
+<td><font face="Times" size="+1">The fully qualified name of the parent domain.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">domainHandle</font></td>
+
+<td><font face="Times" size="+1">The NetInfo handle to the domain.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">whatHappened</font></td>
+
+<td><font face="Times" size="+1">The last error condition from a NetInfo call.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">connected</font></td>
+
+<td><font face="Times" size="+1">Indicates if a domain connection is open.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">rootDirectory</font></td>
+
+<td><font face="Times" size="+1">The NetInfo directory ID for the root directory of the domain.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">fancyStuff</font></td>
+
+<td><font face="Times" size="+1">Various parameter settings when a connection is set with arguments.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">hostSocket</font></td>
+
+<td><font face="Times" size="+1">The socket used when querying for a host name.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">serverHostEnt</font></td>
+
+<td><font face="Times" size="+1">The hostent used when querying for a host name.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">domainZone</font></td>
+
+<td><font face="Times" size="+1">Memory allocation zone.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Allocating and initializing an NIDomain object</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=308></td>
+
+<td><font face="Times" size="+1">+ alloc</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font face="Times" size="+1">+ allocFromZone:</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">init</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Freeing an NIDomain object</font></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">free</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Connecting to or disconnecting from a domain</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=308></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setConnection:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setConnection:readTimeout:writeTimeout:canAbort:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=333></td>
+
+<td><font face="Times" size="+1">mustWrite:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setTaggedConnection:to:</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setTaggedConnection:to:readTimeout:writeTimeout:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=333></td>
+
+<td><font face="Times" size="+1">canAbort:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">disconnectFromCurrent:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Getting data about or from the current domain</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=308></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">getFullPath</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">getMasterServer</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">getCurrentServer</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">getTag</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">getServerIPAddress</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">getDomainHandle</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">findDirectory:withProperty:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Checking the error status</font></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">lastError</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Assigning a delegate</font></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setDelegate:</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>alloc</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ <b>alloc</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns a new NIDomain instance.&nbsp; You should initialize this object by sending it an <b>init</b> message.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>allocFromZone:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ <b>allocFromZone:</b>(NXZone *)<i>zone</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns a new NIDomain instance.&nbsp; Memory for the new object is allocated from <i>zone</i>.&nbsp; You should initialize this object by sending it an <b>init</b> message.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>disconnectFromCurrent</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>disconnectFromCurrent</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Terminates the connection to a domain but retains the NIDomain object.&nbsp; Resets all instance variable values.&nbsp; Returns <b>self</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>findDirectory:withProperty:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(ni_entrylist *)<b>findDirectory:</b>(const char *)<i>parentDirectory</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>withProperty:</b>(const char *)<i>property</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns a list containing the values associated with the indicated property in the named NetInfo directory.&nbsp; The caller should free this list when it's no longer needed.&nbsp; This method returns NULL if it couldn't read the requested information.&nbsp; You can find the reason for the failure with <b>lastError</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>free</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>free</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Deallocates the NIDomain object.&nbsp; Returns <b>nil</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>getCurrentServer</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(const char *)<b>getCurrentServer</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the host name of the current server of the domain, or NULL if the object isn't currently connected to a domain or the host name couldn't be resolved.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>getDomainHandle</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void *)<b>getDomainHandle</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the NetInfo handle to the current domain, or NULL if no connection exists.&nbsp; If this function returns NULL, you might be able to find out why with <b>lastError</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>getFullPath</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(const char *)<b>getFullPath</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the fully qualified pathname of the current domain, or NULL if the path couldn't be resolved.&nbsp; If this function returns NULL, invoking <b>lastError</b> might help you find out the cause.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>getMasterServer</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(const char *)<b>getMasterServer</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the host name of the master server of the current domain, or NULL if the object isn't currently connected to a domain or the host name couldn't be resolved.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>getServerIPAddress</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(const struct sockaddr_in *)<b>getServerIPAddress</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the socket address of the current server of the current domain.&nbsp; If an error occurs, NULL is returned.&nbsp; If the object is connected, invoking <b>lastError</b> should return the reason for the failure.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>getTag</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(const char *)<b>getTag</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the tag of the current domain, or NULL if there's no current connection or if it couldn't read the master server property. If the object is connected, invoking <b>lastError</b> should return the reason for the failure.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>init</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>init</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Initializes a newly allocated NIDomain instance.&nbsp; The new instance isn't connected.&nbsp; Returns <b>self</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>lastError</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(ni_status)<b>lastError</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the status code returned by the most recent NetInfo call.&nbsp; This value can be translated to an English error message by the <b>ni_error()</b> function, which is described in the <b>netinfo</b>(3) UNIX manual page.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setConnection:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(ni_status)<b>setConnection:</b>(const char *)<i>domain</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Establishes a connection to the named domain.&nbsp; Returns a value indicating status, corresponding to the constants defined in the header file <b>netinfo/ni_prot.h</b>.&nbsp; This value can be translated to an English error message by the <b>ni_error()</b> function, which is described in the <b>netinfo</b>(3) UNIX manual page.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setConnection:readTimeout:writeTimeout:canAbort:mustWrite:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(ni_status)<b>setConnection:</b>(const char *)<i>domain</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>readTimeout:</b>(int)<i>rtime</i></font><br>
+<font face="Times" size="+1"><b>writeTimeout:</b>(int)<i>wtime</i></font><br>
+<font face="Times" size="+1"><b>canAbort:</b>(BOOL)<i>abortFlag</i></font><br>
+<font face="Times" size="+1"><b>mustWrite:</b>(BOOL)<i>writeFlag</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Establishes a connection to the named domain with arguments corresponding to the ni_fancyopenargs structure described in the UNIX manual page for <b>netinfo</b>.&nbsp; Values for <i>rtime</i> and <i>wtime</i> indicate the timeout, in seconds, for read and write attempts. If <i>abortFlag</i> is TRUE, failure will occur after a timeout or other error. Otherwise, attempts will continue forever. If <i>writeFlag</i> is TRUE, this method forces a connection to the master server of the domain, since writes can only be made there.&nbsp; Returns a value indicating status, corresponding to the constants defined in the header file <b>netinfo/ni_prot.h</b>.&nbsp; This value can be translated to an English error message by the <b>ni_error()</b> function, which is described in the <b>netinfo</b>(3) UNIX manual page.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setDelegate:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setDelegate:</b><i>anObject</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the NIDomain object's delegate to <i>anObject</i>.&nbsp; Returns <b>self</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setTaggedConnection:to:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(ni_status)<b>setTaggedConnection:</b>(const char *)<i>tag</i> <b>to:</b>(char *)<i>hostName</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Establishes a connection to a domain by host name and tag rather than domain name.&nbsp; Returns a value indicating status, corresponding to the constants defined in the header file <b>netinfo/ni_prot.h</b>.&nbsp; This value can be translated to an English error message by the <b>ni_error()</b> function, which is described in the <b>netinfo</b>(3) UNIX manual page.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setTaggedConnection:to:readTimeout:writeTimeout:canAbort:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(ni_status)<b>setTaggedConnection:</b>(const char *)<i>tag</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>to:</b>(char *)<i>hostName</i></font><br>
+<font face="Times" size="+1"><b>readTimeout:</b>(int)<i>rtime</i></font><br>
+<font face="Times" size="+1"><b>writeTimeout:</b>(int)<i>wtime</i></font><br>
+<font face="Times" size="+1"><b>canAbort:</b>(BOOL)<i>abortFlag</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Establishes a connection to a domain by host name and tag with arguments. Same as <b>setConnection:readTimeout:writeTimeout:canAbort:mustWrite:</b>, except that it doesn't include the <i>writeFlag</i> argument. Since the connection is being made to a specific server, the <i>writeFlag</i> argument is irrelevant.&nbsp; Returns a value indicating status, corresponding to the constants defined in the header file <b>netinfo/ni_prot.h</b>.&nbsp; This value can be translated to an English error message by the <b>ni_error()</b> function, which is described in the <b>netinfo</b>(3) UNIX manual page.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Methods Implemented by the Delegate</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>domain:willCloseBecause:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>domain:</b><i>sender</i> <b>willCloseBecause:</b>(int)<i>reason</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Indicates that the connection to the current domain will terminate as a result of the <b>disconnectFromCurrent</b> method. The value of <i>reason</i> is always 0, indicating that the program requested closing.</font></td></tr>
+
+</table>
+
+
+
+<p><br>
+
+</body>
+</html>

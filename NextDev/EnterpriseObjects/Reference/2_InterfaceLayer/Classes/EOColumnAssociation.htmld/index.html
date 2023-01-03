@@ -1,0 +1,215 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/EnterpriseObjects/Reference/2_InterfaceLayer/Classes/EOColumnAssociation.rtf -->
+<!-- Date: Sun Jan  1 17:05:24 2023 -->
+<head>
+<title>EOColumnAssociation</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>EOColumnAssociation</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Inherits From:</b></font></td>
+
+<td><font face="Times" size="+1">EOAssociation : NSObject</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Conforms To:</b></font></td>
+
+<td><font face="Times" size="+1">EOAssociationNotification (EOAssociation)</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">eointerface/EOColumnAssociation.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">An EOColumnAssociation displays and edits a column of an NXTableView containing the values for its key of all enterprise objects in its controller. You can hook up any number of column associations to a single NXTableView, as long as they all have the same controller.</font>
+
+<p><font face="Times" size="+1">However, because an NXTableView expects to have only a single object acting as its data source (not to be confused with the controller's data source), one of the column associations must step forward to play that role. The column associations for a particular controller and NXTableView know to rendezvous under this lead association, which uses itself and its cohorts as column identifiers and forwards requests for data access to the appropriate association.</font>
+
+<p><font face="Times" size="+1">Although the interface of any association contains only a few methods, various implementations are often highly dependent on one another and on the way the destination objects act. Because of this, if you need to create an association class for a custom subclass of NXTableVector, you should create it as an immediate subclass of EOAssociation.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Edit Buffering</b></font>
+
+<p><font face="Times" size="+1">Because an NXTableView doesn't store data on its own, EOColumnAssociations have to cache their edited values (in other words, buffered edits not yet sent to the controller). When asked to get a value for a particular index, the association asks its controller for the enterprise object at that index and looks for a value cached under that object. Only if it doesn't find one does it ask the enterprise object for its value. When the controller saves to objects, all of its column associations (and any other associations that buffer edits) are sent <b>discardEdits</b> messages telling them to purge their cached values.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Setting up an EOColumnAssociation</b></font>
+
+<p><font face="Times" size="+1">When setting up an EOColumnAssociation programmatically, you must configure the newly initialized association by sending it a <b>setTableView:</b> message with the NXTableView of the destination column as an argument. This method sets the association up as the NXTableView's data source and delegate if needed. See the method description for more information.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Variables</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">None declared in this class.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setTableView:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setTableView:</b>(NXTableView *)<i>aTableView</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">If <i>aTableView</i> doesn't already have a column association from the same controller as its data source, sets up the receiver as the data source and delegate, so that it acts on behalf of all other column associations tied to <i>aTableView</i>. You should always send this message to a column association that you create programmatically.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>tableView</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NXTableView *)<b>tableView</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the NXTableView containing the destination column of the association.</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

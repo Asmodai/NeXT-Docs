@@ -1,0 +1,873 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/EnterpriseObjects/Guide/_ApA_ERModeling.rtfd -->
+<!-- Date: Sun Jan  1 17:05:29 2023 -->
+<head>
+<title>_ApA_ERModeling</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br><br><br><br><br><br><br>
+
+<p><font face="Times" size="+4"><i>Entity-Relationship Modeling</i></font>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">A database server stores data in the structures that it defines: A relational database uses tables to store data, an object-oriented database uses objects, a file system uses files, and so on. The Enterprise Objects Framework uses the terminology of <i>Entity-Relationship modeling</i> (or <i>E-R modeling</i>) to describe a server's data structures in a way that allows those data structures to be mapped to enterprise objects.</font>
+
+<p><font face="Times" size="+1">Entity-Relationship modeling isn't unique to the Enterprise Objects Framework; it's a popular discipline with a set of rules and terms that are documented in database literature. The Enterprise Objects Framework uses a modified version of the traditional rules of E-R modeling.</font>
+
+<p><font face="Times" size="+1">When your data store is a relational database, you can use the EOModeler application to specify the mapping between the database data and your enterprise objects. The model file you produce using EOModeler describes the server's data structures in terms that the Enterprise Objects Framework can understand. Note that if you're working with a data store other than a database, you must create your own data structures to map the server's data to your enterprise objects.</font>
+
+<p><font face="Times" size="+1">This chapter presents the E-R terms and concepts as they are used by the Framework. See Chapter 5, &quot;Using EOModeler&quot; for instructions on putting these concepts into practice.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Modeling Objects</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">In an Entity-Relationship model, distinguishable things are known as <i>entities</i>, each entity is defined by its component <i>attributes</i>, and the affiliations, or <i>relationships</i>, between entities are identified (together, attributes and relationships are known as <i>properties</i>). From these three simple <i>modeling objects</i>, arbitrarily complex systems can be modeled. For instance, a company's customer base, a library of books, or a network of computers can all be depicted as E-R models. If the parts of a system can be identified, the system can be expressed as an E-R model.</font>
+
+<p><font face="Times" size="+1">Pure Entity-Relationship modeling is independent of native database architecture. Theoretically, an E-R model can be implemented as a relational database, an object-oriented database, a file system, or any other data storage system. In practice, E-R modeling fits most naturally with relational databases; in other words, with databases that store data in two-dimensional tables. The examples and illustrations in this chapter follow this lead by posing a hypothetical relational database server from which data is drawn.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Entities and Attributes</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Entities and attributes represent structures that contain data. In a relational database, entities represent tables; an entity's attributes represent the table's columns. A sample table that could be represented by an</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entity is shown below:</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F16.gif" width=308 height=289></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 56</b></font><font face="Times" size="+1">. The &quot;EMPLOYEE&quot; Table</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">Each row in the table can be thought of as an &quot;instance of an entity.&quot; Thus, an employee record is called an instance of the </font><font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entity. In the Enterprise Objects Framework, each instance of an entity typically maps to one enterprise object.</font>
+
+<p><font face="Times" size="+1">Contained within an entity is a list of features, or attributes, of the thing that's being modeled. The</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entity would contain attributes such as the employee's last name, first name, phone number, and so on. This simple model is depicted in Figure 57.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F5.gif" width=197 height=85></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 57</b></font><font face="Times" size="+1">. The</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">Entity</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">In traditional E-R modeling, each entity represents all or part of one database table. The Enterprise Objects Framework allows you to go beyond this, however, by adding attributes to an entity that actually reflect data in other, related tables (the process of adding attributes from other entities is known as <i>flattenin</i>g). An entity in the Framework is analogous to a database view; in a sense it's a virtual table that maps to one or more real database tables.</font>
+
+<p><font face="Times" size="+1">Entities can also have <i>derived</i> attributes, which do not correspond directly to any of the columns in a database table. Frequently, these are computed from one or more attributes. For instance, a derived attribute could be used to automatically compute an employee's annual salary by multiplying his monthly salary (obtained from a simple monthly salary attribute) by twelve.</font>
+
+<p><font face="Times" size="+1">Enterprise objects are based on entities. Typically, each of an entity's properties are represented in the enterprise object as instance variables (although this is not a requirement). Enterprise objects can have instance variables that do not correspond to any of the entity's properties.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Names and the Data Dictionary</b></font>
+
+<p><font face="Times" size="+1">The table and column names shown in Figure 57 are the names that a hypothetical server might use. The collection of a server's table and column names is called its <i>data dictionary</i>. In your application, you can't refer directly to items in the server's data dictionary. To identify the server's &quot;EMPLOYEE&quot; table, for example, you must refer to the entity that represents the table--in other words, the</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entity. The correspondence between the server's names and the names of the modeling objects that you create isn't coincidental; you have to tell each modeling object which data dictionary name it represents. This is done as you create the model.</font>
+
+<p><font face="Times" size="+1">Server names (in other words, names in a server's data dictionary) are, typically, case-insensitive. The names of modeling objects, on the other hand, are case-sensitive. Throughout this chapter (and the rest of this manual) modeling objects are given names that match, except for case, the corresponding dictionary names (given the hypothetical relational database server that's used in the examples). To further distinguish the two, server names are uppercase and quoted--for example, the &quot;EMPLOYEE&quot; table--while modeling object names use a different font:</font> <font face="Helvetica" size="+1">AnEntity</font><font face="Times" size="+1">,</font> <font face="Helvetica" size="+1">anAttribute</font><font face="Times" size="+1">,</font> <font face="Helvetica" size="+1">aRelationship</font><font face="Times" size="+1">. Note that entity names are capitalized like Objective C class names, while attribute and relationship names are lowercase with intervening capital letters. Attributes are occasionally identified by their <i>definition</i>, with the entity and attribute names connected by a period: </font><font face="Helvetica" size="+1">AnEntity.anAttribute</font><font face="Times" size="+1">.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Attribute Data</b></font>
+
+<p><font face="Times" size="+1">When you use an attribute to identify a particular datum in a table, you refer to the value <i>for</i> that attribute, given a particular record. An employee's phone number, for example, is the value <i>for</i> the</font> <font face="Helvetica" size="+1">Employee.phone</font> <font face="Times" size="+1">attribute. The &quot;value for an attribute&quot; construction enforces the notion that the attribute itself doesn't contain data.</font>
+
+<p><font face="Times" size="+1">Not every employee will necessarily have a phone number. If a record's value for a particular attribute can't be determined (or doesn't exist), the value is said to be NULL.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Data Types</b></font>
+
+<p><font face="Times" size="+1">Every database attribute is assigned a data type (such as <b>int</b>, <b>char *</b>, and so on). All values for a particular attribute take the data type of that attribute. In other words, the values in a particular column are all of the same type. When an enterprise object is fetched from the database, the value for each attribute is converted from its external data type into a suitable scalar or value class type that can be used by the enterprise object. For example, a Sybase <b>varchar</b> would become an NSString in an enterprise object.</font>
+
+<p><font face="Times" size="+1">None of the candidate data types allow lists of data; the value for a particular attribute in a particular record must be a single datum. Thus, in addition to indicating that an employee has a last name, a first name, and a phone number, the diagram in Figure 57 indicates that every employee has a <i>single</i> last name, a <i>single</i> first name, and a <i>single</i> phone number (where any of these single values can be NULL). This &quot;atomic attribute rule&quot; will become particularly important in the discussion of relationships, later in this chapter.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Attribute Types</b></font>
+
+<p><font face="Times" size="+1">An attribute may be <i>simple</i>, <i>derived</i>, or <i>flattened</i>. A simple attribute corresponds to a single column in the database, and may be read or updated directly from or to the database.</font>
+
+<p><font face="Times" size="+1">A derived attribute doesn't correspond to a single database column and is usually based on some other attribute, which is modified in some way. For example, if an</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entity has a simple monthly salary attribute, you could define a derived </font><font face="Helvetica" size="+1">annualSalary</font> <font face="Times" size="+1">attribute as &quot;salary * 12&quot;. Derived attributes, since they don't correspond to real values in the database, are effectively read-only; it makes no sense to write a derived value.</font>
+
+<p><font face="Times" size="+1">A flattened attribute (which, in the Enterprise Objects Framework, is a special type of derived attribute) is actually an attribute of some other entity reached through a <i>relationship</i>. A flattened attribute's <i>definition</i> consists of one or more relationships separated by periods, ending in an attribute name. For example, if the</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entity has the relationship</font> <font face="Helvetica" size="+1">toDepartment</font> <font face="Times" size="+1">and the</font> <font face="Helvetica" size="+1">Department</font> <font face="Times" size="+1">entity has the attribute</font> <font face="Helvetica" size="+1">departmentName</font><font face="Times" size="+1">, you can define</font> <font face="Helvetica" size="+1">employeeDeptName</font> <font face="Times" size="+1">as an attribute of your </font><font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entity by creating an attribute for it with a definition of &quot;</font><font face="Helvetica" size="+1">toDepartment.departmentName</font><font face="Times" size="+1">&quot;. In the Enterprise Objects Framework, because flattened attributes are a type of derived attribute, they are read-only. For a more complete discussion of flattened attributes, see &quot;Flattened Attributes.&quot;</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>The Primary Key</b></font>
+
+<p><font face="Times" size="+1">Each of the records in a table must be unique--no two records can contain exactly the same values. To ensure this, each entity must contain an attribute that's guaranteed to represent a unique value for each record. This attribute is called the entity's <i>primary key</i>.</font>
+
+<p><font face="Times" size="+1">The</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entity, as defined above, doesn't contain a primary key. If the company were to hire two employees with the same name, the records for those two employees wouldn't be distinguishable from each other. To amend this, a primary key called</font> <font face="Helvetica" size="+1">empID</font><font face="Times" size="+1">--an attribute for which each distinct employee has a unique value--is added to the</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entity. Figure 58 shows the amended entity; the primary key is marked with a key symbol.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F8.gif" width=211 height=100></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 58</b></font><font face="Times" size="+1">. The</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">Entity with a Primary Key</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">The value for a primary key may or may not represent a real-world value. The</font> <font face="Helvetica" size="+1">empID</font> <font face="Times" size="+1">attribute used above may, for instance, contain the employee's social security number. Or, it may just contain an arbitrary value used only to distinguish a particular record from other employee records.</font>
+
+<p><font face="Times" size="+1">An entity can contain any number of attributes that represent unique data, but only one of them needs to be declared as a primary key. Declaring more than one as a primary key creates a <i>compound primary key</i>.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Compound Primary Keys</b></font>
+
+<p><font face="Times" size="+1">Typically, the primary key for an entity is a single attribute. However, you can designate a combination of attributes as a compound primary key. In a compound primary key, the value for any one of the constituent attributes isn't necessarily unique, but the combination of all of them is.</font>
+
+<p><font face="Times" size="+1">For example, consider employee time cards. Every time card could be uniquely identified through a combination of its employee number and an additional time card number (to distinguish multiple cards for the same employee). Taken on their own, neither of these numbers is necessarily unique for all time cards, but the combination of the two is. Figure 59 illustrates a</font> <font face="Helvetica" size="+1">TimeCard</font> <font face="Times" size="+1">entity in which the attributes</font> <font face="Helvetica" size="+1">empID</font> <font face="Times" size="+1">and</font> <font face="Helvetica" size="+1">timeCardID</font> <font face="Times" size="+1">form a compound primary key.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F3.gif" width=118 height=116></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 59</b></font><font face="Times" size="+1">. An Entity with a Compound Primary Key</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Relationships</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Your employee database might have, in addition to the</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entity, a</font> <font face="Helvetica" size="+1">JobTitle</font> <font face="Times" size="+1">entity that identifies the various job titles that an employee can have and whether each title represents a salaried or an hourly position. A <i>relationship</i> between the </font><font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entity and the</font> <font face="Helvetica" size="+1">JobTitle</font> <font face="Times" size="+1">entity expresses the affinity between employees and titles, and allows you to access the title information for a given employee. Graphically, a relationship can be shown as a named arrow that points from one entity (the <i>source entity</i>) to another (the <i>destination entity</i>); the Employee-JobTitle relationship (which is named</font> <font face="Helvetica" size="+1">toJobTitle</font><font face="Times" size="+1">) is depicted in Figure 60.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">To support the</font> <font face="Helvetica" size="+1">toJobTitle</font> <font face="Times" size="+1">relationship, the</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entity has been altered--the</font> <font face="Helvetica" size="+1">titleID</font> <font face="Times" size="+1">attribute has been added to it. This is explained in &quot;Relationship Keys.&quot;</font>
+
+<p><font face="Times" size="+1">The table that's represented by the source entity can be called the <i>source table</i>; the source table contains <i>source records</i>. Similarly, the table that's represented by the destination entity can be called the <i>destination table</i>; it contains <i>destination records</i>.</font>
+
+<p><font face="Times" size="+1">Be aware that you can't just randomly create relationships between your entities. Relationships that you add to your entities must reflect real relationships between the tables in the database. For more information, see &quot;Relationship Keys.&quot;</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F0.gif" width=546 height=113></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 60</b></font><font face="Times" size="+1">. The</font> <font face="Helvetica" size="+1">toJobTitle</font> <font face="Times" size="+1">Relationship</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Relationship Directionality</b></font>
+
+<p><font face="Times" size="+1">Relationships are <i>unidirectional.</i> In a unidirectional relationship, the path that leads from the source to the destination can't be traveled in the opposite direction--you can't use a relationship to go from the destination to the source. For example, although you can use the</font> <font face="Helvetica" size="+1">toJobTitle</font> <font face="Times" size="+1">relationship to find the title for a particular employee, you can't use it to get a list of the employees that share a particular title.</font>
+
+<p><font face="Times" size="+1">Unidirectionality is enforced by the way a relationship is resolved. Specifically, the source record is a given. Resolving a relationship means finding the correct destination record (or records) given a specific source record.</font>
+
+<p><font face="Times" size="+1">Bidirectional relationships--in which you can look up records in either direction--can be created by adding a separate &quot;return-trip&quot; relationship. This is demonstrated in &quot;Bidirectional Relationships.&quot;</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Naming Relationships</b></font>
+
+<p><font face="Times" size="+1">It's suggested that you name your relationships &quot;</font><font face="Helvetica" size="+1">to<i>Entity</i></font><font face="Times" size="+1">&quot;, just as the relationship drawn in Figure 60 is named</font> <font face="Helvetica" size="+1">toJobTitle</font><font face="Times" size="+1">. When defining a relationship in EOModeler, in fact, the default name generated for the relationship follows this convention. However, this convention is often sacrificed in deference to purpose. For instance, a relationship between an</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entity and a</font> <font face="Helvetica" size="+1">Manager</font> <font face="Times" size="+1">entity would be named</font> <font face="Helvetica" size="+1">toManager</font> <font face="Times" size="+1">by default. Your code might be more readable, however, if you changed the relationship's name to</font> <font face="Helvetica" size="+1">managerOf</font><font face="Times" size="+1">. Correspondingly, EOModeler allows you to change the name of any relationship as needed.</font>
+
+<p><font face="Times" size="+1">In the figures throughout this book, the entity that is adjacent to the relationship's label is said to <i>own</i> the relationship. For example, in Figure 60 the</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entity owns the</font> <font face="Helvetica" size="+1">toJobTitle</font> <font face="Times" size="+1">relationship, as indicated by the proximity of the &quot;toJobTitle&quot; label to the entity.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Relationships and the Data Dictionary</b></font>
+
+<p><font face="Times" size="+1">Unlike entities and attributes, relationships don't correspond to names in the server's data dictionary.&nbsp; In general, most servers don't define structural elements for relationships, so their data dictionaries don't contain names to which E-R relationships can correspond.&nbsp; But relationships aren't completely disassociated from the data dictionary:&nbsp; A relationship's definition, as explained in the next section, depends on the existence of particular entities and attributes (which, as described earlier, must correspond to data dictionary names).</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Relationship Keys</b></font>
+
+<p><font face="Times" size="+1">The construction of a relationship involves more than just two entities. You also have to designate at least one attribute from each entity as a <i>relationship key</i>. In the</font> <font face="Helvetica" size="+1">toJobTitle</font> <font face="Times" size="+1">relationship, for instance, the</font> <font face="Helvetica" size="+1">Employee.titleID</font> <font face="Times" size="+1">and</font> <font face="Helvetica" size="+1">JobTitle.titleID</font> <font face="Times" size="+1">are so designated; this is indicated in Figure 60 as the two attributes that lie at either end of the relationship arrow. Just as the tables are called source and destination tables, so are the relationship keys named. In the source entity, the relationship key is called the <i>source key.</i> The destination entity's relationship key is called the <i>destination key</i>.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">As in the case of the</font> <font face="Helvetica" size="+1">toJobTitle</font> <font face="Times" size="+1">relationship, the source and destination keys often have the same name, although this isn't a requirement of model design.</font>
+
+<p><font face="Times" size="+1">The reason you need to designate relationship keys is so the relationship can be used to create cross-references between specific instances of the related entities (this is called &quot;resolving&quot; the relationship). For example, let's say you fetch an employee object. The Enterprise Objects Framework takes the value for the employee's</font> <font face="Helvetica" size="+1">titleID</font> <font face="Times" size="+1">attribute and compares it to the value for</font> <font face="Helvetica" size="+1">titleID</font> <font face="Times" size="+1">in each</font> <font face="Helvetica" size="+1">JobTitle</font> <font face="Times" size="+1">instance. A match locates the desired job title record.</font>
+
+<p><font face="Times" size="+1">For this cross-referencing scheme to work, the source and destination keys must characterize the same data--you couldn't find an employee's job title by comparing, for example,</font> <font face="Helvetica" size="+1">Employee.empID</font> <font face="Times" size="+1">to</font> <font face="Helvetica" size="+1">JobTitle.titleID</font><font face="Times" size="+1">. This is why the</font> <font face="Helvetica" size="+1">titleID</font> <font face="Times" size="+1">attribute was added to the</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entity.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+1"><b>An Example with Data</b></font>
+
+<p><font face="Times" size="+1">To further illustrate how a relationship is resolved, consider the &quot;EMPLOYEE&quot; and &quot;JOB_TITLE&quot; tables presented in Figure 61 (for the purpose of this example, only the essential columns are shown).</font>
+
+<p><font face="Times" size="+1">Here we see that the value for the</font> <font face="Helvetica" size="+1">titleID</font> <font face="Times" size="+1">attribute for James Winton is 1. Looking in the &quot;JOB_TITLE&quot; table, we see that 1 is the ID of the President. Thus, James Winton is the company president. Similarly, we can determine that Kai Veasey is a manager.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F6.gif" width=508 height=298></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 61</b></font><font face="Times" size="+1">. The &quot;EMPLOYEE&quot; and &quot;JOB_TITLE&quot; Tables</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Choosing Relationship Keys</b></font>
+
+<p><font face="Times" size="+1">Any attribute can be used as a relationship key, but some are better suited than others. In general, of the two relationship keys for a particular relationship, the destination key will be a primary key for its entity (or, otherwise, an attribute that characterizes unique data) and the source key is manufactured to emulate the destination key. In traditional E-R modeling, the emulating attribute is called a <i>foreign key</i>. The</font> <font face="Helvetica" size="+1">toJobTitle</font> <font face="Times" size="+1">relationship demonstrates this: The destination key in the</font> <font face="Helvetica" size="+1">JobTitle</font> <font face="Times" size="+1">entity is </font><font face="Helvetica" size="+1">titleID</font><font face="Times" size="+1">, the primary key for that entity. The</font> <font face="Helvetica" size="+1">titleID</font> <font face="Times" size="+1">attribute is added to</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">as foreign key.</font>
+
+<p><font face="Times" size="+1">Note that if</font> <font face="Helvetica" size="+1">empID</font> <font face="Times" size="+1">had been used as the relationship key for the</font> <font face="Helvetica" size="+1">toJobTitle</font> <font face="Times" size="+1">relationship, a given title could only be assigned to a single employee.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Compound Relationship Keys</b></font>
+
+<p><font face="Times" size="+1">A relationship's keys needn't be single attributes from the related entities; any number of attributes can be paired as relationship keys within the same relationship to form a <i>compound relationship key</i>. A relationship that designates more than one pair of keys is called a <i>compound relationship</i>.</font>
+
+<p><font face="Times" size="+1">For example, consider an entity (</font><font face="Helvetica" size="+1">empPhoto</font><font face="Times" size="+1">) containing the employee's picture that uses the attributes</font> <font face="Helvetica" size="+1">firstName</font> <font face="Times" size="+1">and </font><font face="Helvetica" size="+1">lastName</font> <font face="Times" size="+1">as a compound relationship key. (Using people's names for unique identification is generally a bad idea, but it serves the purpose for illustration. In actual practice, this relationship would likely use</font> <font face="Helvetica" size="+1">empID</font> <font face="Times" size="+1">as its relationship key.) This relationship is depicted in Figure 62.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F4.gif" width=383 height=115></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 62</b></font><font face="Times" size="+1">. A Compound Relationship</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">The algorithm used to resolve a compound relationship is similar to that for a simple relationship. The only difference is the number of pairs of relationship key values that are compared. For two records to correspond, all of the comparisons must be successful.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">The keys in a compound relationship can be a combination of <i>any</i> attributes--not just a compound primary key (or foreign keys to a compound primary key). Conversely, you can use a single attribute from a compound primary key as a relationship key in a simple (non-compound) relationship.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Joins</b></font>
+
+<p><font face="Times" size="+1">Relationships are made up of source-destination key pairs. A <i>join</i> is the pairing of one source attribute and one destination attribute for purposes of establishing a relationship. Thus, simple relationships consist of one join. Compound relationships are composed of two or more joins. In Figure 62, for example, the</font> <font face="Helvetica" size="+1">toEmpPhoto</font> <font face="Times" size="+1">relationship is composed of two joins: one linking </font><font face="Helvetica" size="+1">Employee.lastName</font> <font face="Times" size="+1">to</font> <font face="Helvetica" size="+1">EmpPhoto.lastName</font><font face="Times" size="+1">, and one linking</font> <font face="Helvetica" size="+1">Employee.firstName</font> <font face="Times" size="+1">to</font> <font face="Helvetica" size="+1">EmpPhoto.firstName</font><font face="Times" size="+1">.</font>
+
+<p><font face="Times" size="+1">The Enterprise Objects Framework requires you to declare each join as either an <i>inner join</i>, a <i>right outer join</i>, a <i>left outer join</i>, or a <i>full outer join</i>. These four <i>join semantics</i> are defined as follows:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">In an inner join, if a destination record can't be found for a given source record, that source record isn't included in the result of the join. Destination records that don't match up to any records in the source table are not included in the result of an inner join, either.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">In a right outer join, destination records for which no source record can be found are included, but not the reverse.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">In a left outer join, source records for which no destination record can be found are included, but not the reverse.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">In a full outer join, <i>all</i> source records from both tables are included in the result of the join.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The Enterprise Objects Framework also lets you select one of six <i>join operators (</i>less than, greater than, equal to, less than or equal to, greater than or equal to, and not equal to). The join operator is used to specify how the destination attribute relates to the source attribute. Thus, you are not limited to relationships where the source and destination attributes are equal to one another. Instead, you can specify a join where, for instance, the destination is all records whose destination attribute is greater than the value of the source attribute.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Relationship Cardinality</b></font>
+
+<p><font face="Times" size="+1">Every relationship has a <i>cardinality</i>; the cardinality tells you how many destination records can (potentially) resolve the relationship. The Enterprise Objects Framework defines two cardinalities, <i>to-one</i> and <i>to-many</i>:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">In a to-one relationship, for each source record there's <i>exactly one</i> corresponding destination record.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">In a to-many relationship, for each source record there may be zero, one, or more corresponding destination records.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The</font> <font face="Helvetica" size="+1">toJobTitle</font> <font face="Times" size="+1">relationship is an example of a to-one relationship: An employee can only have one title. The converse relationship, from</font> <font face="Helvetica" size="+1">JobTitle</font> <font face="Times" size="+1">to</font> <font face="Helvetica" size="+1">Employee</font><font face="Times" size="+1">, would be to-many: a single title can be shared by more than one employee, or there may be no employees with a given title. This relationship, which is owned by</font> <font face="Helvetica" size="+1">JobTitle</font> <font face="Times" size="+1">and called</font> <font face="Helvetica" size="+1">toEmployee</font><font face="Times" size="+1">, is shown in Figure 63 (for clarity, the source and destination components are pointed out). That the relationship is to-many is indicated by the double arrowhead.</font>
+
+<p><font face="Times" size="+1">Notice that the relationship keys for the</font> <font face="Helvetica" size="+1">toEmployee</font> <font face="Times" size="+1">relationship are the same as for</font> <font face="Helvetica" size="+1">toJobTitle</font><font face="Times" size="+1">. However, the source and destination key assignments are reversed. In other words, whereas</font> <font face="Helvetica" size="+1">Employee.titleID</font> <font face="Times" size="+1">is the source key for the</font> <font face="Helvetica" size="+1">toJobTitle </font><font face="Times" size="+1">relationship, it's the destination key for</font> <font face="Helvetica" size="+1">toEmployee</font><font face="Times" size="+1">; similarly,</font> <font face="Helvetica" size="+1">JobTitle.titleID</font> <font face="Times" size="+1">changes destination and source key roles between the two relationships.</font>
+
+<p><font face="Times" size="+1">This switch does more than demonstrate that the same attributes can be used as relationship keys in more than one relationship; it also exemplifies the typical orientation of the primary key with regard to the relationship keys in to-one and to-many relationships:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">In a to-one relationship, the destination key is always the primary key for its entity.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">In a to-many relationship, the source key is usually a primary key.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F1.gif" width=530 height=118></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 63</b></font><font face="Times" size="+1">. A To-Many Relationship</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Resolving a To-Many Relationship</b></font>
+
+<p><font face="Times" size="+1">The only difference in the relationship resolution routine between a to-one and a to-many relationship is the number of destination records that are found. A to-one relationship stops when the first (and what should be the only) matching destination record is found. A to-many relationship finds all the destination records that resolve the relationship for the given source record.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Bidirectional Relationships</b></font>
+
+<p><font face="Times" size="+1">Since relationships, as defined by the Enterprise Objects Framework, are unidirectional, it's natural to assume that to simulate a bidirectional relationship--in other words, to express the natural relationship between two entities without regard for direction--all you need is two relationships: One that leads from entity A to entity B, and one that leads from entity B to entity A. Unfortunately, it isn't always that easy.</font>
+
+<p><font face="Times" size="+1">Consider, for example, the actual relationship between employees and projects. A project can involve many employees, and a single employee can contribute to more than one project.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F11.gif" width=120 height=84></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 64</b></font><font face="Times" size="+1">. The</font> <font face="Helvetica" size="+1">Project</font> <font face="Times" size="+1">Entity</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">Forming a to-many relationship between</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">and</font> <font face="Helvetica" size="+1">Project</font> <font face="Times" size="+1">(</font><font face="Helvetica" size="+1">toProject</font><font face="Times" size="+1">) and a to-many relationship between</font> <font face="Helvetica" size="+1">Project</font> <font face="Times" size="+1">and </font><font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">(</font><font face="Helvetica" size="+1">toEmployee</font><font face="Times" size="+1">) doesn't work, because it's impossible to assign relationship keys that would support this set-up. For example, in the</font> <font face="Helvetica" size="+1">toProject</font> <font face="Times" size="+1">relationship you can't use the</font> <font face="Helvetica" size="+1">empID</font> <font face="Times" size="+1">attribute as a source key because the destination key, </font><font face="Helvetica" size="+1">Project.empID</font> <font face="Times" size="+1">(added as a foreign key), wouldn't be atomic (since a project may consist of more than one employee). Importing</font> <font face="Helvetica" size="+1">projectID</font> <font face="Times" size="+1">as a foreign key into</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">has the same problem: The attribute wouldn't be atomic (since an employee may be involved with more than one project).</font>
+
+<p><font face="Times" size="+1">The most common way to establish this &quot;many-to-many&quot; relationship (as it's called in traditional E-R modeling) is to insert an auxiliary entity between</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">and</font> <font face="Helvetica" size="+1">Project</font><font face="Times" size="+1">, and form a network of relationships to and from it. This is depicted in Figure 65.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F10.gif" width=548 height=100></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 65</b></font><font face="Times" size="+1">. A Many-to-Many Model</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">The compound primary key used in</font> <font face="Helvetica" size="+1">EmpProject</font> <font face="Times" size="+1">indicates that the entity characterizes unique combinations of employees and projects. The table that the entity represents would hold a different record for each employee of every project. For example, if three employees were involved with a single project, there would be three</font> <font face="Helvetica" size="+1">EmpProject</font> <font face="Times" size="+1">instances with the same value for the </font><font face="Helvetica" size="+1">projectID</font> <font face="Times" size="+1">attribute, but each record would have a different value for its</font> <font face="Helvetica" size="+1">empID</font> <font face="Times" size="+1">attribute.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+1"><b>The Tables Behind the Many-to-Many Model</b></font>
+
+<p><font face="Times" size="+1">To better understand how the many-to-many model works, it helps to see an example of the tables that store the data. Sample &quot;EMPLOYEE&quot; and &quot;PROJECT&quot; tables that are filled with this information are shown in Figure 66 (for clarity, only relevant attributes are shown).</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F12.gif" width=560 height=296></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 66</b></font><font face="Times" size="+1">. &quot;EMPLOYEE&quot; and &quot;PROJECT&quot; Tables</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">The &quot;EMP_PROJECT&quot; table is shown in Figure 67 (for clarity, the last names and project names are shown in the margins).</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F7.gif" width=318 height=356></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 67</b></font><font face="Times" size="+1">. The &quot;EMP_PROJECT&quot; Table</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">As expected, some values appear more than once for the</font> <font face="Helvetica" size="+1">empID</font> <font face="Times" size="+1">attribute; similarly, some values for</font> <font face="Helvetica" size="+1">projectID</font> <font face="Times" size="+1">are repeated. But since</font> <font face="Helvetica" size="+1">empID</font> <font face="Times" size="+1">and</font> <font face="Helvetica" size="+1">projectID</font> <font face="Times" size="+1">form a compound primary key for the</font> <font face="Helvetica" size="+1">EmpProject</font> <font face="Times" size="+1">entity, no two records may possess the same combination of values for these two attributes. This fact--that no two records can have the same empID and the same ProjectID--signifies that a given employee cannot be assigned to a single project more than once.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Reflexive Relationships</b></font>
+
+<p><font face="Times" size="+1">The source and destination entities in a relationship needn't be different. Where the entities in a relationship are the same, a <i>reflexive relationship</i> is created. Reflexive relationships are important in characterizing a system in which an instance of an entity points to another instance of the same entity.</font>
+
+<p><font face="Times" size="+1">For example, to show who a given employee reports to, you could create a separate</font> <font face="Helvetica" size="+1">Manager</font> <font face="Times" size="+1">entity. It would be easier, however, to just create a reflexive relationship, as shown in Figure 68.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F2.gif" width=197 height=145></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 68</b></font><font face="Times" size="+1">. A Reflexive Relationship</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">The name of the relationship,</font> <font face="Helvetica" size="+1">managerOf</font><font face="Times" size="+1">, doesn't follow the relationship naming convention suggested earlier in this chapter. However, it follows from the meaning of the relationship, and meaning takes precedence over form.</font>
+
+<p><font face="Times" size="+1">The</font> <font face="Helvetica" size="+1">managerID</font> <font face="Times" size="+1">attribute acts as the relationship's source key;</font> <font face="Helvetica" size="+1">empID</font> <font face="Times" size="+1">is the destination key. Where an employee's </font><font face="Helvetica" size="+1">managerID</font> <font face="Times" size="+1">matches another employee's</font> <font face="Helvetica" size="+1">empID</font><font face="Times" size="+1">, the first employee reports to the second. If an employee doesn't have a manager, the value for the</font> <font face="Helvetica" size="+1">managerID</font> <font face="Times" size="+1">attribute is NULL in that employee's record.</font>
+
+<p><font face="Times" size="+1">Reflexive relationships can represent arbitrarily deep recursions. Thus, from the model above, an employee can report to another employee who reports to yet another employee, and so on. This could go on until an employee who's</font> <font face="Helvetica" size="+1">managerID</font> <font face="Times" size="+1">is NULL is reached, denoting an employee who reports to no one (probably the company president!).</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Flattened Attributes</b></font>
+
+<p><font face="Times" size="+1">At the beginning of this chapter, it was stated that an entity maps to a table in the database. This is not strictly true, however, because the Enterprise Objects Framework allows you to add <i>flattened attributes</i> (and <i>flattened relationships</i>) to your entity, effectively extending the entity's mapping to more than one table in a database.</font>
+
+<p><font face="Times" size="+1">A flattened attribute is an attribute that you effectively add from one entity to another by traversing a relationship. You can't add arbitrary attributes from various entities, however. To add an attribute from one entity to another, there must be a to-one relationship between those entities.</font>
+
+<p><font face="Times" size="+1">For example, by traversing the</font> <font face="Helvetica" size="+1">toJobTitle</font> <font face="Times" size="+1">relationship, you can determine a given employee's title. If you add the</font> <font face="Helvetica" size="+1">title</font> <font face="Times" size="+1">attribute from the</font> <font face="Helvetica" size="+1">JobTitle</font> <font face="Times" size="+1">entity to the</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entity as a flattened attribute, the Enterprise Objects Framework will automatically traverse the relationship and locate the employee's title when the employee is fetched from the database.</font>
+
+<p><font face="Times" size="+1">To your code, the flattened attribute looks like any other. After adding the</font> <font face="Helvetica" size="+1">title</font> <font face="Times" size="+1">attribute to the</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entity as a flattened attribute (which has no effect on the &quot;EMPLOYEE&quot; table in the database), for instance, your application's view of the </font><font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">table would look like Figure 69:</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F9.gif" width=317 height=299></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 69</b></font><font face="Times" size="+1">. A View of the &quot;EMPLOYEE&quot; Table After Adding a Flattened Attribute</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">You are not limited to flattening attributes across a single relationship; any number of relationship traversals can be employed. Thus, if there was a relationship between the</font> <font face="Helvetica" size="+1">JobTitle</font> <font face="Times" size="+1">entity and a</font> <font face="Helvetica" size="+1">SalaryRange</font> <font face="Times" size="+1">entity, you could include an employee's maximum salary with the rest of the employee information by flattening a</font> <font face="Helvetica" size="+1">toJobTitle.toSalaryRange.maxSalary</font> <font face="Times" size="+1">attribute into the</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entity.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Flattened Relationships</b></font>
+
+<p><font face="Times" size="+1">Just as you can flatten an attribute to add it to another entity, so can you flatten a relationship. This gives a source entity access to relationships that a destination entity has with other entities. It is equivalent to performing a multi-table join.</font>
+
+<p><font face="Times" size="+1">As an example, suppose you need department information for corporate assets that are assigned to employees, using the entities and relationships shown in Figure 70. One way to obtain the needed information is to flatten the relevant attributes (</font><font face="Helvetica" size="+1">deptName </font><font face="Times" size="+1">and</font> <font face="Helvetica" size="+1">location</font><font face="Times" size="+1">, perhaps) across the</font> <font face="Helvetica" size="+1">toEmployee</font> <font face="Times" size="+1">and</font> <font face="Helvetica" size="+1">toDepartment</font> <font face="Times" size="+1">relationships. A simpler way would be to flatten the </font><font face="Helvetica" size="+1">toDepartment</font> <font face="Times" size="+1">relationship itself, so that it appears to your code as if the</font> <font face="Helvetica" size="+1">Department</font> <font face="Times" size="+1">entity is a part of the</font> <font face="Helvetica" size="+1">Equipment</font> <font face="Times" size="+1">entity.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F14.gif" width=543 height=113></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 70</b></font><font face="Times" size="+1">. Equipment Allocated by Department</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">Figure 71 shows how the</font> <font face="Helvetica" size="+1">Equipment</font> <font face="Times" size="+1">entity might look after the flattened relationship had been added. In it,</font> <font face="Helvetica" size="+1">toDepartment</font> <font face="Times" size="+1">is a relationship defined as</font> <font face="Helvetica" size="+1">toEmployee.toDepartment</font><font face="Times" size="+1">. When your code asks an Equipment object for the value of its <b>toDepartment</b> property, it receives the corresponding Department object. Your code can then query the Department object for the needed properties.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F13.gif" width=120 height=100></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 71</b></font><font face="Times" size="+1">. A Flattened Relationship</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">While the entities involved in a flattened relationship must be related, those relationships can either be to-one or to-many. If any of the relationships are to-many and your code requests the value for a flattened relationship, it will receive an array of objects corresponding to the flattened relationship's destination entity.</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

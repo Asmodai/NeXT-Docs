@@ -1,0 +1,548 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/EnterpriseObjects/Reference/2_InterfaceLayer/Classes/EOAssociation.rtf -->
+<!-- Date: Sun Jan  1 17:05:24 2023 -->
+<head>
+<title>EOAssociation</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>EOAssociation</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Inherits From:</b></font></td>
+
+<td><font face="Times" size="+1">NSObject</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Conforms To:</b></font></td>
+
+<td><font face="Times" size="+1">EOAssociationNotification</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">eointerface/EOAssociation.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">EOAssociation is an abstract class defining the link between an EOController, which manages a collection of data-bearing enterprise objects, and a single user interface element, such as a column in an NXTableView, or a control. An EOAssociation coordinates the display and editing of property values for its controller's enterprise objects. EOAssociations can also link two controllers (see the EOQualifiedAssociation class specification for more information).</font>
+
+<p><font face="Times" size="+1">An EOAssociation links just one property of the objects supplied by its EOController to its user interface object. This property is identified by a key as used in the access layer's EOKeyValueCoding informal protocol. An association for a user interface object capable of displaying multiple enterprise objects (such as an NXTableView) displays data for all objects in the controller, while an association for a user interface object capable of displaying only one enterprise object (such as a TextField) displays data for the first selected object in the controller.</font>
+
+<p><font face="Times" size="+1">An EOAssociation is notified of changes in its controller through the EOAssociationNotification protocol. Upon receiving notice of a change, the association determines which objects it needs to display values for and sends each a <b>valuesForKeys:</b> message with an array containing the key for the association's property. The association then updates the user interface object with the value returned if it's different from the current value.</font>
+
+<p><font face="Times" size="+1">If the EOAssociation's user interface object changes, then the EOAssociation must send that change to its controller. EOAssociations usually set themselves up as the targets of control object so that they're notified of such changes. For example, when a user edits a TextField representing the name of an enterprise object and presses Return, the TextField sends its association an action message. The EOAssociation then gets the new value in the TextField and informs its controller that the user interface object changed by sending the controller an <b>associationDidEdit:</b> message. In response to this notification the controller sends a <b>value</b> message to the association to get the new value for the enterprise object.</font>
+
+<p><font face="Times" size="+1">For more information on how EOAssociations work with EOControllers and user interface objects, see the EOController class specification and the EOAssociationNotification protocol specification. For information on associations for a specific destination class, see one of the following class specifications:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Association Subclass</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Destination Object Class</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">EOActionCellAssociation</font></td>
+
+<td><font face="Times" size="+1">Any ActionCell subclass (such as TextFieldCell)</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">EOBrowserAssociation</font></td>
+
+<td><font face="Times" size="+1">NXBrowser</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">EOButtonAssociation</font></td>
+
+<td><font face="Times" size="+1">Button</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">EOColumnAssociation</font></td>
+
+<td><font face="Times" size="+1">NXTableVector (in an NXTableView)</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">EOControlAssociation</font></td>
+
+<td><font face="Times" size="+1"><i>See below</i></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">EOImageAssociation</font></td>
+
+<td><font face="Times" size="+1">NXImageView</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">EOMatrixAssociation</font></td>
+
+<td><font face="Times" size="+1">Matrix (<i>but see below</i>)</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">EOPopUpAssociation</font></td>
+
+<td><font face="Times" size="+1">PopUpList</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">EOQualifiedAssociation</font></td>
+
+<td><font face="Times" size="+1">EOController</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">EOTextAssociation</font></td>
+
+<td><font face="Times" size="+1">Text</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">EOControlAssociation can be used with any &quot;simple&quot; control that manages a single value, such as a TextField or a Slider. However, if a control has a dedicated association subclass, you should use that. For example, Buttons should be linked with instances of EOButtonAssociation.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">EOMatrixAssociation has very limited functionality. If you want to create associations with individual items in a matrix (especially with fields in a Form object), use EOActionCellAssociation.</font>
+
+<p><font face="Times" size="+1">Although the interface of any association contains only a few methods, their implementations are often highly dependent on one another and on the way the destination objects act. Because of this, if you need to create an association class for a custom user interface object class, you should create it as an immediate subclass of EOAssociation.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Variables</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">None declared in this class.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Adopted Protocols</b></font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">EOAssociationNotification</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">contentsDidChange</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">selectionDidChange</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">discardEdits</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">endEditing</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Initializing new instances</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">initWithController:key:destination:</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Getting association members</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">controller</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">destination</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Getting the key and value</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">key</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">value</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>controller</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(EOController *)<b>controller</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the EOController responsible for the association.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>destination</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>destination</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the object that the association monitors. This is typically a user interface object, but doesn't have to be.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>initWithController:key:destination:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>initWithController:</b>(EOController *)<i>aController</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>key:</b>(NSString *)<i>aKey</i></font><br>
+<font face="Times" size="+1"><b>destination:</b><i>destination</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Initializes a newly allocated EOAssociation with <i>aController</i>. <i>aKey</i> is the name of the property represented by the association, and is used as the identifier for value transfers to and from <i>destination</i> (typically a user interface object or another EOController). This is the designated initializer for the EOAssociation class. Returns <b>self</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>addAssociation:</b> (EOController)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>key</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSString *)<b>key</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the name of the property that the association transfers to and from its destination.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>value</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>value</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the value of the association's destination as an instance of an appropriate value class (see &quot;Mapping from Database to Objects&quot; in the access layer's EOAttribute class specification). For example, the value class for a TextField's value is NSString.</font>
+
+<p><font face="Times" size="+1">For applications using the access layer, if the value class specified for an enterprise object's attribute in the EOModel isn't NSString or NSData, it must match exactly the value class used by the association.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>key</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>takeValuesFromDictionary:</b> (EOKeyValueCoding informal protocol)</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

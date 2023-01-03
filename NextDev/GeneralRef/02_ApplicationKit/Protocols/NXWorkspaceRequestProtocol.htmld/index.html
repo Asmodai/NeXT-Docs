@@ -1,0 +1,1770 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/GeneralRef/02_ApplicationKit/Protocols/NXWorkspaceRequestProtocol.rtf -->
+<!-- Date: Sun Jan  1 17:03:27 2023 -->
+<head>
+<title>NXWorkspaceRequestProtocol</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>NXWorkspaceRequestProtocol</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Adopted By:</b></font></td>
+
+<td><font face="Times" size="+1">No NEXTSTEP classes</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">appkit/workspaceRequest.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Protocol Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The NXWorkspaceRequestProtocol protocol is implemented by an object in the Workspace Manager that responds to application requests to do such things as open files, launch applications, and return file icons.&nbsp; This object is made available through the Application object's <b>workspace</b> method.&nbsp; For example, the following code uses the Workspace Manager object to request that a file be opened in the Edit application:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[[Application workspace] openFile:&#34;/tmp/README&#34;</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">withApplication:&#34;Edit&#34;];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Before NEXTSTEP Release 3, some of the functionality of this protocol was found in the Speaker and Listener classes.&nbsp; New applications should be changed to send messages to the Workspace Manager object rather than to Workspace Manager's Listener.</font>
+
+<p><font face="Times" size="+1">Many of the methods in the NXWorkspaceRequestProtocol protocol depend on the existence of an Application object and its Speaker and/or Listener objects.&nbsp; This presents no problem for NEXTSTEP applications, but other applications may have to create an Application object and send it a <b>run</b> message in order to use these methods.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Opening files</font></td>
+
+<td><font face="Times" size="+1">- openFile:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font face="Times" size="+1">- openFile:withApplication:</font><br>
+<font face="Times" size="+1">- openFile:fromImage:at:inView:</font><br>
+<font face="Times" size="+1">- openFile:withApplication:andDeactivate:</font><br>
+<font face="Times" size="+1">- openTempFile:</font><br>
+<font face="Times" size="+1">- findString:inFile:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Manipulating applications</font></td>
+
+<td><font face="Times" size="+1">- launchApplication:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font face="Times" size="+1">- launchApplication:showTile:autolaunch:</font><br>
+<font face="Times" size="+1">- hideOtherApplications</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Manipulating files</font></td>
+
+<td><font face="Times" size="+1">- performFileOperation:source:destination:files:options:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font face="Times" size="+1">- selectFile:inFileViewerRootedAt:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Requesting information about files</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font face="Times" size="+1">- getIconForFile:</font><br>
+<font face="Times" size="+1">- getInfoForFile:application:type:</font><br>
+<font face="Times" size="+1">- getFullPathForApplication:</font><br>
+<font face="Times" size="+1">- getInfoForFileSystemAt:isRemovable:isWritable:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=333></td>
+
+<td><font face="Times" size="+1">isUnmountable:description:type:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Requesting additional time before logout</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font face="Times" size="+1">- extendPowerOffBy:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Tracking changes to the file system</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font face="Times" size="+1">- fileSystemChanged</font><br>
+<font face="Times" size="+1">- didFileSystemChange</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Updating registered services and file types</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font face="Times" size="+1">- findApplications</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Tracking changes to the defaults database</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font face="Times" size="+1">- defaultsChanged</font><br>
+<font face="Times" size="+1">- didDefaultsChange</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Tracking status changes for applications and devices</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font face="Times" size="+1">- beginListeningForApplicationStatusChanges</font><br>
+<font face="Times" size="+1">- endListeningForApplicationStatusChanges</font><br>
+<font face="Times" size="+1">- beginListeningForDeviceStatusChanges</font><br>
+<font face="Times" size="+1">- endListeningForDeviceStatusChanges</font><br>
+<font face="Times" size="+1">- getMountedRemovableMedia:</font><br>
+<font face="Times" size="+1">- mountNewRemovableMedia:</font><br>
+<font face="Times" size="+1">- checkForRemovableMedia</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Animating an image</font></td>
+
+<td><font face="Times" size="+1">- slideImage:from:to:</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Unmounting a device</font></td>
+
+<td><font face="Times" size="+1">- unmountAndEjectDeviceAt:</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>beginListeningForApplicationStatusChanges</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">- (void)<b>beginListeningForApplicationStatusChanges</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Notifies Workspace Manager that the application wants to be notified of changes in the status of all applications.&nbsp; After sending this message, the Application object's delegate will receive the following messages when an application is launched or after one terminates:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=125></td>
+
+<td><font face="Times" size="+1">app:applicationWillLaunch:</font><br>
+<font face="Times" size="+1">app:applicationDidLaunch:</font><br>
+<font face="Times" size="+1">app:applicationDidTerminate:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1">- <b>endListeningForApplicationStatusChanges</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>beginListeningForDeviceStatusChanges</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">- (void)<b>beginListeningForDeviceStatusChanges</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Notifies Workspace Manager that the application wants to be notified when various media (usually optical or floppy disks) are mounted or unmounted.&nbsp; After sending this message, the Application object's delegate will receive the following messages after a device is mounted or unmounted:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=125></td>
+
+<td><font face="Times" size="+1">app:mounted:</font><br>
+<font face="Times" size="+1">app:unmounted:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">These methods complement the <b>unmounting:ok:</b> method, which is sent just before a device is unmounted so that applications can end all their accesses to that device.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1">- <b>endListeningForDeviceStatusChanges</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>checkForRemovableMedia</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">- (void)<b>checkForRemovableMedia</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Causes the Workspace Manager to poll the system's drives for any disks that have been inserted but not yet mounted. <b>checkForRemovableMedia</b> doesn't wait until such disks are mounted; instead, it asks the Workspace Manager to mount the disk asynchronously and returns immediately.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1">- <b>getMountedRemovableMedia:</b>, - <b>mountNewRemovableMedia:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>defaultsChanged</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">- (void)<b>defaultsChanged</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Informs Workspace Manager that the defaults database has changed.&nbsp; Workspace Manager then reads all the defaults it is interested in and reconfigures itself appropriately.&nbsp; For example, this method is used by the Preferences application to notify Workspace Manager whether the user prefers to see hidden files.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1">- <b>didDefaultsChange</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>didDefaultsChange</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">- (BOOL)<b>didDefaultsChange</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns whether a change to the defaults database has been registered with a <b>defaultsChanged</b> message, and clears the internal flag (for the sending application) that indicates such a change.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>didFileSystemChange</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">- (BOOL)<b>didFileSystemChange</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns whether a change to the file system has been registered with a <b>fileSystemChanged</b> message, and clears the internal flag (for the sending application) that indicates such a change.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>endListeningForApplicationStatusChanges</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">- (void)<b>endListeningForApplicationStatusChanges</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Notifies Workspace Manager that the application is no longer interested in notifications of application launches and terminations.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1">- <b>beginListeningForApplicationStatusChanges</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>endListeningForDeviceStatusChanges</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">- (void)<b>endListeningForDeviceStatusChanges</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Notifies Workspace Manager that the application is no longer interested in notifications of the mounting and unmounting of devices (such as optical and floppy disks).</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1">- <b>beginListeningForDeviceStatusChanges</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>extendPowerOffBy:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">- (int)<b>extendPowerOffBy:</b>(int)<i>requestedMs</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Requests more time before the power goes off or the user logs out.&nbsp; An application can send this message in response to a <b>powerOffIn:andSave:</b> message that doesn't give the application enough time to prepare for the impending shutdown.</font>
+
+<p><font face="Times" size="+1"><i>requestedMs</i> is how many additional milliseconds are needed, beyond the number given in the <b>powerOffIn:andSave:</b> message. The actual granted number of additional milliseconds is returned.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>powerOffIn:andSave:</b> (Application),</font> <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>app:powerOffIn:andSave:</b> (Application delegate)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>fileSystemChanged</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">- (void)<b>fileSystemChanged</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Informs Workspace Manager that the file system has changed.&nbsp; Workspace Manager then gets the status of all the files and directories it is interested in and updates itself appropriately.&nbsp; This method is used by many objects that write or delete files. Even if this method isn't invoked, Workspace Manager will note changes to the file system relatively quickly if it is the active application.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1">- <b>didFileSystemChange</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>findApplications</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">- (void)<b>findApplications</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Instructs Workspace Manager to examine all applications in the normal places and update its records of registered services and file types.&nbsp; This can be useful in an project building application, for example.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>findString:inFile:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">- (BOOL)<b>findString:</b>(const char *)<i>aString</i> <b>inFile:</b>(const char *)<i>filename</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Instructs Workspace Manager to open the file <i>filename</i> (specified with a complete path), with the string <i>aString</i> selected.&nbsp; The file is opened using the default application for its type.&nbsp; The application that opens the file must implement the <b>msgSetPosition:posType:andSelect:ok:</b> message in its Listener's delegate to find the selection.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>getFullPathForApplication:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">- (const char *)<b>getFullPathForApplication:</b>(const char *)<i>appName</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the full path for the application <i>appName</i>, or NULL if <i>appName</i> isn't in one of Workspace Manager's application directories.&nbsp; The returned string is valid until the next message to a Speaker object; the application must copy it if it must be retained.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>getIconForFile:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">- (NXImage *)<b>getIconForFile:</b>(const char *)<i>fullPath</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns a newly allocated NXImage with the icon for the single file specified by <i>fullPath</i>, or <b>nil</b> if there is an error.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1">- <b>getInfoForFile:application:type:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>getInfoForFile:application:type:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">- (BOOL)<b>getInfoForFile:</b>(const char *)<i>fullPath</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>application:</b>(char **)<i>appName</i></font><br>
+<font face="Times" size="+1"><b>type:</b>(NXAtom *)<i>type</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Retrieves information about the file specified by <i>fullPath</i>.&nbsp; After invoking this method, the string pointed to by <i>appName</i> is set to the application Workspace Manager would use to open <i>fullPath</i>.&nbsp; This string should be freed by the caller.&nbsp; The NXAtom pointed to by <i>type</i> will contain one of the following values or a file name extension such as &quot;rtf&quot; indicating the file's type:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Value</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b><i>fullPath</i> is a:</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">NXPlainFileType</font></td>
+
+<td><font face="Times" size="+1">plain (untyped) file</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">NXDirectoryFileType</font></td>
+
+<td><font face="Times" size="+1">directory</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">NXApplicationFileType</font></td>
+
+<td><font face="Times" size="+1">NEXTSTEP application</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">NXFilesystemFileType</font></td>
+
+<td><font face="Times" size="+1">file system mount point</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">NXShellCommandFileType</font></td>
+
+<td><font face="Times" size="+1">executable shell command</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES upon success, NO otherwise.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1">- <b>getIconForFile:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>getInfoForFileSystemAt:isRemovable:isWritable:isUnmountable:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=125></td>
+
+<td><font face="Helvetica" size="+1"><b>description:type:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">- (BOOL)<b>getInfoForFileSystemAt:</b>(const char *)<i>fullPath</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>isRemovable:</b>(BOOL *)<i>removableFlag</i></font><br>
+<font face="Times" size="+1"><b>isWritable:</b>(BOOL *)<i>writableFlag</i></font><br>
+<font face="Times" size="+1"><b>isUnmountable:</b>(BOOL *)<i>unmountableFlag</i></font><br>
+<font face="Times" size="+1"><b>description:</b>(char **)<i>description</i></font><br>
+<font face="Times" size="+1"><b>type:</b>(char **)<i>fileSystemType</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Describes the file system at <i>fullPath</i>.&nbsp; Returns YES if <i>fullPath</i> is a file system mount point, or NO if it isn't.&nbsp; Upon success, <i>description</i> will describe the file system; this value can be used in strings, but it shouldn't be depended upon by program logic. Example values for <i>description</i> are &quot;hard&quot;, &quot;nfs&quot;, and &quot;foreign&quot;.&nbsp; <i>fileSystemType</i> will indicate the file system type; values could be &quot;NeXT&quot;, &quot;DOS&quot;, or other values.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>getMountedRemovableMedia:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">- (BOOL)<b>getMountedRemovableMedia:</b>(char **)<i>pathnames</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Asks the Workspace Manager for the pathnames of all currently mounted removable disks, and returns whether the query was successful.&nbsp; Returns YES if it was successful in filling in <i>pathnames</i> and NO otherwise.&nbsp; <i>pathnames</i> is a pointer to a null-terminated, tab-separated list of full pathnames.</font>
+
+<p><font face="Times" size="+1">If the computer provides an interrupt or other notification when the user inserts a disk into a drive, the Workspace Manager will mount the disk immediately.&nbsp; However, if no notification is given, the Workspace Manager won't be aware that a disk needs to be mounted.&nbsp; On such systems, an application should invoke either <b>mountNewRemovableMedia:</b> or <b>checkForRemovableMedia</b> before invoking <b>getMountedRemovableMedia:</b>.&nbsp; Either of these methods cause the Workspace Manager to poll the drives to see if a disk is present.&nbsp; If a disk has been inserted but not yet mounted, these methods will cause the Workspace Manager to mount it.</font>
+
+<p><font face="Times" size="+1">The Disk button in an Open or Save panel invokes <b>getMountedRemovableMedia:</b> and <b>mountNewRemovableMedia:</b> as part of its operation, so most application won't need to invoke these methods directly.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1">- <b>mountNewRemovableMedia:</b>, - <b>checkForRemovableMedia</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>hideOtherApplications</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">- (void)<b>hideOtherApplications</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Hides all applications other than the sender.&nbsp; (Since the user can cause the same effect by Command-double-clicking on an application's tile, a programmatic invocation of this method is usually unnecessary.)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>launchApplication:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">- (BOOL)<b>launchApplication:</b>(const char *)<i>appName</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Instructs Workspace Manager to launch the application <i>appName</i>.&nbsp; <i>appName</i> need not be specified with a full path and, in the case of an application wrapper, can be specified with or without the &quot;.app&quot; extension.&nbsp; Returns YES if the application is successfully launched or already running, and NO if it can't be launched.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1">- <b>launchApplication:showTile:autolaunch:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>launchApplication:showTile:autolaunch:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">- (BOOL)<b>launchApplication:</b>(const char *)<i>appName</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>showTile:</b>(BOOL)<i>showTile</i></font><br>
+<font face="Times" size="+1"><b>autolaunch:</b>(BOOL)<i>autolaunch</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Instructs Workspace Manager to launch the application <i>appName</i>.&nbsp; If <i>showTile</i> is NO, Workspace Manager won't display a tile for the application.&nbsp; (The tile will exist, but it won't be placed on the screen.)&nbsp; If <i>autolaunch</i> is YES, the NXAutoLaunch command line default will be set as though the application were autolaunched from the dock.&nbsp; This method is provided to enable daemon-like apps that lack a normal user interface and for use by alternative dock programs.&nbsp; Its use is not generally encouraged.</font>
+
+<p><font face="Times" size="+1">Returns YES if the application is successfully launched or already running, and NO if it can't be launched.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1">- <b>launchApplication:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>mountNewRemovableMedia:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">- (BOOL)<b>mountNewRemovableMedia:</b>(char **)<i>newPaths</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Causes the Workspace Manager to poll the system's drives for any disks that have been inserted but not yet mounted. <b>mountNewRemovableMedia:</b> waits until the new disks have been mounted and then fills in <i>newPaths</i> with a zero-terminated, tab-separated list of full pathnames to all newly mounted disks.&nbsp; This method returns YES if it was successful in filling in <i>newPaths</i> and NO otherwise.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1">- <b>getMountedRemovableMedia:,</b> - <b>checkForRemovableMedia</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>openFile:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">- (BOOL)<b>openFile:</b>(const char *)<i>fullPath</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Instructs Workspace Manager to open the file specified by <i>fullPath</i> using the default application for its type.&nbsp; The sending application is deactivated before the request is sent.&nbsp; Returns YES if the file is successfully opened, and NO otherwise.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1">- <b>openFile:withApplication:andDeactivate:</b>, - <b>openTempFile:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>openFile:fromImage:at:inView:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">- (BOOL)<b>openFile:</b>(const char *)<i>fullPath</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>fromImage:</b>(NXImage *)<i>anImage</i></font><br>
+<font face="Times" size="+1"><b>at:</b>(const NXPoint *)<i>point</i></font><br>
+<font face="Times" size="+1"><b>inView:</b>(View *)<i>aView</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Instructs Workspace Manager to open the file specified by <i>fullPath</i> using the default application for its type.&nbsp; Before opening the file, Workspace Manager will provide animation to give the user feedback that the file is to be opened.&nbsp; To provide this animation, <i>anImage</i> should contain an icon for the file, and its image should be displayed at <i>point</i>, specified in <i>aView</i>'s coordinates.</font>
+
+<p><font face="Times" size="+1">The sending application is deactivated before the request is sent.&nbsp; Returns YES if the file is successfully opened, and NO otherwise.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1">- <b>openFile:withApplication:andDeactivate:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>openFile:withApplication:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">- (BOOL)<b>openFile:</b>(const char *)<i>fullPath</i> <b>withApplication:</b>(const char *)<i>appName</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Instructs Workspace Manager to open the file specified by <i>fullPath</i> using the <i>appName</i> application.&nbsp; <i>appName</i> need not be specified with a full path and, in the case of an application wrapper, can be specified with or without the &quot;.app&quot; extension.&nbsp; The sending application is deactivated before the request is sent.&nbsp; Returns YES if the file is successfully opened, and NO otherwise.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1">- <b>openFile:withApplication:andDeactivate:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>openFile:withApplication:andDeactivate:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">- (BOOL)<b>openFile:</b>(const char *)<i>fullPath</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>withApplication:</b>(const char *)<i>appName</i></font><br>
+<font face="Times" size="+1"><b>andDeactivate:</b>(BOOL)<i>flag</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Instructs Workspace Manager to open the file specified by <i>fullPath</i> using the <i>appName</i> application.&nbsp; <i>appName</i> need not be specified with a full path and, in the case of an application wrapper, can be specified with or without the &quot;.app&quot; extension.&nbsp; If <i>appName</i> is NULL, the default application for the file's type is used.&nbsp; If <i>flag</i> is YES, the sending application is deactivated before the request is sent, allowing the opening application to become the active application.&nbsp; Returns YES if the file is successfully opened, and NO otherwise.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1">- <b>app:openFile:type:</b> (Application delegate)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>openTempFile:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">- (BOOL)<b>openTempFile:</b>(const char *)<i>fullPath</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Instructs Workspace Manager to open the temporary file specified by <i>fullPath</i> using the default application for its type.&nbsp; The sending application is deactivated before the request is sent.&nbsp; Using this method instead of one of the <b>openFile:...</b> methods lets the receiving application know that it should delete the file when it no longer needs it.&nbsp; Returns YES if the file is successfully opened, and NO otherwise.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1">- <b>openFile:withApplication:andDeactivate:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>performFileOperation:source:destination:files:options:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">- (int)<b>performFileOperation:</b>(const char *)<i>operation</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>source:</b>(const char *)<i>source</i></font><br>
+<font face="Times" size="+1"><b>destination:</b>(const char *)<i>destination</i></font><br>
+<font face="Times" size="+1"><b>files:</b>(const char *)<i>files</i></font><br>
+<font face="Times" size="+1"><b>options:</b>(const char *)<i>options</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Requests the Workspace Manager to perform some file operation, such as compressing or moving files.&nbsp; The files to be manipulated are located in the <i>source</i> directory; their names are specified relative to this directory and are listed in <i>files</i>.&nbsp; If more than one file is listed, their names must be tab-separated.&nbsp; The list can contain both files and directories; all of them must be located directly within <i>source</i> (not in one of its subdirectories).</font>
+
+<p><font face="Times" size="+1">Some operations--such as moving, copying, and linking files--require a <i>destination</i> directory to be specified.&nbsp; If not, <i>destination </i>should be the empty string (&quot;&quot;).</font>
+
+<p><font face="Times" size="+1">The <i>options</i> argument is currently ignored.&nbsp; It's reserved for future enhancements.</font>
+
+<p><font face="Times" size="+1">The permissible values for <i>operation</i> are as follows:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Operation</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Meaning</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">WSM_MOVE_OPERATION</font></td>
+
+<td><font face="Times" size="+1">Move file to destination</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">WSM_COPY_OPERATION</font></td>
+
+<td><font face="Times" size="+1">Copy file to destination</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">WSM_LINK_OPERATION</font></td>
+
+<td><font face="Times" size="+1">Create link to file in destination</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">WSM_COMPRESS_OPERATION</font></td>
+
+<td><font face="Times" size="+1">Compress file</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">WSM_DECOMPRESS_OPERATION</font></td>
+
+<td><font face="Times" size="+1">Decompress file</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">WSM_ENCRYPT_OPERATION</font></td>
+
+<td><font face="Times" size="+1">Encrypt file</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">WSM_DECRYPT_OPERATION</font></td>
+
+<td><font face="Times" size="+1">Decrypt file</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">WSM_DESTROY_OPERATION</font></td>
+
+<td><font face="Times" size="+1">Destroy file</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">WSM_RECYCLE_OPERATION</font></td>
+
+<td><font face="Times" size="+1">Move file to recycler</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">WSM_DUPLICATE_OPERATION</font></td>
+
+<td><font face="Times" size="+1">Duplicate file in source directory</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">WSM_ENCRYPT_OPERATION and WSM_DECRYPT_OPERATION might not be available on all systems.</font>
+
+<p><font face="Times" size="+1">This method returns a negative integer if the operation fails, 0 if the operation is performed synchronously and succeeds, and a positive integer if the operation is performed asynchronously.&nbsp; The positive integer is a tag that identifies the requested file operation.&nbsp; When the operation is completed, the delegate of the Application object is informed in an <b>app:fileOperationCompleted:</b> message.&nbsp; The tag is passed as the second argument in the message.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>selectFile:inFileViewerRootedAt:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">- (BOOL)<b>selectFile:</b>(const char *)<i>fullPath</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>inFileViewerRootedAt:</b>(const char *)<i>rootFullpath</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Instructs Workspace Manager to select the file specified by <i>fullPath</i>.&nbsp; If a path is specified by <i>rootFullpath</i>, a new file viewer is opened.&nbsp; If <i>rootFullpath</i> is an empty string (&quot;&quot;), the file is selected in the main viewer.&nbsp; Returns YES if the file is successfully selected, and NO otherwise.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>slideImage:from:to:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">- (void)<b>slideImage:</b>(NXImage *)<i>image</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>from:</b>(const NXPoint *)<i>fromPoint</i></font><br>
+<font face="Times" size="+1"><b>to:</b>(const NXPoint *)<i>toPoint</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Instructs Workspace Manager to animate a sliding image of <i>image</i> from <i>fromPoint</i> to <i>toPoint</i>, specified in screen coordinates.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>unmountAndEjectDeviceAt:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">- (BOOL)<b>unmountAndEjectDeviceAt:</b>(const char *)<i>path</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Unmounts and ejects the device at <i>path</i>.&nbsp; Returns YES if the device is successfully unmounted or <i>path</i> is badly formed; returns NO otherwise.</font></td></tr>
+
+</table>
+
+
+
+<p><br>
+
+</body>
+</html>

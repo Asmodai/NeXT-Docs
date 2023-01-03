@@ -1,0 +1,540 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextAdmin/ApC_IPAddr.rtf -->
+<!-- Date: Sun Jan  1 13:56:31 2023 -->
+<head>
+<title>ApC_IPAddr</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Release 3.3 Copyright</font> &copy;<font face="Times">1994 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap><font face="Helvetica" size="+4"><b>C</b></font></td>
+
+<td><font face="Times" size="+4"><i>Internet Addressing</i></font></td></tr>
+
+<tr valign=top>
+
+<td width=36 height=80></td></tr>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">Throughout this manual, you've been required to assign an Internet address to each NeXT computer connected to a network. An Internet address is, simply, the means used by one networked computer to identify another. However, in order to be sure that your Internet addresses are unique, you must apply to a central organization to have a network address assigned. If you have a large network, you may find yourself entering the mysterious world of subnetting.</font></td></tr>
+
+<tr valign=top>
+
+<td width=36 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">This appendix provides some background information about the Internet, then explores the components of an Internet address, describes how to use subnetting, and provides contact information for obtaining an Internet address.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>The Internet</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The Internet is a huge network of networks connecting university, government, and commercial research labs around the world. The individual networks that make up the Internet share an address structure and communications protocol suite. This protocol suite is TCP/IP, which stands for Transmission Control Protocol/Internet Protocol.</font>
+
+<p><font face="Times" size="+1">NeXT computers support TCP/IP and can easily communicate with other computers running TCP/IP. The TCP/IP software is independent of the hardware used for communication. While NeXT computers (and many others) are commonly connected in an Ethernet network, TCP/IP runs on many other types of media, including ISDN (Integrated Services Digital Network).</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Network Traffic</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Information transmitted on a network is generally called <i>traffic</i>. Individual pieces of information are called <i>packets</i>. The amount of traffic on a network is proportional to the number of computers using the network, the types of packets they send, the types of services provided by the network, and the frequency of transmission, among other factors. The capacity of a network to handle traffic is limited by the type of communication hardware as well as the network configuration.</font>
+
+<p><font face="Times" size="+1">Packets can generally be grouped into a few categories:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Broadcast--Data sent to all computers on a network. In TCP/IP based networks, this is accomplished by sending data to the broadcast address of a given network (see the next section, &quot;Internet Addresses&quot;). When a networked NeXT computer boots, the first packet it sends is a request asking for its Internet address, sent to the broadcast address.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Multicast--Data sent to a specific group of hosts.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Unicast--Data sent to a single destination. This is the most common type of packet.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Error--Data re-sent due to an error. When a packet can't be completely delivered to the destination in a set period of time, it's retransmitted. Retransmission is a normal part of network operation, but it can cause problems since error packets can interfere with other traffic.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">In Ethernet-based networks, all packets are actually sent to every host on the network. Each host is responsible for rejecting packets that aren't addressed to it. Ethernet networks allow only one computer to transmit at a time. If two or more computers transmit at the same instant, a <i>collision</i> occurs. All computers involved in a collision will retransmit their packets after a random length of time. A large number of collisions on a network can indicate that it's overloaded.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Internet Addresses</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">An <i>Internet address</i> or <i>IP address</i> is simply a 32-bit integer. Addresses are used to uniquely identify individual computers, groups of computers, or entire networks. The address itself is generally written in dotted notation like this: x.x.x.x where each &quot;x&quot; is an integer from 0-255 (called an <i>octet</i>), and each octet represents one byte of the address.</font>
+
+<p><font face="Times" size="+1">Valid Internet addresses start at 0.0.0.1 and range through 255.255.255.254. Although all Internet addresses contain 4 octets, there are several abbreviations. For example, 127.1 is the same as 127.0.0.1, while 127. is shorthand for 127.0.0.0.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Address Components</b></font>
+
+<p><font face="Times" size="+1">Internet addresses have two components: the network part and the host part. The network part, or network address, identifies a network, while the host part identifies a host on that network. All computers on the same physical network must have the same network address.</font>
+
+<p><font face="Times" size="+1">Some networks only have a few hosts, and therefore only need a few host addresses, while other networks need many host addresses. Internet addresses are divided into <i>classes</i>, determined by the first (high-order) bits of the address. Each class allocates a specific number of bits for the network part of the address, with the remaining bits used for the host address. The following table describes the primary classes:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>HO Bits</b></font></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Allocation</b></font></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Class</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Address Range</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><img src="../images/sp.gif" width=25 height=1><font face="Times" size="+1">0</font></td>
+
+<td nowrap><font face="Times" size="+1">7/24</font></td>
+
+<td nowrap><img src="../images/sp.gif" width=13 height=1><font face="Times" size="+1">A</font></td>
+
+<td><font face="Times" size="+1">1.0.0.0</font><font size="+1"><img src="../images/c2D.gif" width=8 height=4></font><font face="Times" size="+1">127.255.255.255</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><img src="../images/sp.gif" width=25 height=1><font face="Times" size="+1">10</font></td>
+
+<td nowrap><font face="Times" size="+1">14/16</font></td>
+
+<td nowrap><img src="../images/sp.gif" width=13 height=1><font face="Times" size="+1">B</font></td>
+
+<td><font face="Times" size="+1">128.0.0.0</font><font size="+1"><img src="../images/c2D.gif" width=8 height=4></font><font face="Times" size="+1">191.255.255.255</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><img src="../images/sp.gif" width=25 height=1><font face="Times" size="+1">110</font></td>
+
+<td nowrap><font face="Times" size="+1">21/8</font></td>
+
+<td nowrap><img src="../images/sp.gif" width=13 height=1><font face="Times" size="+1">C</font></td>
+
+<td><font face="Times" size="+1">192.0.0.0</font><font size="+1"><img src="../images/c2D.gif" width=8 height=4></font><font face="Times" size="+1">223.255.255.255</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Class A addresses allocate 7 bits to the network portion of the address and 24 to the host portion; class B addresses allocate 14 bits to the network portion and 16 to the host portion; and class C addresses allocate 21 bits to the network portion and 8 to the host portion. The fewer the number of bits used in the network part, the greater the number of bits allocated to the host portion. The number of bits allocated to the host portion determines the number of hosts that can be attached to one network.</font>
+
+<p><font face="Times" size="+1">You can determine the class of a given Internet address by looking at the value of the first octet. For example, 192.42.172.0 is a class C network address, since 192 is in the range of addresses for that class. With 8 bits allocated to the host portion of the address, class C networks have 254 host addresses available (two addresses are reserved, as described in the next section).</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Special Addresses</b></font>
+
+<p><font face="Times" size="+1">There are several types of addresses in addition to host addresses:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Network Address--Specifies an entire network, as opposed to an individual host. The bits in the host portion of a network address are all set to zero, as in 189.52.0.0 (a class B network address). You'll see network addresses in the output of several commands, including <b>netstat</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Broadcast Address--Used to send broadcast packets. The bits in the host portion of a broadcast address are all set to one, as in 189.52.255.255. All hosts with the same network address will receive information sent to the broadcast address. The address 255.255.255.255 is defined as the broadcast address of the current network.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Loopback Address--Reserved for non-network interprocess communication and testing. All addresses beginning with the octet 127 are loopback addresses and are not considered to be on a network. On NeXT computers, as well as the majority of UNIX computers using TCP/IP, the special name <b>localhost</b> is given to the address 127.0.0.1.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>Important:</b></font>&nbsp; <font face="Times" size="+1">Don't assign any of these addresses to hosts on your network.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Routing</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">When talking about the network part of an Internet address, the term <i>network</i> means a set of hosts that can directly communicate with each other. For example, assume there are three different hosts connected with Ethernet cables that have been assigned the addresses 192.42.172.1, 192.42.172.2, and 192.42.178.1. By examining the first octet, you can see that each is a class C address. For two class C addresses to be on the same logical network, the first three octets (24 bits) must match, since only the last octet (8 bits) is used for the host portion. Therefore, the hosts assigned the first two addresses are on the same network, and can communicate with each other, while the third is on a separate network, unable to communicate with either of the first two.</font>
+
+<p><font face="Times" size="+1">Hosts on different logical networks can communicate with each other if they have access to a <i>router</i>. A router attaches to two or more networks and routes traffic between them. Routers maintain tables of paths to destinations as well as values that approximate the delay of choosing one path over another.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Subnetting</b></font>
+
+<p><font face="Times" size="+1">A large organization that has (or is planning) hundreds or thousands of hosts will find that the 254 host addresses provided by a class C network are insufficient. A class B network address allows for tens of thousands of host addresses. A network with a large number of hosts will probably be made up of several smaller networks in different locations.</font>
+
+<p><font face="Times" size="+1">Routers can be used to connect these smaller networks, but remember that routers only transfer data between different logical networks (hosts with addresses that have different network portions). In order for routing to work successfully in this situation, you need to have each smaller network be a different logical network, even though you've been assigned a single network address.</font>
+
+<p><font face="Times" size="+1">By using a <i>subnet mask</i>, you can extend the network portion of the Internet address, effectively providing multiple logical networks. A subnet mask (or <i>netmask</i>) determines which bits of an Internet address will be used as the network portion, and which as the host portion. For example, assume you've been assigned the class B network address 140.211.0.0. You've got several sites distributed among different buildings and different cities, each with up to 200 hosts. You set a subnet mask of 255.255.255.0, which assigns the first 16 bits to the network portion and 8 bits to the host portion. This gives you the potential for 254 different subnets, each with 254 hosts. You can now, for example, assign one site the network address 140.211.128.0, and another the network address 140.211.192.0.</font>
+
+<p><font face="Times" size="+1">To see how this works, we need to examine the addresses in binary form:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Decimal</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Binary</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">255.255.255.0</font></td>
+
+<td><font face="Times" size="+1">11111111.11111111.11111111.00000000</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">140.211.128.0</font></td>
+
+<td><font face="Times" size="+1">10001100.11010011.10000000.00000000</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">140.211.192.0</font></td>
+
+<td><font face="Times" size="+1">10001100.11010011.11000000.00000000</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Each bit in a subnet mask set to 1 indicates that the corresponding bit of the Internet address should be considered part of the network portion, while bits set to 0 indicate the host portion. In this example, the first 16 bits of the address have been assigned to you, and the subnet mask extends the network portion to include the next 8 bits, leaving 8 bits for the host portion.</font>
+
+<p><font face="Times" size="+1">Notice that the two network addresses have been chosen by adjusting the leftmost bits of the third octet. This is a common practice that allows for future expansion. If you find that a subnet needs more than 254 host addresses, you can assign a new subnet mask that leaves more bits available for the host portion. If you had already used some of those bits for the network portion, you would have to reassign host addresses (not a pleasant task). By using the leftmost bits of the third octet for network addresses, you leave the rightmost bits of the address available for possible future use in the host portion.</font>
+
+<p><font face="Times" size="+1">You can use the <b>ifconfig</b> program to see the Internet address, subnet mask, and broadcast address currently in use. For example, enter the following in a shell window:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier"><b>ifconfig</b> en0</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">On NeXT computers, the name of the Ethernet network interface is <b>en0</b>. The output will look something like this:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">en0: flags=23&lt;BROADCAST,UP,NOTRAILERS&gt;</font><br>
+<img src="../images/sp.gif" width=180 height=1><font face="Courier">inet 140.211.192.27 netmask ffffff00 broadcast 140.211.192.255</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The second line of output includes the Internet address of the local computer, the netmask, and the broadcast address for the current network. Notice that the netmask is displayed as a string of hexadecimal numbers, two for each octet. The netmask value ffffff00 is the same as 255.255.255.0. For more information, see the UNIX manual page for <b>ifconfig</b>.</font>
+
+<p><font face="Times" size="+1">You can use the <b>netstat</b> program to see a list of active network interfaces. Enter the following in a shell window:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier"><b>netstat -r</b></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The <b>r</b> option is used to display routing table information. The output will look similar to this:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">Routing tables</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">Destination&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Gateway&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Flags&nbsp;&nbsp;&nbsp;&nbsp; Refs&nbsp;&nbsp;&nbsp;&nbsp; Use&nbsp; Interface</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">localhost&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; localhost&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UH&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 4&nbsp;&nbsp;&nbsp;&nbsp; 1520&nbsp; lo0</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">140.211.192.0&nbsp;&nbsp;&nbsp; 140.211.192.27&nbsp;&nbsp;&nbsp;&nbsp; U&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp; en0</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The destination information is a network address or host name, and the gateway information is the Internet address or host name used to get to the destination. In this example, packets destined for the 140.211.192.0 network will be sent to 140.211.192.27. For more information, see the UNIX manual page for <b>netstat</b>.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Assigning Internet Addresses</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">If you're absolutely sure your network will never be on the Internet, you can choose your own Internet addresses, since you don't have to worry about your addresses being distinct from other networks. (Being &quot;on the Internet&quot; just means that you have some kind of connection that allows you to send packets to another computer on the Internet.) If your network will be on the Internet, or you aren't sure, have an address assigned at the outset, to avoid having to reassign addresses later.</font>
+
+<p><font face="Times" size="+1">To request an address, contact the Network Information Center (NIC):</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">Government Systems, Inc.</font><br>
+<font face="Times" size="+1">Attention: Network Information Center</font><br>
+<font face="Times" size="+1">14200 Park Meadow Drive, Suite 2000</font><br>
+<font face="Times" size="+1">Chantilly, Va. 22021</font><br>
+<font face="Times" size="+1">Telephone: 1-800-365-3642</font><br>
+<font face="Times" size="+1">Fax: (703) 802-4535</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">There is no fee for obtaining a network address, and anyone may request one. The class of address you will be assigned depends on the number of hosts you plan to have on your network and the size of your organization.</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

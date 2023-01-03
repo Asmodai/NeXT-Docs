@@ -1,0 +1,1379 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/GeneralRef/11_NetInfoKit/Classes/NIDomainPanel.rtf -->
+<!-- Date: Sun Jan  1 17:04:09 2023 -->
+<head>
+<title>NIDomainPanel</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>NIDomainPanel</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Inherits From:</b></font></td>
+
+<td><font face="Times" size="+1">Object</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">nikit/NIDomainPanel.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">NIDomainPanel provides a mechanism for selecting a specific domain in the NetInfo domain hierarchy.&nbsp; The panel includes a browser for the domain hierarchy and a text field at the bottom for entering the path to a domain. An example of this object is the Open Domain panel used in NetInfoManager.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Variables</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">id <b>domainBrowser</b>;</font>
+
+<p><font face="Times" size="+1">id <b>okButton</b>;</font>
+
+<p><font face="Times" size="+1">id <b>cancelButton</b>;</font>
+
+<p><font face="Times" size="+1">id <b>domainText</b>;</font>
+
+<p><font face="Times" size="+1">id <b>panel</b>;</font>
+
+<p><font face="Times" size="+1">id <b>groupForm</b>;</font>
+
+<p><font face="Times" size="+1">id <b>fieldEditor</b>;</font>
+
+<p><font face="Times" size="+1">id <b>sharedDomainPanel</b>;</font>
+
+<p><font face="Times" size="+1">struct NIHierarchyOfDomains <b>myDomains</b>;</font>
+
+<p><font face="Times" size="+1">ni_status <b>lastFailure</b>;</font>
+
+<p><font face="Times" size="+1">int <b>exitFlags</b>;</font>
+
+<p><font face="Times" size="+1">char <b>returnPath</b>[1024];</font>
+
+<p><font face="Times" size="+1">void *<b>currentDomain</b>;</font>
+
+<p><font face="Times" size="+1">BOOL <b>domainBrowserLoaded</b>;</font>
+
+<p><font face="Times" size="+1">id <b>panelButton</b>;</font>
+
+<p><font face="Times" size="+1">NXZone *<b>zone</b>;</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">domainBrowser</font></td>
+
+<td><font face="Times" size="+1">Object to browse NetInfo domains.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">okButton</font></td>
+
+<td><font face="Times" size="+1">The OK button.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">cancelButton</font></td>
+
+<td><font face="Times" size="+1">The Cancel button.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">domainText</font></td>
+
+<td><font face="Times" size="+1">Unused.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">panel</font></td>
+
+<td><font face="Times" size="+1">The panel object.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">groupForm</font></td>
+
+<td><font face="Times" size="+1">The text field.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">fieldEditor</font></td>
+
+<td><font face="Times" size="+1">The editing object for the text field.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">sharedDomainPanel</font></td>
+
+<td><font face="Times" size="+1">Unused.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">myDomains</font></td>
+
+<td><font face="Times" size="+1">The domain hierarchy.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">lastFailure</font></td>
+
+<td><font face="Times" size="+1">The last error condition from a NetInfo call.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">exitFlags</font></td>
+
+<td><font face="Times" size="+1">Indicates whether the user chose Cancel or OK.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">returnPath</font></td>
+
+<td><font face="Times" size="+1">Path of domain entered in the text field.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">currentDomain</font></td>
+
+<td><font face="Times" size="+1">Unused.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">domainBrowserLoaded</font></td>
+
+<td><font face="Times" size="+1">Indicates if a domain has been loaded into the browser.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">panelButton</font></td>
+
+<td><font face="Times" size="+1">The icon at the top left of the panel.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">zone</font></td>
+
+<td><font face="Times" size="+1">A memory allocation zone.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Allocating and initializing an NIDomainPanel object</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=308></td>
+
+<td><font face="Times" size="+1">+ new</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font face="Times" size="+1">+ allocWithoutPanelFromZone:</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">init</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Displaying the panel</font></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">runModal</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">resizePanelBeforeShowing:</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">panel</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">windowDidResize:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Getting data</font></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">exitFlags</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">domain</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">panelSizeDefaultName</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Filling the browser</font></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">loadDomainBrowser</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">loadDomainBrowserFrom:</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">browser:fillMatrix:inColumn:</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">browser:loadCell:atRow:inColumn:</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">freeLastColumn</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">fillNextColumn</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Text-related methods</font></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">completeDomain</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">runOk:</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">text:isEmpty:</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">textWillChange:</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">textWillEnd:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Target and action methods</font></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">cellWasHitInBrowser:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">cancel:</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">ok:</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>allocWithoutPanelFromZone:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ <b>allocWithoutPanelFromZone:</b>(NXZone *)<i>zone</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns a new NIDomainPanel object without the panel. For use with a different panel layout. Use with <b>init</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>initialize</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ <b>initialize</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Initializes the NetInfo Kit zone; sent by the run-time system.&nbsp; Don't invoke or override this method.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>new</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ <b>new</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the single NIDomainPanel instance per application. If one doesn't exist, it is created.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>browser:fillMatrix:inColumn:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(int)<b>browser:</b><i>sender</i> <b>fillMatrix:</b><i>matrix</i> <b>inColumn:</b>(int)<i>column</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sent automatically by the browser when a column needs updating, this NXBrowser delegate method fills the indicated browser column with data.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>browser:loadCell:atRow:inColumn:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>browser:</b><i>sender</i> <b>loadCell:</b><i>cell</i> <b>atRow:</b>(int)<i>row</i> <b>inColumn:</b>(int)<i>column</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sent automatically by the browser, this NXBrowser delegate method fills the indicated cell with data.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>cancel:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>cancel:</b><i>sender</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This method is invoked when the Cancel button is clicked.&nbsp; Returns <b>self</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>cellWasHitInBrowser:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>cellWasHitInBrowser:</b>(id)<i>sender</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This method is invoked when the user clicks in the browser.&nbsp; Returns <b>self</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>completeDomain</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>completeDomain</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This method is invoked to complete the text field when the user presses the Esc key, when the OK button is pressed, or when the current selection moves out of the text field.&nbsp; Returns <b>self</b> if the path was successfully completed; otherwise, returns <b>nil</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>domain</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(const char *)<b>domain</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the name of the domain selected in the panel, or a localized string that indicates that the path was invalid.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>exitFlags</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(int)<b>exitFlags</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the exit flags from the panel, indicating whether the user chose OK or Cancel.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>fillNextColumn</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>fillNextColumn</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Fills the next column of the domain hierarchy. Sent by <b>browser:fillMatrix:inColumn:</b>.&nbsp; Returns <b>self</b>, or <b>nil</b> if an error occurred.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>freeLastColumn</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>freeLastColumn</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Clears the data in the rightmost column of the browser.&nbsp; Returns <b>self</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>init</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>init</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Initializes the NIDomainPanel object. For use with <b>allocWithoutPanelFromZone:</b>.&nbsp; Returns <b>self</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>loadDomainBrowser</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>loadDomainBrowser</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Loads the current domain information into the browser, filling to match the local domain.&nbsp; Returns <b>self</b>, or <b>nil</b> if an error occurred.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>loadDomainBrowserFrom:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>loadDomainBrowserFrom:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>loadDomainBrowserFrom:</b>(const char *)<i>aDomainName</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Loads the browser with information from the named domain rather than the local domain.&nbsp; Returns <b>self</b>, or <b>nil</b> if an error occurred.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>loadDomainBrowser</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>ok:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>ok:</b><i>sender</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This method is sent when the OK button is clicked.&nbsp; Returns <b>self</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>panel</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>panel</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the Panel displayed by the NIDomainPanel.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>panelSizeDefaultName</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(const char *)<b>panelSizeDefaultName</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the name of a constant indicating the panel's default size.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>resizePanelBeforeShowing:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>resizePanelBeforeShowing:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>resizePanelBeforeShowing:</b>(const char *)<i>panelDefaultName</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Resizes the panel to the size indicated by the constant identified with <i>panelDefaultName</i>, which can be obtained with the <b>panelSizeDefaultName</b> method. Resizes the panel to the larger of the user's last selection or the indicated panel minimum. Useful when changing languages, for example, because the minimum panel size may increase.&nbsp; Returns <b>nil</b> if <i>panelDefaultName</i> is NULL; otherwise, returns <b>self</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>panelSizeDefaultName</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>runModal</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(int)<b>runModal</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Displays the panel and begins its event loop.&nbsp; Returns the exit flags from the panel, indicating whether the user chose OK or Cancel.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>runOk:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>runOk:</b><i>sender</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sent automatically when Return is pressed or a browser item is double-clicked.&nbsp; Returns <b>self</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>text:isEmpty:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>text:</b><i>textObject</i> <b>isEmpty:</b>(BOOL)<i>flag</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sent automatically when the text field is exited. This Text delegate method enables the OK button if any text is in the text field; otherwise, disables the OK button.&nbsp; Returns <b>self</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>textWillChange:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>textWillChange:</b><i>textObject</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sent automatically when text is entered into the text field.&nbsp; This Text delegate method sets the filtering function to be used for the field.&nbsp; Returns zero.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>textWillEnd:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>textWillEnd:</b> <i>textObject</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sent automatically when user has finished editing the text field.&nbsp; This Text delegate method completes the path in the text field, if possible.&nbsp; It then returns NO if the text field contains a valid domain; otherwise, it returns YES.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>windowDidResize:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>windowDidResize:</b><i>sender</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sent automatically when the user finishes resizing the panel.&nbsp; This Window delegate method saves the panel's new size into the defaults system.</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

@@ -1,0 +1,1183 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/OperatingSystem/Part3_DriverKit/Reference/Classes/IONetwork.rtf -->
+<!-- Date: Sun Jan  1 17:01:13 2023 -->
+<head>
+<title>IONetwork</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>IONetwork</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Inherits From:</b></font></td>
+
+<td><font face="Times" size="+1">Object</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">driverkit/IONetwork.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The IONetwork class connects direct drivers, such as Ethernet drivers, into the kernel network interface. One IONetwork object is associated with each instance of a network direct driver. In the future, support may be added for indirect network drivers, as well.</font>
+
+<p><font face="Times" size="+1">Network direct drivers must implement the IONetworkDeviceMethods protocol, so that the IONetwork can send them messages.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">Network drivers must run in the kernel.</font>
+
+<p><font face="Times" size="+1">See the IOEthernet specification for information on how to write Ethernet drivers, and the IOTokenRing specification for information on writing Token Ring drivers. See Chapter 8, &quot;Network Modules,&quot; in <i>NEXTSTEP Operating System Software</i> for more information about network drivers.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Variables</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">None declared in this class.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Initializing an IONetwork instance</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">initForNetworkDevice:name:unit:type:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=333></td>
+
+<td><font face="Times" size="+1">maxTransferUnit:flags:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">finishInitialization</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Passing packets from the driver up to the protocol stack</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">handleInputPacket:extra:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Outputting a packet</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">outputPacket:address:</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Performing a command</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">performCommand:data:</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Allocating a network buffer</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">allocateNetbuf</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Keeping statistics</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">collisions</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">incrementCollisions</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">incrementCollisionsBy:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">incrementInputErrors</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">incrementInputErrorsBy:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">incrementInputPackets</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">incrementInputPacketsBy:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">incrementOutputErrors</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">incrementOutputErrorsBy:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">incrementOutputPackets</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">incrementOutputPacketsBy:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">inputErrors</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">inputPackets</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">outputErrors</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">outputPackets</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>allocateNetbuf</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(netbuf_t)<b>allocateNetbuf</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This method creates and returns a netbuf to be used for an impending output.</font>
+
+<p><font face="Times" size="+1">This method doesn't always have to return a buffer. For example, you might want to limit the number of buffers your driver instance can allocate (say, 200 kilobytes worth) so that it won't use too much wired-down kernel memory. When this method fails to return a buffer, it should return NULL.</font>
+
+<p><font face="Times" size="+1">Here's an example of implementing <b>allocateNetbuf</b>.</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">#define my_HDR_SIZE&nbsp;&nbsp;&nbsp; 14</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">#define my_MTU&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1500</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">#define my_MAX_PACKET&nbsp; (my_HDR_SIZE + my_MTU)</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">- netbuf_t allocateNetbuf</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">{</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">if (_numbufs == _maxNumbufs)</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">return(NULL);</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">else {</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">_numbufs++;</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">return(nb_alloc(my_MAX_PACKET));</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">}</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1"><b>nb_alloc()</b> (<i>NEXTSTEP Operating System Software)</i></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>collisions</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(unsigned int)<b>collisions</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the total number of network packet collisions that have been detected since boot time.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>finishInitialization</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">- (int)<b>finishInitialization</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This method should perform any initialization that hasn't already been done. For example, it should make sure its hardware is ready to run. You can specify what the integer return value (if any) should be.</font>
+
+<p><font face="Times" size="+1">If you implement this method, you need to check that [self isRunning] == YES.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>handleInputPacket:extra:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(int)<b>handleInputPacket:</b>(netbuf_t)<i>packet</i> <b>extra:</b>(void *)<i>extra</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Increments the number of input packets and passes <i>packet</i> to the kernel for processing. The kernel dispatches the packet to the appropriate protocol handler, as described <i>&lt;&lt;only in the OS book, for now&gt;&gt;</i>.</font>
+
+<p><font face="Times" size="+1">A network device driver should invoke this method after it's processed a newly received packet. The value of <i>extra</i> should be zero, unless the protocol handler requires another value. For instance, token ring drivers need to return a valid pointer to a token ring header. This method returns EAFNOSUPPORT if no protocol handler accepts the packet; otherwise, it returns zero.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>incrementCollisions</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>incrementCollisions</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Increments by one the total number of network packet collisions that have been detected since boot time.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>incrementCollisionsBy:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>incrementCollisionsBy:</b>(unsigned int)<i>increment</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Increments by <i>increment</i> the total number of network packet collisions that have been detected since boot time.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>incrementInputErrors</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>incrementInputErrors</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Increments by one the total number of packet input errors that have been detected since boot time.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>incrementInputErrorsBy:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>incrementInputErrorsBy:</b>(unsigned int)<i>increment</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Increments by <i>increment</i> the total number of packet input errors that have been detected since boot time.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>incrementInputPackets</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>incrementInputPackets</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Increments by one the total number of packets that have been received by the computer since boot time. You usually don't need to invoke this method because <b>handleInputPacket:extra:</b> does so for you.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>incrementInputPacketsBy:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>incrementInputPacketsBy:</b>(unsigned int)<i>increment</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Increments by <i>increment</i> the total number of packets that have been received by the computer since boot time.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>incrementOutputErrors</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>incrementOutputErrors</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Increments by one the total number of packet output errors that have been detected since boot time.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>incrementOutputErrorsBy:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>incrementOutputErrorsBy:</b>(unsigned int)<i>increment</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Increments by <i>increment</i> the total number of packet output errors that have been detected since boot time.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>incrementOutputPackets</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>incrementOutputPackets</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Increments by one the total number of packets that have been transmitted by the computer since boot time.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>incrementOutputPacketsBy:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>incrementOutputPacketsBy:</b>(unsigned int)<i>increment</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Increments by <i>increment</i> the total number of packets that have been transmitted by the computer since boot time.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>initForNetworkDevice:name:unit:type:maxTransferUnit:flags:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>initForNetworkDevice:</b><i>device</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>name:</b>(const char *)<i>name</i></font><br>
+<font face="Times" size="+1"><b>unit:</b>(unsigned int)<i>unit</i></font><br>
+<font face="Times" size="+1"><b>type:</b>(const char *)<i>type</i></font><br>
+<font face="Times" size="+1"><b>maxTransferUnit:</b>(unsigned int)<i>mtu</i></font><br>
+<font face="Times" size="+1"><b>flags:</b>(unsigned int)<i>flags</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Initializes and returns the IONetwork instance associated with the specified direct device driver <i>device</i>. This method connects <i>device</i> into the kernel's networking subsystem. It's typically called from a network driver's implementation of <b>initFromDeviceDescription</b>. You shouldn't invoke <b>initForNetworkDevice:...</b> directly. IOEthernet and IOTokenRing invoke this method on behalf of their subclasses and return an IONetwork object in their respective <b>attachToNetworkWithAddress: </b>methods.</font>
+
+<p><font face="Times" size="+1">The <i>name</i> argument should be set to a constant string that names this type of network device. For example, Ethernet drivers are named &quot;en&quot;, and Token Ring drivers are named &quot;tr&quot;. The <i>unit</i> is an integer greater than or equal to zero that's unique for <i>name</i>. For example, the first instance of an Ethernet driver is unit 0, the second is unit 1, and so on.</font>
+
+<p><font face="Times" size="+1">The <i>type</i> is a constant string that describes this module. For example, Ethernet drivers supply the constant IFTYPE_ETHERNET (which is defined in <b>net/etherdefs.h</b> to be &quot;10MB Ethernet&quot;).</font>
+
+<p><font face="Times" size="+1">The <i>mtu</i> is the maximum amount of data your module can send or receive. For example, Ethernet drivers use the value </font><font face="Courier">ETHERMTU</font><font face="Times" size="+1">, which is defined in the header file <b>net/etherdefs.h</b> as <b>1500</b>.</font>
+
+<p><font face="Times" size="+1">Finally, <i>flags</i> defines the initial flags for the interface. Possible values are:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">IFF_UP:</font></td>
+
+<td><font face="Times" size="+1">If true, this interface is working.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">IFF_BROADCAST:</font></td>
+
+<td><font face="Times" size="+1">If true, this interface supports broadcast.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">IFF_LOOPBACK:</font></td>
+
+<td><font face="Times" size="+1">If true, this interface is local only.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">IFF_POINTTOPOINT:</font></td>
+
+<td><font face="Times" size="+1">If true, this is a point-to-point interface.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>inputErrors</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(unsigned int)<b>inputErrors</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the total number of packet input errors that have been detected since boot time.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>inputPackets</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(unsigned int)<b>inputPackets</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the total number of packets that have been received by the computer since boot time.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>outputErrors</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(unsigned int)<b>outputErrors</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the total number of packet output errors that have been detected since boot time.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>outputPacket:address:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(int)<b>outputPacket:</b>(netbuf_t)<i>packet</i> <b>address:</b>(void *)<i>address</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This method should deliver the specified packet to the given address. Its return value should be zero if no error occurred; otherwise, return an error number from the header file <b>sys/errno.h</b>.</font>
+
+<p><font face="Times" size="+1">If you implement this method, you need to check that [self isRunning] == YES. If so, insert the necessary hardware addresses into the packet and check it for minimum length requirements.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>outputPackets</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(unsigned int)<b>outputPackets</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the total number of packets that have been transmitted by the computer since boot time.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>performCommand:data:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(int)<b>performCommand:</b>(const char *)command <b>data:</b>(void *)data</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This method performs arbitrary control operations; the character string <i>command</i> is used to select between these operations. Although you don't have to implement any operations, there are five standard operations. You can also define your own operations.</font>
+
+<p><font face="Times" size="+1">The standard commands are listed in the following table. The constant strings listed below are declared in the header file <b>net/netif.h</b> (under the <b>bsd</b> directory of <b>/NextDeveloper/Headers</b>).</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Command</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Operation</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">IFCONTROL_SETFLAGS</font></td>
+
+<td><font face="Times" size="+1">Request to have interface flags turned on or off. The <i>data</i> argument for this command is of type <b>union ifr_ifru</b> (which is declared in the header file <b>net/if.h</b>).</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">IFCONTROL_SETADDR</font></td>
+
+<td><font face="Times" size="+1">Set the address of the interface.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">IFCONTROL_GETADDR</font></td>
+
+<td><font face="Times" size="+1">Get the address of the interface.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">IFCONTROL_AUTOADDR</font></td>
+
+<td><font face="Times" size="+1">Automatically set the address of the interface.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">IFCONTROL_UNIXIOCTL</font></td>
+
+<td><font face="Times" size="+1">Perform a UNIX <b>ioctl()</b> command. This is only for compatibility; <b>ioctl()</b> isn't a recommended interface for network drivers. The argument is of type <b>if_ioctl_t *</b>, where the <b>if_ioctl_t </b>structure contains the UNIX ioctl request (for example, SIOCSIFADDR) in the <b>ioctl_command</b> field and the ioctl data in the <b>ioctl_data</b> field.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">An example of implementing <b>performCommand:data:</b> follows.</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">- (int)performCommand:(const char *)command data:(void *)data</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">{</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">int error = 0;</font>
+
+<p><img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">if (strcmp(command, IFCONTROL_SETFLAGS) == 0)</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">/* do nothing */;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">else</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">if (strcmp(command, IFCONTROL_GETADDR) == 0)</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">bcopy(&amp;my_address, data, sizeof (my_address));</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">else</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">error = EINVAL;</font>
+
+<p><img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">return (error);</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+
+
+<p><br>
+
+</body>
+</html>

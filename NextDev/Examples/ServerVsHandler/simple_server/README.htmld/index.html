@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/Examples/ServerVsHandler/simple_server/README.rtf -->
+<!-- Date: Sun Jan  1 17:01:20 2023 -->
+<head>
+<title>README</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Helvetica">This simple example of a loaded kernel server provides a trivial MiG-generated interface to demonstrate message passing between a user program and a server running within the kernel.&nbsp; The server implements two services:&nbsp; <b>simple_puts()</b>, which prints the supplied string on on the console using the kernel printf facilities, and <b>simple_vers() </b>which returns the kernel version string to the user.&nbsp; The following files are used in the implementation:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><i>simple.c</i></font></td>
+
+<td><font face="Helvetica">&#183; This file uses the MIG generated interface to the simple server.&nbsp; It obtains access to the server by looking up the port advertised on its behalf by the kernel loader.</font></td></tr>
+
+<tr valign=top>
+
+<td height=15></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><i>simple.defs</i></font></td>
+
+<td><font face="Helvetica">&#183; This file implements the MIG interface to the server.&nbsp; It generates simpleServer.c, simpleUser.c, and simple.h.</font></td></tr>
+
+<tr valign=top>
+
+<td height=15></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><i>simple_server.c</i></font></td>
+
+<td><font face="Helvetica">&#183; This implements the guts of the server running in the kernel. It is called from the kernel server interface routines when messages or other events are received for this server.</font></td></tr>
+
+<tr valign=top>
+
+<td height=15></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><i>Load_Commands.sect</i></font></td>
+
+<td><font face="Helvetica">&#183; This file specifies the actions to be taken when loading the server.&nbsp; This includes allocating and advertising a port, and setting up a mapping to call into the loaded code when a message is received on that port.</font></td></tr>
+
+<tr valign=top>
+
+<td height=15></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><i>Unload_Commands.sect</i></font></td>
+
+<td><font face="Helvetica">&#183; This file specifies the actions to be taken when unloading the server.</font></td></tr>
+
+</table>
+
+<p><font face="Helvetica">To load this into the kernel loader type the following:</font>
+
+<p><img src="../../../../Images/sp.gif" width=26 height=1><font face="Courier">kl_util -a simple_reloc</font>
+
+<p><font face="Helvetica">This will cause the server to be initialized by the kernel loader.&nbsp; Running the program <i>simple</i> will then invoke the server, causing it to be loaded into the kernel.</font>
+
+
+
+</body>
+</html>

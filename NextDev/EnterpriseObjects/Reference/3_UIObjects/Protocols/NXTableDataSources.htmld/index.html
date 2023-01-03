@@ -1,0 +1,461 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/EnterpriseObjects/Reference/3_UIObjects/Protocols/NXTableDataSources.rtf -->
+<!-- Date: Sun Jan  1 17:05:28 2023 -->
+<head>
+<title>NXTableDataSources</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>NXTableDataSources</b></font><br>
+<font face="Helvetica" size="+1"><b>(informal protocol)</b></font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Category Of:</b></font></td>
+
+<td><font face="Times" size="+1">Object</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">eointerface/NXTableProtocols.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Category Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The NXTableDataSources protocol declares methods used by an NXTableView and its formatters to access the values in the table view's data source. A data source must be able to report how many rows or columns it contains and to retrieve or set a value for a given row and column, where either rows or columns represent properties.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">An NXTableView's data source is an object that implements methods of the this category, and is <i>not</i> the sort of data source defined by the EODataSources protocol. In fact, for an NXTableView used with an EOController the data source is an EOColumnAssociation.</font>
+
+<p><font face="Times" size="+1">An individual value in a data source is typically specified by an <i>identifier</i> and a position for that identifier, though it can also be specified by two identifiers. An identifier is an object that indicates which property of the table view's data source is displayed in a vector. The data source uses an identifier to access the appropriate value when an NXFormatter needs to draw or edit a field. The nature of the identifier is completely up to the data source; it isn't used by the table view or the table vector.</font>
+
+<p><font face="Times" size="+1">For example, a data source can define its identifiers as NSStrings naming the properties it provides, such as &quot;lastName&quot;, &quot;city&quot;, and so on. It can records the values for these properties as NSDictionary objects in an NSArray, and which it access by the position requested:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=125></td>
+
+<td><img src="../../../../../Images/c2D-1.gif" width=7 height=4> <font face="Courier">getValueFor:identifier at:(unsigned int)position into:aValue</font><br>
+<font face="Courier">{</font><br>
+<img src="../../../../../Images/sp.gif" width=27 height=1><font face="Courier">id theValue;</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">theValue = [[values objectAtIndex:position]</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">objectForKey:identifier];</font>
+
+<p><img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">if (!theValue) [aValue setString:@&#34;&#34;];</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">[aValue setString:theValue];</font>
+
+<p><img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">return self;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The data source using this implementation of <b>getValueFor:at:into:</b> has an NSMutableArray called <b>values</b> whose elements are NSDictionary objects with property names for keys. The value passed in conforms to the NXTableValue protocol (even though it's not declared as such), and that the values maintained by the data source are assumed to be NSStrings.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Reporting table size</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">rowCount</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">columnCount</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Getting/setting data</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">getValueFor:at:into:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">getValueFor::into:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setValueFor:at:from:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setValueFor::from:</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>columnCount</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(unsigned int)<b>columnCount</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the number of columns in the data source. If the data source is set up for a static column this is 1; if it's set up for a static row, this is the number of records in the data source.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>rowCount</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>getValueFor::into:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>getValueFor:</b><i>rowIdentifier</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>:</b><i>columnIdentifier</i></font><br>
+<font face="Times" size="+1"><b>into:</b><i>aValue</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Copies the value of an attribute from the data source into the object <i>aValue</i> (an object conforming to the NXTableValue protocol). The record value to retrieve is specified by the property identifiers <i>rowIdentifier</i> and <i>columnIdentifier</i>, and not by position. Returns <b>self</b>.</font>
+
+<p><font face="Times" size="+1">Specifying record values by identifier and not position is useful when you don't want to depend on an array-like ordering of records. For example, a data source can use <i>rowIdentifier</i> as a primary key for its records and <i>columnIdentifier</i> as a property identifier.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>getValueFor:at:into:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>getValueFor:at:into:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>getValueFor:</b><i>identifier</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>at:</b>(unsigned int)<i>aPosition</i></font><br>
+<font face="Times" size="+1"><b>into:</b><i>aValue</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Copies the value of an attribute from the data source into the object <i>aValue</i> (an object conforming to the NXTableValue protocol). The record value to retrieve is specified by the property identifier <i>identifier</i> and by <i>aPosition</i>, which gives the index within the data source for the value. Returns <b>self</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>getValueFor::into:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>rowCount</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(unsigned int)<b>rowCount</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the number of rows in the data source. If the data source is set up for a static row this is 1; if it's set up for a static column, this is the number of records in the data source.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>columnCount</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setValueFor::from:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setValueFor:</b><i>rowIdentifier</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>:</b><i>columnIdentifier</i></font><br>
+<font face="Times" size="+1"><b>from:</b><i>aValue</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the value of a record's attribute in the data source to the value contained in <i>aValue</i> (an object conforming to the NXTableValue protocol). The record value to modify is specified by the property identifiers <i>rowIdentifier</i> and by <i>columnIdentifier</i>, which gives the index within the data source for the value. Returns <b>self</b>.</font>
+
+<p><font face="Times" size="+1">Specifying record values by identifier and not position is useful when you don't want to depend on an array-like ordering of records. For example, a data source can use <i>rowIdentifier</i> as a primary key for its records and <i>columnIdentifier</i> as a property identifier.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setValueFor:at:from:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setValueFor:at:from:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setValueFor:</b><i>identifier</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>at:</b>(unsigned int)<i>aPosition</i></font><br>
+<font face="Times" size="+1"><b>from:</b><i>aValue</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the value of a record's attribute in the data source to the value contained in <i>aValue</i> (an object conforming to the NXTableValue protocol). The record value to modify is specified by the property identifier <i>identifier</i> and by <i>aPosition</i>, which gives the index within the data source for the value. Returns <b>self</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setValueFor::from:</b></font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

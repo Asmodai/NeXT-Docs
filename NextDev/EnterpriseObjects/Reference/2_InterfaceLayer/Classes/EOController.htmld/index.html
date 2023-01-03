@@ -1,0 +1,4506 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/EnterpriseObjects/Reference/2_InterfaceLayer/Classes/EOController.rtf -->
+<!-- Date: Sun Jan  1 17:05:24 2023 -->
+<head>
+<title>EOController</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>EOController</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Inherits From:</b></font></td>
+
+<td><font face="Times" size="+1">NSObject</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">eointerface/EOController.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">An EOController synchronizes a set of data-bearing enterprise objects with user interface objects; the interface objects display values for properties of the enterprise objects, and the controller processes changes to those values from the interface objects. The objects an EOController manages are received from a <i>data source</i> object. A data source is any object that conforms to the EODataSources protocol, which defines methods for fetching objects from storage, inserting objects into and deleting them from storage, and for changing the properties of existing objects. A data source can also conform to the EOMasterDataSources and EOQualifiableDataSources protocols, allowing it to participate in master-detail relationships, and the EORollbackDataSources protocol, allowing it to roll back changes.</font>
+
+<p><font face="Times" size="+1">The Enterprise Objects Framework provides two data source classes: EODatabaseDataSource and EODetailDatabaseDataSource. These classes provide objects for a single entity in the application's model, and also conform to the EOMasterDataSources, EOQualifiableDataSources, and EORollbackDataSources protocols.</font>
+
+<p><font face="Times" size="+1">EOController presents its enterprise objects as an NSArray, and identifies them solely by index in that array. An EOController also maintains a selection in the form of a set of indexes. You can insert, delete, or update an object at a particular index or can apply an operation to all selected objects.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Associations</b></font>
+
+<p><font face="Times" size="+1">An EOController communicates with user interface objects through EOAssociation objects. An association links a single, named property of the controller's enterprise objects to a user interface object, such as a TextField or NXTableView. The association is responsible for monitoring the user interface object, notifying the controller when the selection changes or when the user interface object is edited, and updating the user interface object to reflect the values of the controller's enterprise objects.</font>
+
+<p><font face="Times" size="+1">You can create most associations in Interface Builder, but if you need to set one up programmatically you can usually follow this template:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOController *myController;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">id myUIObject;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">Class assocClass;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAssociation *myAssociation;</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">assocClass = [myUIObject associationClass];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">myAssociation = [[assocClass alloc] initWithController:myController</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">key:@&#34;propertyName&#34;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">destination:myUIObject];</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[myController addAssociation:myAssociation];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This code excerpt assumes no knowledge about association subclasses; it sends <b>associationClass</b> to the user interface object to get a default class for associations, then creates the association to monitor the property named &quot;propertyName&quot;. (You may want to confirm that the user interface object responds to <b>associationClass</b> before sending it.) Finally, it adds the association to the set managed by the controller with <b>addAssociation:</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">This approach doesn't work for an NXTableView. Its association class, EOColumnAssociation, requires special handling. See the EOColumnAssociation class specification for more information.</font>
+
+<p><font face="Times" size="+1">If you have a special association class designed to work with a user interface object, you can explicitly create an instance of that class instead of asking the user interface object for its default association class. <b>associationClass</b> is simply a mechanism for dynamically selecting an appropriate association for a given user interface object.</font>
+
+<p><font face="Times" size="+1">An association forms an intimate link with its user interface object. It nearly always sets itself up as a control's target, and often sets itself up as the text delegate of its user interface object as well. You should assume that a user interface object managed by an association is off-limits with regard to changing its state, and handle all data manipulation and validation in the controller's delegate or in the enterprise objects themselves (note that a custom association can also handle validation).</font>
+
+<p><font face="Times" size="+1">A slightly different type of association is that between two EOControllers. An EOQualifiedAssociation links two controllers in a master-detail relationship, so that when the object selected in the master controller changes, the detail controller's data source is configured to provide objects related to the one selected in the master.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Master-detail Controllers and the Controller Chain</b></font>
+
+<p><font face="Times" size="+1">Controllers linked in a master-detail relationship are treated specially. When an EOController performs a <b>fetch</b>, <b>saveToObjects</b>, <b>saveToDataSource</b>, or <b>redisplay</b> message, it checks the destination of each of its associations to see if that object is also an EOController. If so, it propagates the operation to them, thus synchronizing the state and display of all linked controllers.</font>
+
+<p><font face="Times" size="+1">If you don't want to set up a pair of controllers in a master-detail relationship, you can still have one of them propagate the methods listed above by using the <b>setNextController:</b> message or connecting the two controllers in Interface Builder. Linking controllers together in this manner allows the otherwise independent controllers, each managing their own sets of enterprise objects, to remain synchronized with respect to all significant operations. You can link any number of controllers together in this fashion, but you should be aware that the four actions are propagated down the chain only; controllers above the one that receives the original message aren't notified (unless the chain is a loop, which is permitted).</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Buffering and Undo</b></font>
+
+<p><font face="Times" size="+1">EOController offers two levels of change buffering and a powerful undo mechanism. There are two kinds of changes: <i>edits</i> to the values of enterprise objects, and <i>operations</i> on the enterprise objects in the data source (insertion, deletion, and update with buffered edits). When a controller is buffering edits, it saves each change sent by its association objects. It doesn't apply these changes to its enterprise objects until it receives a <b>saveToObjects</b> message. Similarly, operations on the objects held by the controller aren't applied to the data source until the controller receives a <b>saveToDataSource</b> message.</font>
+
+<p><font face="Times" size="+1">You can remove buffering so that changes are immediately saved by sending a controller a <b>setSavesToObjectsAutomatically: </b>or <b>setSavesToDataSourceAutomatically:</b> message. This table shows how automatic saving affects the state of the controller's enterprise objects and data source:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=125></td>
+
+<td><font face="Helvetica" size="+1"><b>Saves automatically to:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Objects</b></font></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Data Source</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Behavior</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">YES</font></td>
+
+<td nowrap><font face="Times" size="+1">YES</font></td>
+
+<td><font face="Times" size="+1">All changes are immediately sent to the controller's data source. This is the default behavior for controllers created in Interface Builder.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">YES</font></td>
+
+<td nowrap><font face="Times" size="+1">NO</font></td>
+
+<td><font face="Times" size="+1">Edits immediately go to enterprise objects; you must send <b>saveToDataSource</b> to send changes to the data source.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">NO</font></td>
+
+<td nowrap><font face="Times" size="+1">YES</font></td>
+
+<td><font face="Times" size="+1">Edits are buffered, but when you send <b>saveToObjects</b> changes are immediately sent to the data source.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">NO</font></td>
+
+<td nowrap><font face="Times" size="+1">NO</font></td>
+
+<td><font face="Times" size="+1">You must send <b>saveToObjects</b> to effect changes to enterprise objects, then send <b>saveToDataSource</b> to send the changes to the data source. This is the default behavior for controllers created programmatically.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">In addition to buffering changes, an EOController maintains an undo stack that records those changes after they've been applied. You can send a controller a <b>markUndo</b> message at any time to mark the current point on the undo stack. A later <b>undo</b> message reverts the changes in the undo stack back to that point: deleted objects are recovered, inserted objects are deleted, and all edits--pending and saved--are undone. You can configure an EOController to automatically mark an undo point after every operation, or you can manually control undo marks to group operations together so that they can all be undone with a single <b>undo </b>message. To find out if a given EOController has edits on its undo stack, send the controller <b>hasUndos</b>.</font>
+
+<p><font face="Times" size="+1">For more information on data sources, see the EODataSources and EOQualifiableDataSources protocol specifications.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Notifying the Controller's Delegate</b></font>
+
+<p><font face="Times" size="+1">An EOController notifies its delegate of nearly every operation it performs. It confirms any insertion, deletion, or update with its delegate before performing the operation, and notifies the delegate of undo and save operations, and of any change in selection. Further, if a change to the data source fails for any reason, the delegate has a chance to tell the controller whether to simply continue or to roll back changes (if the data source supports rollback).</font>
+
+<p><font face="Times" size="+1">All a delegate need do to receive a notification from its controller is implement the appropriate methods. These methods are documented after EOController's class and instance methods, under &quot;Methods Implemented by the Delegate.&quot; If the delegate doesn't implement a particular method, it isn't invoked.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Variables</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">None declared in this class.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types</b></font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Initializing an EOController</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">initWithDataSource:</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Managing associations</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">addAssociation:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">associations</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">disableAssociationNotification</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">keys</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">reenableAssociationNotification</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">removeAssociation:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Getting the objects</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">allObjects</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Fetching objects</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">fetch</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Managing the selection</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setSelectionIndexes:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">selectionIndexes</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">selectedObjects</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">clearSelection</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">selectNext</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">selectPrevious</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setSelectsFirstObjectAfterFetch:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">selectsFirstObjectAfterFetch</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Editing objects</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">associationDidEdit:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setValues:forObject:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">endEditing</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Sorting objects</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">resort</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setSortOrdering:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">sortOrdering</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Performing operations on objects</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=308></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">deleteObjectAtIndex:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">deleteSelection</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">insertObjectAtIndex:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">insertObject:atIndex:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Discarding changes</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">discardEdits</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">discardOperations</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">isDiscardAllowed</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Saving edits to objects</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">saveToObjects</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">hasChangesForObjects</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setSavesToObjectsAutomatically:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">savesToObjectsAutomatically</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Saving to the data source</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">saveToDataSource</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">hasChangesForDataSource</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setSavesToDataSourceAutomatically:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">savesToDataSourceAutomatically</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Controlling undo</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">hasUndos</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setUndoEnabled:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">isUndoEnabled</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">markUndo</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">undo</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">releaseUndos</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setMarksEveryOperation:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">marksEveryOperation</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setMaximumUndoMarks:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">maximumUndoMarks</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Redisplaying the user interface</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">redisplay</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Chaining controllers</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setNextController:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">nextController</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Setting the data source</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setDataSource:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">dataSource</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Setting the delegate</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setDelegate:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">delegate</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Action methods</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">delete:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">discardEdits:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">discardOperations:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">fetch:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">insert:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">markUndo:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">saveToDataSource:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">saveToObjects:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">selectNext:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">selectPrevious:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">undo:</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>addAssociation:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>addAssociation:</b>(EOAssociation *)<i>anAssociation</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Adds <i>anAssociation</i> to the set managed by the controller.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>removeAssociation:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>associations</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>allObjects</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSArray *)<b>allObjects</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns all enterprise objects accessible through the controller.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>selectedObjects</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>associationDidEdit:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>associationDidEdit:</b>(EOAssociation *)<i>anAssociation</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Informs the controller that <i>anAssociation</i> has a pending edit. The controller gets <i>anAssociation</i>'s key and value and adds the new value to its edit buffer.</font>
+
+<p><font face="Times" size="+1">If the controller is configured to save changes automatically then the changes are immediately saved to the objects. If the controller doesn't save changes automatically, the changes don't take effect until the controller receives a <b>saveToObjects </b>message.</font>
+
+<p><font face="Times" size="+1">This method invokes the delegate method <b>controller:association:didEditObject:key:value:</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>key</b> (EOAssociation),</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>value</b> (EOAssociation),</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>savesToObjectsAutomatically</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4> </font><font face="Times" size="+1"><b>savesToDataSourceAutomatically</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>associations</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSArray *)<b>associations</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the controller's associations.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>clearSelection</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>clearSelection</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Empties the controller's selection. This method is a shortcut for sending <b>setSelection:</b> with an empty array. Doesn't redisplay the user interface objects. Returns YES if successful, NO if not.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>redisplay</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>dataSource</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(id &lt;EODataSources&gt;)<b>dataSource</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the controller's data source.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>delegate</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>delegate</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the controller's delegate.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>delete:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>delete:</b><i>sender</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This action method invokes <b>deleteSelection</b> to delete all selected objects. Returns <b>self</b> if <b>deleteSelection</b> returns YES, <b>nil</b> if it returns NO.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>deleteObjectAtIndex:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>deleteObjectAtIndex:</b>(unsigned int)<i>anIndex</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Deletes the object at <i>anIndex</i>, pending approval by the delegate. Returns YES if the object is actually deleted, NO otherwise.</font>
+
+<p><font face="Times" size="+1">If the data source can't delete, this method opens an attention panel notifying the user and returns NO. If the data source can delete, invokes <b>endEditing</b> and notifies the delegate with <b>controller:willDelete:Object:</b>. If the delegate approves, deletes the object and notifies the delegate with <b>controller:didDeleteObject:</b> and the controller's associations with <b>contentsDidChange </b>and <b>selectionDidChange</b>.</font>
+
+<p><font face="Times" size="+1">Deletion is an operation applied immediately to the object; you don't need to send <b>saveToObjects</b>. If the controller is configured to save to the data source automatically then the changes are immediately made to the data source as well. If the controller doesn't save changes automatically, the changes don't take effect in the data source until the controller receives a <b>saveToDataSource</b> message.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>delete:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>deleteSelection</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>savesToDataSourceAutomatically</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>deleteSelection</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>deleteSelection</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Deletes all objects in the selection in the manner described for <b>deleteObjectAtIndex:</b> (including invocation of delegate methods). Returns YES if all objects in the selection were successfully deleted (or if there were no objects selected), NO otherwise. If this method returns NO it's possible that only some objects in the selection have been deleted.</font>
+
+<p><font face="Times" size="+1">Deleting the selection is considered a single operation for purposes of undo, even if the controller marks every operation.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>delete:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>disableAssociationNotification</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>disableAssociationNotification</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Allows you to specify that EOAssociationNotification messages should not be sent (they are sent by default).&nbsp; For each <b>disableAssociationNotification</b>, you should send a corresponding <b>reenableAssociationNotification</b>.</font>
+
+<p><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>reenableAssociationNotification</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>discardEdits</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>discardEdits</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Clears all edits pending in the controller, and also in user interface objects (by sending <b>discardEdits</b> to all of the controller's associations). This method is only useful if the controller isn't configured to save to objects automatically.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>savesToObjectsAutomatically</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>discardEdits:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>discardEdits:</b><i>sender</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This action method invokes <b>discardEdits</b> and returns <b>self</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>discardOperations</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>discardOperations</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Clears all pending operations. This method is only useful if the controller isn't configured to save to the data source automatically.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>savesToDataSourceAutomatically</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>discardOperations:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>discardOperations:</b><i>sender</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This action method invokes <b>discardOperations</b> and returns <b>self</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>endEditing</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>endEditing</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sends <b>endEditing</b> to each of the controller's associations. This method is invoked whenever the controller needs to force an end to editing in the user interface objects, which is whenever:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The controller fetches.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The controller saves changes to its objects or to its data source.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">An object is inserted or deleted.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The selection changes.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The undo stack is altered by a <b>markUndo</b>, <b>undo</b>, or <b>releaseUndos</b> message.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>endEditing</b> (EOAssociationNotification protocol)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>fetch</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>fetch</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Fetches objects from the controller's data source, returning YES if successful, NO if not.</font>
+
+<p><font face="Times" size="+1">The controller first invokes <b>endEditing</b>. Next, it sends <b>controllerWillFetch:</b> to its delegate, aborting the fetch and returning NO if the delegate returns NO. If the delegate returns YES, the controller then confirms that pending changes can be discarded by invoking <b>isDiscardAllowed</b> (it also confirms that any detail or linked controllers allow pending changes to be discarded). The controller aborts the fetch and returns NO if <b>isDiscardAllowed</b> returns NO or if any of the detail or linked controllers don't allow discard.</font>
+
+<p><font face="Times" size="+1">After confirming that changes can be discarded, the controller discards all edits and operations, and clears the undo stack. The controller then sends <b>fetchObjects</b> to its data source, and resynchronizes its selection with the new objects.</font>
+
+<p><font face="Times" size="+1">After fetching objects, the controller sends <b>controllerDidFetchObjects:</b> to its delegate and <b>contentsDidChange</b> to its associations. If the controller's selection changed as a result of fetching, also sends <b>selectionDidChange</b> to the associations. Finally, the controller propagates the fetch message to all detail and linked controllers.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>discardEdits</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>releaseUndos</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>selectsFirstObjectAfterFetch</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>fetch:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>fetch:</b><i>sender</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This action method invokes <b>fetch</b> and returns <b>self</b> if <b>fetch</b> returns YES, <b>nil</b> if it returns NO.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>hasChangesForDataSource</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>hasChangesForDataSource</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if there are any operations buffered for the data source, NO otherwise.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>savesToDataSourceAutomatically</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>hasChangesForObjects</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>saveToObjects</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>hasChangesForObjects</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>hasChangesForObjects</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if any object has been edited since the last <b>saveToObjects</b> message, NO otherwise.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>savesToObjectsAutomatically</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>hasChangesForDataSource</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>associationDidEdit:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4> </font><font face="Times" size="+1"><b>setValues:forObject:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>hasUndos</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>hasUndos</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if the controller has any entries on its undo stack.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>initWithDataSource:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>initWithDataSource:</b>(id &lt;EODataSources&gt;)<i>aDataSource</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Initializes a newly allocated EOController to get its data from objects provided by <i>aDataSource</i>. This is the designated initializer for the EOController class. Returns <b>self</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>insert:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>insert:</b><i>sender</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This action method uses <b>insertObjectAtIndex:</b> to insert a new object after the selected object, or if nothing is selected, at the end of the array. Returns <b>self</b>, or <b>nil</b> if <b>insertObjectAtIndex:</b> returns <b>nil</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>insertObjectAtIndex:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>insertObjectAtIndex:</b>(unsigned int)<i>anIndex</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Inserts and selects a new object, created by the controller's data source, at <i>anIndex</i> by invoking <b>insertObject:atIndex:</b>. Invokes <b>endEditing</b> before performing the insertion. Returns the object that was inserted, or <b>nil</b> on failure.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">You must set the new object's primary key before saving to the data source. If the controller is configured to save automatically to the data source you shouldn't use this method.</font>
+
+<p><font face="Times" size="+1">Raises <b>NSRangeException</b> if <i>anIndex</i> indicates a position past the end of the controller's array of objects.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>createObject</b> (EODataSources protocol of the access layer)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>insertObject:atIndex:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>insertObject:</b><i>anEO</i> <b>atIndex:</b>(unsigned int)<i>anIndex</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Inserts <i>anEO</i> at <i>anIndex</i> in the array of enterprise objects managed by the controller. Invokes <b>endEditing</b> before performing the insertion. Returns the object that was inserted, or <b>nil</b> on failure. Raises <b>NSRangeException</b> if <i>anIndex</i> indicates a position past the end of the controller's array of objects.</font>
+
+<p><font face="Times" size="+1">Insertion is an operation applied immediately to the object; you don't need to send <b>saveToObjects</b>. If the controller is configured to save to the data source automatically then the changes are immediately made to the data source as well. If the controller doesn't save changes automatically, the changes don't take effect in the data source until the controller receives a <b>saveToDataSource</b> message.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">You must set <i>anEO</i>'s primary key before saving to the data source. If the controller is configured to save to the data source <i>anEO</i> must already have its primary key set when you insert it.</font>
+
+<p><font face="Times" size="+1">After inserting the object the controller selects it and sends <b>contentsDidChange</b> and <b>selectionDidChange</b> to all of its associations.</font>
+
+<p><font face="Times" size="+1">This method invokes the delegate methods <b>controller:willInsertObject:</b>, <b>controller:didInsertObject:</b>, and <b>controller:failedToInsertObject:</b>. See the descriptions for these methods for information on how they affect insertion.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>insert:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>savesToDataSourceAutomatically</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>isDiscardAllowed</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>isDiscardAllowed</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Verifies that discarding of edits not saved to objects and updates not saved to the data source is allowed. Returns YES if discarding of edits and updates is allowed, NO if not. A controller uses this method when fetching and changing the selection, to make sure that an operation doesn't inadvertently discard pending changes.</font>
+
+<p><font face="Times" size="+1">If the controller has any pending edits, it sends <b>controllerWillDiscardEdits:</b> to the delegate. If the delegate returns NO, this method immediately returns NO. If the delegate returns YES, this method continues by checking whether operations may be discarded. If the delegate doesn't implement <b>controllerWillDiscardEdits:</b>, the controller opens an attention panel asking the user if it's okay to discard edits. The panel offers the user the choice to save the edits (causing <b>saveToObjects</b> to be invoked), to cancel whatever operation invoked this method, or to allow edits to be discarded; if the user chooses to save edits or to cancel, this method returns NO.</font>
+
+<p><font face="Times" size="+1">Next, if there are any operations not saved to the data source the controller sends <b>controllerWillDiscardOperations:</b> to the delegate. Again, if the delegate doesn't implement this method the controller opens an attention panel asking the user to save, cancel, or allow discard of operations; if the user chooses to save operations or to cancel, this method returns NO. Finally, if all of these conditions are passed, this method returns YES.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>discardEdits</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>saveToObjects</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>saveToDataSource</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>isUndoEnabled</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>isUndoEnabled</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if undo is enabled, NO otherwise. Undo is by default not enabled for controllers created programmatically, though it is for controllers created in Interface Builder.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>keys</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSArray *)<b>keys</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the keys used by the controller's associations (which aren't necessarily all the keys used by its enterprise objects). These keys are the names of properties of the controller's enterprise objects, as used in the EOKeyValueCoding informal protocol defined by the access layer. There may be duplicate keys in the returned array.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>key</b> (EOAssociation)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>markUndo</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>markUndo</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Ends editing and marks the current state of the undo stack as an undo point. An <b>undo</b> message reverts changes made since the last undo point marked. This method does nothing if undo isn't enabled or if a mark is already set on the top of undo stack.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>isUndoEnabled</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>releaseUndos</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>endEditing</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>markUndo:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>markUndo:</b><i>sender</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This action method invokes <b>markUndo</b> and returns <b>self</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>marksEveryOperation</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>marksEveryOperation</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if an undo point is marked upon every insertion, deletion, and application of edits to an enterprise object, NO otherwise. Controllers created programmatically by default don't mark every operation, while those created in Interface Builder do.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>deleteSelection</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>maximumUndoMarks</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(unsigned int)<b>maximumUndoMarks</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the maximum number of undo marks the controller will record. Marks added beyond this limit cause earlier marks to fall off the queue. This method is useful for restricting memory usage. The default maximum is zero, which actually indicates no limit.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>isUndoEnabled</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>nextController</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(EOController *)<b>nextController</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the next controller in the controller chain. See the class description for information on the controller chain.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>redisplay</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>redisplay</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sends <b>contentsDidChange</b> to all the controller's associations, causing them to redisplay their user interface items as needed. Also has the controller's detail controllers and next controller redisplay.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>nextController</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>reenableAssociationNotification</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>reenableAssociationNotification</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Allows you to specify that EOAssociationNotification messages should be sent (they are sent by default), countering a <b>disableAssociationNotification</b> message.&nbsp; For each <b>disableAssociationNotification</b>, you should send a corresponding <b>reenableAssociationNotification</b>. The final call to <b>reenableAssociationNotification</b> does not flush pending notifications to the associations; <b>[controller redisplay]</b> must be explicitly called, if needed.</font>
+
+<p><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>disableAssociationNotification</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>releaseUndos</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>releaseUndos</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Clears all undo information. No undo is possible until a new undo point is established, either automatically or with <b>markUndo</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>marksEveryOperation</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>removeAssociation:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>removeAssociation:</b>(EOAssociation *)<i>anAssociation</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Removes <i>anAssociation</i> from the set managed by the controller.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>addAssociation:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>resort</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>resort</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">forces the object array to be sorted and redisplayed. Note that the object array is automatically sorted after a fetch.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setSortOrdering:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>savesToDataSourceAutomatically</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>savesToDataSourceAutomatically</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if saving to objects, or inserting or deleting an object, results in the controller performing <b>saveToDataSource</b>, NO if it doesn't. Controllers created programmatically by default don't save automatically, but those created in Interface Builder do.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>saveToObjects</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>savesToObjectsAutomatically</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>savesToObjectsAutomatically</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>savesToObjectsAutomatically</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if the controller immediately performs <b>saveToObjects</b> when an association notifies it of an edit or when an object is edited with <b>setValues:forObject:</b>. Returns NO otherwise. Controllers created programmatically by default don't save automatically, but those created in Interface Builder do.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>associationDidEdit:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>savesToDataSourceAutomatically</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>saveToDataSource</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>saveToDataSource</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Ends editing and saves all pending operations for the controller itself, for its detail controllers, and for its next controller. If none of the controllers has saved edits to their objects, this method has no effect; use <b>saveToObjects</b> to make sure pending edits are applied to the objects before invoking <b>saveToDataSource</b>. Returns YES if all changes are successfully saved to the data source, NO if any save operation fails or is refused by the delegate. If this method returns NO and the controller's data source doesn't support rolling back operations, some changes may have been saved anyway.</font>
+
+<p><font face="Times" size="+1">In saving an object, the controller sends it a <b>prepareForDataSource</b> message (if it responds). If the object returns NO the controller sends its delegate a <b>controller:object:failedToPrepareForDataSource:</b> message. If the delegate returns <b>EOContinueDataSourceFailureResponse</b> the controller continues saving the remaining objects. If the delegate returns <b>EORollbackDataSourceFailureResponse</b> or doesn't implement the delegate method, the controller rolls back all operations--if the data source supports rollback--and returns NO.</font>
+
+<p><font face="Times" size="+1">If the object returns YES from <b>prepareForDataSource</b>, then the controller checks with its delegate for each operation to save and sends <b>insertObject:</b>, <b>deleteObject:</b>, or <b>updateObject:</b> to the data source depending on the change to be saved. If any of these messages fails, this method informs the delegate, stops saving, and returns NO.</font>
+
+<p><font face="Times" size="+1">This method may invoke any of the delegate methods listed below, depending on the individual save operations being performed. See the descriptions of the individual methods for more information on how they interact with <b>saveToDataSource</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=125></td>
+
+<td><font face="Times" size="+1">controller:object:failedToPrepareForDataSource:</font>
+
+<p><font face="Times" size="+1">controllerWillSaveToDataSource:</font><br>
+<font face="Times" size="+1">controllerDidSaveToDataSource:</font>
+
+<p><font face="Times" size="+1">controller:willRollbackDataSource:</font><br>
+<font face="Times" size="+1">controller:didRollbackDataSource:</font>
+
+<p><font face="Times" size="+1">controller:willInsertObject:inDataSource:</font><br>
+<font face="Times" size="+1">controller:didInsertObject:inDataSource:</font><br>
+<font face="Times" size="+1">controller:failedToInsertObject:inDataSource:</font>
+
+<p><font face="Times" size="+1">controller:willDeleteObject:inDataSource:</font><br>
+<font face="Times" size="+1">controller:didDeleteObject:inDataSource:</font><br>
+<font face="Times" size="+1">controller:failedToDeleteObject:inDataSource:</font>
+
+<p><font face="Times" size="+1">controller:willUpdateObject:inDataSource:</font><br>
+<font face="Times" size="+1">controller:didUpdateObject:inDataSource:</font><br>
+<font face="Times" size="+1">controller:failedToUpdateObject:inDataSource:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>insertObjectAtIndex:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>deleteObjectAtIndex:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>endEditing</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>saveToDataSource:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>saveToDataSource:</b><i>sender</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This action method invokes <b>saveToDataSource</b>, returning <b>self</b> if <b>saveToDataSource</b> returns YES, <b>nil</b> if it returns NO.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>saveToObjects</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>saveToObjects</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Ends editing and saves all edits made to objects as operations to apply to the controller's data source. Returns YES if all changes are successfully saved to the controller's objects, NO if any save operation fails or is refused by the delegate. If this method returns NO some changes may have been saved while others may not.</font>
+
+<p><font face="Times" size="+1">In saving a set of edits to an enterprise object, the controller first confirms the action with its delegate by sending it a <b>controller:willSaveEdits:toObject:</b> message; if the delegate returns <b>nil</b> the controller aborts the save operation and returns NO. The controller takes a non-<b>nil</b> return value from this message and converts the new values by sending <b>coerceValue:forKey:</b> to its data source. It then applies the converted values to the enterprise object by sending the enterprise object a <b>takeValuesFromDictionary:</b> message (a method of the access layer's EOKeyValueCoding informal protocol). After saving each object the controller sends <b>controller:didSaveToObject:</b> to its delegate.</font>
+
+<p><font face="Times" size="+1">If the controller saves to the data source automatically then the each saved edit is immediately applied to the data source. If the controller doesn't save changes automatically, the changes don't affect the data source until the controller receives a <b>saveToDataSource</b> message.</font>
+
+<p><font face="Times" size="+1">Finally, after saving all edits the controller sends <b>contentsDidChange</b> and <b>discardEdits</b> to its associations. If all of the changes were successfully saved, the controller has its detail controllers and next controller save to objects as well.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>associationDidEdit:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setValues:forObject:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>saveToDataSource</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>endEditing</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>saveToObjects:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>saveToObjects:</b><i>sender</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This action method invokes <b>saveToObjects</b>, returning <b>self</b> if <b>saveToObjects</b> returns YES, <b>nil</b> if it returns NO.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>selectNext</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>selectNext</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Selects the object after the currently selected object. If no objects are selected or if the last object is selected, then the first object becomes selected. If multiple objects are selected, this method selects the object after the first object in the selection. This method results in a <b>setSelectionIndexes:</b> message being sent, and returns the value returned by that message.</font>
+
+<p><font face="Times" size="+1">This method is useful for user interfaces that display only one object at a time.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>selectNext:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>selectNext:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>selectNext:</b><i>sender</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This action method invokes <b>selectNext</b>, returning <b>self</b> if <b>selectNext</b> returns YES, <b>nil</b> if it returns NO.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>selectPrevious</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>selectPrevious</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Selects the object before the currently selected object. If no objects are selected then the first object becomes selected. If the first object is selected then the last object becomes selected. If multiple objects are selected, this method selects the object before the first object in the selection. This method results in a <b>setSelectionIndexes:</b> message being sent, and returns the value returned by that message.</font>
+
+<p><font face="Times" size="+1">This method is useful for user interfaces that display only one object at a time.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>selectPrevious:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>selectPrevious:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>selectPrevious:</b><i>sender</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This action method invokes <b>selectPrevious</b>, returning <b>self</b> if <b>selectPrevious</b> returns YES, <b>nil</b> if it returns NO.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>selectedObjects</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSArray *)<b>selectedObjects</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the selected objects.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>selectionIndexes</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>selectionIndexes</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSArray *)<b>selectionIndexes</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns an array of NSNumber objects identifying the indexes of the selected objects in the controller's array of objects.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>selectedObjects</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>allObjects</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>selectsFirstObjectAfterFetch</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>selectsFirstObjectAfterFetch</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if the controller selects the first of its objects after performing a fetch, NO if not.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setSelectionIndexes:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setDataSource:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setDataSource:</b>(id &lt;EODataSources&gt;)<i>aDataSource</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the controller's data source to <i>aDataSource</i>, clears the selection and the undo stack, and discards all pending changes. This method invokes the delegate method <b>controller:didChangeDataSource:</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>releaseUndos</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>discardEdits</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>clearSelection</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setDelegate:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setDelegate:</b><i>anObject</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the controller's delegate to <i>anObject</i>. Doesn't retain <i>anObject</i>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setMarksEveryOperation:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setMarksEveryOperation:</b>(BOOL)<i>flag</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets according to <i>flag</i> whether the controller marks an undo point for every insertion, deletion, or edit of an object. Controllers created programmatically don't mark every operation by default, while those created in Interface Builder do.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>markUndo</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>deleteSelection</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setMaximumUndoMarks:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setMaximumUndoMarks:</b>(unsigned int)<i>anInt</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets to <i>anInt</i> the maximum number of undo marks that will be recorded. Marks added after the maximum amount will causes earlier marks to be discarded. This method is useful for restricting memory usage. Setting the maximum to 0 allows unlimited undo queueing; this is the default. Use <b>setUndoEnabled:</b> to disable undo.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>undo</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setNextController:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setNextController:</b>(EOController *)<i>aController</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the next controller in the controller chain to <i>aController</i>. See the class description for information on the controller chain.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setSavesToDataSourceAutomatically:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>setSavesToDataSourceAutomatically:</b>(BOOL)<i>flag</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets according to <i>flag</i> whether operations such as insert, delete, and update with edits automatically result in the controller performing <b>saveToDataSource</b>. Returns YES if successful, NO if the controller has any pending operations for its data source.</font>
+
+<p><font face="Times" size="+1">Controllers created programmatically don't save automatically by default, but those created in Interface Builder do.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setSavesToObjectsAutomatically:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setSavesToObjectsAutomatically:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>setSavesToObjectsAutomatically:</b>(BOOL)<i>flag</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets according to <i>flag</i> whether the controller immediately performs <b>saveToObjects</b> when an object is edited. Returns YES if successful, NO if the controller has any pending edits for its objects.</font>
+
+<p><font face="Times" size="+1">Controllers created programmatically don't save automatically by default, but those created in Interface Builder do.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setSavesToDataSourceAutomatically:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>associationDidEdit:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setValues:forObject:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setSelectionIndexes:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>setSelectionIndexes:</b>(NSArray *)<i>aSelection</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the selection as an array of NSNumber objects. Returns YES if the selection is changed to <i>aSelection</i>, NO if not.</font>
+
+<p><font face="Times" size="+1">The controller recursively sends <b>isDiscardAllowed</b> to all of its detail controllers, and if any of them returns NO the selection isn't changed. If the detail controllers allow discard this method invokes <b>endEditing</b>, sets the selection indexes, and notifies its associations with <b>selectionDidChange</b>. Finally, this method sends <b>controllerDidChangeSelection:</b> to the delegate.</font>
+
+<p><font face="Times" size="+1">If an association attempts to change the selection of its controller and fails, the association should reset the selection of its user interface object from the controller's selection. It can do this by simply sending itself a <b>selectionDidChange</b> method.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setSelectsFirstObjectAfterFetch:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setSelectsFirstObjectAfterFetch:</b>(BOOL)<i>flag</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets according to <i>flag</i> whether the controller selects the first of its objects after performing a fetch.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setSelectionIndexes:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setSortOrdering:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setSortOrdering:</b>(NSArray *)<i>keySortOrderArray</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets an EOKeySortOrder array to be applied to all records upon a fetch or <b>resort</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>sortOrdering</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>resort</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setUndoEnabled:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setUndoEnabled:</b>(BOOL)<i>flag</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Enables or disables undo according to <i>flag</i>. Undo is by default not enabled for controllers created programmatically, though it is for controllers created in Interface Builder.</font>
+
+<p><font face="Times" size="+1">This method doesn't affect existing undo marks. You can temporarily disable undo, then reenable it and perform an undo; however, any changes made while undo was disabled won't be reverted.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setValues:forObject:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setValues:</b>(NSDictionary *)<i>newValues</i> <b>forObject:</b><i>anEO</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Applies <i>newValues</i> to <i>anEO</i> as if they were edits made by an association. If the controller doesn't save automatically to objects, the new values are buffered as edits that will actually be sent to <i>anEO</i> upon the next <b>saveToObjects</b> message. If the controller saves automatically to objects then the changes are immediately saved to the objects.</font>
+
+<p><font face="Times" size="+1">The controller's associations are <i>not</i> notified when an edit is made with this method. You should send the controller a <b>redisplay </b>message after you finish editing objects programmatically to update the user interface.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>associationDidEdit:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>savesToObjectsAutomatically</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>sortOrdering</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">(NSArray *)<b>sortOrdering</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the EOKeySortOrder array that is used to sort all records upon a fetch or <b>resort</b>.</font>
+
+<p><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setSortOrdering:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>resort</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>undo</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>undo</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Reverts all changes in the undo stack to the last undo mark set; inserted objects are removed, deleted objects restored, and any edits are reversed. If there are no undo marks set, does nothing.</font>
+
+<p><font face="Times" size="+1">This method first invokes <b>saveToObjects</b> to accumulate all changes in the operation buffer, from which they're reverted. If the user is editing a value and the controller marks every operation, this results in the undo operation naturally reverting just the edit in progress.</font>
+
+<p><font face="Times" size="+1">The controller notifies its delegate before reverting changes with a <b>controllerWillUndo:</b> message; if the delegate returns NO the undo operation is aborted. Similarly, for each change reverted the controller sends its delegate a <b>controller:willUndoObject:</b> message; if the delegate returns NO then the undo for that object is skipped but the undo operation continues. After the change is reverted the controller sends <b>controller:didUndoObject:</b> to its delegate. Finally, after all changes have been reverted, the controller sends <b>controllerDidUndo:</b> to its delegate and <b>contentsDidChange</b> to its associations. If the controller's selection changes it also sends <b>selectionDidChange</b> to its associations.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>endEditing</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>redisplay</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>markUndo</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setMarksEveryOperation:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setUndoEnabled:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>undo:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>undo:</b><i>sender</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This action method invokes <b>undo</b> and returns <b>self</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Methods Implemented by the Delegate</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>controller:association:didEditObject:key:value:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>controller:</b>(EOController *)<i>controller</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>association:</b>(EOAssociation *)<i>anAssociation</i></font><br>
+<font face="Times" size="+1"><b>didEditObject:</b><i>anEO</i></font><br>
+<font face="Times" size="+1"><b>key:</b>(NSString *)<i>aKey</i></font><br>
+<font face="Times" size="+1"><b>value:</b><i>aValue</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sent from <b>associationDidEdit:</b> to inform the delegate that <i>anAssociation</i> has performed an edit.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>controller:createObjectFailedForDataSource:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>controller:</b>(EOController *)<i>controller</i></font></td>
+
+<td><font face="Times" size="+1"><b>createObjectFailedForDataSource:</b><i>dataSource</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This method can be implemented to respond when the controller is unable to create an object for a data source. If the delegate does not implement this method, the controller will put up a panel to alert the user of the error. Otherwise, the delegate is responsible for notifying the user.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>controller:didChangeDataSource:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>controller:</b>(EOController *)<i>controller</i> <b>didChangeDataSource:</b>(id &lt;EODataSources&gt;)<i>aDataSource</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sent from <b>setDataSource:</b> to inform the delegate that <i>controller</i>'s data source is now <i>aDataSource</i>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>controllerDidChangeSelection:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>controllerDidChangeSelection:</b>(EOController *)<i>controller</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sent whenever <i>controller</i>'s selection changes to inform the delegate of the change.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>controller:didDeleteObject:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>controller:</b>(EOController *)<i>controller</i> <b>didDeleteObject:</b><i>anEO</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sent from any of the delete methods to inform the delegate that <i>controller</i> has deleted <i>anEO</i>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>controller:didDeleteObject:inDataSource:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>controller:</b>(EOController *)<i>controller</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>didDeleteObject:</b><i>anEO</i></font><br>
+<font face="Times" size="+1"><b>inDataSource:</b><i>aDataSource</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sent from <b>saveToDataSource</b> to inform the delegate that <i>controller</i> has deleted <i>anEO</i> from <i>aDataSource</i>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>controller:didFetchObjects:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>controller:</b>(EOController *)<i>controller</i> <b>didFetchObjects:</b>(NSArray *)<i>objects</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sent from <b>fetch</b> to inform the delegate that <i>controller</i> has fetched the enterprise objects in <i>objects</i> from its data source.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>controller:didInsertObject:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>controller:</b>(EOController *)<i>controller</i> <b>didInsertObject:</b><i>anEO</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sent from <b>saveToObjects</b> to inform the delegate that <i>controller</i> has inserted <i>anEO</i>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>controller:didInsertObject:inDataSource:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>controller:</b>(EOController *)<i>controller</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>didInsertObject:</b><i>anEO</i></font><br>
+<font face="Times" size="+1"><b>inDataSource:</b><i>aDataSource</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sent from <b>saveToDataSource</b> to inform the delegate that <i>controller</i> has inserted <i>anEO</i> into <i>aDataSource</i>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>controller:didRollbackDataSource:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>controller:</b>(EOController *)<i>controller</i> <b>didRollbackDataSource:</b>(id &lt;EODataSources&gt;)<i>aDataSource</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sent from <b>saveToDataSource</b> to inform the delegate that <i>controller</i> has rolled back changes in <i>aDataSource</i>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>controllerDidSaveToDataSource:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>controllerDidSaveToDataSource:</b>(EOController *)<i>controller</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sent from <b>saveToDataSource</b> to inform the delegate that <i>controller</i> has finished saving all operations to its data source. This method is only invoked if all operations were successfully saved.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>controller:didSaveToObject:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>controller:</b>(EOController *)<i>controller</i> <b>didSaveToObject:</b><i>anEO</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sent from <b>saveToObjects</b> to inform the delegate that <i>controller</i> has saved edits to <i>anEO</i>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>controllerDidUndo:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>controllerDidUndo:</b>(EOController *)<i>controller</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sent from <b>undo</b> to inform the delegate that <i>controller</i> has performed an undo operation.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>controller:didUndoObject:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>controller:</b>(EOController *)<i>controller</i> <b>didUndoObject:</b><i>anEO</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sent from <b>undo</b> to inform the delegate that <i>controller</i> has undone changes to <i>anEO</i>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>controller:didUpdateObject:inDataSource:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>controller:</b>(EOController *)<i>controller</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>didUpdateObject:</b><i>anEO</i></font><br>
+<font face="Times" size="+1"><b>inDataSource:</b><i>aDataSource</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sent from <b>saveToDataSource</b> to inform the delegate that <i>controller</i> has updated <i>anEO</i> in <i>aDataSource</i>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>controller:failedToDeleteObject:inDataSource:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(EODataSourceFailureResponse)<b>controller:</b>(EOController *)<i>controller</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>failedToDeleteObject:</b><i>anEO</i></font><br>
+<font face="Times" size="+1"><b>inDataSource:</b><i>aDataSource</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sent from <b>saveToDataSource</b> to inform the delegate that <i>controller</i> has failed to delete <i>anEO</i> from <i>aDataSource</i>. If the delegate returns <b>EOContinueDataSourceFailureResponse</b> <i>controller</i> continues saving other changes to the data source.</font>
+
+<p><font face="Times" size="+1">If the delegate returns <b>EORollbackDataSourceFailureResponse</b> <i>controller</i> sends <b>rollback</b> to its data source if the data source responds to that message. <b>saveToDataSource</b> then aborts and returns a failure result.</font>
+
+<p><font face="Times" size="+1">In rolling back the data source, the controller invokes the delegate methods <b>controller:willRollbackDataSource:</b> and <b>controller:didRollbackDataSource:</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>controller:failedToInsertObject:inDataSource:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(EODataSourceFailureResponse)<b>controller:</b>(EOController *)<i>controller</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>failedToInsertObject:</b><i>anEO</i></font><br>
+<font face="Times" size="+1"><b>inDataSource:</b><i>aDataSource</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sent from <b>saveToDataSource</b> to inform the delegate that <i>controller</i> has failed to insert <i>anEO</i> into <i>aDataSource</i>. If the delegate returns <b>EOContinueDataSourceFailureResponse</b> <i>controller</i> continues saving other changes to the data source. If the delegate returns <b>EORollbackDataSourceFailureResponse</b> <i>controller</i> sends <b>rollback</b> to its data source if the data source responds to that message. <b>saveToDataSource</b> then aborts and returns a failure result.</font>
+
+<p><font face="Times" size="+1">In rolling back the data source, the controller invokes the delegate methods <b>controller:willRollbackDataSource:</b> and <b>controller:didRollbackDataSource:</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>controller:failedToUpdateObject:inDataSource:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(EODataSourceFailureResponse)<b>controller:</b>(EOController *)<i>controller</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>failedToUpdateObject:</b><i>anEO</i></font><br>
+<font face="Times" size="+1"><b>inDataSource:</b><i>aDataSource</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sent from <b>saveToDataSource</b> to inform the delegate that <i>controller</i> has failed to update <i>anEO</i> in <i>aDataSource</i>. If the delegate returns <b>EOContinueDataSourceFailureResponse</b> <i>controller</i> continues saving other changes to the data source. If the delegate returns <b>EORollbackDataSourceFailureResponse</b> <i>controller</i> sends <b>rollback</b> to its data source if the data source responds to that message. <b>saveToDataSource</b> then aborts and returns a failure result.</font>
+
+<p><font face="Times" size="+1">In rolling back the data source, the controller invokes the delegate methods <b>controller:willRollbackDataSource:</b> and <b>controller:didRollbackDataSource:</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>controller:object:failedToPrepareForDataSource:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(EODataSourceFailureResponse)<b>controller:</b>(EOController *)<i>controller</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>object:</b><i>anEO</i></font><br>
+<font face="Times" size="+1"><b>failedToPrepareForDataSource:</b><i>aDataSource</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sent from <b>saveToDataSource</b> when <i>anEO</i> returns NO from a <b>prepareForDataSource</b> message. If the delegate returns <b>EOContinueDataSourceFailureResponse</b> <i>controller</i> continues saving other changes to the data source. If the delegate returns <b>EORollbackDataSourceFailureResponse</b> <i>controller</i> sends <b>rollback</b> to its data source if the data source responds to that message. <b>saveToDataSource</b> then aborts and returns a failure result.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>controller:saveObjectsFailedForDataSource:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>controller:</b>(EOController *)<i>controller</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>saveObjectsFailedForDataSource:</b><i>aDataSource</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sent from <b>saveToDataSource</b> to inform the delegate that <i>aDataSource</i> returned NO from a <b>saveObjects</b> message.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>controller:sortObjects:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>controller:</b>(EOController *)<i>controller</i> <b>sortObjects:</b>(NSMutableArray *)<i>objects</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">If the delegate implements this method,it is responsible for sorting the given object array.&nbsp; If the delegate does not implement this method and a sortOrdering has been specified, the controller will sort the objects itself using <b>[objects sortUsingKeyOrderArray:[self sortOrdering]]</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>controller:willDeleteObject:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>controller:</b>(EOController *)<i>controller</i> <b>willDeleteObject:</b><i>anEO</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sent from any of the delete methods to inform the delegate that <i>controller</i> will delete <i>anEO</i>. If the delegate returns NO the deletion isn't performed and <b>saveToObjects</b> is aborted; if the delegate returns YES the deletion proceeds.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>controller:willDeleteObject:inDataSource:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(EODataSourceOperationDelegateResponse)<b>controller:</b>(EOController *)<i>controller</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>willDeleteObject:</b><i>anEO</i></font><br>
+<font face="Times" size="+1"><b>inDataSource:</b><i>aDataSource</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sent from <b>saveToDataSource</b> to inform the delegate that <i>controller</i> will delete <i>anEO</i> from <i>aDataSource</i>. If the delegate returns EODiscardDataSourceOperation the deletion isn't performed (though <b>saveToDataSource</b> continues for other operations); if the delegate returns EOPerformDataSourceOperation the deletion proceeds. A return value of EOContinueDataSourceOperation indicates that the operation is not to be performed, but should be left on the operation stack to be performed on the next save. A return value of EORollbackDataSourceOperation indicates that the current <b>saveToDataSource</b> operation should be aborted and all changes rolled back.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>controllerWillDiscardEdits:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>controllerWillDiscardEdits:</b>(EOController *)<i>controller</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sent from <b>isDiscardAllowed</b> to inform the delegate that <i>controller</i> is about to discard pending edits. If the delegate doesn't implement this method <i>controller</i> opens an attention panel warning the user that edits may be discarded. If the delegate returns NO then <b>isDiscardAllowed</b> returns NO; if the delegate returns YES then <b>isDiscardAllowed</b> proceeds.</font>
+
+<p><font face="Times" size="+1">If the delegate wants to make sure edits are preserved it can explicitly send <b>saveToObjects</b> to <i>controller</i>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>controllerWillDiscardOperations:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>controllerWillDiscardOperations:</b>(EOController *)<i>controller</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sent from <b>isDiscardAllowed</b> to inform the delegate that <i>controller</i> is about to discard pending operations destined for its data source. If the delegate doesn't implement this method <i>controller</i> opens an attention panel warning the user that updates may be discarded. If the delegate returns NO then <b>isDiscardAllowed</b> returns NO; if the delegate returns YES then <b>isDiscardAllowed </b>proceeds.</font>
+
+<p><font face="Times" size="+1">If the delegate wants to make sure updates are preserved it can explicitly send <b>saveToDataSource</b> to <i>controller</i>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>controllerWillFetch:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>controllerWillFetch:</b>(EOController *)<i>controller</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked from <b>fetch</b> to inform the delegate that <i>controller</i> is about to fetch. If the delegate returns NO the fetch is aborted; if the delegate returns YES the fetch proceeds.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>controller:willInsertObject:atIndex:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>controller:</b>(EOController *)<i>controller</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>willInsertObject:</b><i>anEO</i></font><br>
+<font face="Times" size="+1"><b>atIndex:</b>(unsigned int)<i>anIndex</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sent from <b>insertObject:atIndex:</b> to inform the delegate that <i>controller</i> will insert <i>anEO</i> into its array of objects at <i>anIndex</i>. If the delegate returns EODiscardDataSourceOperation the insertion is aborted; if the delegate returns EOPerformDataSourceOperation the insertion proceeds. A return value of EOContinueDataSourceOperation indicates that the operation is not to be performed, but should be left on the operation stack to be performed on the next save. A return value of EORollbackDataSourceOperation indicates that the current <b>saveToDataSource</b> operation should be aborted and all changes rolled back.</font>
+
+<p><font face="Times" size="+1">The delegate may modify <i>anEO</i>, usually by setting its primary key to a unique value.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>controller:willInsertObject:inDataSource:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(EODataSourceOperationDelegateResponse)<b>controller:</b>(EOController *)<i>controller</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>willInsertObject:</b><i>anEO</i></font><br>
+<font face="Times" size="+1"><b>inDataSource:</b><i>aDataSource</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sent from <b>saveToDataSource</b> to inform the delegate that <i>controller</i> will insert <i>anEO</i> into <i>aDataSource</i>. If the delegate returns EODiscardDataSourceOperation the insertion isn't performed (though <b>saveToDataSource</b> continues for other operations); if the delegate returns EOPerformDataSourceOperation the insertion proceeds. A return value of EOContinueDataSourceOperation indicates that the operation is not to be performed, but should be left on the operation stack to be performed on the next save. A return value of EORollbackDataSourceOperation indicates that the current <b>saveToDataSource</b> operation should be aborted and all changes rolled back.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>controller:willRollbackDataSource:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>controller:</b>(EOController *)<i>controller</i> <b>willRollbackDataSource:</b>(id &lt;EODataSources&gt;)<i>aDataSource</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sent from <b>saveToDataSource</b> to inform the delegate that <i>controller</i> will roll back changes in <i>aDataSource</i>. The delegate can't prevent this operation, but may take whatever action it needs based on this information.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>controller:willSaveEdits:toObject:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSDictionary *)<b>controller:</b>(EOController *)<i>controller</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>willSaveEdits:</b>(NSDictionary *)<i>newValues</i></font><br>
+<font face="Times" size="+1"><b>toObject:</b><i>anEO</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sent from <b>saveToObjects</b> to inform the delegate that <i>controller</i> will save <i>edits</i> to <i>anEO</i>. <i>newValues</i> is a dictionary of key-value pairs whose keys are the names of properties belonging to <i>anEO</i> and whose values are the new values <i>anEO</i> will be given for those properties. The delegate can return the values as they are, or can return a substitute set of values to apply to the object. If the delegate returns <b>nil</b> the save isn't performed and <b>saveToObjects</b> is aborted.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>controllerWillSaveToDataSource:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>controllerWillSaveToDataSource:</b>(EOController *)<i>controller</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sent from <b>saveToDataSource</b> to inform the delegate that <i>controller</i> will saves changes to its data source. If the delegate returns NO the save is aborted; if the delegate returns YES the save proceeds.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>controllerWillUndo:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>controllerWillUndo:</b>(EOController *)<i>controller</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sent from <b>undo</b> to inform the delegate that <i>controller</i> will undo changes. If the delegate returns NO the undo operation is aborted; if the delegate returns YES the undo operation proceeds.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>controller:willUndoObject:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>controller:</b>(EOController *)<i>controller</i> <b>willUndoObject:</b><i>anEO</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sent from <b>undo</b> to inform the delegate that <i>controller</i> will undo changes previously made to <i>anEO</i>. If the delegate returns NO the undo operation for <i>anEO</i> only is aborted (the larger undo operation proceeds); if the delegate returns YES the undo operation for <i>anEO</i> proceeds.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>controller:willUpdateObject:inDataSource:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(EODataSourceOperationDelegateResponse)<b>controller:</b>(EOController *)<i>controller</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>willUpdateObject:</b><i>anEO</i></font><br>
+<font face="Times" size="+1"><b>inDataSource:</b><i>aDataSource</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sent from <b>saveToDataSource</b> to inform the delegate that <i>controller</i> will update <i>anEO</i> in <i>aDataSource</i>. If the delegate returns EODiscardDataSourceOperation the update isn't performed (though <b>saveToDataSource</b> continues for other operations); if the delegate returns EOPerformDataSourceOperation the update proceeds. A return value of EOContinueDataSourceOperation indicates that the operation is not to be performed, but should be left on the operation stack to be performed on the next save. A return value of EORollbackDataSourceOperation indicates that the current <b>saveToDataSource</b> operation should be aborted and all changes rolled back.</font></td></tr>
+
+</table>
+
+
+
+<p><br>
+
+</body>
+</html>

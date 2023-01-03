@@ -1,0 +1,545 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/Foundation/Classes/NSArchiver.rtf -->
+<!-- Date: Sun Jan  1 17:05:04 2023 -->
+<head>
+<title>NSArchiver</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>NSArchiver</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Inherits From:</b></font></td>
+
+<td><font face="Times" size="+1">NSCoder : NSObject</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Conforms To:</b></font></td>
+
+<td><font face="Times" size="+1">NSCoding</font><br>
+<font face="Times" size="+1">NSObject</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">foundation/NSArchiver.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">NSArchiver, a concrete subclass of NSCoder, defines an object that encodes Objective C objects into an architecture-neutral format that can be stored in a file. When objects are archived, their class information and the values of their instance variables are written to the archive. NSArchiver's companion class, NSUnarchiver, takes an archive file and decodes its contents into a set of objects equivalent to the original one.</font>
+
+<p><font face="Times" size="+1">Archiving is typically initiated by sending an NSArchiver an <b>encodeRootObject:</b> or <b>archiveRootObject:toFile:</b> message. These messages specify a single object that is the starting point for archiving. The root object receives an <b>encodeWithCoder: </b>message (see the NSCoding protocol) that allows it to begin archiving itself and the other objects that it's connected to. An object responds to an <b>encodeWithCoder:</b> message by writing its instance variables to the archiver.</font>
+
+<p><font face="Times" size="+1">An object doesn't have to archive the values of each of its instance variables. Some values may not be important to reestablish and others may be derivable from related state upon unarchiving. Other instance variables should be written to the archive only under certain conditions, as explained below.</font>
+
+<p><font face="Times" size="+1">NSArchiver overrides the inherited <b>encodeRootObject:</b> and <b>encodeConditionalObject:</b> methods to support the conditional archiving of members of a graph of objects. When an object receives an <b>encodeWithCoder:</b> message, it should respond by unconditionally archiving instance variables that are intrinsic to its nature (with the exceptions noted above) and conditionally archiving those that are not.&nbsp;&nbsp; For example, an NSView unconditionally archives its array of subviews (using <b>encodeObject:</b>, or the like) but conditionally archives its superview (using <b>encodeConditionalObject:</b>). The archiving system notes each reference to a conditional object, but doesn't actually archive the object unless some other object in the graph requests the object to be archived unconditionally. This ensures that an object is only archived once despite multiple references to it in the object graph. When the objects are extracted from the archive, the multiple references to objects are resolved, and an equivalent graph of objects is reestablished.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">As a consequence of being a subclass of NSObject, NSArchiver conforms to the NSCoding protocol. In practice, however, NSArchivers are not encoded nor archived.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Variables</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">None declared in this class.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Initializing an NSArchiver</font></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">initForWritingWithMutableData:</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Archiving Data</font></td>
+
+<td><font face="Times" size="+1">+ archivedDataWithRootObject:</font><br>
+<font face="Times" size="+1">+ archiveRootObject:toFile:</font><br>
+<font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">encodeArrayOfObjCType:count:at:</font><br>
+<font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">encodeConditionalObject:</font><br>
+<font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">encodeRootObject:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Getting Data from the NSArchiver</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=308></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">archiverData</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Substituting One Class for Another</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=308></td>
+
+<td><font face="Times" size="+1">+ classNameEncodedForTrueClassName:</font><br>
+<font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">encodeClassName:intoClassName:</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>archivedDataWithRootObject:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ (NSData *)<b>archivedDataWithRootObject:</b>(id)<i>rootObject</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Creates and returns a data object after initializing an archiver with that object and encoding the archiver with <i>rootObject</i>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>archiveRootObject:toFile:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ (BOOL)<b>archiveRootObject:</b>(id)<i>rootObject</i> <b>toFile:</b>(NSString *)<i>path</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Archives <i>rootObject</i> by encoding it as a data object in an archiver and writing that data object to file <i>path</i>. Returns YES upon success.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>classNameEncodedForTrueClassName:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ (NSString *)<b>classNameEncodedForTrueClassName:</b>(NSString *)<i>trueName</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the string object representing the class name used to archive instances of the class. This class name might not be the original name (<i>trueName</i>).</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>encodeClassName:intoClassName</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>archiverData</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSMutableData *)<b>archiverData</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the data object, in mutable form, that is associated with the receiving NSArchiver.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>encodeArrayOfObjCType:count:at:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>encodeArrayOfObjCType:</b>(const char *)<i>type</i> <b>count:</b>(unsigned int)<i>count</i> <b>at:</b>(const void *)<i>array</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Encodes an <i>array</i> of <i>count</i> data elements of the same Objective C data <i>type</i>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>encodeClassName:intoClassName:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>encodeClassName:</b>(NSString *)<i>trueName</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>intoClassName:</b>(NSString *)<i>inArchiveName</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Encodes in the archived data a substitute class name for the real class name (<i>trueName</i>).</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>encodeConditionalObject:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>encodeConditionalObject:</b>(id)<i>object</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Encodes into the linearized data a conditional <i>object</i> that points back toward a root object. If <b>nil</b> is specified for <i>object</i>, it encodes it as <b>nil</b> unconditionally. Raises an exception if no root object has been encoded.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>encodeRootObject:</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>encodeRootObject:</b>(id)<i>rootObject</i></font>
+
+<p><font face="Times" size="+1">Encodes the <i>rootObject</i> at the start of the linearized data representing the object graph. Raises an exception if the root object has already been encoded.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>initForWritingWithMutableData:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(id)<b>initForWritingWithMutableData:</b>(NSMutableData *)<i>mdata</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Initializes an archiver, encoding stream and version information into mutable data <i>mdata</i>.</font></td></tr>
+
+</table>
+
+
+
+<p><br>
+
+</body>
+</html>

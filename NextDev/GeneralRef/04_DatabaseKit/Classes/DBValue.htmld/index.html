@@ -1,0 +1,1208 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/GeneralRef/04_DatabaseKit/Classes/DBValue.rtf -->
+<!-- Date: Sun Jan  1 17:03:43 2023 -->
+<head>
+<title>DBValue</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>DBValue</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Inherits From:</b></font></td>
+
+<td><font face="Times" size="+1">Object</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Conforms To:</b></font></td>
+
+<td><font face="Times" size="+1">DBExpressionValues</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">dbkit/DBValue.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The DBValue class provides objects that can embody different types of data.&nbsp; DBValue objects are used throughout the Database Kit to retrieve and modify arbitrarily typed values.</font>
+
+<p><font face="Times" size="+1">A DBValue object consists of two parts:&nbsp; a value and a type.&nbsp; The value and type are set at the same time, through methods such as <b>setIntValue:</b> and <b>setStringValue:</b>; the value is passed as the argument, the type is set as indicated by the method's name.&nbsp; Once this information has been set, you can retrieve the DBValue's value through methods such as <b>intValue</b> and <b>stringValue</b>.&nbsp; The value is converted, if possible, to the requested return type.&nbsp; You can retrieve a DBValue's type--the type that was named by the method that set the value--as a DBTypes-conforming object through the <b>valueType</b> method.</font>
+
+<p><font face="Times" size="+1">The type of a DBValue object can be one of the following:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">An object</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">A string</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">An integer</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">A single-precision floating-point number</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">A double-precision floating point number</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">NULL</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The type conversion mentioned above applies only to strings, numeric values, and NULL; you can't convert an object to or from the other data types.</font>
+
+<p><font face="Times" size="+1">The primary use the Database Kit makes of DBValue objects is to store the values that are contained in a record.&nbsp; The objects are necessary because you can't examine or set a record's values directly:&nbsp; You have to get a record value (indexed by property) into a DBValue object, examine and/or modify the DBValue, and set the DBValue back into the record.&nbsp; Getting and setting record values is typically done through the DBRecordList (or DBRecordStream) methods <b>getValue:forProperty:</b> and <b>setValue:ForProperty:</b>.</font>
+
+<p><font face="Times" size="+1">The following example demonstrates how to use a DBRecordList and a DBValue to modify the record that the DBRecordList is currently pointing to:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Create a DBValue to retrieve and modify a record value. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">DBValue *age = [[DBValue alloc] init];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Retrieve the value of a property from a DBRecordList. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* (aRecordList and aProperty are assumed to exist. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[aRecordList getValue:age forProperty:ageProperty];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Modify the value and write it back to the record. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[birthRight setFloatValue:[age intValue]+1.0];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[aRecordList setValue:age forProperty:aProperty];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">DBBinder also defines a method, <b>valueForProperty:</b>, that returns a DBValue that contains the value of the current record for a particular property.&nbsp; However, unlike with a DBRecordList, you can modify the DBValue returned by this method and so modify the record directly.</font>
+
+<p><font face="Times" size="+1">DBValues are also used to store the values of a record's key properties, and to store the value that's embodied in a DBAssociation.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Variables</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">None declared in this class.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Adopted Protocols</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">DBExpressionValues</font></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">expressionValue</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">isDeferredExpression</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Creating and Freeing</font></td>
+
+<td><font face="Times" size="+1">+ initialize</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">init</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">free</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Setting values</font></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setDoubleValue:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setFloatValue:</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setIntValue:</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setObjectValue:</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setObjectValueNoCopy:</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setStringValue:</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setStringValueNoCopy:</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setValueFrom:</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setNull</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Reporting values</font></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">valueType</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">isEqual:</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">doubleValue</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">floatValue</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">intValue</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">objectValue</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">stringValue</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">isNull</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Archiving</font></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">read:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">write:</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>initialize</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ <b>initialize</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Prepares the class for use.&nbsp; You normally don't need to invoke this method; however, if you're creating a subclass that implements an <b>initialize</b> method, you should certainly send <b>initialize</b> to <b>super</b> as part of the implementation.&nbsp; Returns <b>self</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>doubleValue</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(double)<b>doubleValue</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the DBValue's value converted to a double-precision floating-point number.&nbsp; If the conversion can't be performed, a DB_COERCION_ERROR exception is raised.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>floatValue</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(float)<b>floatValue</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the DBValue's value converted to a single-precision floating-point number.&nbsp; If the conversion can't be performed, a DB_COERCION_ERROR exception is raised.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>free</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>free</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Frees the DBValue.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>init</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>init</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The designated initializer for the DBValue class, <b>init</b> initializes a newly allocated DBValue object.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>intValue</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(int)<b>intValue</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the DBValue's value converted to an integer.&nbsp; If the conversion can't be performed, a DB_COERCION_ERROR exception is raised.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>isEqual:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>isEqual:</b>(DBValue *)<i>anotherValue</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Compares the DBValue with <i>anotherValue</i> and returns YES or NO as their values are or aren't equivalent.&nbsp; The two objects' types needn't be the same; the method will convert the argument's value to that of the receiving DBValue, if necessary, and then perform the comparison.&nbsp; A DB_COERCION_ERROR exception is raised if the conversion isn't supported.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>isNull</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>isNull</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if the DBValue's value hasn't been set, or if it's been set to the null value appropriate for its type.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>objectValue</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>objectValue</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the DBValue's value.&nbsp; The value must be an object, otherwise a DB_COERCION_ERROR exception is raised.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>read:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>read:</b>(NXTypedStream *)<i>stream</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Reads the DBValue from the typed stream <i>stream</i>.&nbsp; Returns <b>self</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setDoubleValue:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setDoubleValue:</b>(double)<i>aDouble</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the DBValue's value to <i>aDouble</i> and declares its type to be a double.&nbsp; Returns <b>self</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setFloatValue:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setFloatValue:</b>(float)<i>aFloat</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the DBValue's value to <i>aFloat</i> and declares its type to be a float.&nbsp; Returns <b>self</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setIntValue:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setIntValue:</b>(int)<i>anInt</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the DBValue's value to <i>anInt</i> and declares its type to be an integer.&nbsp; Returns <b>self</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setNull</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setNull</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the DBValue's value and type to NULL.&nbsp; Returns <b>self</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setObjectValue:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setObjectValue:</b>(id)<i>anObject</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the DBValue's value to a copy of <i>anObject</i> and declares its type to be an object<i>.</i>&nbsp; Returns <b>self</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setObjectValueNoCopy:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setObjectValueNoCopy:</b>(id)<i>anObject</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the DBValue's value to <i>anObject</i> and declares its type to be an object<i>.</i>&nbsp;&nbsp; Returns <b>self</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setStringValue:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setStringValue:</b>(const char *)<i>aString</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the DBValue's value to a copy of <i>aString</i> and declares its type to be a string.&nbsp; Returns <b>self</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setStringValueNoCopy:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setStringValueNoCopy:</b>(const char *)<i>aString</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the DBValue's value to point to <i>aString</i> and declares its type to be a string<i>.</i>&nbsp; Returns <b>self</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setValueFrom:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setValueFrom:</b>(DBValue *)<i>aValue</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the DBValue's value and type to those of <i>aValue.</i>&nbsp; Returns <b>self</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>stringValue</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(const char *)<b>stringValue</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the DBValue's value converted to a string.&nbsp; If the conversion can't be performed, a DB_COERCION_ERROR exception is raised.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>valueType</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(id &lt;DBTypes&gt;)<b>valueType</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns a private, DBTypes-conforming object that stores the DBValue's type.&nbsp; To get a string that represents the Objective C data type from this object, you would send it an <b>objcType</b> message.&nbsp; The following table gives DBTypes string representations of the DBValue types:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>DBValue type</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>DBTypes representation</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">object</font></td>
+
+<td><font face="Times" size="+1">&quot;@&quot;</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">string</font></td>
+
+<td><font face="Times" size="+1">&quot;*&quot;</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">integer</font></td>
+
+<td><font face="Times" size="+1">&quot;i&quot;</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">float</font></td>
+
+<td><font face="Times" size="+1">&quot;f&quot;</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">double</font></td>
+
+<td><font face="Times" size="+1">&quot;d&quot;</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">NULL</font></td>
+
+<td><font face="Times" size="+1">NULL</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>write:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>write:</b>(NXTypedStream *)<i>stream</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Writes the DBValue object to the typed stream <i>stream</i>.&nbsp; Returns <b>self</b>.</font></td></tr>
+
+</table>
+
+
+
+<p><br>
+
+</body>
+</html>

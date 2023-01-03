@@ -1,0 +1,1236 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/EnterpriseObjects/Guide/Part3_Programming/09_ModifyingRecords.rtf -->
+<!-- Date: Sun Jan  1 17:05:34 2023 -->
+<head>
+<title>09_ModifyingRecords</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+4" color="#FF00FF"><b>9</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<p><img src="../../../../Images/sp.gif" width=6 height=1><font face="Times" size="+4"><i>Inserting, Deleting, and Updating Records</i></font>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">After you've established a connection to the database (discussed in Chapter 7, &quot;Connecting to the Database&quot;), you can interact with it. This chapter shows you how to insert, delete, and update database records in three different ways: When you're working with a data source, when you're working primarily at the database level, and when you're working primarily at the adaptor level.</font>
+
+<p><font face="Times" size="+1">This chapter is organized into the following sections:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">&quot;Working with a Data Source&quot; shows you how to insert, delete, and update database records with a data source.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">&quot;Working at the Database Level&quot; shows you how to insert, delete, and update database records at the database level.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">&quot;Working at the Adaptor Level&quot; shows you how to insert, delete, and update database records at the adaptor level.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Note that this chapter doesn't discuss how to retrieve records from the database. Fetching is the subject of Chapter 8, &quot;Retrieving Records.&quot; In order to get the most out of this chapter, you should first read those sections in Chapter 8 that are appropriate for your application.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Working with a Data Source</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">A data source is an object that presents a standard interface to a store of enterprise objects. The data source class supplied with the Framework, EODatabaseDataSource, provides an interface to the Framework's access layer and, ultimately, to a relational database. Regardless of how the underlying data is stored, however, all data sources have the ability to fetch, insert, update, and delete objects.</font>
+
+<p><font face="Times" size="+1">For most database applications, the data source is an instance of the EODatabaseDataSource class. However, the data source can be any object that conforms to the EODataSources protocol. (Because EODatabaseDataSource is the only data source supplied with the Framework, however, the procedures in this and the following sections assume that you are working with an EODatabaseDataSource.)</font>
+
+<p><font face="Times" size="+1">Programs that use a data source to operate on data in the database rely heavily on the following methods, which are documented in the EODataSources protocol specification in the <i>Enterprise Objects Framework Reference</i>:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=125></td>
+
+<td><font face="Times" size="+1">createObject</font><br>
+<font face="Times" size="+1">insertObject:</font><br>
+<font face="Times" size="+1">updateObject:</font><br>
+<font face="Times" size="+1">deleteObject:</font><br>
+<font face="Times" size="+1">saveObjects</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Methods for constructing and working with database data source objects are documented in the EODatabaseDataSource class specification in the <i>Enterprise Objects Framework Reference</i>.</font>
+
+<p><font face="Times" size="+1">By default, all EODatabaseDataSources begin transactions automatically upon the first insert, delete, or update (if needed). You can verify this for a particular data source by sending it a <b>beginsTransactionsAutomatically</b> message and checking the returned value. If your data source doesn't automatically start transactions for you, your application needs to drop down to the database level and control transactions manually. For more information on this technique, see Chapter 10, &quot;Working Across Levels.&quot;</font>
+
+<p><font face="Times" size="+1">Even though EODatabaseDataSources begin transactions automatically, you still have to indicate when the transaction has completed. You do this by sending <b>saveObjects</b> to the data source. If your data source conforms to the EORollbackDataSources protocol (as does EODatabaseDataSource), until you send <b>saveObjects</b> you can issue a <b>rollback</b> message to abort the transaction and undo those changes to the database that were made during the current transaction.</font>
+
+<p><font face="Times" size="+1">The following three sections (&quot;Inserting Objects with a Data Source,&quot; &quot;Updating Objects with a Data Source,&quot; and &quot;Deleting Objects with a Data Source&quot;) illustrate how you operate on database data using a data source. In those sections, all examples work with enterprise objects of the Department class; this class provides <b>setDepartmentName:</b>, <b>setDeptID:</b>, and <b>setLocationID:</b> accessor methods. All examples also assume that you have write access to the database, as specified in the model.</font>
+
+<p><font face="Times" size="+1">Even if you have write access to the database, individual properties for an entity may be read-only. When inserting and updating objects, attributes that are marked read-only in the model aren't modified, and your code isn't notified if you attempt to insert or update a record with read-only attributes.</font>
+
+<p><font face="Times" size="+1">If you attempt to insert or update a record that contains a NULL value for an attribute that is required by the server to be non-NULL, the adaptor generates an error and the operation fails.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Inserting Objects with a Data Source</b></font>
+
+<p><font face="Times" size="+1">The basic procedure to use when inserting objects with a data source is:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Use <b>createObject</b> to generate the object to be inserted. Initialize the object appropriately, making sure that you assign it a primary key.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Insert the object into the database with <b>insertObject:</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Complete the transaction with <b>saveObjects</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Here's one way to insert a record into the database, given a data source that handles Department enterprise objects:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EODatabaseDataSource *myDataSource;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">Department *myObject;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">BOOL ok;</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Construct the object. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">myObject = [myDataSource createObject];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[myObject setDepartmentName:@&#34;Publications&#34;];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[myObject setDeptID:700];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[myObject setLocationID:1101];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Insert it into the database. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">ok = [myDataSource insertObject:myObject];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">if (!ok) {</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Object wasn't inserted. Handle the error. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Make the change permanent. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">ok = [myDataSource saveObjects];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">if (!ok) {</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Changes weren't made. Handle the error. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Note the use of <b>createObject</b> to create the empty enterprise object that's going to be inserted into the database. Any object that's to be added to the database using a data source must have been created using <b>createObject</b>. This means that in order to insert the contents of an existing enterprise object, created with <b>alloc</b>, into the database, you must create an empty object with <b>createObject</b> and copy the contents of your existing object into it. You can then insert the new object into the database.</font>
+
+<p><font face="Times" size="+1">However your code constructs the enterprise object to be inserted, the object must have a primary key and the key must be unique within the database.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Updating Objects with a Data Source</b></font>
+
+<p><font face="Times" size="+1">The basic procedure to use when updating objects with a data source is:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Change the object's values (you can even change the object's primary key).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Replace the object in the database with <b>updateObject:</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Complete the transaction with <b>saveObjects</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Here's one way to alter the contents of a record in the database, given a data source that handles Department enterprise objects:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EODatabaseDataSource *myDataSource;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">Department *myObject;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">BOOL ok;</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Change the value(s). */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[myObject setLocationID:1102];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Send the object back. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">ok = [myDataSource updateObject:myObject];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">if (!ok) {</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Object wasn't updated. Handle the error. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Make the change permanent. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">ok = [myDataSource saveObjects];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">if (!ok) {</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Changes weren't made. Handle the error. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">When working with a data source, you must fetch an object from the database before you update it. Also, an EODatabaseDataSource won't let you update objects if it was initialized with a read-only entity.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Deleting Objects with a Data Source</b></font>
+
+<p><font face="Times" size="+1">The basic procedure to use when deleting objects with a data source is:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Remove the object from the database with <b>deleteObject:</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Commit the transaction with <b>saveObjects</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Here's one way to remove a record from the database, given a data source that handles Department enterprise objects:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EODatabaseDataSource *myDataSource;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">Department *myObject;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">BOOL ok;</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Delete the object. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">ok = [myDataSource deleteObject:myObject];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">if (!ok) {</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Object wasn't deleted. Handle the error. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Make the change permanent. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">ok = [myDataSource saveObjects];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">if (!ok) {</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Changes weren't made. Handle the error. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">An EODatabaseDataSource won't let you delete objects if it was initialized with a read-only entity. To find out if your data source will let you delete objects, send it a <b>canDelete</b> message. For more information, see the EODataSources protocol specification in the <i>Enterprise Objects Framework Reference</i>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Working at the Database Level</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The database level deals with data packaged as enterprise objects. At the database level, you can create multiple database connections, contexts, and channels. The database level also allows you to exercise a great deal of control over the way that objects are created and used by your application.</font>
+
+<p><font face="Times" size="+1">Programs that operate on data in the database while working primarily at the database level rely heavily on the following methods, which are documented in the EODatabaseChannel class specification in the <i>Enterprise Objects Framework Reference</i>:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=125></td>
+
+<td><font face="Times" size="+1">insertObject:</font><br>
+<font face="Times" size="+1">lockObject</font><br>
+<font face="Times" size="+1">updateObject:</font><br>
+<font face="Times" size="+1">deleteObject:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">All of these operations notify the database channel's delegate before and after the operation.</font>
+
+<p><font face="Times" size="+1">Before you can operate on data in the database, you must have a transaction in progress. At the database level, you start a transaction by issuing <b>beginTransaction</b> to the database context linked to the channel you're using. To complete a transaction, send either <b>commitTransaction</b> or <b>rollbackTransaction</b>, as appropriate.</font>
+
+<p><font face="Times" size="+1">The following three sections (&quot;Inserting Objects at the Database Level,&quot; &quot;Updating Objects at the Database Level,&quot; and &quot;Deleting Objects at the Database Level&quot;) illustrate how you insert, update, and delete database records using database-level methods. All examples work with enterprise objects of the Department class; this class provides all of the appropriate accessor methods. The examples also assume that you have write access to the database, as specified in the model.</font>
+
+<p><font face="Times" size="+1">Even if you have write access to the database, individual attributes for an entity may be read-only. When inserting and updating objects, attributes that are marked read-only in the model aren't modified, and your code isn't notified if you attempt to insert or update a record with read-only attributes.</font>
+
+<p><font face="Times" size="+1">If you attempt to insert or update a record that contains a NULL value for an attribute that is required by the server to be non-NULL, the adaptor generates an error and the operation fails.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Inserting Objects at the Database Level</b></font>
+
+<p><font face="Times" size="+1">The basic procedure to use when inserting objects using database-level methods is:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Construct the object to be inserted.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Begin a transaction.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Insert the object into the database with <b>insertObject:</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Complete the transaction.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Here's one way to insert an object into the database, given an open database channel:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EODatabaseChannel *databaseChannel;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EODatabaseContext *databaseContext;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">Department *myObject;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">BOOL ok;</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">databaseContext = [databaseChannel databaseContext];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Construct the object. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">myObject = [[Department alloc] init];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[myObject setDepartmentName:@&#34;Publications&#34;];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[myObject setDeptID:700];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[myObject setLocationID:1101];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[databaseContext beginTransaction];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">ok = [databaseChannel insertObject:myObject];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">if (!ok) {</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Object wasn't inserted. */</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">[databaseContext rollbackTransaction];</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Handle error. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">} else {</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">[databaseContext commitTransaction];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The above example shows one way to construct the enterprise object to be inserted. However your code constructs it, the object must have a primary key and the key must be unique within the database.</font>
+
+<p><font face="Times" size="+1">Note that <b>myObject</b>'s corresponding entity wasn't explicitly identified anywhere in the above example. To determine this information, the Enterprise Objects Framework compares the name of your enterprise object's class (&quot;Department,&quot; in this example) with the class names specified for the entities in the model associated with your channel. When it finds a match, it then knows which entity the object corresponds to, and thus which database table the object is to be inserted into.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Updating Objects at the Database Level</b></font>
+
+<p><font face="Times" size="+1">The basic procedure to use when updating objects using database-level methods is:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Begin a transaction.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">If necessary, lock the object so that it won't be changed by another process while your code is attempting to change it. This lock remains in effect until the next <b>commitTransaction</b> or <b>rollbackTransaction</b>. See Chapter 2, &quot;From Database to Objects&quot; for a discussion of update strategies and locking.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Change the object's values (because the object is uniquely identified at the time it's fetched, you can change the object's primary key).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Update the object in the database with <b>updateObject:</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Complete the transaction.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Here's one way to alter the contents of a record in the database, given an open database channel:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EODatabaseChannel *databaseChannel;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">Department *myObject;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EODatabaseContext *databaseContext;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">BOOL ok;</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">databaseContext = [databaseChannel databaseContext];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[databaseContext beginTransaction];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* If snapshots are disabled, you must fetch the object here, */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* within the transaction. */</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* If necessary, lock the object so no one else can change it. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[databaseChannel lockObject:myObject];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Change the value(s). */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[myObject setLocationID:1102];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Send the changes to the database. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">ok = [databaseChannel updateObject:myObject];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">if (!ok) {</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Object wasn't updated. */</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">[databaseContext rollbackTransaction];</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Handle error. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">} else {</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">[databaseContext commitTransaction];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">You must fetch the object from the database before you can update it. When you fetch an object, a snapshot is taken (thus allowing you to change any aspect of the object, including its primary key). You don't have to lock the object if there's no chance that the object will be modified by some other process during the transaction. If you don't lock the object and the Framework detects a conflict when you try to update, the update will fail.</font>
+
+<p><font face="Times" size="+1">You can exercise a degree of control over how your snapshots are taken as well as how and when locking is performed. For more information, see Chapter 2, &quot;From Database to Objects,&quot; or the EODatabaseContext class specification in the <i>Enterprise Objects Framework Reference</i>.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Deleting Objects at the Database Level</b></font>
+
+<p><font face="Times" size="+1">The basic procedure to use when deleting objects using database-level methods is:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Begin a transaction.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Delete the object with <b>deleteObject:</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Complete the transaction.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Here's one way to remove a record from the database, given an open database channel:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EODatabaseChannel *databaseChannel;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">Department *myObject;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EODatabaseContext *databaseContext;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">BOOL ok;</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">databaseContext = [databaseChannel databaseContext];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[databaseContext beginTransaction];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Delete the object. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">ok = [databaseChannel deleteObject:myObject];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">if (!ok) {</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Object wasn't deleted. */</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">[databaseContext rollbackTransaction];</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Handle error. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">} else {</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">[databaseContext commitTransaction];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">You must fetch the object from the database before you can delete it.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Working at the Adaptor Level</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">While the database level deals with data packaged as enterprise objects, the adaptor level deals with database rows packaged as dictionaries. The adaptor level classes define a server-independent interface for working with relational database systems. Server-specific subclasses encapsulate the behavior of database servers, offering a uniform way of interacting with servers while still allowing applications to exploit their unique features.</font>
+
+<p><font face="Times" size="+1">Programs that operate on data in the database while working primarily at the adaptor level rely heavily on the following methods, which are documented in the EOAdaptorChannel class specification in the <i>Enterprise Objects Framework Reference</i>:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=125></td>
+
+<td><font face="Times" size="+1">selectAttributes:describedByQualifier:fetchOrder:lock:</font><br>
+<font face="Times" size="+1">insertRow:forEntity:</font><br>
+<font face="Times" size="+1">updateRow:describedByQualifier:</font><br>
+<font face="Times" size="+1">deleteRowsDescribedByQualifier:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">All of these operations notify the adaptor channel's delegate before and after the operation.</font>
+
+<p><font face="Times" size="+1">Before you can operate on data in the database, you must have a transaction in progress. At the adaptor level, you start a transaction by sending a <b>beginTransaction</b> message to the adaptor context. To complete a transaction, send either <b>commitTransaction</b> or <b>rollbackTransaction</b>, as appropriate.</font>
+
+<p><font face="Times" size="+1">The following three sections (&quot;Inserting Rows at the Adaptor Level,&quot; &quot;Updating Rows at the Adaptor Level,&quot; and &quot;Deleting Rows at the Adaptor Level&quot;) illustrate how you insert, update, and delete database records using adaptor-level methods. All examples assume that you have write access to the database, as specified in the model.</font>
+
+<p><font face="Times" size="+1">Even if you have write access to the database, individual attributes for an entity may be read-only. When inserting and updating rows, attributes that are marked read-only in the model aren't modified, and your code isn't notified if you attempt to insert or update a record with read-only attributes.</font>
+
+<p><font face="Times" size="+1">If you attempt to insert or update a record that contains a NULL value for an attribute that is required by the server to be non-NULL, the adaptor generates an error and the operation fails.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Inserting Rows at the Adaptor Level</b></font>
+
+<p><font face="Times" size="+1">The basic procedure to use when adding records using adaptor-level methods is:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Construct the dictionary object for the record to be inserted.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Begin a transaction</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Insert the row into the database with <b>insertRow:forEntity:</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Complete the transaction.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Here's one way to insert a record into the database, given an open adaptor channel:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAdaptorChannel *adaptorChannel;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOModel *model;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAdaptorContext *adaptorContext;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOEntity *myEntity;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSMutableDictionary *myRow;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">BOOL ok;</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">adaptorContext = [adaptorChannel adaptorContext];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">myEntity = [model entityNamed:@&#34;Department&#34;];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Construct the row. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">myRow = [NSMutableDictionary dictionary];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[myRow setObject:@&#34;Publications&#34; forKey:@&#34;departmentName&#34;];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[myRow setObject:[NSNumber numberWithInt:700] forKey:@&#34;deptID&#34;];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[myRow setObject:[NSNumber numberWithInt:1101] forKey:@&#34;locationID&#34;];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[adaptorContext beginTransaction];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">ok = [adaptorChannel insertRow:myRow forEntity:myEntity];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">if (!ok) {</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Row wasn't inserted. */</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">[adaptorContext rollbackTransaction];</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Handle error. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">} else {</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">[adaptorContext commitTransaction];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The above example shows one way to construct the dictionary object to be inserted. However your code constructs it, the row must have a unique primary key.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Updating Rows at the Adaptor Level</b></font>
+
+<p><font face="Times" size="+1">The basic procedure to use when updating rows using adaptor-level methods is:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Begin a transaction.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Construct a qualifier that uniquely identifies the row to be updated.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Fetch the row (locking it in your <b>selectAttributes:...</b> message) and change its values, or construct a new version of the row (because the row being updated is identified by the qualifier constructed in the previous step, you can change the row's primary key).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Update the row in the database with <b>updateRow:describedByQualifier:</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Complete the transaction.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Here's one way to alter a record in the database, given an open adaptor channel:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAdaptorChannel *adaptorChannel;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOModel *model;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAdaptorContext *adaptorContext;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOEntity *myEntity;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSArray *myAttributes;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOQualifier *myQualifier;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSMutableDictionary *myUpdatedRow;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">BOOL ok;</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">adaptorContext = [adaptorChannel adaptorContext];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">myEntity = [model entityNamed:@&#34;Department&#34;];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">myAttributes = [myEntity attributes];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[adaptorContext beginTransaction];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Fetch the row. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">myQualifier = [[EOQualifier alloc] initWithEntity:myEntity</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">qualifierFormat:@&#34;deptID = 700&#34;];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">ok = [adaptorChannel selectAttributes:myAttributes</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">describedByQualifier:myQualifier fetchOrder:nil lock:YES];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">if (ok) {</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">myUpdatedRow = [adaptorChannel fetchAttributes:myAttributes</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">withZone:NULL];</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">[adaptorChannel cancelFetch];</font>
+
+<p><img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Change the value(s). */</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">[myUpdatedRow setObject:[NSNumber numberWithInt:1102]</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">forKey:@&#34;locationID&#34;];</font>
+
+<p><img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Send the changes to the database. */</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">ok = [adaptorChannel updateRow:myUpdatedRow</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">describedByQualifier:myQualifier];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">if (!ok) {</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Row wasn't updated. */</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">[adaptorContext rollbackTransaction];</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Handle error. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">} else {</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">[adaptorContext commitTransaction];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">In the above example, a department record is fetched from the database, the department's location ID is changed, and the record is sent back to the database. When the record is fetched, the argument for the <b>lock:</b> keyword of the <b>selectAttributes:... </b>message is set to YES; this prevents other processes from changing the record before this code can write the updated record back to the database. Note that the lock actually remains in effect until the transaction is completed (at the next <b>rollbackTransaction</b> or <b>commitTransaction</b> message).</font>
+
+<p><font face="Times" size="+1">Although you typically fetch a record and then update it, as illustrated in the above example, the fetch isn't required. You can instead construct a dictionary object with the new values for the record, and use this object to update the record. You only have to specify the values that need to be changed. So, for example, you can replace the code that fetches the row and changes the location ID in the above example with the following, and the outcome is the same:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Identify the row. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">myQualifier = [[EOQualifier alloc] initWithEntity:myEntity</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">qualifierFormat:@&#34;deptID = 700&#34;];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Construct a dictionary that identifies the value to be changed. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">myUpdatedRow = [NSDictionary dictionary];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[myUpdatedRow setObject:[NSNumber numberWithInt:1102]</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">forKey:@&#34;locationID&#34;];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">When using <b>updateRow:describedByQualifier:</b>, the record being updated must exist in the database. Also, the qualifier you supply must resolve to a single record only. If either of these conditions isn't true, the adaptor generates an error and the update fails.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Deleting Rows at the Adaptor Level</b></font>
+
+<p><font face="Times" size="+1">The basic procedure to use when deleting rows using adaptor level methods is:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Begin a transaction.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Construct a qualifier that uniquely identifies the rows to be deleted.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Remove the rows from the database with <b>deleteRowsDescribedByQualifier:</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Complete the transaction.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Here's one way to remove records from the database, given an open adaptor channel:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAdaptorChannel *adaptorChannel;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOModel *model;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAdaptorContext *adaptorContext;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOEntity *myEntity;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSArray *myAttributes;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOQualifier *myQualifier;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">BOOL ok;</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">adaptorContext = [adaptorChannel adaptorContext];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">myEntity = [model entityNamed:@&#34;Department&#34;];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">myAttributes = [myEntity attributes];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[adaptorContext beginTransaction];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Delete the row. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">myQualifier = [[EOQualifier alloc] initWithEntity:myEntity</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">qualifierFormat:@&#34;deptID = 700&#34;];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">ok = [adaptorChannel deleteRowsDescribedByQualifier:myQualifier];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">if (!ok) {</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Row wasn't deleted. */</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">[adaptorContext rollbackTransaction];</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Handle error. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">} else {</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">[adaptorContext commitTransaction];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Unlike the insert and update methods, <b>deleteRowsDescribedByQualifier:</b> operates on more than one row. Thus, you can delete an entire set of database records simply by constructing a qualifier that identifies the records in the set.</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

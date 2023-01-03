@@ -1,0 +1,767 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/Concepts/ExceptHandling.rtfd -->
+<!-- Date: Sun Jan  1 17:04:26 2023 -->
+<head>
+<title>ExceptHandling</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Release 3.3 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Exception Handling</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">An exceptional condition is one that interrupts the normal flow of program execution.&nbsp; Each application can interpret different types of conditions as exceptional.&nbsp; For example, one application might view as exceptional the attempt to save a file in a directory that's write-protected.&nbsp; In this sense, an exceptional condition can be equivalent to an error. Another application might interpret the user's keypress as an exceptional condition:&nbsp; an indication that a long-running process should be aborted.</font>
+
+<p><font face="Times" size="+1">A robust application must be able to respond appropriately to exceptional conditions.&nbsp; Depending on the context, this might mean:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Terminating normal processing</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Freeing dynamically allocated memory</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Closing files</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Restarting execution at some other point in the program</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Exceptional conditions can occur deep within a calling sequence--within a function that's called by another function that's called by yet another function, and so on.&nbsp; Responding to the condition might entail backing out of each of these functions in the reverse order that they were called, cleaning up as necessary at each level along the way.&nbsp; This process is known as &quot;unwinding the call stack.&quot;</font>
+
+<p><font face="Times" size="+1">Traditionally, exceptional conditions are announced through a function's return value.&nbsp; This system has several disadvantages.&nbsp; Only limited information about the condition can be coded in a single return value.&nbsp; For example, the UNIX manual page for <b>fopen()</b> states that the function returns NULL if it's unable to open a file, if too many files are already open, or if other needed resources can't be allocated.&nbsp; In addition, for the notification of the exceptional condition to propagate up the call stack, each function along the way must check return values and respond appropriately.&nbsp; Failing this, information about the exceptional condition can be lost.&nbsp; Finally, providing for exceptional cases can obscure the normal pathways through your code:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=131 height=1><font face="Courier">if ((returnValue1 = function1()) == NULL) goto onError;</font><br>
+<img src="../../Images/sp.gif" width=131 height=1><font face="Courier">if ((returnValue2 = function2()) == NULL) goto onError;</font><br>
+<img src="../../Images/sp.gif" width=131 height=1><font face="Courier">if ((returnValue3 = function3()) == NULL) goto onError;</font>
+
+<p><img src="../../Images/sp.gif" width=131 height=1><font face="Courier">onError:</font><br>
+<img src="../../Images/sp.gif" width=159 height=1><font face="Courier">/* Check where the error occurred and take remedial action */</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">A good exception handling system must provide the programmer with a unified and organized approach for responding to exceptional conditions once they've been identified at any level within an application.&nbsp; The following sections describe the system used in NEXTSTEP and available for use in applications built with NEXTSTEP.</font>
+
+<p><font face="Times" size="+1"><b>Note:</b>&nbsp; The exception handling system described here is distinct from the one used within the Mach operating system. See the <i>NEXTSTEP Operating System Software</i> manual for information on that system.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Detecting Exceptional Conditions</b></font>
+
+<p><font face="Times" size="+1">Before an exceptional condition can be responded to, it must be detected.&nbsp; Typically, an exceptional condition is discovered through the return value of a function or method, especially those that access data from the file system.&nbsp; An example is reading a file into memory, as this program excerpt illustrates:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=131 height=1><font face="Courier">NXStream&nbsp; *stream;</font><br>
+<img src="../../Images/sp.gif" width=131 height=1><font face="Courier">char&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *theFile = &#34;/me/filename&#34;, *buffer = NULL;</font><br>
+<img src="../../Images/sp.gif" width=131 height=1><font face="Courier">int&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; length, maxlength;</font>
+
+<p><img src="../../Images/sp.gif" width=131 height=1><font face="Courier">if ((stream = NXMapFile(theFile, NX_READONLY)) != NULL) {</font><br>
+<img src="../../Images/sp.gif" width=159 height=1><font face="Courier">NXGetMemoryBuffer(stream, &amp;buffer, &amp;length, &amp;maxlength);</font><br>
+<img src="../../Images/sp.gif" width=159 height=1><font face="Courier">NXClose(stream);</font><br>
+<img src="../../Images/sp.gif" width=131 height=1><font face="Courier">} else {</font><br>
+<img src="../../Images/sp.gif" width=159 height=1><font face="Courier">/* exceptional condition has been detected */</font><br>
+<img src="../../Images/sp.gif" width=131 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">If <b>NXMapFile()</b> is unable to map the file into memory, it returns NULL, indicating an exceptional condition.&nbsp; Routines that write data generally have a similar system of reporting such conditions.</font>
+
+<p><font face="Times" size="+1">Even if the data can be read or written, it may not be usable to the program.&nbsp; Applications that run consistency checks on data may also use the exception handling system in case of data inconsistency.</font>
+
+<p><font face="Times" size="+1">Another situation where the exception handling system can be used is when the user wants to interrupt a long-running operation.&nbsp; In the following example, the application displays an attention panel to alert the user of its current state and to give the user the choice of aborting the operation:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=131 height=1><font face="Courier">id alert;</font><br>
+<img src="../../Images/sp.gif" width=131 height=1><font face="Courier">NXModalSession session;</font><br>
+<img src="../../Images/sp.gif" width=131 height=1><font face="Courier">int runState;</font><br>
+<img src="../../Images/sp.gif" width=131 height=1><font face="Courier">BOOL done;</font>
+
+<p><img src="../../Images/sp.gif" width=131 height=1><font face="Courier">alert = NXGetAlertPanel(NULL, &#34;Doing something time-consuming.</font><br>
+<img src="../../Images/sp.gif" width=299 height=1><font face="Courier">Please wait . . . &#34;, &#34;Stop&#34;, NULL, NULL);</font><br>
+<img src="../../Images/sp.gif" width=131 height=1><font face="Courier">[NXApp beginModalSession: &amp;session for:alert];</font><br>
+<img src="../../Images/sp.gif" width=131 height=1><font face="Courier">runState = NX_RUNCONTINUES;</font><br>
+<img src="../../Images/sp.gif" width=131 height=1><font face="Courier">done = NO;</font><br>
+<img src="../../Images/sp.gif" width=131 height=1><font face="Courier">while (!done &amp;&amp; runState == NX_RUNCONTINUES) {</font><br>
+<img src="../../Images/sp.gif" width=159 height=1><font face="Courier">runState = [NXApp runModalSession: &amp;session];</font><br>
+<img src="../../Images/sp.gif" width=159 height=1><font face="Courier">/* Do small portion of lengthy process. */</font><br>
+<img src="../../Images/sp.gif" width=159 height=1><font face="Courier">/* Set done == YES when the process is finished. */</font><br>
+<img src="../../Images/sp.gif" width=131 height=1><font face="Courier">}</font>
+
+<p><img src="../../Images/sp.gif" width=131 height=1><font face="Courier">[NXApp endModalSession: &amp;session];</font><br>
+<img src="../../Images/sp.gif" width=131 height=1><font face="Courier">[alert orderOut:self];</font><br>
+<img src="../../Images/sp.gif" width=131 height=1><font face="Courier">NXFreeAlertPanel(alert);</font><br>
+<img src="../../Images/sp.gif" width=131 height=1><font face="Courier">if (runState == NX_ALERTDEFAULT) {</font><br>
+<img src="../../Images/sp.gif" width=159 height=1><font face="Courier">/* exceptional condition has been detected */</font><br>
+<img src="../../Images/sp.gif" width=131 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Program execution continues in the <b>while</b> loop either until the incremental processing finishes</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=131 height=1><font face="Courier">done == YES</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">or until the user clicks the panel's Stop button:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=131 height=1><font face="Courier">runState != NX_RUNCONTINUES</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">If the user has interrupted processing, the statements in the body of the <b>if</b> construction are executed and the exception is detected.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Raising an Exception</b></font>
+
+<p><font face="Times" size="+1">Once an exceptional condition is detected, it must be propagated to the routine or routines that will handle it, a process referred to as &quot;raising an exception.&quot;&nbsp; In the NeXT exception handling system, exceptions are raised by calling the macro <b>NX_RAISE()</b>, as defined in the header file <b>objc/error.h</b>.&nbsp; This routine takes three arguments:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=131 height=1><font face="Courier">void NX_RAISE(int code, const void *data1, const void *data2)</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The first, <b>code</b>, is an integer that identifies the exception.&nbsp; As described in the section &quot;Exception Codes&quot; below, some code ranges are reserved for the Application Kit, the Display PostScript client library, and other software modules; you can define codes for exceptional conditions that might occur in your application.</font>
+
+<p><font face="Times" size="+1">The second two arguments are pointers to arbitrary data about the exception.&nbsp; For example, if a function's return value initiated the call to <b>NX_RAISE()</b>, you could use <b>data1</b> to pass the return value to the exception handler.&nbsp; Or, if the exception handler displays a panel in response to the exception, you could use <b>data2</b> to pass the text string to be displayed in the panel.</font>
+
+<p><font face="Times" size="+1"><b>NX_RAISE()</b> works by calling a function that's registered as the exception raiser; this function is <b>NXDefaultExceptionRaiser()</b>.&nbsp; <b>NXSetExceptionRaiser()</b> and <b>NXGetExceptionRaiser()</b> give you access to the exception raiser, although it's unlikely that you'll find a need to alter it.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Handling an Exception</b></font>
+
+<p><font face="Times" size="+1">Calling <b>NX_RAISE()</b> initiates the propagation of the exception and passes data about it.&nbsp; Where and how the exception is handled depends on where you make the call to <b>NX_RAISE()</b>.&nbsp; Let's first look at a simple case.</font>
+
+<p><font face="Times" size="+1">In general, <b>NX_RAISE()</b> is called within the domain of an <i>exception handler</i>.&nbsp; An exception handler is a control structure created by the macros NX_DURING, NX_HANDLER, and NX_ENDHANDLER, as shown in Figure 1.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F0.gif" width=259 height=253></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Figure 1.&nbsp; Flow of Control in an Exception Handler</font>
+
+<p><font face="Times" size="+1">The section of code between NX_DURING and NX_HANDLER is the <i>exception handling domain</i>; the section between NX_HANDLER and NX_ENDHANDLER is the <i>local exception handler</i>.&nbsp; The normal flow of program execution is marked by the gray arrow; the code within the local exception handler is executed only if <b>NX_RAISE()</b> is called.&nbsp; A call to <b>NX_RAISE()</b> causes program control to jump to the first executable line following NX_HANDLER, as indicated by the black arrow.</font>
+
+<p><font face="Times" size="+1">Although you can call <b>NX_RAISE()</b> directly within the exception handling domain, it's more often called indirectly within one of the procedures called from the domain.&nbsp; No matter how deeply in a call sequence the call to <b>NX_RAISE()</b> is made, execution jumps to the local exception handler (assuming there are no intervening exception handlers, as discussed in the next section).&nbsp; In this way, exceptions raised at a low level can be caught at a high level.</font>
+
+<p><font face="Times" size="+1">Besides transferring execution to the local exception handler, a call to <b>NX_RAISE()</b> initializes the variable <b>NXLocalHandler</b> of type NXHandler, as defined in <b>objc/errors.h</b>.&nbsp; This variable is defined only within the local exception handler and contains those structure members that correspond to the arguments passed to <b>NX_RAISE()</b>: <b>NXLocalHandler.code</b>, <b>NXLocalHandler.data1</b>, and <b>NXLocalHandler.data2</b>.&nbsp; These members transfer information about the exception to the code within the local exception handler.</font>
+
+<p><font face="Times" size="+1">For example, in the following program excerpt, the local exception handler displays an attention panel after detecting an exception having the code <b>error_one</b> (see &quot;Exception Codes&quot; below for information on defining exception codes):</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=131 height=1><font face="Courier">. . .</font><br>
+<img src="../../Images/sp.gif" width=131 height=1><font face="Courier">NX_HANDLER</font><br>
+<img src="../../Images/sp.gif" width=159 height=1><font face="Courier">switch(NXLocalHandler.code) {</font><br>
+<img src="../../Images/sp.gif" width=187 height=1><font face="Courier">case error_one:</font><br>
+<img src="../../Images/sp.gif" width=215 height=1><font face="Courier">NXRunAlertPanel (&#34;Error Panel&#34;,</font><br>
+<img src="../../Images/sp.gif" width=243 height=1><font face="Courier">NXLocalHandler.data1, &#34;OK&#34;, NULL, NULL);</font><br>
+<img src="../../Images/sp.gif" width=243 height=1><font face="Courier">break;</font><br>
+<img src="../../Images/sp.gif" width=187 height=1><font face="Courier">case error_two:</font><br>
+<img src="../../Images/sp.gif" width=215 height=1><font face="Courier">. . .</font><br>
+<img src="../../Images/sp.gif" width=159 height=1><font face="Courier">}</font><br>
+<img src="../../Images/sp.gif" width=131 height=1><font face="Courier">NX_ENDHANDLER</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">If an exception of type <b>error_one</b> is raised, an attention panel appears and displays the text referred to by <b>NXLocalHandler.data1</b>.</font>
+
+<p><font face="Times" size="+1">Calling <b>NX_RAISE()</b> is one way for program execution to leave the exception handling domain; three other ways are permitted:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">&quot;Falling off the end&quot;</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Calling <b>NX_VALRETURN()</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Calling <b>NX_VOIDRETURN</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">&quot;Falling off the end&quot; is simply the normal execution pathway introduced above.&nbsp; After all appropriate statements within the domain are executed (and no exception is raised), execution continues on the line following NX_ENDHANDLER. Alternatively, you can return control to the caller from within the domain by calling <b>NX_VALRETURN()</b> or <b>NX_VOIDRETURN</b>, depending on whether you need to return a value.</font>
+
+<p><font face="Times" size="+1">You can't use <b>goto</b> or <b>return()</b> to exit an exception handling domain--errors will result.&nbsp; Nor can you use <b>setjmp()</b> and <b>longjmp()</b> if the jump entails crossing an NX_DURING statement.&nbsp; Since in many cases you won't know if the NEXTSTEP code that your program calls has exception handling domains within it, it's generally not recommended that you use <b>setjmp()</b> and <b>longjmp()</b> in your application.</font>
+
+<p><font face="Times" size="+1">If an exception is raised and execution begins within the local exception handler, it either continues until all appropriate statements are executed (falling off the end of the local exception handler), or the exception is raised again to invoke the services of an encompassing exception handler, as described in the next section.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Nested Exception Handlers</b></font>
+
+<p><font face="Times" size="+1">Exception handlers can be nested so that an exception raised in an inner domain can be treated by the local exception handler and any number of encompassing exception handlers.&nbsp; This hierarchy of exception handlers is accessed with the macro NX_RERAISE, as illustrated in Figure 2.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F1.gif" width=503 height=311></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Figure 2.&nbsp; Nested Exception Handlers</font>
+
+<p><font face="Times" size="+1">An exception raised within <b>Function3()</b>'s domain causes execution to jump to its local exception handler.&nbsp; In a typical application, this exception handler checks the values contained in <b>NXLocalHandler</b> to determine the nature of the exception<i>.</i>&nbsp; For exception types that it recognizes, the local handler responds and then calls <b>NX_RERAISE()</b> to pass notification of the exception to the handler above it, in this case, the handler in <b>Function2()</b>.&nbsp; <b>Function2()</b>'s exception handler does the same and then reraises the exception to <b>Function1()</b>'s handler.&nbsp; Finally, <b>Function1()</b>'s handler reraises the exception.&nbsp; Since there's no exception handling domain above <b>Function1()</b>, the exception is transferred to the default top-level error handler, as discussed below.</font>
+
+<p><font face="Times" size="+1">An exception that's reraised appears to the next higher handler just as if <b>NX_RAISE()</b> had been called within its own exception handling domain.&nbsp; (<b>NX_RERAISE()</b> is in effect a cover for <b>NX_RAISE()</b>, transferring the values of <b>NXLocalHandler</b>'s <b>code</b>, <b>data1</b>, and <b>data2</b> members to the next higher exception handler.)</font>
+
+<p><font face="Times" size="+1">For applications based on the Application Kit, exceptions that are reraised within the highest-level local exception handler are sent to <b>NXDefaultTopLevelErrorHandler()</b>.&nbsp; Through a call to <b>NXReportError()</b>, this function prints a message about the exception.&nbsp; (See &quot;Reporting Errors&quot; below for more information.)&nbsp; If an application's connection to the Window Server becomes corrupt or dies, or if the application is unable to form a connection to the Server, <b>NXDefaultTopLevelErrorHandler()</b> terminates the application by calling <b>exit()</b> with a status code of</font> <font size="+1"><img src="../../Images/c2D.gif" width=8 height=4></font><font face="Times" size="+1">1.</font>
+
+<p><font face="Times" size="+1"><b>NXSetTopLevelErrorHandler()</b> lets you change the function used as the top-level handler; <b>NXTopLevelErrorHandler()</b> returns a pointer to the current top-level handler.&nbsp; If you substitute your own function for <b>NXDefaultTopLevelErrorHandler()</b>, you should probably call <b>NXDefaultTopLevelErrorHandler()</b> as part of its implementation.&nbsp; In this way, your function can give special handling to certain exceptions, passing all others to <b>NXDefaultTopLevelErrorHandler()</b>.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Raising an Exception Outside of an Exception Handler</b></font>
+
+<p><font face="Times" size="+1">If an exception is raised outside of any exception handler, it's intercepted by the <i>uncaught exception handler</i>, a function set by <b>NXSetUncaughtExceptionHandler()</b> and returned by <b>NXGetUncaughtExceptionHandler()</b>.&nbsp; The default uncaught exception handler for Application Kit programs writes the message &quot;An uncaught exception was raised.&quot; to the Workspace Manager's console window (if the application was launched by the Workspace Manager) or to a Shell or Terminal window (if the application was launched from either of those applications).&nbsp; It then calls the top-level exception handler, passing it the information contained in the arguments to the <b>NX_RAISE()</b> call that originally raised the exception.</font>
+
+<p><font face="Times" size="+1">You can change the way uncaught exceptions are handled by using <b>NXSetUncaughtExceptionHandler()</b> to establish a different procedure as the handler.&nbsp; However, because of the design of the Application Kit, it's rare for an exception to be raised outside of an exception handling domain.&nbsp; The Application object's event loop itself is within an exception handling domain.&nbsp; On each cycle of the loop, the Application object retrieves an event and sends an event message to the appropriate object in the application.&nbsp; Thus, the code you write for custom objects (as well as the code for Application Kit objects) is executed within the context of the event loop's exception handler.&nbsp; To customize the Application Kit's highest-level response to exceptions, modify the top-level exception handler.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Exception Codes</b></font>
+
+<p><font face="Times" size="+1">Each of the software modules provided by NeXT is assigned a range of exception code values.&nbsp; The lowest value within the range is represented by a constant, as listed in the following table.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=131></td>
+
+<td nowrap><font face="Times" size="+1"><b>Exception Category</b></font></td>
+
+<td><font face="Times" size="+1"><b>Base Constant</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=131></td>
+
+<td nowrap><font face="Times" size="+1">Client Library, Adobe</font></td>
+
+<td><font face="Times" size="+1">DPS_ERROR_BASE</font></td></tr>
+
+<tr valign=top>
+
+<td width=131></td>
+
+<td nowrap><font face="Times" size="+1">Client Library, NeXT Extensions</font></td>
+
+<td><font face="Times" size="+1">DPS_NEXT_ERROR_BASE</font></td></tr>
+
+<tr valign=top>
+
+<td width=131></td>
+
+<td nowrap><font face="Times" size="+1">Application Kit</font></td>
+
+<td><font face="Times" size="+1">NX_APPKIT_ERROR_BASE</font></td></tr>
+
+<tr valign=top>
+
+<td width=131></td>
+
+<td nowrap><font face="Times" size="+1">Streams</font></td>
+
+<td><font face="Times" size="+1">NX_STREAMERRBASE</font></td></tr>
+
+<tr valign=top>
+
+<td width=131></td>
+
+<td nowrap><font face="Times" size="+1">Typed Streams</font></td>
+
+<td><font face="Times" size="+1">TYPEDSTREAM_ERROR_RBASE</font></td></tr>
+
+<tr valign=top>
+
+<td width=131></td>
+
+<td nowrap><font face="Times" size="+1">DSP C Library</font></td>
+
+<td><font face="Times" size="+1">DSP_ERRORS</font></td></tr>
+
+<tr valign=top>
+
+<td width=131></td>
+
+<td nowrap><font face="Times" size="+1">Database Kit</font></td>
+
+<td><font face="Times" size="+1">DB_ERROR_BASE</font></td></tr>
+
+<tr valign=top>
+
+<td width=131></td>
+
+<td nowrap><font face="Times" size="+1">Indexing Kit</font></td>
+
+<td><font face="Times" size="+1">IX_STOREUSERERRBASE</font></td></tr>
+
+<tr valign=top>
+
+<td width=131></td>
+
+<td nowrap><font face="Times" size="+1">Mach Kit</font></td>
+
+<td><font face="Times" size="+1">NX_MACH_KIT_EXCEPTION_BASE</font></td></tr>
+
+<tr valign=top>
+
+<td width=131></td>
+
+<td nowrap><font face="Times" size="+1">Distributed Objects</font></td>
+
+<td><font face="Times" size="+1">NX_REMOTE_EXCEPTION_BASE</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Except for the first two categories, each range spans 1000 exception codes.&nbsp; The first two categories share a range of 1000:&nbsp; The first 100 codes are reserved for exceptions generated by Adobe's client library routines; the remaining 900 codes are reserved for the NeXT client library.</font>
+
+<p><font face="Times" size="+1">If, within an exception handler, you want to catch exceptions from one of these modules, you could use code such as this:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=131 height=1><font face="Courier">NX_HANDLER</font><br>
+<img src="../../Images/sp.gif" width=159 height=1><font face="Courier">if (NXLocalHandler.code &gt; = DSP_ERRORS &amp;&amp;</font><br>
+<img src="../../Images/sp.gif" width=187 height=1><font face="Courier">NXLocalHandler.code &lt; DSP_ERRORS +1000) {</font><br>
+<img src="../../Images/sp.gif" width=187 height=1><font face="Courier">/* code for custom handling of DSP exceptions */</font><br>
+<img src="../../Images/sp.gif" width=159 height=1><font face="Courier">} else</font><br>
+<img src="../../Images/sp.gif" width=159 height=1><font face="Courier">NX_RERAISE();</font><br>
+<img src="../../Images/sp.gif" width=131 height=1><font face="Courier">NX_ENDHANDLER</font>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Defining Codes for Your Application</b></font>
+
+<p><font face="Times" size="+1">The Application Kit defines one additional range of exception codes:&nbsp; the range for applications built on the Application Kit.&nbsp; This range extends upward from the base constant NX_APPBASE, as defined in the header file <b>appkit/errors.h</b>. For example, you could use this constant in an enumeration of exception types for a database application:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=131 height=1><font face="Courier">enum databaseExceptions {</font><br>
+<img src="../../Images/sp.gif" width=159 height=1><font face="Courier">DS_invalidSearchKey = NX_APPBASE,</font><br>
+<img src="../../Images/sp.gif" width=159 height=1><font face="Courier">DS_corruptRecord,</font><br>
+<img src="../../Images/sp.gif" width=159 height=1><font face="Courier">DS_corruptIndex,</font><br>
+<img src="../../Images/sp.gif" width=159 height=1><font face="Courier">DS_compactionError,</font><br>
+<img src="../../Images/sp.gif" width=159 height=1><font face="Courier">DS_sortError</font><br>
+<img src="../../Images/sp.gif" width=131 height=1><font face="Courier">};</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">By initializing exception codes in this way, you can be sure that they won't conflict with those assigned to other software modules.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Associating Messages with Codes</b></font>
+
+<p><font face="Times" size="+1">In general, you'll want to associate a message with each exception code you define for an application.&nbsp; One convenient way to centralize this list of messages is to declare an array of pointers to the messages that correspond to the application-specific exception codes:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=131 height=1><font face="Courier">char *dsErrorMessages[] = {</font><br>
+<img src="../../Images/sp.gif" width=159 height=1><font face="Courier">/* DS_invalidSearchKey */&nbsp;&nbsp; &#34;Invalid search key&#34;,</font><br>
+<img src="../../Images/sp.gif" width=159 height=1><font face="Courier">/* DS_corruptRecord */&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#34;Error reading record&#34;,</font><br>
+<img src="../../Images/sp.gif" width=159 height=1><font face="Courier">/* DS_corruptIndex */&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#34;Error opening index&#34;,</font><br>
+<img src="../../Images/sp.gif" width=159 height=1><font face="Courier">/* DS_compactionError */&nbsp;&nbsp;&nbsp; &#34;Error during compaction&#34;,</font><br>
+<img src="../../Images/sp.gif" width=159 height=1><font face="Courier">/* DS_sortError */&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#34;Error during sort operation&#34;</font><br>
+<img src="../../Images/sp.gif" width=131 height=1><font face="Courier">};</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Using this technique, a call to <b>NX_RAISE()</b> might look like this:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=131 height=1><font face="Courier">NX_RAISE(DS_corruptIndex,</font><br>
+<img src="../../Images/sp.gif" width=159 height=1><font face="Courier">dsErrorMessages[DS_corruptIndex -NX_APPBASE], NULL);</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The first argument is the exception code, and the second is a pointer to the string &quot;Error opening index&quot;.</font>
+
+<p><font face="Times" size="+1">Besides centralizing your application's error messages, associating exception codes and messages in this way makes it easier for your application to work with the Application Kit's error reporter, as described in the next section.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Reporting Errors</b></font>
+
+<p><font face="Times" size="+1">The Application Kit lets you register a function as the error reporter for a range of exception codes.&nbsp; An error reporter typically logs information about the error by writing a message in the Workspace Manager's Console window.&nbsp; An application can have many error reporters, each responsible for a specific range of exception codes.</font>
+
+<p><font face="Times" size="+1">Once the reporters are registered (as described below), calling <b>NXReportError()</b> causes the Application Kit to search for the reporter responsible for the specific exception code.&nbsp; If it finds one, the reporter is called and passed data about the exception.&nbsp; If it can't find one, it logs the exception code and a message stating that an unknown exception code was reported.</font>
+
+<p><font face="Times" size="+1">An error reporter for the database application example introduced above might look like this:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=131 height=1><font face="Courier">void</font><br>
+<img src="../../Images/sp.gif" width=131 height=1><font face="Courier">DSErrorReporter(NXHandler *errorState)</font><br>
+<img src="../../Images/sp.gif" width=131 height=1><font face="Courier">{</font><br>
+<img src="../../Images/sp.gif" width=159 height=1><font face="Courier">if (errorState-&gt;code == DS_invalidSearchKey)</font><br>
+<img src="../../Images/sp.gif" width=187 height=1><font face="Courier">return;</font><br>
+<img src="../../Images/sp.gif" width=159 height=1><font face="Courier">NXLogError(&#34;DS error: %s\n&#34;,</font><br>
+<img src="../../Images/sp.gif" width=187 height=1><font face="Courier">dsErrorMessages[errorState-&gt;code -NX_APPBASE]);</font><br>
+<img src="../../Images/sp.gif" width=159 height=1><font face="Courier">return;</font><br>
+<img src="../../Images/sp.gif" width=131 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">This reporter ignores exceptions of type <b>DS_invalidSearchKey</b> (presumably because they are recoverable errors) but logs messages concerning all other codes within its range.</font>
+
+<p><font face="Times" size="+1">The function <b>NXLogError()</b> is much like <b>printf()</b>:&nbsp; It lets you write a formatted string to the Console or Terminal window, depending on where the application was launched.&nbsp; <b>NXLogError()</b>, however, calls <b>syslog()</b>, which marks the message with the time of occurrence and the application's process identification number.&nbsp; See the UNIX manual page for <b>syslog(</b>) for more information.</font>
+
+<p><font face="Times" size="+1">If your application defines a range of exception codes as its own, it should also register an error reporter.&nbsp; This is because the default top-level exception handler calls <b>NXReportError()</b> for all exceptions raised to its level.&nbsp; If your application hasn't registered an error reporter for its range, then <b>NXReportError()</b> won't be able to print anything more informative than the exception code for the error.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Registering Error Reporters</b></font>
+
+<p><font face="Times" size="+1">You register an error reporter for a range of exception codes by calling <b>NXRegisterErrorReporter()</b>.&nbsp; You might, for example, place code such as the following in the <b>initialize</b> method of one of your application's custom classes:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=131 height=1><font face="Courier">+ initialize</font><br>
+<img src="../../Images/sp.gif" width=131 height=1><font face="Courier">{</font><br>
+<img src="../../Images/sp.gif" width=159 height=1><font face="Courier">NXRegisterErrorReporter(NX_APPBASE, NX_APPBASE + 999,</font><br>
+<img src="../../Images/sp.gif" width=327 height=1><font face="Courier">DSErrorReporter);</font><br>
+<img src="../../Images/sp.gif" width=159 height=1><font face="Courier">return self;</font><br>
+<img src="../../Images/sp.gif" width=131 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The first two arguments to <b>NXRegisterErrorReporter()</b> represent the minimum and maximum values for exception codes sent to the reporter referred to by the third argument.&nbsp; The call above specifies the error reporter described in the previous section.&nbsp; Once an error reporter is registered for a specific range, no new reporter can be set for any part of that range until the existing reporter is removed.</font>
+
+<p><font face="Times" size="+1">You remove an error reporter by calling <b>NXRemoveErrorReporter()</b>.&nbsp; This function takes one argument, the minimum exception code value of the existing error reporter's range.&nbsp; For example, to remove the reporter registered in the preceding code excerpt, you'd make this call:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=131 height=1><font face="Courier">NXRemoveErrorReporter(NX_APPBASE);</font>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Handling PostScript Errors</b></font>
+
+<p><font face="Times" size="+1">To draw on the screen, your application must send PostScript code to the Window Server, where it's executed by the PostScript interpreter.&nbsp; Most of the code that an application sends is generated by user-interface objects defined in the Application Kit.&nbsp; Other code is generated by routines you write for your application's custom classes.&nbsp; In some applications (for example, a PostScript language previewer such as Yap--see <b>/NextDeveloper/Examples/Yap</b>), the code is entered by the user or imported from a file.&nbsp; Careful debugging should ensure that PostScript code generated by Application Kit or custom objects won't generate exceptions at run time.&nbsp; However, applications that import PostScript code must be prepared to handle exceptions raised by the PostScript interpreter at run time.</font>
+
+<p><font face="Times" size="+1">In the following example, a PostScript program is executed from a file.&nbsp; If the code is faulty, the Display PostScript client library raises an exception, transferring control to the local exception handler.&nbsp; After the handler has logged the exception, the contents of the application's PostScript VM are restored.</font>
+
+<p><font face="Times" size="+1">(<b>Note:</b>&nbsp; The NXImage class of the Application Kit provides the functionality illustrated by this example--and in a more robust way. )</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=131 height=1><font face="Courier">/* save contents of PostScript VM */</font><br>
+<img src="../../Images/sp.gif" width=131 height=1><font face="Courier">NX_DURING</font><br>
+<img src="../../Images/sp.gif" width=159 height=1><font face="Courier">PSrun(/* file path */);&nbsp; /* for illustration purposes only! */</font><br>
+<img src="../../Images/sp.gif" width=159 height=1><font face="Courier">NXPing();&nbsp; /* ensure all code is executed by Window Server */</font><br>
+<img src="../../Images/sp.gif" width=131 height=1><font face="Courier">NX_HANDLER</font><br>
+<img src="../../Images/sp.gif" width=159 height=1><font face="Courier">switch (NXLocalHandler.code) {</font><br>
+<img src="../../Images/sp.gif" width=187 height=1><font face="Courier">case dps_err_ps:</font><br>
+<img src="../../Images/sp.gif" width=215 height=1><font face="Courier">NXReportError(&amp;NXLocalHandler);</font><br>
+<img src="../../Images/sp.gif" width=215 height=1><font face="Courier">/* restore contents of PostScript VM */</font><br>
+<img src="../../Images/sp.gif" width=215 height=1><font face="Courier">break;</font><br>
+<img src="../../Images/sp.gif" width=187 height=1><font face="Courier">. . .</font><br>
+<img src="../../Images/sp.gif" width=187 height=1><font face="Courier">default:</font><br>
+<img src="../../Images/sp.gif" width=215 height=1><font face="Courier">NX_RERAISE();</font><br>
+<img src="../../Images/sp.gif" width=159 height=1><font face="Courier">}</font><br>
+<img src="../../Images/sp.gif" width=131 height=1><font face="Courier">NX_ENDHANDLER</font><br>
+<img src="../../Images/sp.gif" width=131 height=1><font face="Courier">/* restore contents of PostScript VM */</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The exception code <b>dps_err_ps</b> identifies errors reported by the PostScript language interpreter in the Window Server. (See <b>dpsclient/dpsclient.h</b> for a complete list of exception codes raised by the Display PostScript client library.)&nbsp; The local exception handler treats exceptions of this type by calling <b>NXReportError()</b> to log the error message.&nbsp; By default, all other exception types are reraised to upper-level handlers.&nbsp; If the default top-level exception handler receives a PostScript exception, it logs the corresponding error message in much the same way as illustrated here.</font>
+
+<p><font face="Times" size="+1">This excerpt contains a number of additional points of interest.&nbsp; First, note that <b>NXPing()</b> is called after the PostScript code is sent to the Window Server.&nbsp; Since an application and the Window Server are separate processes that execute asynchronously, notification of an error might not be received by the application until after control has passed from the exception handling domain.&nbsp; Calling <b>NXPing()</b> keeps the two processes synchronized, ensuring that exceptions generated by the PostScript code are raised within the exception handling domain.</font>
+
+<p><font face="Times" size="+1">Second, using <b>PSrun()</b> assumes that the file containing the PostScript program has the same path on all machines that run this application--a perilous assumption!&nbsp; <b>PSrun()</b> was used for simplicity in this example; a better choice for sending PostScript code to the Server is <b>DPSWriteData()</b>.&nbsp; (See the <i>Client Library Reference Manual</i> by Adobe Systems, Inc. for more information on <b>DPSWriteData()</b>).</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Managing Exception Data</b></font>
+
+<p><font face="Times" size="+1">The macro <b>NX_RAISE()</b> takes three arguments:&nbsp; an exception code and two pointers to data that you might pass to the exception handler.&nbsp; So far in this discussion, we've used one of these pointers to pass an error message that's associated with the exception (see &quot;Associating Messages with Codes&quot; above).&nbsp; You might, in some circumstances, need to pass additional data along to the exception handler.&nbsp; The functions <b>NXAllocErrorData()</b> and <b>NXResetErrorData()</b> help you manage the memory that you might allocate for this additional data.</font>
+
+<p><font face="Times" size="+1"><b>NXAllocErrorData()</b> controls a buffer for error data, allocating the amount of memory you request; <b>NXResetErrorData()</b> frees this memory.&nbsp; The Application Kit calls <b>NXResetErrorData()</b> each time through the event loop, making it unnecessary for you to call the function directly.&nbsp; (However, if your application doesn't use the Application object's event loop, be sure to call <b>NXResetErrorData()</b> after getting each event in order to free this memory.)&nbsp; Thus, by using <b>NXAllocErrorData()</b> whenever you need to allocate memory within your exception handler, you don't have to be concerned about freeing this memory when it's no longer needed.</font>
+
+<p><font face="Times" size="+1"><b>NXAllocErrorData()</b> takes two arguments:&nbsp; One specifies the amount of memory to allocate, and the other refers to a pointer to this memory.&nbsp; This code excerpt illustrates its use:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=131 height=1><font face="Courier">CheckSearchKey()</font><br>
+<img src="../../Images/sp.gif" width=131 height=1><font face="Courier">{</font><br>
+<img src="../../Images/sp.gif" width=159 height=1><font face="Courier">char *errorData;</font><br>
+<img src="../../Images/sp.gif" width=159 height=1><font face="Courier">char theKey[1024];</font>
+
+<p><img src="../../Images/sp.gif" width=159 height=1><font face="Courier">NX_DURING</font><br>
+<img src="../../Images/sp.gif" width=187 height=1><font face="Courier">/* get search string and initialize theKey */</font><br>
+<img src="../../Images/sp.gif" width=187 height=1><font face="Courier">if (/* invalid search key */) {</font><br>
+<img src="../../Images/sp.gif" width=215 height=1><font face="Courier">NXAllocErrorData(strlen(theKey+1), &amp;(void *)errorData);</font><br>
+<img src="../../Images/sp.gif" width=215 height=1><font face="Courier">strcpy(errorData, theKey);</font><br>
+<img src="../../Images/sp.gif" width=215 height=1><font face="Courier">NX_RAISE(DS_invalidSearchKey,</font><br>
+<img src="../../Images/sp.gif" width=243 height=1><font face="Courier">dsErrorMessages[DS_ invalidSearchKey - NX_APPBASE],</font><br>
+<img src="../../Images/sp.gif" width=243 height=1><font face="Courier">errorData);</font><br>
+<img src="../../Images/sp.gif" width=187 height=1><font face="Courier">}</font><br>
+<img src="../../Images/sp.gif" width=187 height=1><font face="Courier">. . .</font><br>
+<img src="../../Images/sp.gif" width=159 height=1><font face="Courier">NX_HANDLER</font><br>
+<img src="../../Images/sp.gif" width=187 height=1><font face="Courier">switch(NXLocalHandler.code) {</font><br>
+<img src="../../Images/sp.gif" width=215 height=1><font face="Courier">case DS_invalidSearchKey:</font><br>
+<img src="../../Images/sp.gif" width=243 height=1><font face="Courier">NXRunAlertPanel (NXLocalHandler.data1,</font><br>
+<img src="../../Images/sp.gif" width=383 height=1><font face="Courier">NXLocalHandler.data2, &#34;Restart&#34;,</font><br>
+<img src="../../Images/sp.gif" width=383 height=1><font face="Courier">NULL, NULL);</font><br>
+<img src="../../Images/sp.gif" width=243 height=1><font face="Courier">NX_RERAISE();</font><br>
+<img src="../../Images/sp.gif" width=215 height=1><font face="Courier">. . .</font><br>
+<img src="../../Images/sp.gif" width=215 height=1><font face="Courier">default:</font><br>
+<img src="../../Images/sp.gif" width=243 height=1><font face="Courier">NX_RERAISE();</font><br>
+<img src="../../Images/sp.gif" width=187 height=1><font face="Courier">}</font><br>
+<img src="../../Images/sp.gif" width=159 height=1><font face="Courier">NX_ENDHANDLER</font><br>
+<img src="../../Images/sp.gif" width=159 height=1><font face="Courier">return;</font><br>
+<img src="../../Images/sp.gif" width=131 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">In this example, if an exception occurs <b>NXAllocErrorData()</b> allocates memory for the search key that caused the exception.&nbsp; The key is then copied into the newly allocated memory.&nbsp; <b>NX_RAISE()</b> passes this data to the local exception handler where it's used as part of the text of an attention panel displayed to the user.&nbsp; From there, the exception is raised to the next higher-level handler.</font>
+
+<p><font face="Times" size="+1">We might have avoided allocating the storage represented by <b>errorData</b> by simply using <b>theKey</b> as the third argument to <b>NX_RAISE()</b>.&nbsp; However, <b>theKey</b> is only defined within the scope of this function; reraising the exception within the local exception handler exits this block, and so <b>theKey</b> would be undefined for higher-level exception handlers. Copying the search key into memory allocated with <b>NXAllocErrorData()</b> not only makes it available to the higher-level handler, but ensures that the memory will be freed when it's no longer needed.</font></td></tr>
+
+</table>
+
+
+
+<p><br><br><br>
+
+</body>
+</html>

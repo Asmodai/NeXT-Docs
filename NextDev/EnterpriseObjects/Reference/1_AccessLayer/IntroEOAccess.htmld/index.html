@@ -1,0 +1,191 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/EnterpriseObjects/Reference/1_AccessLayer/IntroEOAccess.rtfd -->
+<!-- Date: Sun Jan  1 17:05:16 2023 -->
+<head>
+<title>IntroEOAccess</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+4" color="#FF00FF"><b>1</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<p><font face="Times" size="+4"><i>The Access Layer</i></font>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Library:</b></font></td>
+
+<td><font face="Times" size="+1">libEOAccess_s.a</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Header File Directory:</b></font></td>
+
+<td><font face="Times" size="+1">/NextDeveloper/Headers/eoaccess</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Introduction</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The access layer of the Enterprise Objects Framework defines classes and protocols that allow your application to interact with database servers at a high level of abstraction. Its major components are:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The <i>adaptor level</i>, for server-independent access to records</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The <i>database level</i>, which allows applications to treat records as full-fledged enterprise objects</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">A set of <i>modeling classes</i> for describing the schema of a database</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">A set of <i>data source</i> protocols and classes that generalizes the behavior of the database level to any source of data-bearing objects</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">A set of protocols and categories defining <i>enterprise objects</i>--objects that couple business processes with information in a database</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This introduction lists the individual classes and protocols of the access layer, suggesting entry points into the reference material. All of the reference material for the Enterprise Objects Framework assumes that you're familiar with the Foundation Kit and with the concepts described in the <i>Enterprise Objects Framework Developer's Guide</i>.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Classes and Protocols</b></font>
+
+<p><font face="Times" size="+1">Figure 1 illustrates the major and minor groupings of classes in the access layer. At the top are the adaptor-level classes: EOAdaptor, EOAdaptorContext, and EOAdaptorChannel. The adaptor-level classes define a server-independent interface for working with relational database systems. The adaptor level retrieves all data in the form of NSDictionary objects whose keys represent column names and whose values are the values for those columns. Server-specific subclasses encapsulate the behavior of database servers, offering a uniform way of interacting with servers while still allowing applications to exploit their unique features. You can implement your own set of adaptor objects to communicate with nearly any relational database system.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F0.gif" width=298 height=459></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 1</b></font><font face="Times" size="+1">. The Access Layer Inheritance Hierarchy</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">The second group contains the classes that form the database level: EODatabase, EODatabaseContext, and EODatabaseChannel. As you can see by their names, these classes closely parallel those of the adaptor level, and in fact make direct use of the adaptor classes. The database level, however, adds a number of powerful features centered around enterprise objects. An enterprise object represents a component of your business both within your application and in your database. Where the data accessed in the adaptor level takes the form of simple dictionary objects, the data in the database level exists as enterprise objects that you define, that have their own behavior, and that can perform many operations independent of the fact that their data is stored in a database.</font>
+
+<p><font face="Times" size="+1">The third group of classes are the bridge between the access layer and the user interface layer. The EODatabaseDataSource and EODetailDatabaseDataSource classes offer the interface layer (documented in Chapter 2) an access model even simpler than that provided by the entity-relationship model, allowing an interface controller to access relational data simply as a set of objects. The classes of this layer use the EODataSources, EOMasterDataSources, EOQualifiableDataSources, and EORollbackDataSources protocols to present this simple model.</font>
+
+<p><font face="Times" size="+1">The core modeling classes form the fourth group. An EOModel contains the information about what a database contains: the entities, represented by EOEntity objects; the attributes of those entities, represented by EOAttributes; and the relationships among the entities, represented by EORelationship objects. EOJoins specify the pairs of EOAttributes that define a relationship.</font>
+
+<p><font face="Times" size="+1">The next three modeling classes are used not to define a model, but to access a database described by objects of the core modeling classes. EOAttributeOrdering specifies the order in which objects are fetched from a database. EONull represents NULL values fetched from the server. EOQualifier specifies which records or objects in the database should be affected by certain operations.</font>
+
+<p><font face="Times" size="+1">The pair of classes below the modeling classes represent Framework-defined enterprise objects. EOGenericRecord is the default enterprise object class. It provides the minimum behavior needed of an enterprise object: the storage and retrieval of properties by name. When creating your own enterprise object classes, you can start from scratch by creating a subclass of NSObject or Object, or you can take advantage of the existing functionality of the EOGenericRecord class. An EOFault object is used for an enterprise object that needs to exist in the application, but whose data hasn't yet been fetched. When accessed, a fault object fetches its data and transforms itself into a real enterprise object.</font>
+
+<p><font face="Times" size="+1">The group of classes at the bottom of the figure (the &quot;expression&quot; classes) are related to the adaptor classes. These classes are used internally by the Framework; you don't work directly with them, but you have to subclass EOSQLExpression when creating your own database adaptor. Two protocols, EOExpression (actually an informal protocol, or category) and EOExpressionContext, are also related to these classes.</font>
+
+<p><font face="Times" size="+1">There are a few protocols not directly related to any of the classes. The EOKeyValueCoding informal protocol is the signature of an enterprise object class. It defines methods for storing and retrieving named attributes, whether in the context of a relational database or not. The EOCustomValues and EODatabaseCustomValues protocols allow enterprise objects to store non-scalar data such as images and sounds. Finally, the EODatabaseChannelNotification informal protocol defines a means for enterprise objects to be notified that they've been loaded from a database.</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

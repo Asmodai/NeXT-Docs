@@ -1,0 +1,550 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/EnterpriseObjects/Reference/1_AccessLayer/Protocols/EODataSources.rtf -->
+<!-- Date: Sun Jan  1 17:05:23 2023 -->
+<head>
+<title>EODataSources</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>EODataSources</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Adopted By:</b></font></td>
+
+<td><font face="Times" size="+1">EODatabaseDataSource (through EOQualifiableDataSources)</font><br>
+<font face="Times" size="+1">EODetailDatabaseDataSource (through EOQualifiableDataSources)</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">eoaccess/EODataSources.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Protocol Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The EODataSources protocol defines the interface for a high-level manager of enterprise objects, usually retrieved from some external store, such as an RDBMS. An object conforming to this protocol is called a <i>data-source object</i> (or simply <i>data source</i>). A data-source object provides enterprise objects of a single class, usually corresponding to a single entity in a model (which may in turn correspond to a table in a database). The interface for modifying objects contains only four operations: fetch all objects, insert an object, delete an object, and update an object. This simple interface allows a data source to use nearly any type of storage: a relational database, an array of objects in memory, a file system, a flat-file database, and so on.</font>
+
+<p><font face="Times" size="+1">A data source typically manages an external data store, translating non-object data into enterprise objects and providing them to your application. In its role as manager, a data source is responsible for explicitly propagating any changes in the objects to the external store; it doesn't &quot;watch&quot; the objects to see if they've been edited, but must be sent a message informing it of each edit. For example, to change the &quot;lastName&quot; attribute of an enterprise object in the data source's external store, you have to change the enterprise object, then inform the data source with an <b>updateObject:</b> message, and finally save the update with a <b>saveObjects</b> message. Similarly, to insert or delete an enterprise object you use the <b>insertObject:</b> and <b>deleteObject: </b>messages followed by <b>saveObjects</b>.</font>
+
+<p><font face="Times" size="+1">Also, because a data store can be read-only, you should use the data-source object to create new enterprise objects for insertion. Sending <b>createObject</b> to a data source produces a new enterprise object of the appropriate class if the external store allows editing, and <b>nil</b> if it doesn't. This mechanism allows you to avoid allocating an object only to find that it can't be inserted.</font>
+
+<p><font face="Times" size="+1">In addition to managing enterprise objects themselves, a data source is responsible for converting values to types that the enterprise objects can use. For example, if an enterprise object stores a &quot;hireDate&quot; attribute as an NSDate, it may not expect a string representation of a date, and may even cause your application to crash if given one. A data source must be able to convert instances of reasonable value classes to those expected by its enterprise objects. An EODatabaseDataSource, for example, uses information in an EOModel to determine when an NSString value needs to be converted to an NSDate.</font>
+
+<p><font face="Times" size="+1">By adopting a few other protocols, a data source can offer extra functionality. See the EOQualifiableDataSources, EOMasterDataSources, and EORollbackDataSources protocol specifications for more information.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Getting the data-bearing objects</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">fetchObjects</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Editing objects</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">insertObject:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">deleteObject:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">updateObject:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">saveObjects</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Creating a new object</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">createObject</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Converting values to proper types</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=308></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">coerceValue:forKey:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Accessing attributes of the data source</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=308></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">canDelete</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">keys</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>canDelete</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>canDelete</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if the data source allows objects to be deleted, NO if it doesn't.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>coerceValue:forKey:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>coerceValue:</b><i>aValue</i> <b>forKey:</b>(NSString *)<i>key</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns <i>aValue</i> as an instance of a value class appropriate for the property named by <i>key</i>. For example, EODatabaseDataSource converts values to the value classes defined in an EOModel. Returns <b>nil</b> if <i>aValue</i> couldn't be coerced to the new type.</font>
+
+<p><font face="Times" size="+1">You should convert any value whose type isn't known to conform to those expected by an enterprise object before passing the value to the object. For example, the Interface Layer's EOController class uses its data source to convert strings received from user-interface objects. The code excerpt below shows how to convert a string representation of an NSCalendarDate for updating by a data-source object:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">id &lt;EODataSources&gt; myDataSource;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSString *dateString;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">id myEO;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">id coercedDate;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSMutableDictionary *dict;</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">coercedDate = [myDataSource coerceValue:dateString</font><br>
+<img src="../../../../../Images/sp.gif" width=320 height=1><font face="Courier">forKey:@&#34;hireDate&#34;;]</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">if (!coercedDate) /* Error... */</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">dict = [NSDictionary dictionaryWithCapacity:1];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[dict addObject:coercedDate forKey:@&#34;hireDate&#34;];</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[myEO takeValuesFromDictionary:dict];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[myDataSource updateObject:myEO];</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>createObject</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>createObject</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns a new enterprise object with no values set, allocated from the data source's zone and initialized with <b>init</b>, or <b>nil</b> if the data source doesn't allow object insertion. The sender of this message is responsible for setting the enterprise object's property values and for then inserting the newly created object into the data source. For example, if the data source is using a relational database as its external store, the sender must assign the newly created object a valid primary key.</font>
+
+<p><font face="Times" size="+1">EODatabaseDataSource and EODetailDatabaseDataSource initialize a newly created enterprise object with <b>initWithPrimaryKey:entity:</b> if the enterprise object responds to that method.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>insertObject:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>deleteObject:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>deleteObject:</b><i>anEO</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Deletes <i>anEO</i> from the data source. Returns YES on success, NO on failure.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>canDelete</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>fetchObjects</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSArray *)<b>fetchObjects</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the data-bearing objects provided by the data source, possibly including those that have been inserted but not saved. The fetched objects are allocated from the data source's zone, if possible. If you need to specify the zone from which the fetched objects are to be allocated, retrieve them using EODatabaseChannel's <b>fetchWithZone:</b> method.</font>
+
+<p><font face="Times" size="+1">Note that if a data source has been qualified in some manner, it may provide fewer objects than it actually manages. If an error occurs during the fetch, <b>fetchObjects</b> returns <b>nil</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>insertObject:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>insertObject:</b><i>anEO</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Inserts <i>anEO</i> into the data source. Returns YES on success, NO on failure.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>keys</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSArray *)<b>keys</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the keys that name the properties of the data source's enterprise objects, for example, &quot;lastName&quot;, &quot;firstName&quot;, &quot;hireDate&quot;, and so on. These are also the names of the class properties for the data source's entity if the data source uses information from an EOModel (see the EODatabaseDataSource class specification).</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>classPropertyNames</b> (EOEntity)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>saveObjects</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>saveObjects</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Saves modified objects to persistent storage (for example, an EODatabaseDataSource does this by committing a transaction). Returns YES on success, NO on failure.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>updateObject:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>updateObject:</b><i>anEO</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Updates <i>anEO</i> in the data source. Returns YES on success, NO on failure.</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

@@ -1,0 +1,5266 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/ReleaseNotes/EnterpriseObjects.rtf -->
+<!-- Date: Sun Jan  1 17:05:02 2023 -->
+<head>
+<title>EnterpriseObjects</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1&nbsp;&nbsp; Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Times" size="+3">Release Notes:</font><br>
+<font face="Times" size="+3">Enterprise Objects Framework</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">This file contains release notes for the 1.1 release of the Enterprise Objects Framework. Japanese-specific issues for this release are documented in <b>EnterpriseObjectsJapanese.rtf</b>, which can be found in <b>/NextLibrary/Documentation/NextDev/ReleaseNotes</b>.&nbsp; These two files identify the differences between this release and the 1.0 release of the Enterprise Objects Framework. Additional late-breaking Enterprise Objects Framework support information is available in NeXTanswers (refer to #1882), which can be accessed via fax, e-mail (<b>NeXTanswers@next.com</b>), anonymous ftp, or the World Wide Web (<b>http://www.next.com</b>).</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">Release 1.1 of the Enterprise Objects Framework fixes a number of problems with the 1.0 release, and substantially improves performance. This release is also 4-way fat; it can be used to develop software for NeXT, Intel, SPARC, and HP-PA machines.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<p><font face="Times" size="+2">Installation Warnings</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The Oracle adaptor, formerly used for Oracle v6 databases, is no longer included in this release. The Oracle7 adaptor supports both Oracle v6 and Oracle7 databases, and should be used for both. When this release of the Enterprise Objects Framework is installed, any applications that use the Oracle adaptor will cease to work until you rebuild the model files used by those applications to use the new Oracle7 adaptor. See problem 50215, below, for more information.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The Enterprise Objects Framework contains a newer version of the Foundation Kit than is supplied with NEXTSTEP release 3.3. If you install the Enterprise Objects Framework on a machine running NEXTSTEP release 3.2 and later upgrade that machine to NEXTSTEP release 3.3, you will need to re-install the Enterprise Objects Framework Foundation User Patch package (<b>FoundationUserPatch.pkg</b>) at that time.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">Applications developed using the version of Foundation that is supplied with release 1.1 of the Enterprise Objects Framework will only execute on systems on which the Foundation User Patch package has been installed. <i>These applications won't run on NEXTSTEP release 3.3 systems that don't have the Foundation User Patch package installed.</i></font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">If you remove the Enterprise Objects Framework from your NEXTSTEP Developer release 3.3 system, the Foundation Kit supplied with the Enterprise Objects Framework won't be removed. After removing the Enterprise Objects Framework from your system, therefore, you should re-install Foundation from the <i>NEXTSTEP Developer release 3.3 </i>CD-ROM.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The Foundation Kit included with this release of the Enterprise Objects Framework now supports sending subclasses of NSObject over the Distributed Objects system (DO). Adding distributed object support involved fixing memory problems that customers previously had to work around. After installing this release, therefore, those applications that contained workarounds to pass NSObjects over DO may not work correctly until the workarounds have been removed.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<p><font face="Times" size="+2">New Features</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The Enterprise Objects Framework is now 4-way fat; you can use it to develop software for SPARC as well as NeXT, Intel, and HP-PA machines.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The HP-PA version of the Oracle 7 client libraries have been added to the Oracle7 adaptor. In addition, the Oracle7 adaptor has been enhanced so that you can now specify to the Oracle server the character set being used by the client, as well as the language in which you want server error messages to appear. The Oracle7adaptor can now generate SQL*Net v2-style connections strings. For more information on the Oracle7 adaptor, see the Oracle7 Adaptor appendix in the <i>Enterprise Objects Framework Reference</i>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The version of Foundation that's included with this release includes classes that support multiple threads of execution and the locking of critical regions of code. For more information, see the online class specifications for NSThread, NSLock, NSConditionLock, and NSRecursiveLock as well as the NSLocking protocol specification.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The version of the Sybase adaptor supplied with this release runs against Sybase System 10. It takes advantage of System 10-specific features including System 10-specific data types and Sybase password encryption, and allows you to specify a client character set and language.&nbsp; It also reads primary key and relationship information from the database when creating new models. For more information on the Sybase adaptor, see the Sybase Adaptor appendix in the <i>Enterprise Objects Framework Reference</i>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">This release now supports NEXTSTEP's Distributed Objects system. In particular, you can now pass subclasses of NSObject from one application to another. For more information, see <b>UsingDistributedObjects.rtf</b> in <b>/NextLibrary/Documentation/NextDev/EnterpriseObjects</b> and the distributed objects examples in <b>/NextDev/Examples/EnterpriseObjects</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">This release is source-code compatible with the Japanese version that runs on the Japanese edition of NEXTSTEP.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<p><font face="Times" size="+2">New Methods</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">This section lists methods that have been added since the 1.0 release of the Enterprise Objects Framework.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Times" size="+1"><b>EOAdaptorChannel</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Two new methods have been added to EOAdaptorChannel that allow default models to have primary keys set, relationships added, and so forth. These methods are:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=90 height=1><font face="Courier">- (NSArray *)describeTableNames</font><br>
+<img src="../../Images/sp.gif" width=90 height=1><font face="Courier">- (EOModel *)describeModelWithTableNames:(NSArray *)tableNames</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=82></td>
+
+<td><font face="Times" size="+1"><b>describeTableNames</b> reads and returns an array of table names from the database. <b>describeModelWithTableNames:</b> constructs a default model out of the database's meta data.&nbsp; It also puts the adaptor name and connection dictionary in the new model. <b>describeModelWithTableNames:</b> <i>obsoletes</i> EOAdaptorChannel's <b>describeEntities</b><i>, </i><b>describeAttributesForEntity:</b>, and <b>describeRelationshipsForEntity:</b> methods.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Two new methods have been introduced to EOAdaptorChannel for use only by its subclasses:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=90 height=1><font face="Courier">- (NSMutableDictionary *)dictionaryWithObjects:(id *)objects &nbsp;&nbsp;&nbsp; forAttributes:(NSArray *)attributes zone:(NSZone *)zone</font>
+
+<p><img src="../../Images/sp.gif" width=90 height=1><font face="Courier">+ (NSCalendarDate *)dateForAttribute:(EOAttribute *)attr year:(int)year &nbsp;&nbsp;&nbsp; month:(unsigned)month day:(unsigned)day hour:(unsigned)hour &nbsp;&nbsp;&nbsp; minute:(unsigned)minute second:(unsigned)second zone:(NSZone *)zone;</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=82></td>
+
+<td><font face="Times" size="+1"><b>dictionaryWithObjects:forAttributes:zone:</b> is used by AdaptorChannel subclasses to create dictionaries that can be returned from <b>fetchAttributes:withZone:</b>. <b>dateForAttribute:year:month:day:hour:minute:second:zone:</b> is used by AdaptorChannel subclasses to create a calendar date object to return in an adaptor row. Use of these methods is optional; they were added because they enhance performance.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Times" size="+1"><b>EOController</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3>&#160;EOController now has methods that allow you to specify whether or not EOAssociationNotification messages are sent (they are sent by default):</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=90 height=1><font face="Courier">- (void)disableAssociationNotification;</font>
+
+<p><img src="../../Images/sp.gif" width=90 height=1><font face="Courier">- (void)reenableAssociationNotification;</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=82></td>
+
+<td><font face="Times" size="+1">These messages nest; for each <b>disableAssociationNotification</b>, you should send a corresponding <b>reenableAssociationNotification.</b> The final call to <b>reenableAssociationNotification</b> doesn't flush pending notifications to the associations; <b>[controller redisplay]</b> must be explicitly called if needed.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3>&#160;EOController's new <b>controller:createObjectFailedForDataSource:</b> delegate method allows you to respond when the controller is unable to create an object for a data source. If the delegate doesn't implement this method, the controller will display an attention panel to alert the user of the error. Otherwise, the delegate is responsible for notifying the user. This method is declared as follows:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=90 height=1><font face="Courier">- (void) controller:(EOController *)controller</font><br>
+<img src="../../Images/sp.gif" width=118 height=1><font face="Courier">createObjectFailedForDataSource:dataSource;</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The following methods were added to EOController to enable key-based in-memory sorting of enterprise objects, without re-fetching them from the data source:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=90 height=1><font face="Courier">- (void)setSortOrdering:(NSArray *)keySortOrderArray;</font>
+
+<p><img src="../../Images/sp.gif" width=90 height=1><font face="Courier">- (NSArray *)sortOrdering;</font>
+
+<p><img src="../../Images/sp.gif" width=90 height=1><font face="Courier">- (void)resort;</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=82></td>
+
+<td><font face="Times" size="+1"><b>setSortOrdering:</b> allows your code to specify an EOKeySortOrder array to be applied to all records upon a fetch (see <b>EOKeySortOrdering.h</b> for more information on EOKeySortOrder).&nbsp; <b>sortOrdering</b> returns the array specified with <b>setSortOrdering:</b>. <b>resort</b> forces the object array to be sorted and redisplayed. Note that the array is automatically sorted after a fetch.</font>
+
+<p><font face="Times" size="+1">In addition to the three methods listed above, the following controller delegate method has been added:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=90 height=1><font face="Courier">- (void)controller:(EOController *)controller</font><br>
+<img src="../../Images/sp.gif" width=118 height=1><font face="Courier">sortObjects:(NSMutableArray *)objects;</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=82></td>
+
+<td><font face="Times" size="+1">If the delegate implements this method, it's responsible for sorting the given object array. If the delegate doesn't implement this method and a sortOrdering has been specified, the controller sorts the objects itself using <b>[objects sortUsingKeyOrderArray:[self sortOrdering]]</b>.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Times" size="+1"><b>EODatabase</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">EODatabase now has a <b>forgetAllObjects</b> method that removes all objects from the uniquing table and destroys all of the associated snapshots.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Times" size="+1"><b>EODatabaseDataSource</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3>&#160;EODatabaseDataSource now has three new class methods that programmatically name database channels:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=90 height=1><font face="Courier">+ (void)registerChannel:(EODatabaseChannel *)channel</font><br>
+<img src="../../Images/sp.gif" width=118 height=1><font face="Courier">forRendezvousWithDatabaseName:(NSString *)aDatabaseName</font><br>
+<img src="../../Images/sp.gif" width=118 height=1><font face="Courier">contextName:(NSString *)aContextName</font><br>
+<img src="../../Images/sp.gif" width=118 height=1><font face="Courier">channelName:(NSString *)aChannelName;</font>
+
+<p><img src="../../Images/sp.gif" width=90 height=1><font face="Courier">+ (void)releaseObjectsWithDatabaseName:(NSString *)aDatabaseName</font><br>
+<img src="../../Images/sp.gif" width=118 height=1><font face="Courier">contextName:(NSString *)aContextName</font><br>
+<img src="../../Images/sp.gif" width=118 height=1><font face="Courier">channelName:(NSString *)aChannelName;</font>
+
+<p><img src="../../Images/sp.gif" width=90 height=1><font face="Courier">+ (EODatabaseChannel *)databaseChannelWithDatabaseName:</font><br>
+<img src="../../Images/sp.gif" width=118 height=1><font face="Courier">(NSString *)aDatabaseName</font><br>
+<img src="../../Images/sp.gif" width=118 height=1><font face="Courier">contextName:(NSString *)aContextName</font><br>
+<img src="../../Images/sp.gif" width=118 height=1><font face="Courier">channelName:(NSString *)aChannelName;</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=82></td>
+
+<td><font face="Times" size="+1"><b>registerChannel:forRendezvousWithDatabaseName:contextName:channelName: </b>registers the channel and its parent context and database in the EODatabaseDataSource rendezvous dictionary. If a component is already registered under the specified name, it's replaced with the new component. A counter is associated with each named component: Each time <b>registerChannel...</b>&nbsp; or an <b>init</b> method is invoked, the counter associated with each of the names used by that method is incremented. When an EODatabaseDataSource is deallocated, it decrements the counters associated with any components that it rendezvoused with at init time.</font>
+
+<p><font face="Times" size="+1">The <b>releaseObjectsWithDatabaseName:contextName:channelName:</b> method decrements the counters associated with each of its name arguments. When a counter reaches 0, its associated name and object are removed from the rendezvous dictionary.</font>
+
+<p><font face="Times" size="+1"><b>databaseChannelWithDatabaseName:contextName:channelName:</b> returns the database channel registered under the specified database, context, and channel names.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Times" size="+1"><b>EOQualifier</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">There is a new method in EOQualifier that's similar to&nbsp; <b>qualifierForRow:relationship:</b>, except it uses the current values of properties in the enterprise object, rather than values in the snapshot:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=90 height=1><font face="Courier">+ (EOQualifier *)qualifierForObject:sourceObject</font><br>
+<img src="../../Images/sp.gif" width=118 height=1><font face="Courier">relationship:(EORelationship *)relationship;</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=82></td>
+
+<td><font face="Times" size="+1">This method creates a qualifier that can be used to fetch the objects that are the destination of an enterprise object's relationship.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Times" size="+1"><b>EORelationship</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">EORelationship has a new method that returns the array of sub-relationships that make up a flattened relationship, or <b>nil</b> if the relationship isn't flattened:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=90 height=1><font face="Courier">- (NSArray *)componentRelationships</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Times" size="+1"><b>NSNumber</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3>&#160;NSNumber now has init methods corresponding to the existing autoreleasing factory methods:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=90 height=1><font face="Courier">- initWithChar:(char)value</font><br>
+<img src="../../Images/sp.gif" width=90 height=1><font face="Courier">- initWithUnsignedChar:(unsigned char)value</font><br>
+<img src="../../Images/sp.gif" width=90 height=1><font face="Courier">- initWithShort:(short)value</font><br>
+<img src="../../Images/sp.gif" width=90 height=1><font face="Courier">- initWithUnsignedShort:(unsigned short)value</font><br>
+<img src="../../Images/sp.gif" width=90 height=1><font face="Courier">- initWithInt:(int)value</font><br>
+<img src="../../Images/sp.gif" width=90 height=1><font face="Courier">- initWithUnsignedInt:(unsigned int)value</font><br>
+<img src="../../Images/sp.gif" width=90 height=1><font face="Courier">- initWithLong:(long)value</font><br>
+<img src="../../Images/sp.gif" width=90 height=1><font face="Courier">- initWithUnsignedLong:(unsigned long)value</font><br>
+<img src="../../Images/sp.gif" width=90 height=1><font face="Courier">- initWithLongLong:(long long)value</font><br>
+<img src="../../Images/sp.gif" width=90 height=1><font face="Courier">- initWithUnsignedLongLong:(unsigned long long)value</font><br>
+<img src="../../Images/sp.gif" width=90 height=1><font face="Courier">- initWithFloat:(float)value</font><br>
+<img src="../../Images/sp.gif" width=90 height=1><font face="Courier">- initWithDouble:(double)value</font><br>
+<img src="../../Images/sp.gif" width=90 height=1><font face="Courier">- initWithBool:(BOOL)value</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Times" size="+1"><b>NSObject</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3>&#160;NSObject now invokes <b>unableToFaultWithPrimaryKey:entity:databaseChannel: </b>when a fetch of a to-one fault doesn't return exactly one record. The default implementation of this method raises an error. Clients may override this method to properly initialize the object (or raise).</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">To specify behavior when EONull is assigned to a scalar, implement the following method:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=90 height=1><font face="Courier">- (void)unableToSetNullForKey:(NSString *)key</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=82></td>
+
+<td><font face="Times" size="+1">Classes can implement this method to define the behavior when EONull is assigned to a property in an enterprise object that requires a C scalar type (such as int or float).&nbsp; One possible implementation is to call <b>takeValuesFromDictionary:</b> recursively with a special value object that will return the desired values to assign for the methods <b>floatValue</b>, <b>intValue</b>, <b>unsignedIntValue</b>, and so forth. For an example of how to do this, see <b>/NextDeveloper/Examples/EnterpriseObjects/Validation.</b></font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Times" size="+1"><b>NSUtilities</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The declaration of <b>poseAsClass:</b> in NSUtilities.h has been changed; it now is declared to return void:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=90 height=1><font face="Courier">+ (void)poseAsClass:(Class)class</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Times" size="+1"><b>NXTableView</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">NXTableView now has a method that allows you to set the row height:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=90 height=1><font face="Courier">- setRowHeight:(float) rowHeight</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Times" size="+1"><b>Other</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">An EOEntity mapping method has been added that allows a class specified by a particular entity to substitute a different class based on its fetched row or primary key values:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=90 height=1><font face="Courier">+ (Class)classForEntity:(EOEntity *)entity &nbsp;&nbsp;&nbsp;&nbsp; values:(NSDictionary *)values;</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=82></td>
+
+<td><font face="Times" size="+1">The returned class <i>must</i> be either a subclass of the original class, have an entity specified in the model, or implement the <b>entity</b> method of the EOEntityMapping protocol.&nbsp; This requirement isn't checked, but will cause insert, deletes, and updates to fail if it's not met.</font>
+
+<p><font face="Times" size="+1">There are three situations in which this EOClass mapping method is invoked:</font>
+
+<p><font face="Times" size="+1">1. When an object is created by a data source, usually for insertion.&nbsp; <i>values</i> will be nil.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=82></td>
+
+<td nowrap><font face="Times" size="+1">2.</font></td>
+
+<td><font face="Times" size="+1">When an object referencing this object is fetched and a fault is created.&nbsp; <i>values</i> will be the object's primary key.</font></td></tr>
+
+<tr valign=top>
+
+<td width=82 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=82></td>
+
+<td nowrap><font face="Times" size="+1">3.</font></td>
+
+<td><font face="Times" size="+1">When a row is fetched.&nbsp; <i>values</i> will be the fetched row. Note that because of fault creation (#2, above), a class can't rely on always receiving the complete row. To be safe, class selection should be based only on primary key values.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<p><font face="Times" size="+2">New Behavior</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">This section identifies behavior that has changed since the 1.0 release of the Enterprise Objects Framework.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Times" size="+1"><b>Data Sources</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3>&#160;If you send <b>beginTransactionsAutomatically:NO</b> to an EODatabaseDataSource, an attempt to insert, delete, update or select an object without first beginning a transaction will fail. In the 1.0 release, the <b>fetchObjects:</b> method would begin a transaction for you despite the configuration of your data source. This method now issues an error and returns NO. Programs that counted on the 1.0 behavior will no longer work.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Data sources now always return nil to indicate an error during fetching. In the 1.0 release, either nil or an empty array was returned when an error occurred.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">You can now insert an object into or delete an object from a detail data source even when the object is the destination of a to-one relationship. Insert works only if the corresponding master object property is <b>nil</b> or EONull. Delete only works if it isn't.&nbsp; When you delete an object from a detail data source that's the destination of a to-one relationship, the corresponding property in the master enterprise object is set to EONull. This implies that your code now has to watch for situations where the detail object could actually be EONull.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">The client is still totally responsible for assigning the appropriate foreign keys in the master and detail objects.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>[EODatabaseDataSource coerceValue:forKey:]</b> no longer returns nil if the key passed in doesn't map to an attribute.&nbsp; If the value corresponds to an attribute in the model, <b>coerceValue:forKey:</b> attempts to convert it to the data type specified in the model. It then returns the new representation, or nil if conversion failed (because the input data was invalid). <b>coerceValue:forKey:</b> returns the value passed in if the key doesn't correspond to an attribute.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Times" size="+1"><b>Controllers</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The delegate of an EOController now receives <b>controllerWillFetch:</b> before <b>controllerWillDiscardEdits:</b> and <b>controllerWillDiscardOperations:</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Because a controller delegate couldn't adequately specify what to do in response to a <b>will...Object:inDataSource:</b> message, <b>controller:willInsertObject:inDataSource:</b>, <b>controller:willDeleteObject:inDataSource:</b>, and <b>controller:willUpdateObject:inDataSource:</b> now return <b>EODataSourceOperationDelegateResponse</b>. This enumerated type is defined as follows:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=90 height=1><font face="Courier">typedef enum {</font><br>
+<img src="../../Images/sp.gif" width=118 height=1><font face="Courier">EODiscardDataSourceOperation = 0, /* NO response in EOF 1.0 */</font><br>
+<img src="../../Images/sp.gif" width=118 height=1><font face="Courier">EOPerformDataSourceOperation,&nbsp;&nbsp;&nbsp;&nbsp; /* YES response in EOF 1.0 */</font><br>
+<img src="../../Images/sp.gif" width=118 height=1><font face="Courier">EOContinueDataSourceOperation,</font><br>
+<img src="../../Images/sp.gif" width=118 height=1><font face="Courier">EORollbackDataSourceOperation,</font><br>
+<img src="../../Images/sp.gif" width=90 height=1><font face="Courier">} EODataSourceOperationDelegateResponse</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=82></td>
+
+<td><font face="Times" size="+1"><b>EOPerformDataSourceOperation</b> means that the operation should proceed. <b>EODiscardDataSourceOperation</b> means that the operation shouldn't be performed, and should be discarded from the operation stack.&nbsp; <b>EOContinueDataSourceOperation</b> means that the operation shouldn't be performed but should be left on the operation stack to be performed on the next save. <b>EORollbackDataSourceOperation</b> menas that the current <b>saveToDataSource</b> operation should be aborted and all changes rolled back.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Times" size="+1"><b>Adaptor Channels</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The specification for EOAdaptorChannel's <b>adaptorChannel:willFetchAttributes:withZone:</b> method has changed. This method doesn't allow changes to the attribute array. The new specification for this method is:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=90 height=1><font face="Courier">- (NSMutableDictionary *)adaptorChannel:channel</font><br>
+<img src="../../Images/sp.gif" width=118 height=1><font face="Courier">willFetchAttributes:(NSArray *)attributes</font><br>
+<img src="../../Images/sp.gif" width=118 height=1><font face="Courier">withZone:(NSZone *)zone</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Times" size="+1"><b>Database Channels</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The specification for EODatabaseChannel's <b>databaseChannel:willSelectObjectsDescribedByQualifier:fetchOrder:</b> method has changed. This method doesn't allow changes either to the qualifier or to the fetch order. The new specification for this method is:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=90 height=1><font face="Courier">- (BOOL)databaseChannel:channel</font><br>
+<img src="../../Images/sp.gif" width=118 height=1><font face="Courier">willSelectObjectsDescribedByQualifier:(EOQualifier *)qualifier</font><br>
+<img src="../../Images/sp.gif" width=118 height=1><font face="Courier">fetchOrder:(NSArray *)fetchOrder</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Times" size="+1"><b>Oracle7 Adaptor</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The Oracle7 adaptor now supports both SQL*Net v1 and v2-style connection strings. The version of SQL*Net used is determined by the connection string you provide (whether through the login panel or through the connection dictionary in your model file).</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">To use SQL*Net v1, supply a user name, password, host machine name, and server ID. This results in a v1-style connection string of the form &quot;<i>userName</i>/<i>password</i>@T:<i>hostMachine</i>:<i>serverId</i>&quot;.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">To use SQL*Net v2, supply a serverId (a SQL*Net V2 style server string), user name, and password, but omit the host machine name. This results in a v2-style connection string that has the form &quot;<i>userName</i>/<i>password</i>@<i>serverId</i>&quot;. If you want to use a custom connection string, omit values for all of the keys except <b>serverId</b> in your connection dictionary. You can then use the Server ID field in the Oracle login panel to supply your own connection string.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Times" size="+1"><b>Other</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">NXImageView flags are now archived consistently between Intel, NeXT, and HP-PA machines. As a result, if your applications have archived NXImageViews, their settings may not be correctly restored after this release of the Enterprise Objects Framework is installed. Specifically, Intel users installing this release will lose the border and editability flags on their NXImageViews. To fix them, reset these attributes in Interface Builder and save the nib file.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=18></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">An external query specified for an entity must return columns in alphabetical order for the entity's attributes.&nbsp; In EOF 1.0, the order used was less predictable (attributes used for locking sorted alphabetically, followed by the components of the primary key, followed by the class properties sorted alphabetically).</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=18></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">There is now a dwrite that you can use to specify the location of the Sybase adaptor's interfaces file. If you have installed your Sybase server somewhere other than <b>/usr/sybase</b>, specify the location of the interfaces file with:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=90 height=1><font face="Courier">dwrite SybaseAdaptor SybaseInterfacesFile <i>path_to_interfaces_file</i></font>
+
+<p><br><br><br>
+
+<p><font face="Times" size="+2">Other Notes</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Times" size="+1"><b>NXZones and NSZones</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">To avoid compatibility problems, in this release of the Enterprise Objects Framework the NSZone structure is identical to the structure used for NXZones. NSZones and NXZones can be used interchangeably by casting as needed.</font></td></tr>
+
+</table>
+
+<p><br><br><br><br><br>
+
+<p><font face="Times" size="+2">Problems Fixed in This Release</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">This section identifies those problems that have been fixed in this release of the Enterprise Objects Framework.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Times" size="+1"><b>Enterprise Objects Framework</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">41356</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">There should be a way to turn off autodisplay.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">Given a summary table view and a couple of Forms that display details for the selected row, selecting a new row in the table view causes a really slow update of the Form's cells. The window is currently flushing after each FormCell changes its value. It might be faster to disable FlushWindow, update the Forms (and other UI elements), and then flush the window after all the drawing is done.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1">EOController now has two additional methods (<b>disableAssociationNotification </b>and <b>reenableAssociationNotification</b>) to disable or enable the sending of EOAssociationNotification messages.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=34></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">44839</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">Interface Builder sorts attributes differently than EOModeler.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">If you have an existing entity defined in the EOModeller and you add a new attribute, after updating the display, the new attribute appears in alphabetical order in EOModeller.&nbsp; However, the new attribute appears at the <i>bottom</i> of the list in the EOController inspector in Interface builder.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1">Interface Builder and EOModeler now display attributes sorted alphabetically.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=34></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">45878</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">EODatabase needs a <b>forgetAllObjects</b> method.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1">EODatabase now has a <b>forgetAllObjects</b> method that removes all objects from the uniquing table and destroys all of the associated snapshots.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=34></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">46623</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">Forced transactions on select.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">When you send <b>beginsTransactionsAutomatically:</b> to the data source with NO as its argument, you can control the begin and commit/rollback for insertions, updates, and deletions. However, the Framework still issues BEGIN TRANSACTION and COMMIT TRANSACTION statements around each SELECT statement. This interferes with stored procedures which embed the SELECT INTO phrase in the SQL, since this can't be executed inside a transaction.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1">The Framework no longer begins a transaction for you when <b>fetchObjects:</b> is invoked if <b>beginsTransactionsAutomatically</b> is set to NO.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=34></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">47227</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">Failed one-to-one faults shouldn't raise.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">In EOF 1.0, if the relationship is optional (and non-existent), an exception is raised that can't be caught because the exception can be called at any time based on user actions. There is no way to ignore the failed relationship and continue with the fetch.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1">If the foreign key for a to-one relationship in the sorce object is EONull, the relationship property is automatically set to <b>nil</b>. If the foreign key is non-null and the to-one fault fails, NSObject now invokes <b>unableToFaultWithPrimaryKey:entity:databaseChannel:</b> on the faulted object.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=34></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">47358</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">There is no way to programmatically name EODatabaseChannels.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">In InterfaceBuilder, there is an inspector for EOControllers that allows the programmer to type in a database channel name, a context name, and a database name, but there is no way to set these names programmatically.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1">EODatabaseDataSource now has three new class methods that programmatically name database channels: <b>registerChannel:forRendezvousWithDatabaseName:contextName:channelName:</b>, <b>releaseObjectsWithDatabaseName:contextName:channelName:</b>, and <b>databaseChannelWithDatabaseName:contextName:channelName:</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=34></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">47719</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">A controller should ask its delegate about a fetch before discarding.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><img src="../../Images/sp.gif" width=3 height=1><font face="Times" size="+1">In the 1.0 release, a controller throws away all pending changes and the contents of its undo stack before invoking <b>controllerWillFetch:</b>. If the delegate returns NO, the controller doesn't fetch; but it has lost the pending changes and the contents of its undo stack.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1">The delegate of an EOController now receives <b>controllerWillFetch:</b> <i>before </i><b>controllerWillDiscardEdits:</b> and <b>controllerWillDiscardOperations:</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=34></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">47734</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">EODatabaseChannel's <b>databaseChannel:willSelectObjectsDescribedByQualifier:fetchOrder: </b>method shouldn't allow the qualifier to change.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1"><b>databaseChannel:willSelectObjectsDescribedByQualifier:fetchOrder:</b> is incorrectly documented in the header file as allowing the delegate to change the qualifier and fetch order. This method doesn't allow either the qualifier or the fetch order to change.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1">This method no longer allows changes to either the qualifier or the fetch order.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=34></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">47779</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1"><b>fetch</b> may return YES even when an error occured during the fetch.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">EOController's&nbsp; <b>fetch</b> method doesn't check the return value of EODatabaseDataSource's <b>fetchObjects</b> method for <b>nil</b>. Consequently, it returns YES even when a data source error occured during the fetch.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1">Data sources now always return nil to indicate an error during fetching, and <b>fetch </b>then returns NO.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=34></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">47784</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">The NXTableValue protocol incorrectly declares <b>isEqual:</b> and <b>setValueFrom: </b>methods.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">The NXTableValue protocol (declared in <b>NXTableProtocols.h</b>) declares <b>isEqual:</b> and <b>setValueFrom:</b> methods. It shouldn't; these methods aren't supported.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1">These methods have now been removed from the NXTableValue protocol.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=34></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">47855</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">Associations to Cells in deferred windows sometimes don't work.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">Deferred windows containing Cells associated with an EOController must be displayed during or immediately after being loaded from their nib file.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1">This has been fixed.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=34></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">47962</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">NSArray's <b>insertObjectAtIndex:</b> can put up a panel that a delegate can't override.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">All potential panel presentations are supposed to be catchable by the controller delegate, but there isn't a <b>controller:dataSourceFailedToCreateObject: </b>delegate message, so the controller always puts up a panel.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1">EOController now has a delegate method named <b>controller:createObjectFailedForDataSource:</b> that can be implemented to respond when the controller is unable to create an object for a data source.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=29></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">48431</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">Should report &quot;Object doesn't respond to&quot; instead of &quot;Unknown error 1000002&quot;.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">When an unsupported method is sent to a Framework object, rather than the typical &quot;&lt;object&gt; doesn't respond to &lt;method&gt;&quot; message, something along the lines of &quot;Unknown error code 100002 in NXReportError&quot; is generated.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1">The Framework now generates an error message that contains both the name of the exception and the reason for the exception, along with the error code.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">48612</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">New adaptor API is needed to read database meta data.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">This new adaptor API would allow default models to have primary keys set, relationships added, and so forth.&nbsp; There is also a potential performance win of reading a model all at once.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1">EOAdaptor has two new methods: <b>describeTableNames</b> and <b>describeModelWithTableNames:</b> that allow adaptors to read database meta data.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=34></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">48803</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1"><b>will...InDataSource:</b> delegate messages have inadequate return values.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">There is a problem when implementing validation in <b>controller:willInsertObject:inDataSource:</b>--returning NO doesn't put the object on the failure stack, nor does it rollback the transaction. It throws the buffered insert operation away, and continues.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1">The <b>will...InDataSource:</b> now return an <b>EODataSourceOperationDelegateResponse</b>, instead of a <b>BOOL.</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=30></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">48811</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">NXTableView stays scrolled after linking an association.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">When you link an association to a table view, if the table view has to scroll to make the connection it stays scrolled both in the nib file and when the application runs.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1">Scrolling in NXTableViews now works correctly.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=34></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">48947</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">An interface is needed to allow the setting of the row height for a table view.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1">NXTableView now supports <b>setRowHeight:</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=34></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">48948</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">EODatabaseDataSource's <b>coerceValue:forKey:</b> incorrectly returns <b>nil</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><img src="../../Images/sp.gif" width=3 height=1><font face="Times" size="+1"><b>[EODatabaseDataSource coerceValue:forKey:]</b> will return <b>nil</b> if the key passed in doesn't map to an attribute.&nbsp; Instead, it should pass the value through. Clients of a data source want to perform any available coercion on a set of values and pass the rest through to later stages of validation.&nbsp; If <b>nil</b> is returned for values the data source doesn't know about, the caller can't easily tell if this indicates an error (an attribute that failed conversion) or just the use of a key not in the entity.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1"><b>coerceValue:forKey:</b> no longer returns <b>nil</b> if the key passed in doesn't map to an attribute. Instead, it returns the uncoerced (unprocessed) value.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=34></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">48961</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">There should be a method on EORelationship that returns the flattened relationship array.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><img src="../../Images/sp.gif" width=3 height=1><font face="Times" size="+1">Flattened relationships consist of an array of two or more sub-relationships.&nbsp; It would be nice if this array could be made available to clients. It's very useful when attempting to generically handle foreign key assignment, and such.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1">EORelationship now supports the <b>componentRelationships</b> method.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=34></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">49046</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">EOControllers should support sorting.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">EOControllers should support key-based in-memory sorting of enterprise objects, without re-fetching them from the data source.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1">EOControllers now support key-based sorting of enterprise objects with the <b>setSortOrdering:</b>, <b>sortOrdering</b>, and <b>resort</b> methods.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=34></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">49479</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">NXImageView flags don't carry between Intel and NeXT/HP-PA.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">If I set an ImageView to have no border on an Intel machine, it will still have a border when I load it up on an NeXT or HP-PA machine.&nbsp; The flags struct is being archived incorrectly.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1">This has been fixed so that the flags are archived consistently. If your applications have archived NXImageViews, their settings may not be correctly restored after this release of the Enterprise Objects Framework is installed. However, if you re-set the flags in the appropriate nib files and re-archive the NXImageView, it will then operate correctly.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=30></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">50134</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">Undo doesn't work for controllers not created in Interface Builder.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1">This has been fixed.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=34></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">50402</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">EOControlAssociations don't work with non-text controls.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">Upon receiving an action message from its target, an EOControlAssociation asks for <b>nextText</b>.&nbsp; This is a problem for non-text controls (like sliders).</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1">This has been fixed.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=34></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">50632</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">Resorting on key with EONull values raises an exception.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">In the pre-release of the Enterprise Objects Framework release 1.1, controller in-memory sorting could raise if the columns being sorted contained EONulls.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1">This has been fixed.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=34></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">50739</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">EOAdaptorChannel's <b>adaptorChannel:willFetchAttributes:withZone:</b> delegate method was incorrectly specified to allow the attribute array to be changed.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1">The API has been changed so that the attribute array is declared as an NSArray instead of an NSMutableArray.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=34></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">50939</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">Calling EOEntity's <b>removeAttributeNamed:</b> sometimes caused a crash with the message: &#34;objc: FREED(id): message setEntity: sent to freed object=0x1a06c8&#34;</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1">This has been fixed.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=34></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">50945</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">Error when selecting multiple objects at end and refetching fewer objects.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">Fetching objects, making a selection near the end, and then fetching a smaller set of objects (perhaps by setting a qualifier) may result in an error being raised of the form:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=127 height=1><font face="Courier">*** -objectAtIndex:: index (3) beyond bounds (0)</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1">This has been fixed.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=34></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">51211</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">Constraints on model object names don't allow kanji characters.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1">The naming constraints on model objects (Entity, Relationship, and Attribute) have been relaxed to allow non-ascii characters. These names can contain any character except one of the following:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=127 height=1><font face="Courier">!&#34;$%&amp;'()*+,-./:;&lt;=&gt;?[\]^`{|}~</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=127></td>
+
+<td><font face="Times" size="+1">Names may also begin with a $ but may not contain a $ inside the name.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Times" size="+1"><b>Oracle Adaptors</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">46780</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">The Oracle7 adaptor doesn't support custom values.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1">Custom value support has been added to the Oracle7 adaptor.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=34></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">49800</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">The Framework needs to provide SQL*Net v2 capability.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1">The Oracle7 adaptor now supports both SQL*Net v1 and v2-style connection strings. The version of SQL*Net used is determined by the connection string you provide (whether through the login panel or through the connection dictionary in your model file).</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">To use SQL*Net v1, supply a user name, password, host machine name, and server ID. This results in a v1-style connection string of the form &quot;<i>userName</i>/<i>password</i>@T:<i>hostMachine</i>:<i>serverId</i>&quot;.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">To use SQL*Net v2, supply a serverId (a SQL*Net V2 style server string), user name, and password, but omit the host machine name. This results in a v2-style connection string that has the form &quot;<i>userName</i>/<i>password</i>@<i>serverId</i>&quot;. If you want to use a custom connection string, omit values for all of the keys except <b>serverId </b>in your connection dictionary. You can then use the Server ID field in the Oracle login panel to supply your own connection string.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=34></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">51023</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">Trying to retrieve a LONG from an Oracle database can cause an infinite loop.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">In trying to retrieve a LONG (but not a LONG RAW) from an Oracle database, the app can be put into an infinite loop. The problem occurs both when setting the value to an NSString or to a custom value.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1">This has been fixed in the Oracle7 adaptor.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=34></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">51626</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">There is no reasonable way for Oracle adaptor users to specify a non-default character set.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1">There is now a new connection dictionary key for the Oracle7 adaptor: NLS_LANG. This key allows you to set the Oracle NLS_LANG environment variable. NLS_LANG declares to the Oracle server the character set being used by the client, as well as the language in which you want server error messages to appear. The format is as follows:</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1"><i>language_territory</i>. <i>characterSet</i></font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">For example, supplying the value <b>japanese_japan.jeuc</b> for the NLS_LANG key tells the server that the language is Japanese, the territory is Japan, and the character set is <b>jeuc</b> (<b>japanese_japan.jeuc</b> is the default for Japanese systems). See your Oracle documentation for a complete list of types available for this field.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">To add the NLS_LANG key and a value to your connection dictionary, you must manually edit your model file.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Times" size="+1"><b>Sybase Adaptor</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">43430</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">The Framework should create default relationships for new models with Sybase databases.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">The common/foreign key information in Sybase should be used to create default relationships for a new model.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1">The Sybase adaptor now uses the new EOAdaptor methods that read a database's meta data to construct a model that has default relationships filled in.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=34></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">46674</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">There should be a dwrite to specify an alternate location for <b>/usr/sybase/interfaces</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">This dwrite would be useful for people that install a sybase server somewhere besides <b>/usr/sybase</b> (such as their home directory).</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1">Use the following to specify an alternate location for the sybase server's interfaces file:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=132 height=1><font face="Courier">dwrite SybaseAdaptor SybaseInterfacesFile <i>path_to_interfaces_file</i></font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Times" size="+1"><b>EOModeler</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">49076</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">EOModeler overwrites links with plain files when saving models.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">If you have a link to a model in <b>~/Library/Models</b>, when you select the link (or double-click the corresponding EOController in Interface Builder), edit the model, and save it, EOModeler replaces the link with a copy of the file.&nbsp; You now have two models: the edited one in <b>~/Library/Models</b>, and the unedited model in its original location.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1">EOModeler now handles links correctly.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=34></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">50207</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">EOModeler's Model Browser tries to access objects that have been freed.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">If you drag an item to the Model Browser and then delete it in the Model Editor, EOModeler will crash if you go back to the Model Browser and either try to change the sort order or drag the first column to the left.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1">EOModeler's Model Browser no longer tries to access freed objects.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=34></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">50244</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">A remote connection from an Intel computer to EOModeler running on a RISC computer can cause the RISC computer's window server to hang.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">This problem happens between any Intel computer running NEXTSTEP 3.3 and NEXTSTEP Developer 3.3 and a SPARC or HP-PA computer. From the Intel computer, run EOModeler remotely on the RISC computer. In an Oracle7 database, browse an entity with an attribute that's null. If you then drag the tear-off into the Model Browser well, both EOModeler and the RISC computer's window server hang.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1">Remote connections to RISC computers now work correctly.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=34></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">51201</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">Inspector becomes confused after changing class properties.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">Sometimes setting certain properties to be class properties in the Entity inspector would cause other properties to later show up in the inspector with a diamond, even though they had not been marked that way and were not listed in the model file as class properties.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1">This has been fixed.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Times" size="+1"><b>Foundation</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">48449</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">Incompatibilities between between the declarations of <b>poseAsClass:</b> in NSObject and NSUtilities.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1"><b>NSObject.h</b> declares <b>poseAsClass:</b> as `+(void)poseAsClass:(Class)aClass', while NSUtilities.h declares it as `+poseAsClass:(Class)class'.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1">The declaration of <b>poseAsClass:</b> in NSUtilities.h has been changed; it now is declared to return void.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">49826</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1"><b>stringWithCString:length:</b> does the wrong thing when default encoding is Kanji.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1"><b>[NSString stringWithCString:length:]</b> instantiates from NSInlineCString (which is for 8-bit encodings) even if the default encoding is 16-bit, while <b>[NSString initWithCString:length:]</b> returns the correct NSUnicodeString instance.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1"><b>[NSString stringWithCString:length:]</b> now returns the correct NSUnicodeString instance.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">49827</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">smallestEncoding doesn't return the smallest encoding.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">NSString's <b>smallestEncoding</b> is supposed to return the most space efficient encoding for the given string, but it seems to currently always return the same as fastestEncoding, which is the &quot;native&quot; encoding of the string.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1"><b>smallestEncoding</b> now returns the correct encoding.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">49846</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">NSStrings, NSDatas, and NSNumbers are leaked when sent over old DO.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">Temporary encoding objects are created for instances of NSString, NSData, and NSNumber when they are passed via DO.&nbsp; These temporary objects copy the real objects but never release them.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1">Each of the temporary encoding classes now release the copied instances.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=34></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">51728</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">Identical NSDates compare as NSOrderedAscending instead of NSOrderedSame.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Fix:</font></td>
+
+<td><font face="Times" size="+1">This has been fixed.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<p><font face="Times" size="+2">Known Problems in Release 1.1</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Times" size="+1"><b>Enterprise Objects Framework</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">These problems exist in this release of the Enterprise Objects Framework:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">41338</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">Comparing equivalant qualifiers using <b>isEqual:</b> indicates that they are not equivalent.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">When two qualifiers are compared using <b>isEqual:</b>, their identifiers are compared instead of their contents. Thus, <b>isEqual:</b> returns NO even if the two qualifiers have the same contents.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Helvetica" size="-1">Workaround:</font> <font face="Times" size="+1">Send <b>expressionValueForContext:</b> to each qualifier to obtain each qualifier's contents as an NSString, and then compare the two NSStrings using <b>isEqual:</b>. For example:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=127 height=1><font face="Courier">[[qualifier1 expressionValueForContext: nil] isEqual:</font><br>
+<img src="../../Images/sp.gif" width=162 height=1><font face="Courier">[qualifier1 expressionValueForContext: nil]]</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">46679</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">Instance variables are not documented.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">Instance variables of Enterprise Objects Framework classes should not be accessed. These will be made private in a later release.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Helvetica" size="-1">Workaround:</font> <font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">46967</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1"><b>deleteObject:</b> fails, but claims to succeed.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">The use of constraint enforcement techniques in the database instead of the model may cause the Enterprise Objects Framework to become out of sync. This becomes a bigger problem if the Framework is executing several operations as part of a transaction and the transaction is rolled back by a trigger rule.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Helvetica" size="-1">Workaround:</font> <font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">47196</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">The Enterprise Objects Framework does not perform automatic character set conversions.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">The Framework sends data to the database in the default character encoding. This can be a problem when the following is true:</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3> non-ASCII characters are being stored in the database</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3> the data is accessed by machines using a different character encoding than the</font><br>
+<img src="../../Images/sp.gif" width=8 height=1><font face="Times" size="+1">default NEXTSTEP encoding</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3> the database server does not provide character conversion from the default</font><br>
+<img src="../../Images/sp.gif" width=8 height=1><font face="Times" size="+1">NEXTSTEP encoding to the character encoding used by the database</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">This situation may commonly exist in Europe, where accented characters are used which need to be stored in the iso_8859_1 encoding.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Helvetica" size="-1">Workaround:</font> <font face="Times" size="+1">In order to implement the necessary conversion from NEXTSTEP to iso_8859_1 encoding, implement a subclass of NSString which will perform the necessary conversion to and from the NEXTSTEP encoding, and specify that subclass as a custom class on any attributes which contain character data that may need to be converted.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">47217</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">EOController doesn't retain its delegate.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">EOController doesn't retain its delegate, but everything else in the Framework does (this is likely to change in a later release of the Framework).</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=28></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">47563</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">There needs to be a way to notify a controller than an enterprise object has been edited.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">There should be a way to notify a controller that you have edited an enterprise object behind the controller's back. EOController provides a method&nbsp; that does something along these lines (<b>setValues:forObject:</b>),&nbsp; but it can be inconvenient and unnatural to use.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Helvetica" size="-1">Workaround:</font> <font face="Times" size="+1">If you change an enterprise object outside of the controller (for instance, by sending it a message such as <b>setSalary:</b> directly) you can cause the controller to buffer it for update by sending it <b>setValues:forObject:</b> and supplying an empty dictionary:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=127 height=1><font face="Courier">[myController setValues:[NSDictionary dictionary]</font><br>
+<img src="../../Images/sp.gif" width=155 height=1><font face="Courier">forObject:object];</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">47754</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">EOController's <b>keys</b> method isn't very useful.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1"><b>[EOController keys]</b> returns a combined list of the keys from each association, including duplicates.&nbsp; It doesn't return other keys supported by the data source, nor does it return keys that have been entered into Interface Builder's attribute inspector.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">It should at least remove the duplicates.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Helvetica" size="-1">Workaround:</font> <font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">47832</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">Unable to update custom values (such as NXImages) in the database.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">Custom value classes must implement <b>isEqual:</b> if they are to be used for locking.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Helvetica" size="-1">Workaround:</font> <font face="Times" size="+1">Don't mark&nbsp; as &quot;used for locking&quot; those attributes in the model with a custom data type unless the custom value class implements a value-based <b>isEqual:</b> method.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">48261</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">Triggering a fault can cause your application to hang.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1"><b>objectFaultWithPrimaryKey:</b> does not check if the object is already in the uniquing tables. Triggering a fault that represents an object that's already in memory may cause an infinite loop.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Helvetica" size="-1">Workaround:</font> <font face="Times" size="+1">Check the uniquing tables for the existence of an object before constructing a fault for it.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">48801</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">There needs to be a way to empty an EOController.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Helvetica" size="-1">Workaround:</font> <font face="Times" size="+1">Set the data source to <b>nil</b> and then back.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">48949</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1"><b>convertValue:forKey:</b> returns an NSNumber with the value 0 when number conversion fails.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">If you use <b>coerceValue:forKey:</b> for an NSNumber attribute and supply something that can't be coerced to a number (&#34;abc&#34;, for instance), you get back an NSNumber with the value 0, rather than nil (to indicate the error).</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Helvetica" size="-1">Workaround:</font> <font face="Times" size="+1">Perform your own validation of number strings before calling <b>coerceValue:forKey:</b>.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">49659</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">It can be difficult to use dates in qualifiers.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">The following qualifier:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=144 height=1><font face="Courier">startDate = [NSCalendarDate dateWithYear:1994 month:11</font><br>
+<img src="../../Images/sp.gif" width=172 height=1><font face="Courier">day:27 hour:0 minute:0 second:0</font><br>
+<img src="../../Images/sp.gif" width=172 height=1><font face="Courier">timeZone:[NSTimeZone timeZoneWithAbbreviation:@&#34;PST&#34;]];</font>
+
+<p><img src="../../Images/sp.gif" width=144 height=1><font face="Courier">qualifier = [[EOQualifier alloc] initWithEntity:[ds entity]</font>  qualifierFormat:@&#34;%A &lt; %@&#34;, @&#34;DATE&#34;, startDate];
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=127></td>
+
+<td><font face="Times" size="+1">Generates this (bad) SQL (the date is dropped from the SQL):</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=144 height=1><font face="Courier">&#34;... where DATE &lt;&#34;</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=127></td>
+
+<td><font face="Times" size="+1">It turns out that <b>expressionValueForContext:</b> isn't (and can't be) implemented for NSDate.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Helvetica" size="-1">Workaround:</font> <font face="Times" size="+1">Use <b>formatValue:forAttribute:</b>, as shown here:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=127 height=1><font face="Courier">EOAdaptor *adaptor = [[[[ds databaseChannel] adaptorChannel]</font><br>
+<img src="../../Images/sp.gif" width=155 height=1><font face="Courier">adaptorContext] adaptor];</font><br>
+<img src="../../Images/sp.gif" width=127 height=1><font face="Courier">qualifier = [[EOQualifier alloc] initWithEntity:[ds entity]</font><br>
+<img src="../../Images/sp.gif" width=155 height=1><font face="Courier">qualifierFormat:@&#34;%A &lt; %@&#34;, @&#34;NAME&#34;,</font><br>
+<img src="../../Images/sp.gif" width=155 height=1><font face="Courier">[adaptor formatValue:startDate forAttribute:dateAttr]];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=127></td>
+
+<td><font face="Times" size="+1">Contrary to the documentation, you <i>can</i> invoke <b>formatValue:forAttribute: </b>directly.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">50097</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">Master-peer with a flattened relationship can generate an invalid ORDERBY clause.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">Setting the fetch order on an EODatabaseDatasource that is the peer in a master-peer relationship will generate invalid SQL if the relationship has been flattened.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Helvetica" size="-1">Workaround:</font> <font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">50648</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">EORelationship's <b>addJoin:</b> method fails if the relationship isn't part of an entity.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">You cannot add a join to a relationship unless the relationship has either received a <b>setEntity:</b> message with a valid entity, or been added to an entity.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=30></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">50771</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">Selecting multiple rows in an NXTableView always scrolls to the first selected row.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">Adding to the selection in a TableView causes it to scroll back to the first selected row.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Helvetica" size="-1">Workaround:</font> <font face="Times" size="+1">Write a subclass of EOColumnAssociation that only scrolls when none of the selected rows are visible.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">51266</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">Changes to relationship objects in <b>willSaveEdits:</b> aren't undone.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">Additional changes returned from <b>controller:willSaveEdits:toObject:</b> aren't undone by <b>undo</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Helvetica" size="-1">Workaround:</font> <font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">51338</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1"><b>runLoginPanel</b> doesn't return <b>nil</b> if you cancel the login panel.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1"><b>runLoginPanel</b> doesn't return <b>nil</b> when the cancel button is pressed on the adaptor's login panel. Instead, a dictionary is returned which contains the values from the adaptor's connection dictionary.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=30></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">51347</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">The size of the EOController object changed in EOF 1.1 prerelease.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">The size of the EOController object was inadvertantly changed for the pre-release of the Enterprise Objects Framework release 1.1, thereby breaking binary compatability with the 1.0 release for applications that create subclasses of EOController.&nbsp; This has been fixed in this release of the Enterprise Objects Framework, thereby making it binary compatible with the 1.0 release but incompatible with the 1.1 pre-release.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=30></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">51708</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">Distinct selections don't always work.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">Qualifiers with <b>usesDistinct</b> set to YES will not be distinct when used with data sources that have auxiliary qualifiers set.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Helvetica" size="-1">Workaround:</font> <font face="Times" size="+1">Have a delegate on the EODatabaseChannel wait for the</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=127></td>
+
+<td><font face="Times" size="+1"><b>databaseChannel:willSelectObjectsDescribedByQualifier:fetchOrder: </b>method. Have the delegate invoke <b>setUsesDistinct:</b>YES on the qualifier that is passed into this method.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">51743</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">Objects&nbsp; that use dates in the primary key aren't always found in the uniquing table.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1"><b>objectForPrimaryKey:</b> may fail to find objects that have a date as the primary key.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Helvetica" size="-1">Workaround:</font> <font face="Times" size="+1">Make sure that the date used in the lookup has the same format string set as the one set by the corresponding EOAttribute in the model.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">51768</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">Unarchiving EONulls produces distinct instances.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">EONull may result in multiple instances after unarchiving. If the EONull object is archived to a file, then unarchiving the file will create a new instance of EONull, one that is not returned by <b>[EONull null]</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Helvetica" size="-1">Workaround:</font> <font face="Times" size="+1">Implement the following category on EONull:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=127 height=1><font face="Courier">@implementation EONull (Unarchiving)</font><br>
+<img src="../../Images/sp.gif" width=127 height=1><font face="Courier">- (id) awakeAfterUsingCoder:(NSCoder *)coder</font><br>
+<img src="../../Images/sp.gif" width=127 height=1><font face="Courier">{</font><br>
+<img src="../../Images/sp.gif" width=155 height=1><font face="Courier">EONull *oneTrueNull = [EONull null];</font>
+
+<p><img src="../../Images/sp.gif" width=155 height=1><font face="Courier">if (self == oneTrueNull)</font><br>
+<img src="../../Images/sp.gif" width=183 height=1><font face="Courier">return self;</font>
+
+<p><img src="../../Images/sp.gif" width=155 height=1><font face="Courier">[self autorelease];</font><br>
+<img src="../../Images/sp.gif" width=155 height=1><font face="Courier">return oneTrueNull;</font><br>
+<img src="../../Images/sp.gif" width=127 height=1><font face="Courier">}</font><br>
+<img src="../../Images/sp.gif" width=127 height=1><font face="Courier">@end</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">52341</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">Spurious update failure when buffering edits and you update and delete a single object</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">When using controllers with edit buffering enabled, deleting an object that has unsaved edits will result in <b>saveToDataSource</b> performing a doomed update operation <i>after</i> the deletion, resulting in a failed update.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Helvetica" size="-1">Workaround:</font> <font face="Times" size="+1">The following workarounds in an EOController delegate may help:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=126></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Invoke the <b>saveToObjects</b> method during <b>controller:willDeleteObject:</b> (this will change your application semantics slightly).</font></td></tr>
+
+<tr valign=top>
+
+<td width=126 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=126></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Keep a list of objects that have been deleted in <b>didDeleteObject:inDataSource:</b>. In <b>willUpdateObject:inDataSource:</b>, return <b>EODiscardDataSourceOperation</b> if the given object is in the delete list.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Times" size="+1"><b>Sybase Adaptor</b></font>
+
+<p><font face="Times" size="+1">These problems exist in the Sybase adaptor supplied with this release of the Enterprise Objects Framework:</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">47202</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">Conversion from money to double doesn't always work.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">The sybase <b>dbconvert</b> function doesn't correctly convert from money to double (it introduces extra precision at low end). For instance, the value `2078927178.0000' is converted as `2078927178.0000002384185791'.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Helvetica" size="-1">Workaround:</font> <font face="Times" size="+1">Use a custom value class for money.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">48235</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">Sybase adaptor ignores millisecond portion of datetime values</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">The Sybase adaptor represents dates in a Sybase datetime column as NSCalendarDate objects which don't keep millisecond values. Consequently, the millisecond portion of a date stored in a Sybase datetime column isn't fully represented in EOF when using the Sybase adaptor. This causes some updates to fail since a qualifier containing a date value that was read in from the database may not be precise enough to match against the database column if its millisecond value was non-zero.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Helvetica" size="-1">Workaround:</font> <font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">48574</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">There is no way to suppress the alert panel during a failed login attempt</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">The <b>willReportError:</b> delegate method on the Sybase Adaptor is not called when there are errors while attempting to login. These error messages can only be suppressed by invoking the following class methods on the SybaseAdaptor:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=127 height=1><font face="Courier">[SybaseAdaptor logsMessages:NO]</font><br>
+<img src="../../Images/sp.gif" width=155 height=1><font face="Courier">while ( ![adaptor hasValidConnectionDictionary] &amp;&amp;</font><br>
+<img src="../../Images/sp.gif" width=176 height=1><font face="Courier">![adaptor runLoginPanelAndValidateConnectionDictionary] );</font><br>
+<img src="../../Images/sp.gif" width=127 height=1><font face="Courier">[SybaseAdaptor logsMessages:YES].</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Helvetica" size="-1">Workaround:</font> <font face="Times" size="+1">See the description, above.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Times" size="+1"><b>Oracle7 Adaptor</b></font>
+
+<p><font face="Times" size="+1">These problems exist in the Oracle7 adaptor supplied with this release of the Enterprise Objects Framework:</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">47202</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">Conversion from money to double doesn't always work.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">The sybase <b>dbconvert</b> function doesn't correctly convert from money to double (it introduces extra precision at low end). For instance, the value `2078927178.0000' is converted as `2078927178.0000002384185791'.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Helvetica" size="-1">Workaround:</font> <font face="Times" size="+1">Use a custom value class for money.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">50553</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">The Oracle7 adaptor should ready primary key constraint information.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">The Oracle7 adaptor does not take advantage of information available in the database to set the primary key or create relationships when creating new models.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=34></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">52497</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">Optimistic locking on LONG columns fails for empty strings</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Helvetica" size="-1">Workaround:</font> <font face="Times" size="+1">When using the Oracle7 adaptor, don't mark LONG columns as used for locking, don't re-fetch the object after updating a column to contain an empty string, and don't use <b>recordObject</b> to modify the inserted object, transforming the empty string in the snapshot to an EONull.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">52735</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">EOF J Won't connect on a non-Japanese server</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">When connecting to an Oracle server from a J system, by default the Oracle7 adaptor will use the NLS_LANG <b>japanese_japan.jeuc</b>.&nbsp; If your server is not configured to use the jeuc character set, you may be unable to connect to the server or may see &#34;?&#34; for all Kanji characters.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Helvetica" size="-1">Workaround:</font> <font face="Times" size="+1">You can override the default setting by using Edit to put one of the following entries in the connection dictionary of your EOModel file:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=127 height=1><font face="Courier">NLS_LANG = japanese_japan.us7ascii or</font><br>
+<img src="../../Images/sp.gif" width=127 height=1><font face="Courier">NLS_LANG = american_america.us7ascii</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Times" size="+1"><b>EOModeler</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">49811</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">Interface Builder sometimes doesn't notice changes made in EOModeler.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">The following procedure illustrates the problem:</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">1. Create a project.</font><br>
+<font face="Times" size="+1">2. Open the project's nib file and change file's owner.</font><br>
+<font face="Times" size="+1">3. Create a model and save it in <b>~/Library/Models</b>.</font><br>
+<font face="Times" size="+1">4. Drag an entity into the nib file.</font><br>
+<font face="Times" size="+1">5. Add the model to the project.</font><br>
+<font face="Times" size="+1">6. Double-click the controller in the nib file to open the model.</font><br>
+<font face="Times" size="+1">7. Add a relationship to the model, then save it.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=127></td>
+
+<td nowrap><font face="Times" size="+1">8.</font></td>
+
+<td><font face="Times" size="+1">Go back to the nib file; the relationship doesn't show up, and Interface Builder hasn't marked the document as having changed.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Helvetica" size="-1">Workaround:</font> <font face="Times" size="+1">Quit and restart Interface Builder, then re-open the offending nib file.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">51650</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">Tear-offs don't keep up with the arrow keys in the model editor.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">If you open up a <b>.eomodel</b> file, select an entity, and press the down or up arrow keys a few times, you will notice that the property names in the tear-offs are one step behind the actual selection (the inspector does display correctly, however).</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Times" size="+1"><b>Foundation</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">46032</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">The NSAssert macros have counterintuitive behavior with respect to the NS_BLOCK_ASSERTIONS flag.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">Previously, -DNX_BLOCKASSERTS turned assertions off when compiling. Now, assertions are turned on when -DNS_BLOCK_ASSERTIONS is supplied.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=34></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">50207</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">NSBundle's <b>initForPath:</b> returns a non-nil value for an invalid path</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">The following returns a bundle, instead of nil:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=134 height=1><font face="Courier">myBundle = [[NSBundle alloc] initWithPath:@&#34;/foo&#34;]</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Helvetica" size="-1">Workaround:</font> <font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">51800</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">NXAutoreleaseConnection's <b>connectToName:onHost:</b> returns a retained object.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Description:</font></td>
+
+<td><font face="Times" size="+1">If the object on the server side is a subclass of NSObject, this method should return an autoreleased proxy</font><font face="Times" size="-2">.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Helvetica" size="-1">Workaround:</font> <font face="Times" size="+1">Clients should release any NSObject proxies that are returned by this method.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Times" size="+1"><b>Other</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Reference:</font></td>
+
+<td><font face="Times" size="+1">43200</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Helvetica" size="-1">Problem:</font></td>
+
+<td><font face="Times" size="+1">Debugging tools are needed.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Helvetica" size="-1">Description:</font> <font face="Times" size="+1">There are no profiling libs for the 1.1 release of&nbsp; the Enterprise Objects Framework. However, NeXT plans to provide a profiling tool via NeXTanswers.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<p><font face="Times" size="+2">Locating the Documentation for this Release</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Times" size="+1">This release of the Enterprise Objects Framework consists not only of the classes, protocols, types, and constants that make up the Framework, but also a version of the Foundation Kit (a set of basic utility classes that enhance consistency and portability) and a version of Interface Builder that has been enhanced to allow you to build Enterprise Objects Framework applications (this is the same version that's shipped with NEXTSTEP Developer version 3.3). Various forms of documentation for each of these products is supplied with this release. The purpose of this section is to help you locate the appropriate documentation for each product supplied with this release of the Enterprise Objects Framework.</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1"><b>Foundation Kit Documentation</b></font>
+
+<p><font face="Times" size="+1">All Foundation Kit documentation can be found online, in the following directory: <b>/NextLibrary/Documentation/NextDev/Foundation</b>.&nbsp; <b>IntroFoundation.rtfd</b> contains an <b>i</b>ntroduction to the Foundation Kit. Additional concepts are in the documentation provided for each Foundation Kit class. In particular, look over the documentation for <b>NSException</b>; this discusses how exceptions are raised and handled when working with the Foundation Kit.</font>
+
+<p><font face="Times" size="+1">Reference documentation for all Foundation Kit components can be accessed through Header Viewer. Use Header Viewer's Preferences menu to add <b>/NextLibrary/Documentation/NextDev/Foundation</b> to Header Viewer's list of documentation directories.</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1"><b>Enterprise Objects Framework Documentation</b></font>
+
+<p><font face="Times" size="+1">All Enterprise Objects Framework documentation can be found online, in the following directory: <b>/NextLibrary/Documentation/NextDev/EnterpriseObjects. Guide</b> contains the <i>Enterprise Objects Framework Developer's Guide</i> (this manual&nbsp; is also shipped in printed form with the developer package). While the information in the <i>Developer's Guide</i> is accurate, new functionality described in this release note has not been incorporated into either the on-line or the printed version of the <i>Developer's Guide</i>. Thus, this release note supplements the <i>Enterprise Objects Framework Developer's Guide</i>.&nbsp; The <i>Enterprise Objects Framework Reference</i> (which is available on-line only; see the following paragraphs), has been updated with the material in this release note.</font>
+
+<p><font face="Times" size="+1">The <i>Enterprise Objects Framework Reference</i> is divided into three major groupings: the documentation for those classes, protocols, types, and constants of the Access Layer (in <b>Reference/1_AccessLayer</b>), the documentation for those classes, protocols, types, and constants that make up the Interface Layer (in <b>Reference/2_InterfaceLayer</b>), and the documentation for those classes, protocols, types, and constants that support the additional user interface objects supplied with the Framework (in <b>Reference/3_UIObjects</b>).&nbsp; <b>Reference</b> also contains directories for the two reference appendices: <b>_ApA_Oracle7Adaptor</b> and <b>_ApB_SybaseAdaptor</b>.</font>
+
+<p><font face="Times" size="+1">Reference documentation for all Enterprise Objects Framework components can be accessed through Header Viewer. Use Header Viewer's Preferences menu to <i>individually</i> add the following three directories from <b>/NextLibrary/Documentation/NextDev/EnterpriseObjects</b> to Header Viewer's list of documentation directories (if you select all of them and try to add them, HeaderViewer won't correctly locate any of the Enterprise Objects Framework documentation):</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>Reference/1_AccessLayer</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>Reference/2_InterfaceLayer</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>Reference/3_UIObjects</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Times" size="+1">Similarly, <i>individually</i> add the following two files from <b>/NextDeveloper/Headers</b> to Header Viewer's list of header files (if you select both of them and try to add them, HeaderViewer won't correctly locate either file):</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>eoaccess/eoaccess.p</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>eointerface/eointerface.p</b></font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Times" size="+1"><b>Other Documentation</b></font>
+
+<p><font face="Times" size="+1">In addition to the above documentation, there are two documents that may provide useful information to you, depending upon your application:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><i>Living in a Hybrid World</i>, which can be found in <b>/NextLibrary/Documentation/NextDev/Foundation/HybridWorld.rtf</b>, explains Foundation's new root class, discusses the new object management scheme supported by Foundation, and explains the new way you archive objects.</font></td></tr>
+
+<tr valign=top>
+
+<td width=36 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><i>Using Distributed Objects with the Enterprise Objects Framework</i> discusses how you can work with Enterprise Objects in a distributed environment. See <b>UsingDistributedObjects.rtf </b>in the <b>/NextLibrary/Documentation/NextDev/EnterpriseObjects</b> directory.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Times" size="+1"><b>Documentation Feedback</b></font>
+
+<p><font face="Times" size="+1">Your comments on our documentation are especially valuable.&nbsp; Please send electronic mail with your comments and suggestions to <b>techpubs_feedback@next.com</b>. (If you include <b>EODoc:</b> as the first part of your message's subject, we'll be able to identify it more quickly.)</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

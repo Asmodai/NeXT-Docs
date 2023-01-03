@@ -1,0 +1,170 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/EnterpriseObjects/Reference/1_AccessLayer/Protocols/EOClassMapping.rtf -->
+<!-- Date: Sun Jan  1 17:05:22 2023 -->
+<head>
+<title>EOClassMapping</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>EOClassMapping</b></font><br>
+<font face="Helvetica" size="+1"><b>(informal protocol)</b></font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Category Of:</b></font></td>
+
+<td><font face="Times" size="+1">NSObject</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">eoaccess/EOGenericRecord.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Category Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The EOClassMapping protocol defines a class method that allows a class specified by a particular entity to substitute a different class based on it's fetched row or primary key values. The returned class <i>must</i> be either a subclass of the original class, have an entity specified in the model, or implement the <b>entity</b> method of the EOEntityMapping protocol. This requirement is not checked, but will cause insert, delete, and update operations to fail if not met.</font>
+
+<p><font face="Times" size="+1">There are three situations in which the EOClassMapping method is invoked:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">1.</font></td>
+
+<td><font face="Times" size="+1">When an object is created by a data source, usually for insertion. <i>values</i> will be nil.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">2.</font></td>
+
+<td><font face="Times" size="+1">When an object referencing this object is fetched and a fault is created. <i>values</i> will be the object's primary key.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">3.</font></td>
+
+<td><font face="Times" size="+1">When a row is fetched. <i>values</i> will be the fetched row. Note that because of fault creation (#2, above), a class cannot rely on always receiving the complete row. To be safe, class selection should be based only on primary key values.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>classForEntity:values:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ (Class)<b>classForEntity:</b>(EOEntity *)<i>entity</i> <b>values:</b>(NSDictionary *)<i>values</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Allows a class specified by <i>entity</i> to substitute a different class based on it's fetched row or primary key values. See the Category Description, above, for information on when this method is called and what <i>values</i> represents. Note that the returned class <i>must</i> be either a subclass of the original class, have an entity specified in the model, or implement the <b>entity</b> method.</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

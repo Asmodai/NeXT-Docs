@@ -1,0 +1,1585 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextAdmin/04_NFS.rtfd -->
+<!-- Date: Sun Jan  1 13:56:35 2023 -->
+<head>
+<title>04_NFS</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Release 3.3 Copyright</font> &copy;<font face="Times">1994 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap><font face="Helvetica" size="+4"><b>4</b></font></td>
+
+<td><font face="Times" size="+4"><i>Setting Up the Network File System</i></font></td></tr>
+
+<tr valign=top>
+
+<td width=36 height=80></td></tr>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">The Network File System (NFS) allows files stored on one computer to be accessed from other computers as though the files were on a local disk. This makes it possible for users to access the same files from any computer on a network.</font></td></tr>
+
+<tr valign=top>
+
+<td width=36 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">The computer that shares the files on its local disk--the NFS or file server--must make the files available to other computers. Once the files are made available, an NFS client mounts or imports them, in very much the same way it would mount any other file system.</font></td></tr>
+
+<tr valign=top>
+
+<td width=36 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap></td>
+
+<td><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">It's critical that network time service be configured for all computers that provide or share remote directories. See Chapter 3, &quot;NetInfo Networking,&quot; for details.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Exporting File Systems to the Network</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">To make a directory available to other computers on the network, a file server must <i>export</i> that directory. Information about exported directories is stored in the NetInfo database. The <b>exportfs</b> command, run automatically during system startup, uses the information in NetInfo to export directories.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Planning Shared Files</b></font>
+
+<p><font face="Times" size="+1">Before you export any directories, it's a good idea to plan which directories you will make available, and what kinds of access you will allow.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Directories</b></font>
+
+<p><font face="Times" size="+1">You can only export directories from a local disk. In other words, you can't re-export a directory that has been remotely mounted from another computer. You specify the directory to be exported by a pathname, rather than a device name. The exported directory, including all of its subdirectories, is made available to the network. You can't export both a directory and any of its children if they're on the same device. For example, if you export a directory named <b>/Shared/Projects</b>, you can't also export the directory <b>/Shared</b>, unless <b>/Shared/Projects</b> is mounted locally from a separate disk or partition. However, exporting <b>/Shared</b> makes <b>/Shared/Projects</b> available, since the entire directory tree is exported.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Access</b></font>
+
+<p><font face="Times" size="+1">When you export a directory, you specify which hosts are allowed to mount that directory. You can allow all computers to mount the directory, or you can restrict access to a list of specific host names. You can further restrict access by specifying whether hosts will be allowed only to read the remote directory, or also to write to the directory (subject to the normal restrictions of file and directory permissions).</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Access as root</b></font>
+
+<p><font face="Times" size="+1">For security reasons, a user logged in as <b>root</b> usually isn't allowed to access remotely mounted files or directories with <b>root</b> privileges. However, you can grant <b>root</b> access to a list of hosts. If a user is logged in as <b>root</b> on one of the specified hosts, the user will be granted <b>root</b> access to the exported directory.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">If you want to add users from a computer other than the home directory server, you need to grant <b>root</b> access for the home directory to the hosts you will be adding users from. See Chapter 5, &quot;Managing User Accounts and User Groups,&quot; for information about adding users.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Unknown Users</b></font>
+
+<p><font face="Times" size="+1">You can decide if you want unknown users to be allowed access to the exported directory. If a user is logged into a host that has access to the remote directory, but is logged in with a user account that isn't recognized on the file server, the user is treated as an <i>unknown</i> or <i>anonymous user</i>. Normally, an anonymous user is treated as if it were the special user <b>nobody</b>, which has a user ID of</font> <font size="+1"><img src="../images/c2D.gif" width=8 height=4></font><font face="Times" size="+1">2. The user <b>nobody</b> has very limited access to files; the file and directory permissions for other apply to <b>nobody</b>.</font>
+
+<p><font face="Times" size="+1">A user logged in as <b>root</b> is always treated as an unknown user, unless the user is logged into a host that has been granted <b>root</b> access. If you allow access to anonymous users, you can have them treated as <b>nobody</b>, or as some other user. See the <i>User's Guide</i> for information about file permissions, and Chapter 5 for more information about user IDs.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Setting Up an NFS Server</b></font>
+
+<p><font face="Times" size="+1">To configure an NFS server, you need to instruct the server to export the part of the disk that you want to share. To do this, you use the NFSManager application:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Log into the computer that will be the file server, using any valid account.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Start up NFSManager, located in <b>/NextAdmin</b>. Both the Imported Directories and Exported Directories windows for the local domain appear.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Click in the Exported Directories window to make it key.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F4.gif" width=414 height=449></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Click the Add button in the upper right of the Exported Directories window to add the directory to be exported. The Export Directory panel appears.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F5.gif" width=298 height=339></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Use the browser to select the directory, then click OK. A panel appears asking for the <b>root</b> password for the local domain.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F6.gif" width=322 height=236></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Enter the <b>root</b> password and click Login. The exported directory appears in the list.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F7.gif" width=414 height=449></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">If you prefer, you can add a directory simply by selecting it in the Workspace Manager File Viewer, then dragging the icon into the well in the Exported Directories window.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">If you want a specific group of hosts to have read-only access to the exported directory, click in the text field below the Read Only Access column. Enter a host name, then click the Add button below the text field. Repeat for any other hosts you want to have read-only access.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>8.</b></font></td>
+
+<td><font face="Times" size="+1">If you want to have a specific group of hosts have read/write access to the exported directory, click in the text field below the Read/Write Access column. Enter a host name, then click the Add button below the text field. Repeat for any other hosts you want to have read/write access. Note that you can't have the same host name listed in both the Read/Write Access and Read Only Access columns.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">You can use a netgroup name in place of a host name in either list. See Chapter 3, &quot;NetInfo Networking,&quot; for more information about netgroups.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>9.</b></font></td>
+
+<td><font face="Times" size="+1">Set the default access for hosts not listed in either column by pressing the default access button and dragging to the desired setting. This setting determines the access that will be granted to any hosts on the network that aren't listed in the Read Only Access or Read/Write Access columns. Note the following restrictions on the default access:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">If you have any host names listed in the Read Only Access column, default access can only be set to None.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">If you have host names listed in the Read/Write Access column, but none in the Read Only Access column, default access can be set to either Read Only or None.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">If you have no host names listed in either column, default access can be set to Read/Write, Read Only, or None. If you choose None in this situation, you'll have an exported directory that can't be accessed--not a very useful choice.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>10.</b></font></td>
+
+<td><font face="Times" size="+1">If you want <b>root</b> access to be permitted for any hosts, use the Root Access column. Click in the text field below the column, enter the host name, and click Add. Repeat for any other hosts.</font></td></tr>
+
+<tr valign=top>
+
+<td width=96 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>11.</b></font></td>
+
+<td><font face="Times" size="+1">If you don't want unknown users to have access to the exported directory, click the switch labeled &quot;Allow unknown users...&quot; to uncheck it.</font></td></tr>
+
+<tr valign=top>
+
+<td width=96 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>12.</b></font></td>
+
+<td><font face="Times" size="+1">If you're allowing unknown users to have access to the exported directory, but want to treat them as some user other than <b>nobody</b>, press the unknown user button and select &quot;user with uid&quot; from the pop-up list. Then, enter the desired user ID (<i>not</i> user name) in the text field. See Chapter 5 for more information about user IDs.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=53></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Warning:</b></font></td>
+
+<td><font face="Times" size="+1">Treating unknown users as <b>root</b> (user ID 0) is a serious security risk. Although doing so allows <b>root</b> access from any host, it also grants <b>root</b> privileges to <i>any</i> unknown user.</font></td></tr>
+
+<tr valign=top>
+
+<td width=53 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=53></td>
+
+<td nowrap><img src="../images/sp.gif" width=43 height=1><font face="Helvetica" size="+1"><b>13.</b></font></td>
+
+<td><font face="Times" size="+1">Click OK. If you've chosen a default access that conflicts with your other access choices, a panel appears telling you how your choices will be modified. Click OK to accept the modifications.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F8.gif" width=364 height=203></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">Your directory is now exported and available to other hosts on the network, according to the access controls you specified.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">If you encounter an error message during configuration, see the &quot;Troubleshooting&quot; section at the end of this chapter.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Importing Network File Systems</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">In order for an NFS client to access an exported directory tree, it must <i>mount</i> the directory. Mount information for remote directories is stored in the NetInfo database. If you used SimpleNetworkStarter to set up a file server, such as a home directory server or general purpose server, the mount information was automatically put in the root NetInfo domain.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Planning Mount Options</b></font>
+
+<p><font face="Times" size="+1">Before you begin importing remote directories, it's a good idea to plan how and where they will be mounted.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>NetInfo Domain</b></font>
+
+<p><font face="Times" size="+1">If you would like every computer on the network to mount a particular NFS directory, enter the mount information into the root NetInfo domain. Even computers you later add to the network will automatically use this mount information.</font>
+
+<p><font face="Times" size="+1">If you would like only a subset of the network to mount the directory tree, enter the mount information into the local NetInfo domain of each NFS client individually. Or, if you have a NetInfo domain hierarchy with more than two levels, you might want to put the mount information in midlevel domains.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Mount Point</b></font>
+
+<p><font face="Times" size="+1">When a computer imports a remote directory, a connection is made between a directory on the local computer and the remote file system. Once the connection is made (the file system is mounted), the remote directories can be accessed through the local directory, called the <i>mount point</i>. For example, if there is an application server exporting the directory <b>/LocalApps</b>, you would mount it on the local directory <b>/LocalApps</b> (in this case, the remote directory and the mount point have the same name, but that's not required). Everything appearing under <b>/LocalApps</b> on the local computer is actually on the hard disk connected to the file server.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Automatic Mount</b></font>
+
+<p><font face="Times" size="+1">Usually, remote directories are mounted at boot time, and the files in the NFS directory are always available. However, you can choose to mount a remote file system so that the actual connection isn't made until a user attempts to access the remote directory. Directories mounted in this way show up in the local directory hierarchy as <b>/Net/</b><i>hostname</i><b>/</b><i>directory</i>, where <i>hostname</i> is the host name of the file server, and <i>directory</i> is the name of the exported directory.</font>
+
+<p><font face="Times" size="+1">For example, if you have a computer named <b>hserv</b> that is exporting the directory <b>/Users</b> for home directories, the client computers might mount the directory as <b>/Net/hserv/Users</b>. Automatically mounted directories have two advantages: it's very obvious that the directory is an NFS directory, because the name of the file server appears in the pathname, and unnecessary overhead is reduced because the mount isn't performed unless the files are actually needed.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Foreground or Background</b></font>
+
+<p><font face="Times" size="+1">When a computer boots, it attempts to mount all the remote directories except those designated automatic mounts. If a file server doesn't respond (perhaps it isn't turned on), the computer waits until it receives a response before continuing. This means that the boot process won't complete until all the file servers have responded. However, if you mount a remote directory in the background, the computer will continue to boot without a response from the file server, then keep trying to mount the remote file system in the background. Remote file systems that aren't critical for regular operations should be mounted in the background, while file systems that are absolutely necessary (such as home directories or the mail spool directory) should be mounted in the foreground.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Interruptible Mount</b></font>
+
+<p><font face="Times" size="+1">Sometimes, a file server becomes unavailable after a remote directory has been mounted. Perhaps it's been turned off, or the network traffic is so heavy that it can't respond quickly enough. This becomes a problem when a user attempts to access a remote directory from the server. You can handle such an occurrence in three ways: return an error message if the server doesn't respond, keep retrying until the server responds, or keep retrying until the server responds or the user interrupts the process (if the file access is attempted from a shell window, pressing Control-c will interrupt the process).</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Setuid Files</b></font>
+
+<p><font face="Times" size="+1">Sometimes, a program or application needs to run as if it had been executed by someone other than the user that started it. For example, the PrintManager application acts as <b>root</b> so that users can add new printers or remove print jobs from the print queue. A file containing such a program is called a <i>setuid file</i> because executing the contents of the file sets the user ID. A setuid file will be run as if it had been executed by the owner of the file. On a shared directory, you may want to ignore the setuid feature and have such files run as the regular user to prevent possible security problems.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Importing a Remote Directory</b></font>
+
+<p><font face="Times" size="+1">To import a directory that has previously been exported, do the following:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Log into any computer on the network, using any valid account.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Start up NFSManager, located in <b>/NextAdmin</b>. Both the Imported Directories and Exported Directories windows for the local domain appear.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Import To from the main menu. The Select NetInfo Domain panel appears.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="../images/F91.gif" width=298 height=338></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>/</b> in the left column to select the root domain (if you have more than two domain levels, select the appropriate domain). Click OK. A new Imported Directories window appears. Note that the domain is listed in the title bar.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="../images/F10.gif" width=515 height=291></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Click Add. The Import Directory from NFS Server panel appears.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="../images/F11.gif" width=360 height=220></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Click Select from Netinfo. The Import Directory panel appears.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F12.gif" width=298 height=531></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">In the top half of this panel, click the host name of the file server. In the bottom half of the panel, click the name of the exported directory. Click OK. You're returned to the Import Directory from NFS Server panel, with the &quot;Server name&quot; and &quot;Remote directory&quot; fields complete.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F13.gif" width=360 height=220></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">If you prefer, you can enter the host name and directory name directly into the text fields.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>8.</b></font></td>
+
+<td><font face="Times" size="+1">Click OK. The mount information is displayed in the Imported Directories window.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F14.gif" width=515 height=291></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>9.</b></font></td>
+
+<td><font face="Times" size="+1">If you want to specify a mount point other than <b>/Net</b>, enter the full pathname of the mount point in the &quot;Mount point&quot; text field. Remember that the <b>/Net</b> mount point indicates an automatic mount. If you prefer, you can click Select and use the Select Mount Point panel to modify the mount point.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F15.gif" width=298 height=339></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>10.</b></font></td>
+
+<td><font face="Times" size="+1">If you want to use mount options other than the defaults, set the fields as follows:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>a.</b></font></td>
+
+<td><font face="Times" size="+1">If you want the hosts to mount the directory read-only, press the &quot;Mount the file system&quot; button and drag to Read Only.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>b.</b></font></td>
+
+<td><font face="Times" size="+1">If you want the directory to be mounted in the background, press the &quot;Mount file system in&quot; button and drag to Background.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>c.</b></font></td>
+
+<td><font face="Times" size="+1">Press the button labeled &quot;If server doesn't respond&quot; and drag to the desired setting. The three settings correspond to the possibilities discussed in &quot;Planning Mount Options&quot; earlier in this chapter.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>d.</b></font></td>
+
+<td><font face="Times" size="+1">If you want setuid files to be run as the regular user, press the button labeled &quot;When finding a setuid file,&quot; and drag to &quot;Ignore setuid bit.&quot;</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>e.</b></font></td>
+
+<td><font face="Times" size="+1">The Expert Options button opens a panel with additional options. In general, you can leave them at their default settings. For more details about these options, see the UNIX manual page for <b>mount</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>11.</b></font></td>
+
+<td><font face="Times" size="+1">Click OK.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The remote directory can now be mounted on the client computers. If the directory is mounted under <b>/Net</b>, it will be mounted automatically. If it's mounted somewhere else, it will be mounted the next time the client computers are booted.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Examining the NetInfo Database</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">NFSManager stores information about exported and imported directories in the NetInfo database.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Export Information</b></font>
+
+<p><font face="Times" size="+1">First, look at the NetInfo information about exported directories:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Start up NetInfoManager, located in <b>/NextAdmin</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Open from the Domain menu. The Select NetInfo Domain panel appears.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F16.gif" width=298 height=338></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Click the host name of the file server in the right column to select the local domain for that host. Click OK. A domain window appears. If you're logged into the file server, a domain window for the local domain may already be on the screen.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="../images/F17.gif" width=529 height=263></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>exports</b> in the middle column. The subdirectories listed represent all the directories exported from this host.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F18.gif" width=529 height=263></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Select one of the exported directories by clicking it. Then, open the Directory window by double-clicking the name.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F19.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>opts</b> in the Properties column, if it exists. The values associated with this property are the nondefault access options you specified with NFSManager.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F20.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">Some of the options you might see are:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">rw=<i>host1:host2</i></font></td>
+
+<td><font face="Times" size="+1">Specifies that the listed hosts are granted read/write access, while all other hosts have read-only access.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">root=<i>host1:host2</i></font></td>
+
+<td><font face="Times" size="+1">Specifies that the listed hosts can access the exported directory as <b>root</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">nosuid</font></td>
+
+<td><font face="Times" size="+1">Specifies that setuid files will be executed as the regular user.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">anon=<i>uid</i></font></td>
+
+<td><font face="Times" size="+1">Specifies that unknown users will be treated as the user identified by <i>uid</i>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">For more information, see the UNIX manual page for <b>exportfs</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Close the Directory window.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Mount Information</b></font>
+
+<p><font face="Times" size="+1">Now examine the mount information stored in the root domain:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Start up the NetInfoManager application, located in <b>/NextAdmin</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Open from the Domain menu. The Select NetInfo Domain panel appears.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F16.gif" width=298 height=338></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>/</b> in the left column to select the root domain. If you put the mount information in some domain other than root, click its name in the panel. Click OK. A domain window appears.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>mounts</b> in the middle column. The subdirectories listed represent all the mount information stored in this domain.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F22.gif" width=529 height=263></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">Note that the name of each directory is in the form <i>host:directory</i>, where <i>host</i> is the name of the remote file server, and <i>directory</i> is the name of the exported directory.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Select one of the mount directories by clicking it. Then, open the Directory window by double-clicking the name.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F23.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>dir</b> in the Properties column. The value of this property is the pathname of the mount point on the local computer.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F24.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>opts</b> in the Properties column. The values of this property indicate the options that describe how the remote directory will be mounted.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F25.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">Some of the values you might see for the <b>opts</b> property are:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">rw</font></td>
+
+<td><font face="Times" size="+1">Specifies that client computers can read from, and write to, the directory. Normal file and directory permissions apply.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">bg</font></td>
+
+<td><font face="Times" size="+1">Specifies that if the first mount attempt fails, the mount should be retried in the background, allowing the system to continue booting.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">intr</font></td>
+
+<td><font face="Times" size="+1">Specifies that an attempt to access the remote directory from a shell window can be interrupted.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">net</font></td>
+
+<td><font face="Times" size="+1">Specifies that the remote directory will be automatically mounted. See &quot;Planning Mount Options&quot; earlier in this chapter for information about automatic NFS mounts.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">For a complete list of available options, see the UNIX manual page for <b>mount</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>8.</b></font></td>
+
+<td><font face="Times" size="+1">Close the directory window.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>The /locations Directory</b></font>
+
+<p><font face="Times" size="+1">Information about home directory servers, application servers, and the mail server is kept in the <b>/locations</b> directory of the root domain. Follow these steps to examine the <b>/locations</b> directory:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Use NetInfoManager to open the root domain.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>locations</b> in the center column. The subdirectories store information about the location of various system components.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F26.gif" width=529 height=263></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>homes</b> in the right column if it exists. This directory lists the file servers that have been designated home directory servers with SimpleNetworkStarter. Any hosts listed here will appear in the home directory pop-up list in UserManager.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F27.gif" width=529 height=263></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Click one of the subdirectories, then double-click it to open the Directory window.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F28.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">The properties of this directory include the host name of the file server and the name of the exported directory.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Close the Directory window, then click <b>/locations/localapps</b> if it exists. Double-click the directory to open a Directory window.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F29.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">If a host has been configured as an application server with SimpleNetworkStarter, its name will appear as the value of the <b>hostname</b> property. This prevents additional hosts from being configured as application servers by SimpleNetworkStarter.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Troubleshooting</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">When you boot an NFS server, or when you export a directory with NFSManager, you may see an error message similar to either of the following:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">exportfs: /<i>directory</i>: parent-directory (/) already exported</font>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">exportfs: /: sub-directory (/<i>directory</i>) already exported</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">These messages result from the fact that you can't export a directory that's either a parent or a subdirectory of one that's already exported if both directories reside on the same device. For example, if you attempt to export both <b>/Users </b>and <b>/Users/elmo</b>, you see an error message.</font>
+
+<p><font face="Times" size="+1">To avoid this type of error, export the parent directory only. In the example, this means only exporting <b>/Users</b>. This avoids the error condition and still makes <b>/Users/elmo</b> available.</font>
+
+<p><font face="Times" size="+1">If you need to change the directories that are currently being exported, use NFSManager to make the modifications.</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

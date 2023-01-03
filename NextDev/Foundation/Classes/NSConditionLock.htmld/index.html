@@ -1,0 +1,464 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/Foundation/Classes/NSConditionLock.rtf -->
+<!-- Date: Sun Jan  1 17:05:13 2023 -->
+<head>
+<title>NSConditionLock</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>NSConditionLock</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Inherits From:</b></font></td>
+
+<td><font face="Times" size="+1">NSObject</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Conforms To:</b></font></td>
+
+<td><font face="Times" size="+1">NSLocking</font><br>
+<font face="Times" size="+1">NSObject (NSObject)</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">foundation/NSLock.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The NSConditionLock class defines objects whose locks can be associated with specific, user-defined conditions. For example, using an NSConditionLock object, a thread can request a lock only if a certain condition is met. Once it has acquired the lock and executed the critical section of code, the thread could relinquish the lock and set the associated condition to something new. The conditions themselves are arbitrary: You define them as needed for your application.</font>
+
+<p><font face="Times" size="+1">Typically, you use this class when threads in your application need to execute in a particular order, such as when one thread produces data that another consumes. While the producer is executing, the consumer sleeps waiting to acquire a lock that's conditional upon the producer's completion of its operation. An application can have multiple NSConditionLock objects, each protecting different sections of code. However, these objects must be created before the application becomes multithreaded.</font>
+
+<p><font face="Times" size="+1">The locking and unlocking methods that NSConditionLock objects respond to can be used in any combination. For example, a <b>lock</b> message can be paired with <b>unlockWithCondition:</b>, or a <b>lockWhenCondition:</b> message can be paired with <b>unlock</b>.</font>
+
+<p><font face="Times" size="+1">The following example shows how the producer-consumer problem might be handled using condition locks. Imagine that an application contains a queue of data. A producer thread adds data to the queue, and consumer threads extract data from the queue.</font>
+
+<p><font face="Times" size="+1">The producer need not wait for a condition, but must wait for the lock to be made available so it can safely add data to the queue. For example, a producer could use a lock this way:</font></td></tr>
+
+</table>
+
+<p><img src="../../../Images/sp.gif" width=124 height=1><font face="Courier">id condLock = [[NSConditionLock alloc] initWithCondition:NO_DATA];</font>
+
+<p><img src="../../../Images/sp.gif" width=124 height=1><font face="Courier">[condLock lock];</font><br>
+<img src="../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Add data to the queue */</font><br>
+<img src="../../../Images/sp.gif" width=124 height=1><font face="Courier">[condLock unlockWithCondition:HAS_DATA];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">A consumer thread can then wait until there's data available and all other threads are out of locked critical sections. In the following code, the consumer sleeps until the producer invokes <b>unlockWithCondition:</b> with the parameter HAS_DATA:</font></td></tr>
+
+</table>
+
+<p><img src="../../../Images/sp.gif" width=124 height=1><font face="Courier">[condLock lockWhenCondition:HAS_DATA];</font><br>
+<img src="../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Remove data from the queue */</font><br>
+<img src="../../../Images/sp.gif" width=124 height=1><font face="Courier">[condLock unlockWithCondition:(isEmpty ? NO_DATA : HAS_DATA)];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The NSConditionLock, NSLock, and NSRecursiveLock classes all implement the NSLocking protocol with various features and performance characteristics; see the other class descriptions for more information.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Adopted Protocols</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">NSLocking</font></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">lock</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">unlock</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Initializing an NSConditionLock</font></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">initWithCondition:</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Returning the Condition</font></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">condition</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Acquiring and Releasing a Lock</font></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">lockBeforeDate:</font><br>
+<font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">lockWhenCondition:</font><br>
+<font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">lockWhenCondition:beforeDate:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">unlockWithCondition:</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>condition</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(int)<b>condition</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the condition that's associated with the receiver. If no condition has been set, returns 0.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>initWithCondition:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>initWithCondition:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(id)<b>initWithCondition:</b>(int)<i>condition</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Initializes a newly allocated NSConditionLock and sets its condition to <i>condition</i>. The value of the <i>condition</i> argument is user-defined; see the class description for more information. Returns <b>self</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>condition:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>lockBeforeDate:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>lockBeforeDate:</b>(NSDate *)<i>limit</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Attempts to acquire a lock before the date represented by <i>limit</i>. The condition associated with the receiver isn't taken into account in this operation. Returns YES if the lock is acquired within the time limit. Returns NO if the time limit expires before a lock can be acquired.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>lockWhenCondition:beforeDate:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>lockWhenCondition:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>lockWhenCondition:</b>(int)<i>condition</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Attempts to acquire a lock. The receiver's condition must be equal to <i>condition</i> before the locking operation will succeed. This method blocks the thread's execution until the lock can be acquired.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>lockWhenCondition:beforeDate:</b>,</font> <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>unlockWithCondition:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>lockWhenCondition:beforeDate:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>lockWhenCondition:</b>(int)<i>condition</i> <b>beforeDate:</b>(NSDate *)<i>limit</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Attempts to acquire a lock before the date represented by <i>limit</i>. The receiver's condition must be equal to <i>condition</i> before the locking operation will succeed. Returns YES if the lock is acquired within this time limit. Returns NO if the time limit expires before a lock can be acquired.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>lockBeforeDate:</b>,</font> <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>lockWhenCondition:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>unlockWithCondition:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>unlockWithCondition:</b>(int)<i>condition</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Relinquishes the lock and sets the receiver's condition to <i>condition</i>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>lockWhenCondition:</b></font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

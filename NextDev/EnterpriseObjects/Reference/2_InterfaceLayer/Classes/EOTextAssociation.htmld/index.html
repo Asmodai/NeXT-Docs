@@ -1,0 +1,203 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/EnterpriseObjects/Reference/2_InterfaceLayer/Classes/EOTextAssociation.rtf -->
+<!-- Date: Sun Jan  1 17:05:25 2023 -->
+<head>
+<title>EOTextAssociation</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>EOTextAssociation</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Inherits From:</b></font></td>
+
+<td><font face="Times" size="+1">EOAssociation</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Conforms To:</b></font></td>
+
+<td><font face="Times" size="+1">EOAssociationNotification (EOAssociation)</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">eointerface/EOTextAssociation.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">An EOTextAssociation manages a Text object, and is capable of handling display of ASCII, RTF, and serialized RTF with attachments (RTFD). A text association monitors any editing done to the Text object, and when the Text object ends editing (for example, if the user presses Enter), the text association informs its controller.</font>
+
+<p><font face="Times" size="+1">When a text association is notified of a change by its controller, it gets the value of the first selected enterprise object as raw character data and examines it for an RTF or RTFD signature. The association then sends the appropriate message to its Text object for the format, allowing the Text object to properly display the value regardless of the format.</font>
+
+<p><font face="Times" size="+1">When asked for its value, however, a text association returns an NSString (NSData for RTFD) containing the text in whatever format its Text object uses:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Text Capability</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Text Format</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">Single font</font></td>
+
+<td><font face="Times" size="+1">Plain text in an NSString object</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">Multiple fonts allowed</font></td>
+
+<td><font face="Times" size="+1">RTF in an NSString object</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">Graphics allowed</font></td>
+
+<td><font face="Times" size="+1">RTFD in an NSData object</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This can cause problems if you associate a key whose corresponding value is of one type (such as plain text) with a Text object configured to edit another type (such as RTF). In this case the enterprise objects receive text in a format they may not be able to handle. You should always take care to match the text formats of the values you intend to display with the configuration of the Text object.</font>
+
+<p><font face="Times" size="+1">Although the interface of any association contains only a few methods, various implementations are often highly dependent on one another and on the way the destination objects act. Because of this, if you need to create an association class for a custom subclass of Text, you should create it as an immediate subclass of EOAssociation.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Variables</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">None declared in this class.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">None declared in this class.</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

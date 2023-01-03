@@ -1,0 +1,4352 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextAdmin/03_SetUpNet.rtfd -->
+<!-- Date: Sun Jan  1 13:56:40 2023 -->
+<head>
+<title>03_SetUpNet</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Release 3.3 Copyright</font> &copy;<font face="Times">1994 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap><font face="Helvetica" size="+4"><b>3</b></font></td>
+
+<td><font face="Times" size="+4"><i>NetInfo Networking</i></font></td></tr>
+
+<tr valign=top>
+
+<td width=36 height=80></td></tr>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">Once you've set up your basic network, you'll need to start thinking about maintenance. Your network configuration may never need adjusting, but if you want to modify network features, such as turning automatic host addition on or off, or changing the network time service, you'll need to use applications other than SimpleNetworkStarter (SNS). In addition, a thorough understanding of NetInfo can be invaluable while you administer your network.</font></td></tr>
+
+<tr valign=top>
+
+<td width=36 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">This chapter covers how to add and delete hosts, set up network time service, and add host aliases and netgroups. It also discusses the applications used to administer a NetInfo network, and describes the data structures, files, and processes that make up NetInfo.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Enabling Automatic Host Addition</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">If you enabled automatic host addition when you configured your network with SimpleNetworkStarter, you don't need to do it again. If you omitted this feature during setup, you can use either SNS or HostManager to configure Automatic Host Addition. The following example references HostManager.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Log into any networked computer, using any valid account.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Start up HostManager, located in <b>/NextAdmin</b>. If you're not logged in as <b>root</b>, HostManager will display a panel telling you that you must have superuser status to run this application; enter the <b>root</b> password and click Login.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Automatic Host Configuration from the Network menu. The Select NetInfo Domain panel appears.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F4.gif" width=298 height=338></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Select the root domain by clicking <b>/</b> in the left column. (If your NetInfo setup is more complicated, select whatever domain is appropriate--but <i>not</i> the local domain.) You specify the root domain so that new hosts will be recognized throughout the network. Click OK. The automatic host configuration panel appears.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1"><b>Note:</b>&nbsp; Enable Automatic Host Addition on at most one domain per local network (subnet).</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F6.gif" width=488 height=178></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Select the range of assignable addresses.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">When a computer is automatically added to the network, the Internet address it is assigned is chosen from the range defined by the values in the From and To fields. The network portion of these values (everything up to the last decimal) should be the same in both fields, and the final number can range from 1 to 253. Be careful that any addresses already assigned to computers aren't included in the range you set here. The <b>bootpd</b> process skips addresses already in use.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1"><b>Note:</b>&nbsp; This section describes a class C network. If you have a class A or B network, the numbering will be different. See Appendix C, &quot;Internet Addressing,&quot; for details, including a discussion of network numbers and address classes.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Enter an address in the Temporary field to be temporarily assigned to new computers while they're being added. Make sure that this value has the same network number as the NetInfo and configuration server but is <i>not</i> in the range of addresses that are assignable to new computers. A number ending in 254 is a good choice.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Use the Network Password section of this window to determine what type of security check is performed when a new system is added to the network. By default, the domain's <b>root</b> password will have to be entered before a new host can be added to the network.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">If you prefer, you can use a network password--a password that's independent of the <b>root</b> password in any particular domain. This password allows network users to add their own computers to the network without having access to the <b>root</b> password, but it protects against the addition of an unauthorized computer. To enable this feature, click the Network Password button. You're presented with the Network Password panel, where you need to enter and confirm the new password.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F55.gif" width=348 height=166></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">If you don't want any password to be required when a new computer is added to the network, click the None button.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>8.</b></font></td>
+
+<td><font face="Times" size="+1">If there's no check mark in the Automatic Host Configuration Enabled check box, click it to enable this function.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F11.gif" width=488 height=178></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>9.</b></font></td>
+
+<td><font face="Times" size="+1">Click Set to save the addresses and enable automatic host addition.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Times" size="+1"><b>10.</b></font></td>
+
+<td><font face="Times" size="+1">If you're prompted for the <b>root</b> password of the root NetInfo domain, enter the password and click Login. The <b>root </b>password of the domain is initially the same as the <b>root</b> password of the computer running the NetInfo server.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F56.gif" width=322 height=236></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Disabling Automatic Host Addition</b></font>
+
+<p><font face="Times" size="+1">If you've enabled automatic host addition and now want to disable it, perform the following steps:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Log into any networked computer.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Start up HostManager, located in <b>/NextAdmin</b>. If you're not logged in as <b>root</b>, a panel will appear prompting you to enter the <b>root</b> password; enter the password and click Login.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Automatic Host Configuration from the Network menu.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">In the Select NetInfo Domain panel, select the root NetInfo domain, or an intermediate domain if you have a more complicated network. Click OK.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Click the Automatic Host Addition Enabled check box so that the check mark disappears. Click OK.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">If you're prompted for the <b>root</b> password of the domain, enter the password and click Login.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Adding New Hosts to the Network</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">To add a new host to the network, you need to create a host entry for it in the <b>/machines</b> directory. A host entry includes the computer's Ethernet address, its Internet address, and its host name as property values for the <b>en_address, ip_address</b>, and <b>name</b> property keys in its subdirectory. If you've enabled automatic host addition, the host entry is created for you. If you've chosen not to use automatic host addition, you need to use HostManager (or NetInfoManager) to create the host entry yourself.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Automatically Adding a New Host</b></font>
+
+<p><font face="Times" size="+1">If you've enabled automatic host addition, use the following procedure to add a new host:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Physically connect the new host to the network. Do this <i>before</i> you start it up; otherwise, it won't be correctly added to the network.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Turn on the new computer.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">As the computer starts up, a series of messages is displayed in a window on the new system asking for configuration information. After you provide the information, the information is added.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>a.</b></font></td>
+
+<td><font face="Times" size="+1">The first message indicates that the configuration server couldn't find the new computer's Ethernet address in its database. You're then prompted for the host name.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=162 height=1><font face="Courier">Network doesn't recognize computer.</font><br>
+<img src="../images/sp.gif" width=162 height=1><font face="Courier">Enter host name:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td><font face="Times" size="+1">Enter the host name you've chosen for the computer and press Return.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>b.</b></font></td>
+
+<td><font face="Times" size="+1">Next, you're asked if you want to add the host to the network.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=162 height=1><font face="Courier">Add computer to the network [y/n]?</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td><font face="Times" size="+1">Type <b>y</b> and press Return.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>c.</b></font></td>
+
+<td><font face="Times" size="+1">If you're using a password for automatic host addition, you're prompted for it.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=162 height=1><font face="Courier">Enter network password:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td><font face="Times" size="+1">Enter the network password or the <b>root</b> password of the domain, depending on which scheme you've chosen, and press Return.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">If you see any messages other than those discussed here, see the &quot;Troubleshooting&quot; section at the end of this chapter.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Manually Adding a New Host</b></font>
+
+<p><font face="Times" size="+1">If you've chosen not to enable automatic host addition, use the following procedure to add a new host to the network.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Determining the Ethernet Address</b></font>
+
+<p><font face="Times" size="+1">Use the following procedures to get the Ethernet address from the new host. Be sure to do this on the system you're about to add to the network.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>On a PC Computer</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Turn on the computer. When you turn on the system, you will see the manufacturer's Power On Self Test (POST) messages. These messages disappear within seconds, and the boot process begins.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">The boot process begins and within a few seconds presents the <b>boot:</b> prompt with a message that you have ten seconds to enter <b>?</b> to see more information or enter the <b>-v</b> option to boot in verbose mode. Enter the -v option at the <b>boot:</b> prompt.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">The system will continue booting, with messages reflecting the registration process for device drivers. Look for the messages concerning registration of your computer's network card, in the form <b>en0: Ethernet address 00:00:00:00:00:00</b> and record the numbers exactly as they appear.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>On a NeXT Computer</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Turn on the computer. When you turn on the system, the first thing you see is the message &quot;Testing System.&quot; This message disappears within seconds, and the boot process begins.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1"><i>Immediately</i> after the &quot;Testing System&quot; message goes away, stop the boot process by holding down the Command bar and Alternate key and pressing the <b>~</b> key (without pressing Shift). On keyboards with two Command keys, hold down the right Command key while pressing the <b>~</b> key. This displays the ROM monitor window, which contains information about the hardware, including the Ethernet address.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">Here's an example of the ROM monitor output (yours will look slightly different):</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">CPU MC68040 33 MHz, memory 70 nS</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">Ethernet address: 0:0:f:0:7:3d</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">Memory size 16MB</font>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">NeXT&gt;</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1"><b>Note:</b>&nbsp; If you were a little slow with your key sequence, you see the Restart/Power-Off panel instead. Press the Power key and try again.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Write down the address. An Ethernet address is a sequence of numbers separated by colons (in the example, the Ethernet address is <b>0:0:f:0:7:3d</b>). Be sure to copy the number exactly as it appears.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Creating the Host Entry</b></font>
+
+<p><font face="Times" size="+1">Now that you have the hardware address of the network interface for the new system, add the new host entry to the NetInfo database (for now, leave the new system as is). Be sure to do this on a computer that's already connected to the network--<i>not</i> on the system you're adding to the network:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Start up the HostManager application, located in <b>/NextAdmin</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">If you're not logged in as <b>root</b>, HostManager displays a panel telling you that you must have superuser status to run this application. Enter the password for the <b>root</b> account and click Login.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Open the New Host window by choosing New from the Host menu. You use this window to create a host entry.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F1.gif" width=514 height=338></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Replace <b>newhost</b> in the Hostname field with the host name you want to give the new computer. Remember, a host name must be unique, should contain no more than 8 lowercase characters, and shouldn't contain anything other than letters, numerals, dashes (-), and underbars (_). (These aren't absolute rules, but following these suggestions makes sure that you'll never have any problem with your host names.) The names <b>localhost</b>, <b>broadcasthost</b>, and <b>mailhost</b> are reserved and shouldn't be used here.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Replace the default Internet address in the IP address field with a unique address for the new host. HostManager doesn't check whether you've chosen a unique address, so be careful--duplicate Internet address assignments will cause network problems. The best strategy is to increment the number sequentially, starting with the address of the NetInfo and configuration server. Assuming a class C network, valid numbers for a host node are in the range 1 to 254. Remember that the network number must be the same as other machines.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Replace the value in the Ethernet Address field with that which you found for this computer. Be careful to enter it exactly. Be sure to avoid &quot;leading zero characters,&quot; e.g. enter 0:0:f:0:ab:1 rather than 00:00:0f:00:ab:01.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">You can enter the name of the system owner in the System Owner field. This isn't used by the network, but makes it easier for you to identify the computer.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>8.</b></font></td>
+
+<td><font face="Times" size="+1">If you want to indicate the type of computer, use the System Type button to drag to the appropriate choice. Again, this field is for identification purposes only.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>9.</b></font></td>
+
+<td><font face="Times" size="+1">If you want this host to be known by more than one name, you can add an alias. Click in the text field in the Host Name Aliases section, enter the alias name, then click Add. The same restrictions that apply to host names in general also apply to alias names.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Times" size="+1"><b>10.</b></font></td>
+
+<td><font face="Times" size="+1">If you want this host to be a member of a netgroup, add it in the Netgroups area. A <i>netgroup</i> is similar to a user group in that it's a name used to reference a group of hosts.</font></td></tr>
+
+<tr valign=top>
+
+<td width=96 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">You can use a netgroup name in place of a host name in some situations, such as when you're exporting remote directories. To add this host, click the text field under Netgroups, enter the group name, then click Add.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F2.gif" width=514 height=338></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Times" size="+1"><b>11.</b></font></td>
+
+<td><font face="Times" size="+1">Ignore the Netboot Configuration button because it's used to set up a NetBoot client. See Chapter 13, &quot;NetBooting,&quot; for details.</font></td></tr>
+
+<tr valign=top>
+
+<td width=96 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Times" size="+1"><b>12.</b></font></td>
+
+<td><font face="Times" size="+1">Save the new host entry by choosing Save from the Host menu. The Save To NetInfo panel appears.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F3.gif" width=298 height=551></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Times" size="+1"><b>13.</b></font></td>
+
+<td><font face="Times" size="+1">Specify the root domain by clicking <b>/</b> or select an intermediate domain appropriate for your site. The box labeled &quot;This is host's parent domain&quot; enables the automatic binding of this computer's local domain to its parent domain (for more information, see Chapter 10, &quot;Configuring a Large Network&quot;). Unless you are on a mixed network, leave the box checked. For more information, see Chapter 11, &quot;NEXTSTEP Computers in a Mixed Network.&quot; Click OK.</font></td></tr>
+
+<tr valign=top>
+
+<td width=96 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Times" size="+1"><b>14.</b></font></td>
+
+<td><font face="Times" size="+1">Enter the <b>root</b> password for the domain and click Login, if prompted.</font></td></tr>
+
+<tr valign=top>
+
+<td width=96 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Times" size="+1"><b>15.</b></font></td>
+
+<td><font face="Times" size="+1">Boot the new computer.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Repeat this procedure for each additional host. Be sure to close the New Host window and then choose the New command for each new host, rather than just changing the information for the previous host.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Adding a Modified Host</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The Ethernet address, stored on the EPROM chip, uniquely identifies each NeXT computer. If you replace the CPU board or EPROM of a NeXT computer, that computer will have a different Ethernet address, and the configuration server will no longer recognize it. In order for this computer to be recognized, you need to modify its host entry.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Automatically Adding a Modified Host</b></font>
+
+<p><font face="Times" size="+1">If you've enabled automatic host addition, use this procedure to add the modified host to the network:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Physically connect the modified host to the network. Do this <i>before</i> you start up the computer; otherwise, it won't be added correctly.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Turn on the computer.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">As the computer starts up, a series of messages is displayed in a window on the modified system, asking for configuration information. After you provide the information, the configuration server modifies the host entry in its database.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>a.</b></font></td>
+
+<td><font face="Times" size="+1">The first message indicates that the configuration server couldn't find the modified computer's new Ethernet address in its database. You're then prompted for the host name.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">Network doesn't recognize computer.</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">Enter host name:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td><font face="Times" size="+1">Enter the existing host name for the computer:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>b.</b></font></td>
+
+<td><font face="Times" size="+1">Because the configuration server has a host entry in its database for the host name you entered, but the Ethernet address doesn't match, it asks if the computer has a new CPU board, new EPROM, or a new network adapter.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">Name recognized. New CPU board or ROM chip [y/n]?</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td><font face="Times" size="+1">Type <b>y</b> and press Return.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>c.</b></font></td>
+
+<td><font face="Times" size="+1">Next, you're asked if you want to add the modified host to the network.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">Add computer to the network [y/n]?</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td><font face="Times" size="+1">Type <b>y</b> and press Return.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>d.</b></font></td>
+
+<td><font face="Times" size="+1">If you're using a network password for automatic host addition, you're prompted for it.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">Enter network password:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td><font face="Times" size="+1">Enter the network password or the <b>root</b> password of the server, depending on the scheme you've chosen, and press Return.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">If you see any messages other than those described here, see the &quot;Troubleshooting&quot; section later in this chapter.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Manually Adding a Modified Host</b></font>
+
+<p><font face="Times" size="+1">If you've chosen not to enable automatic host addition, and need to reconnect a modified host to the network, follow these procedures.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Determine the network hardware address (Ethernet or Token Ring) of the modified host following the procedures in &quot;Manually Adding a New Host&quot; earlier in this chapter.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Log into a computer that's already connected to the network and start up HostManager, located in <b>/NextAdmin</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">If you're not logged in as <b>root</b>, HostManager displays a panel telling you that you must have superuser status to run this application. Enter the password for the <b>root</b> account and click Login.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Open from the Host menu. The Open in NetInfo Domain panel appears.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F15.gif" width=298 height=531></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>/</b> in the Domain section of this panel or choose the appropriate intermediate domain.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F16.gif" width=298 height=531></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">In the Hostname list in the Open In NetInfo Domain panel, click the host you want to modify (in this example, <b>mars</b>). Click OK. The host window appears. You use this window to edit a host entry.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F10.gif" width=514 height=338></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Replace the value in the Ethernet Address field with the one you wrote down earlier. Be careful to enter it exactly as it was displayed. Leave the other values as they are.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>8.</b></font></td>
+
+<td><font face="Times" size="+1">Save the modified host entry by choosing Save from the Host menu.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>9.</b></font></td>
+
+<td><font face="Times" size="+1">Enter the <b>root</b> password of the domain and click Login, if prompted.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Times" size="+1"><b>10.</b></font></td>
+
+<td><font face="Times" size="+1">Reboot the modified host.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Deleting a Host from the Network</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">To remove a host entry from the network database, follow these procedures:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Log into any networked computer, using any valid account.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Start up the HostManager application, located in <b>/NextAdmin</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">If you're not logged in as <b>root</b>, HostManager displays a panel telling you that you must have superuser status to run this application. Enter the password for the <b>root</b> account and click Login.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Open from the Host menu.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>/</b> in the Domain panel or the name of the appropriate intermediate domain.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F16.gif" width=298 height=531></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">In the Hostname list in the Open In NetInfo Domain panel, click the host you want to delete (in this example, <b>mars </b>is deleted). Click OK. The host window appears.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=53></td>
+
+<td nowrap><font face="Times" size="+1"><b>Warning:</b></font></td>
+
+<td><font face="Times" size="+1">Don't delete <b>localhost</b> or <b>broadcasthost</b> from the local domain, and don't delete the host name of any master NetInfo server's computer.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F10.gif" width=514 height=338></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Host from the main menu, then choose Delete. An attention panel like the following appears, asking you to confirm that you really want to delete the host. Click Yes.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F14.gif" width=364 height=185></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>8.</b></font></td>
+
+<td><font face="Times" size="+1">Enter the <b>root</b> password for the domain and click Login, if prompted.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The host you selected is now removed from the network database.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Adding Host Aliases and Netgroups</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">If you want to add an existing host to a netgroup, or you want to create host name aliases for an existing host, use HostManager:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Log into any networked computer, using any valid account.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Start up HostManager, located in <b>/NextAdmin</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">If you're not logged in as <b>root</b>, HostManager displays a panel telling you that you must have superuser status to run this application. Enter the password for the <b>root</b> account and click Login.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Open from the Host menu. The Open in NetInfo Domain panel appears.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F15.gif" width=298 height=531></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>/</b> in the Domain panel or the name of the appropriate intermediate domain.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">In the Hostname list in the Open in NetInfo Domain panel, click the host you want to modify (in this example, <b>mars</b>). Click OK. The host window appears.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F10.gif" width=514 height=338></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">To let this host be known by more than one name, add an alias. Click in the text field in the Host Name Aliases section, enter the alias name, then click Add. After you save, this computer can be referenced using its host name or any of its aliases. The same restrictions that apply to host names in general also apply to alias names.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>8.</b></font></td>
+
+<td><font face="Times" size="+1">To make this host a member of a netgroup, add it in the Netgroups area. A netgroup is similar to a user group in that it's a name used to reference a group of hosts.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">You can use a netgroup name in place of a host name in some situations, such as exporting a remote directory. To add this host, click in the text field under Netgroups, enter the group name, then click Add.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>9.</b></font></td>
+
+<td><font face="Times" size="+1">Save the modified host entry by choosing Save from the Host menu.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Times" size="+1"><b>10.</b></font></td>
+
+<td><font face="Times" size="+1">Enter the <b>root</b> password of the domain and click Login, if prompted.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Configuring Network Time Service</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Each computer maintains an internal clock that keeps track of time. When several computers are connected on a network, it's important to make sure that all of the computers agree on the time, especially if they're sharing files. To do this, you must designate one or more hosts to run time server processes and set the remaining hosts to run only time client processes. If you set this feature with SimpleNetworkStarter, you don't need to do it again. However, if you want to enable network time service after the network has been configured, or you want to have multiple time servers, you need to use HostManager.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Choosing Time Servers</b></font>
+
+<p><font face="Times" size="+1">Three kinds of hosts are involved in network time service--those that run master time server processes, those that run clone time servers, and those that run only time client processes. Clients set their time to time servers, and have a preference for clone time servers. If a client can't find a clone server on the network, it looks for a master time server. If it finds no master server, it relies on its own clock.</font>
+
+<p><font face="Times" size="+1">A master server looks for other master servers. If it finds any, together they reach consensus about the correct time. If a master time server finds no peers, it uses its own clock. If you have a computer with a definitive time source, for instance one derived from the Internet or a very accurate clock, it should run the sole master time server on your network. If you have a very large network, having one or two master time servers makes it easier to reset the network time, while adding a few clone servers will help reduce the load on the master time server.</font>
+
+<p><font face="Times" size="+1">Clone servers try to set their time to master time servers. If a clone server finds no master server, it looks for other clone servers on the network. If there are other clone servers on the network, all of them negotiate an average of what their internal clocks indicate. If there are no other time servers on a network, either master or clone, a clone server relies on its own clock. Unless you have a very large network, it's probably best to designate only clone servers (no masters). A good strategy to use is to designate all computers running NetInfo servers as also running clone time servers.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Enabling Time Service</b></font>
+
+<p><font face="Times" size="+1">Before you can designate time servers, you need to enable automatic time service. If you used automatic host addition to add hosts to your network, or you enabled time service when you manually added your hosts, there's no need to do it again. Otherwise, follow these procedures for each computer on the network:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Log in to the computer.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Start up HostManager, located in <b>/NextAdmin</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">If you're not logged in as <b>root</b>, a panel appears asking you to log in as the superuser. Enter the <b>root</b> password, then click Login.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Local from the main menu. The Local Configuration window appears</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F47.gif" width=554 height=311></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">In the Time Standard area, click the button labeled Use Network Time.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Click Set.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Reboot your computer for the change to take effect.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Time service is now enabled for this computer. Note that the default condition is for network time to be used.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Designating Time Servers</b></font>
+
+<p><font face="Times" size="+1">To run a time server on a computer, follow these steps:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Log into any networked computer using any valid account.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Start up the HostManager application, located in <b>/NextAdmin</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">If you're not logged in as <b>root</b>, HostManager will display a panel telling you that you must have superuser status to run this application. Enter the password for the <b>root</b> account and click Login.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Network Time Configuration from the Network menu. The Select NetInfo Domain panel appears.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F20.gif" width=298 height=338></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Select the root domain by clicking <b>/</b> or choose the appropriate non-local domain. Click OK. A panel like this appears.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F22.gif" width=357 height=222></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Click the Time Service Enabled check box.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">For each host you decide to designate as running a clone time server:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>a.</b></font></td>
+
+<td><font face="Times" size="+1">Click the name of the host you've selected to run a clone time server (<b>venus</b>, in this example).</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>b.</b></font></td>
+
+<td><font face="Times" size="+1">Click the Clone button. A &quot;C&quot; appears next to the host's name.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>8.</b></font></td>
+
+<td><font face="Times" size="+1">For each host you want to designate as running a master time server:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>a.</b></font></td>
+
+<td><font face="Times" size="+1">Click the name of the host you've selected to run a master time server (<b>earth</b>, in this example).</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>b.</b></font></td>
+
+<td><font face="Times" size="+1">Click the Master button. An &quot;M&quot; appears next to the host's name.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1"><b>Note:</b>&nbsp; Because the remaining hosts are already classified as clients, you don't have to specify what they are--the Client button is used only if you want to change a computer running a time server back to one that doesn't.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F24.gif" width=357 height=222></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>9.</b></font></td>
+
+<td><font face="Times" size="+1">Click Set.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Times" size="+1"><b>10.</b></font></td>
+
+<td><font face="Times" size="+1">For the changes to take effect, all the computers newly designated to run time servers need to be rebooted. You also need to reboot any new time client-only computers.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The hosts to be used for serving network time are now identified.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Disabling Time Service</b></font>
+
+<p><font face="Times" size="+1">If you want a computer to use its own clock and never look for time servers, use the following&nbsp; procedures. Be careful, though: a computer that independently maintains its own time suffers from &quot;time skew,&quot; in that its time gradually becomes faster or slower than that of other computers. At some point, the slower computer may balk at getting data timestamped from the future.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Log into the computer.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Start up HostManager, located in <b>/NextAdmin</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">If you're not logged in as <b>root</b>, a panel appears asking you to log in as the superuser. Enter the <b>root</b> password, then click Login.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Local from the main menu. The Local Configuration window appears.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F47.gif" width=554 height=311></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">In the Time Standard area, click the button labeled Ignore Network Time.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Click Set.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Reboot your computer for the change to take effect.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Time service is now disabled for this computer.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Using the Network</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">With your network configured, many features are now available. In addition to all of the functions described elsewhere in this manual, you might find certain UNIX commands helpful as you work with and troubleshoot your network.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Using UNIX Networking Commands</b></font>
+
+<p><font face="Times" size="+1">Sometimes you might want to make a direct connection to a remote host. Perhaps you need to log into a faraway host, or you need to move a file from one computer to another. The UNIX commands <b>telnet</b>, <b>rlogin</b>, <b>rsh</b>, <b>rcp</b>, and <b>ftp</b> are used to perform these tasks; you execute these commands from the C shell command line in a terminal window.</font>
+
+<p><font face="Times" size="+1">Three of these commands--<b>telnet</b>, <b>rlogin</b>, and <b>rsh</b>--are used to simulate a terminal connected to a remote host. For file transfer, use <b>ftp</b> or <b>rcp</b>; these utilities provide a way to send or receive individual files or entire directory trees. For further details on each of these programs, see the UNIX manual pages.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Remote Application Execution</b></font>
+
+<p><font face="Times" size="+1">It's possible to put the entire interface for any NEXTSTEP</font><font size="-1"><sup><sup>TM</sup></sup></font><font face="Times" size="+1">application on a different computer than the one that's running the application. This can be useful for troubleshooting. It might also be useful for having a computer execute a computationally-intensive process if you're already loading down your own computer with other processes, or to run an application on a computer based on a different architecture.</font>
+
+<p><font face="Times" size="+1">You can use the <b>telnet</b> or <b>rlogin</b> networking commands to run an application on another computer. The <b>-NXHost </b>option lets you specify a computer on which the NEXTSTEP user interface appears. The <b>OpenSesame</b> service utility lets provides a means to execute applications remotely and also provides a shortcut to using the root UID without having to log out then log in as root.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Executing an Application on a Remote Computer</b></font>
+
+<p><font face="Times" size="+1">In the following steps, your computer is called <i>yourhost</i> and the remote computer <i>otherhost</i>. In this example, <i>otherhost </i>runs the Digital Webster</font><font size="-1"><sup><sup>TM</sup></sup></font><font face="Times" size="+1">application while the window is displayed on <i>yourhost</i>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">On <i>yourhost</i>, start up Preferences. Scroll to the UNIX button, click it, then click the Private Window Server check box. The check mark disappears. Hide Preferences.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1"><b>Note:</b>&nbsp; Having a computer set up as a public window server is a security risk. See Chapter 14, &quot;Security,&quot; for more information.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Open a terminal window and log into <i>otherhost</i> using <b>telnet</b> or <b>rlogin</b>, whichever you prefer.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">On <i>otherhost</i>, enter the following command, replacing <i>yourhost</i> with the host name of your computer:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>/NextApps/Webster.app/Webster -NXHost</b> <i>yourhost</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">The application interface soon appears on your screen.</font>
+
+<p><font face="Times" size="+1"><b>Note:</b>&nbsp; Once any part of the application interface appears on screen, you may turn the private window server back on.</font>
+
+<p><font face="Times" size="+1">All interaction is with the application interface on <i>yourhost</i> while the application actually runs on and uses the resources of <i>otherhost</i>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">When you're finished, quit the application.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Executing an Application on the Local Computer</b></font>
+
+<p><font face="Times" size="+1">With a similar technique, you can run an application on your computer and have its interface shown on another. In this example, you run Webster on <i>yourhost</i> with the application interface on <i>otherhost</i>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">On <i>otherhost</i>, start up Preferences. Scroll to the UNIX button, click it, then click the Private Window Server check box.The check mark disappears. Hide Preferences.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1"><b>Note:</b>&nbsp; Having a computer set up as a public window server is a security risk. See Chapter 14, &quot;Security,&quot; for more information.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Open a shell window on <i>yourhost</i>. Enter the following command, replacing <i>otherhost</i> with the host name of the remote computer:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>/NextApps/Webster.app/Webster -NXHost</b> <i>otherhost</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Go to <i>otherhost</i>, where you see the Webster menu and window appear. Use the application.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">All interaction is with the Webster interface on <i>otherhost</i> while the application actually runs on and uses the resources of <i>yourhost</i>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">When you're finished, quit Webster. The prompt returns in the shell window on <i>yourhost</i>.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Using OpenSesame</b></font>
+
+<p><font face="Times" size="+1">Most applications include the <b>/NextDeveloper/Demos/OpenSesame.app</b> utility as one of the Services commands. Choosing <b>Services, OpenSesame</b> will, by default, generate a submenu showing the <b>Open As Root</b> and the <b>Open On Another Host</b> commands. (You can use OpenSesame's <b>Hosts</b> menu to add specific computers to the list.)</font>
+
+<p><font face="Times" size="+1">Choose <b>Open As Root</b> to execute the application with root privileges. For example, if you run <b>Edit</b> and choose <b>Services, OpenSesame</b> then choose <b>Open As Root</b>, OpenSesame will present a panel asking for the root password then let you execute a second instance of <b>Edit</b> on your computer as though you had logged in as root. This saves you having to log out then log back in to execute programs requiring root user.</font>
+
+<p><font face="Times" size="+1">If you wish to use <b>Open On Another Host</b>, you must be sure that the <b>/etc/.rhosts</b> and the <b>/etc/hosts.equiv</b> files are properly set up (see the man pages for <b>rhosts</b> or <b>hosts.equiv</b> for information). You must also set Public Window Server set in you computer's Preferences (a security weak point). Finally, your use of common files is limited to common NFS mount points. Choose <b>Open On Another Host</b> and OpenSesame presents a panel asking for the name of the remote host then may ask for a password, then lets you run the application on the other host with the display on your computer. See OpenSesame's <b>Info, Help</b> command for more information.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Examining the NetInfo Database</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">SimpleNetworkStarter and HostManager are applications with friendly interfaces to a sometimes complicated collection of data and operations. In this section, you'll look at some of the underlying details of the network you built with SimpleNetworkStarter. The understanding you gain about NetInfo networks can help you isolate problems and correct them as they arise; it can also help you customize your network.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>NetInfo Tools</b></font>
+
+<p><font face="Times" size="+1">Each NEXTSTEP system provides a variety of tools that allow you to inspect and manipulate NetInfo. A suite of applications (collectively called the Manager applications) provides a friendly interface to the most common activities you'll be performing while administering one or more NEXTSTEP computers. In addition, several UNIX utilities are available for low-level, direct access to the NetInfo system.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>The Manager Applications</b></font>
+
+<p><font face="Times" size="+1">Each NEXTSTEP computer comes with applications located in <b>/NextAdmin</b> folder that you can use to manage system administration information. What follows is a brief description of each application, to help you determine which one to use.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">SimpleNetworkStarter sets up a simple NetInfo network. Its use is covered in Chapter 2.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">NFSManager is used to import and export directories, allowing remote access across the network. Chapter 4, &quot;Setting Up the Network File System,&quot; explains how to use NFSManager.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">UserManager is used to add, modify, and delete user accounts, as well as create and remove user groups. This application was introduced in Chapter 2, and is covered more thoroughly in Chapter 5, &quot;Managing User Accounts and User Groups.&quot;</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">PrintManager, located in <b>/NextApps</b>, is used to add a new printer or fax modem to a system, configure a network printer or fax modem, and monitor the progress of print requests. PrintManager is described in the <i>User's Guide</i>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">HostManager, described earlier in this chapter, is used to set up and maintain information about computers.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">NetInfoManager allows you to access and manipulate NetInfo data. The section &quot;Using NetInfoManager&quot; later in this chapter describes how to use this application.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">NetWareManager is used to authenticate users on a Novell NetWare network and to set up access to printers on a NetWare network. Its use is covered in Chapter 11, &quot;NEXTSTEP Computers in a Mixed Network.&quot;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Chapter 11 presents information on the PhoneManager and PhoneConnector, present in NEXTSTEP Release 3.2 and earlier versions. The Installation Guide presents information on the Install and Configure applications.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>NetInfo UNIX Utilities</b></font>
+
+<p><font face="Times" size="+1">In addition to the Manager applications, several command-line utilities allow direct manipulation of the NetInfo data. These commands are executed in a terminal window.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=123></td>
+
+<td nowrap><font face="Times" size="+1"><b>niload</b></font></td>
+
+<td><font face="Times" size="+1">Lets you load UNIX flat files (such as <b>/etc/printcap</b> and <b>/etc/passwd</b>) into a NetInfo database. This is useful when you're converting existing administrative information to be used by NetInfo.</font></td></tr>
+
+<tr valign=top>
+
+<td width=123 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=123></td>
+
+<td nowrap><font face="Times" size="+1"><b>nidump</b></font></td>
+
+<td><font face="Times" size="+1">Takes data from a NetInfo database and creates output in UNIX file format. This is especially useful when sharing administrative information in a mixed network (Chapter 11 discusses this in more detail).</font></td></tr>
+
+<tr valign=top>
+
+<td width=123 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=123></td>
+
+<td nowrap><font face="Times" size="+1"><b>niutil</b></font></td>
+
+<td><font face="Times" size="+1">Lets you read from and write to a NetInfo database.</font></td></tr>
+
+<tr valign=top>
+
+<td width=123 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=123></td>
+
+<td nowrap><font face="Times" size="+1"><b>nidomain</b></font></td>
+
+<td><font face="Times" size="+1">Lets you create and destroy NetInfo databases and tells you which NetInfo domains are served from which database by the servers running on a particular computer.</font></td></tr>
+
+<tr valign=top>
+
+<td width=123 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=123></td>
+
+<td nowrap><font face="Times" size="+1"><b>nigrep</b></font></td>
+
+<td><font face="Times" size="+1">Searches all NetInfo domains for all instances of a string you specify.</font></td></tr>
+
+<tr valign=top>
+
+<td width=123 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=123></td>
+
+<td nowrap><font face="Times" size="+1"><b>nifind</b></font></td>
+
+<td><font face="Times" size="+1">Reports the existence of a directory you specify, giving its number and optionally its contents, either for a particular domain or for all domains in the hierarchy.</font></td></tr>
+
+<tr valign=top>
+
+<td width=123 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=123></td>
+
+<td nowrap><font face="Times" size="+1"><b>nireport</b></font></td>
+
+<td><font face="Times" size="+1">Yields a report of all values of all properties in all subdirectories as well as those in a directory you specify in a particular domain.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">More information on these commands can be found in the UNIX manual pages.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Using NetInfoManager</b></font>
+
+<p><font face="Times" size="+1">The NetInfoManager application allows you to examine and manipulate NetInfo information. While the other Manager applications have specialized uses, NetInfoManager is a general access tool. Throughout the rest of this manual, you'll use it to examine the results of many of the tasks you perform. This section describes how to use NetInfoManager and defines the various components of the NetInfo system.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Precautions</b></font>
+
+<p><font face="Times" size="+1">Great care should be taken when using NetInfoManager. Because it's a direct access tool, you can very easily make a potentially serious mistake, such as introducing inconsistent data into the NetInfo database. Be sure to double-check your work before saving changes.</font>
+
+<p><font face="Times" size="+1">By default, a confirmation panel like the following appears whenever you modify the database.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="../images/F7.gif" width=364 height=185></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">To disable the confirmation panel for all domains, choose Preferences from the Info menu, then click Never Confirm Modifications in the Preferences panel and click OK.</font>
+
+<p><font face="Times" size="+1"><b>Note:</b>&nbsp; If you haven't disabled this feature, the confirmation panel will appear whenever you attempt to make any change to a domain. This step is not always included in the procedures in this manual.</font>
+
+<p><font face="Times" size="+1">Unless you feel confident about what you're doing, only use NetInfoManager for changes that you cannot make with any of the other Manager applications. Be sure that you have current backups of the <b>/etc/netinfo</b> directories, just in case you make a mistake. SNS makes backups automatically. You can also make backups of the <b>/etc/netinfo</b> directory with the <b>cp</b> command or preferably with the <b>tar xpf</b> command on the command line in a terminal window.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>NetInfo Directories</b></font>
+
+<p><font face="Times" size="+1">The information within a NetInfo database is organized into <i>NetInfo directories</i>. This organizational structure is very similar to that of the UNIX file system, but you should be careful not to confuse them. In the file system, a directory holds files (containing information) and other subdirectories. In NetInfo, the information associated with a directory is not in files, but in the directory itself. This distinction is clarified in the section &quot;Properties and Values&quot; later in this chapter. Just as with the file system, the NetInfo directory structure begins at the top level with a root directory, represented by a slash (<b>/</b>).</font>
+
+<p><font face="Times" size="+1">Use NetInfoManager to examine the NetInfo directories:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Start up NetInfoManager, located in <b>/NextAdmin</b>. A window displaying the information contained in your local NetInfo database appears (the window displayed on your system may not match exactly):</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="../images/F17.gif" width=529 height=263></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Click the directory <b>/users</b>.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F27.gif" width=529 height=263></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">The directory <b>/users</b> has subdirectories of its own, each containing the information about a single user account. Notice that the directory browser used here works much the same as the browser in the File Viewer you've used in the Workspace Manager</font><font size="-1"><sup><sup>TM</sup></sup></font><font face="Times" size="+1">.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Properties and Values</b></font>
+
+<p><font face="Times" size="+1">Any NetInfo directory may have subdirectories, and it may also hold data in the form of <i>properties</i>.</font>
+
+<p><font face="Times" size="+1">To see its subdirectories, click once on a directory. To see its properties, double-click on a directory.</font>
+
+<p><font face="Times" size="+1">A property is composed of a <i>key</i> and a <i>value</i>.</font>
+
+<p><font face="Times" size="+1">Take a look at how directories store data in properties by performing the following:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">To examine the properties associated with the directory <b>/users</b>, double-click <b>/users</b> in the domain window. The Directory window appears.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F35.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">As shown in this window, each property is made up of two parts: the <i>property key</i> (which can be thought of as the name of the property), listed in the Properties column, and the <i>property values</i>, shown in the Values column. In this example, the <b>/users</b> directory has a single property with the key <b>name</b> that has the value <b>users</b>. A NetInfo directory can have zero or more properties, and a property can have zero or more values.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Directory from the NetInfoManager main menu. The Directory menu appears.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F36.gif" width=124 height=163></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">The commands in this menu are used in conjunction with the text field in the bottom of the Directory window to manipulate the directory properties. Notice that the property key, <b>name</b>, is displayed in the text field. Entering text in this field, followed by a Return, will modify the property key.</font>
+
+<p><font face="Times" size="+1">Commands from the Directory menu allow you to insert or append a new property key, while the Delete command from the Edit menu allows you to delete a property. Modifying a property key is necessary when adding new properties, but not advisable otherwise.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=53></td>
+
+<td nowrap><font face="Times" size="+1"><b>Warning:</b></font></td>
+
+<td><font face="Times" size="+1">It's not a good idea to change an existing property key, since system software looks for information stored in properties with specific keys. Changing a property key can result in a wide variety of system and network errors.</font></td></tr>
+
+<tr valign=top>
+
+<td width=53 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=53></td>
+
+<td nowrap><img src="../images/sp.gif" width=52 height=1><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>users</b> in the Values column. This selects the property value, allowing you to manipulate it. Notice that <b>users </b>now appears in the text field at the bottom of the window.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F37.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Close the Directory window by clicking the close button.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">In the domain window, click the directory <b>/groups</b>.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F38.gif" width=529 height=263></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">This directory has several subdirectories, each representing a different user group.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Click the subdirectory <b>wheel</b>. It will shift to the middle column where it will appear highlighted. Open the Directory window for the group <b>wheel</b> by double-clicking it.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F39.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">Notice that this directory has several properties in addition to the <b>name</b> property (<b>passwd</b>, <b>gid</b>, and <b>users</b>).</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Click the <b>users</b> property key. This property has two values associated with it, <b>root</b> and <b>me</b> (the names of the users belonging to the group <b>wheel</b>).</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F40.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>8.</b></font></td>
+
+<td><font face="Times" size="+1">Close the directory window.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Viewing Directories</b></font>
+
+<p><font face="Times" size="+1">By default, the directory browser in NetInfoManager displays the value of the <b>name</b> property for each directory. You might want to see the value of some other property for all the directories. For example, you might want to discover which user account is assigned a specific user ID. Follow these steps to change how the directories are displayed:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Still in NetInfoManager, click the <b>users</b> directory.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F41.gif" width=529 height=263></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Choose View from the Domain menu, then View By. A panel appears containing a list of properties in the <b>/users </b>subdirectory.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F48.gif" width=193 height=218></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Select <b>uid</b> in the list, then click Set View. The directory browser changes to show the first value of the <b>uid</b> property for each directory.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F49.gif" width=529 height=263></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">To determine the user name associated with a specific user ID, you can open the appropriate Directory window. For example, double-click <b>4</b> in the directory browser.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F50.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">As you can see from the value of the <b>name</b> property, the user <b>uucp</b> is assigned the user ID <b>4</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Close the directory window.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Choose <b>View Directories By</b> again. Click <b>name</b> in the resulting list, then click Set View.&nbsp; The directory browser once again displays the value of the <b>name</b> property for each directory.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1"><b>Note:</b>&nbsp; You can also see the contents of all a subdirectory's property keys and values at once by using the Table view in the popup list at the top of the browser.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>NetInfo Domains</b></font>
+
+<p><font face="Times" size="+1">A domain can hold the administrative data for a single computer, a department, or even an entire company. This administrative data includes information about the domain's users and about the resources to which these users have access (such as computers, shared directories, and printers). The information that's available only to an individual computer is called the computer's <i>local domain</i>.</font>
+
+<p><font face="Times" size="+1">A domain is structured as a directory tree, with a root directory and subdirectories, each of which may have subdirectories. Any subdirectory may also have properties, which are composed of a key and a set of zero, one, or more values.</font>
+
+<p><font face="Times" size="+1">Each computer has its own local domain, which contains in its directories and properties the information governing that particular computer. The way in which multiple computers relate as a network requires a shared domain in addition to the local domains for each computer. The directories and properties in the shared domain contain information governing the way the computers work together, i.e., the network information. This additional domain relates to the local domains hierarchically as a parent. Thus NEXTSTEP computers in a NetInfo network each have their own local domains as children and at least one parent domain.</font>
+
+<p><font face="Times" size="+1">The following figure shows three standalone computers, each with its own local domain (represented by a gray rectangle).</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F57.gif" width=360 height=90></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">NetInfo domains are also organized into a hierarchy. At the top of this hierarchy is the <i>root domain</i>, represented by a slash (<b>/</b>). The lowest level of the domain hierarchy is the local domain. In a two-level domain hierarchy, the parent of all local domains is the root domain. In more complicated networks, there may be more levels of the hierarchy--midlevel domains between local domains and the root domain (see Chapter 10, &quot;Configuring a Large Network&quot;).</font>
+
+<p><font face="Times" size="+1">On a NEXTSTEP computer that isn't connected to a network, the local domain is the only domain, so it is the root domain for that computer, and the figure shows in effect three separate &quot;networks&quot; of one computer each. Each local domain must have at least one instance of a database in the <b>/etc/netinfo</b> directory, the <b>/etc/netinfo/local.nidb </b>database, and each instance of each database must have a <b>netinfod</b> process running on that computer. The small gray box in each figure represents a domain (instantiated by a database).</font>
+
+<p><font face="Times" size="+1">The next figure shows the same three computers as in the previous figure after having been connected and configured with SimpleNetworkStarter.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F58.gif" width=366 height=98></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The hosts <b>mars</b> and <b>venus</b> still only run their respective local NetInfo domain server processes. By convention, a local domain is given a domain name that matches the name of the host serving it. The local domain on <b>venus</b> is named <b>/venus</b>.</font>
+
+<p><font face="Times" size="+1">The host <b>earth</b> runs a server process for its own local domain (<b>/earth</b>) and also for the root domain (<b>/</b>) that governs the common network information for all three computers. It is important to note that there are two separate domains on the computer named <b>earth</b>. Each domain has a separate database. The <b>/earth</b> domain contains information that is local to the computer named <b>earth</b>. Information in the root domain (<b>/</b>) stores information common to all the computers in the network. The computer named <b>earth</b> runs a <b>netinfod</b> server process for its local domain and another <b>netinfod</b> server process for the root domain.</font>
+
+<p><font face="Times" size="+1">When a program running on a computer needs to find a piece of information stored in NetInfo, it first looks in its local domain. If it finds what it's looking for, it uses that. If it doesn't, it looks in the parent domain, if there is one. If the information can't be found in the immediate parent domain, the search process is continued until the root domain is reached.</font>
+
+<p><font face="Times" size="+1">Returning to the previous example, when a search for NetInfo information is made on the host <b>mars</b>, the local domain <b>/mars</b> is checked first. If the information isn't found there, the search continues in the root domain (<b>/</b>). A search for NetInfo information never travels down a different branch of the domain hierarchy. For example, a search for information on <b>mars</b> would never access the domain <b>/venus</b> or <b>/earth</b>.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Naming Conventions</b></font>
+
+<p><font face="Times" size="+1">There are two main ways to name a specific domain: <i>tagged domain notation</i> and <i>domain name notation</i>.</font>
+
+<p><font face="Times" size="+1">Tagged domain notation involves specifying a particular database server that contains the information for the domain. To identify a database server uniquely, you must specify the host computer on which the database resides as well as the <i>tag</i> of the database (the database filename without the .nidb extension). Given an identifier of the form <i>hostname/tagname</i>, you can find the database itself by looking in the <b>/etc/netinfo</b> directory of that host. The database information is contained in the files in the <b>/etc/netinfo/tagname.nidb</b> directory.</font>
+
+<p><font face="Times" size="+1">Domain name notation references an existing domain hierarchy. A particular domain in the hierarchy is specified by the full path to the domain starting with the root. The path is constructed similarly to UNIX filesystem conventions. The name begins with the root name <b>/</b> and is followed by names of child domains delimited by the `/' character, ending with the desired domain. For example, <b>/</b> is the root domain, <b>/admin</b> names the domain <b>admin</b> whose parent is root, and <b>/admin/earth</b> names the domain <b>earth</b> whose parent is <b>admin</b>, which is a child of root.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Multiple Domains</b></font>
+
+<p><font face="Times" size="+1">NetInfoManager can be set automatically to connect to a specified NetInfo domain at startup. By default, it is connects to the local domain. You can change this using NetInfoManager's preferences panel. To examine or modify information stored in a different domain, do the following:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Open from the Domain menu. The Select NetInfo Domain panel appears:</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="../images/F5.gif" width=298 height=338></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">By configuring your network, you have created a two-level domain hierarchy with the root domain at the top and each of the local domains (one for each computer on the network) at the lower level. From this panel, you select the domain you want to open by clicking the name in the browser or typing the name in the text field. Note that you can access any domain in the hierarchy from any host on the network.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Select the root domain by clicking <b>/</b> in the left column. Note that <b>/</b> now appears in the Domain field near the bottom of the panel. In NetInfoManager, use the Domain, Open Parent command.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F29.gif" width=298 height=338></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Click OK. A new domain window for the root domain of the network appears. It's represented by <b>/</b> in the title bar.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F30.gif" width=529 height=263></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">Notice that the title bar of a domain window includes the tag of the NetInfo database (<b>network</b>), the name of the computer running the server (<b>earth</b>), and the name of the domain (<b>/</b>).</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Drag the root domain window away from the local domain window in back of it so that you can compare them; the domains are clearly different.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Click the directory <b>machines</b> in the second column of each window. In the local domain window, you'll just see <b>broadcasthost</b> and <b>localhost</b>.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F28.gif" width=529 height=263></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">In the root domain window, in the right column, you see a list of all the computers you added to the network.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F32.gif" width=529 height=263></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Pick a host name and click it. The <b>machines</b> directory is now in the middle column with the computer you chose highlighted.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Double-click the selected host name. A Directory window appears (<b>mars</b> is the host used in this example).</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F33.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">These properties store the host entry information for this computer. They were created when you added this host to your network.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>8.</b></font></td>
+
+<td><font face="Times" size="+1">Close the Directory window.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>9.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>/locations</b> in the root domain window.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F53.gif" width=529 height=263></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">The <b>locations</b> directory stores information about the locations of various files and servers. The <b>homes</b> directory identifies home directory servers and the <b>localapps</b> directory identifies an application server. These directories are described in Chapter 4, &quot;Setting Up the Network File System.&quot; The <b>sendmail</b> directory identifies the <b>sendmail </b>configuration file, and is described in Chapter 6, &quot;Managing Electronic Mail.&quot;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Times" size="+1"><b>10.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>ntp</b>, then double-click it to open a Directory window. Click <b>host</b>.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F54.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">Use the Parent Domain, Open Parent command to see that the <b>host</b> property of the <b>ntp</b> directory identifies network time servers.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Times" size="+1"><b>11.</b></font></td>
+
+<td><font face="Times" size="+1">Close the Directory window and quit NetInfoManager.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Underlying Data Files and Processes</b></font>
+
+<p><font face="Times" size="+1">You've just used NetInfoManager to examine the NetInfo databases associated with your network. Now, you'll look at the files that contain the databases, as well as the processes used to access them. In order to be able to see some of the directories from the File Viewer, you must use Preferences to set the UNIX Expert option in the Expert Preferences panel.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>The /etc/netinfo Directory</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Log into a computer running a network-wide NetInfo server process, then use the File Viewer to find <b>/etc/netinfo</b>. Note the two subdirectories, <b>local.nidb</b> and <b>network.nidb</b>.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F34.gif" width=604 height=478></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">On any NEXTSTEP system, the directory <b>/etc/netinfo</b> always has a <b>local.nidb</b> subdirectory. This subdirectory contains the data files for the local domain. When you created your network with SimpleNetworkStarter, you built the <b>network.nidb</b> directory, which holds the files for the root domain. For each domain in a hierarchy, there's a separate directory labeled <i>tag</i><b>.nidb</b>, where <i>tag</i> is replaced by a string identifying the domain.</font>
+
+<p><font face="Times" size="+1"><b>Note:</b>&nbsp; Because of the importance of the information stored in <b>/etc/netinfo</b>, make sure you maintain reliable off-line backups of this directory. You can create an on-line backup using NetInfoManager's &quot;Save Backup&quot; command in the Domain menu by using the Domain, Save Backup command while logged in as root to a computer running a server for the domain.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Examine the contents of these directories. In each, you'll find a file named <b>Collection</b>; there may also be one or more additional files named <b>extension_</b><i>somenumber</i>.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F31.gif" width=604 height=438></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">These are the data files containing the information for each domain. Information for the local domain for each of the other computers will be stored on each computer in the <b>/etc/netinfo/local.nidb</b> directory. The information in these files should not be viewed or changed with a text editor. Use NetInfoManager or one of the other Manager applications to access and maintain NetInfo information.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>The /etc/hostconfig File</b></font>
+
+<p><font face="Times" size="+1">During system startup, the file <b>/etc/hostconfig</b> is consulted for network configuration information. This file was modified by SimpleNetworkStarter when you set up the network. To examine these modifications, do the following:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Still logged into one of the computers running a network-wide NetInfo server process, open the file <b>/etc/hostconfig</b>. You'll find something like the following, with the host name and Internet address of your computer in place of the variables:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">HOSTNAME=<i>hostname</i></font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">INETADDR=<i>internetaddress</i></font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">ROUTER=-ROUTED-</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">IPNETMASK=-AUTOMATIC-</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">IPBROADCAST=-AUTOMATIC-</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">NETMASTER=-YES-</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">YPDOMAIN=-NO-</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">TIME=-AUTOMATIC-</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Log into a computer that is not set up to run a server and open <b>/etc/hostconfig</b>. It should look like this:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">HOSTNAME=-AUTOMATIC-</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">INETADDR=-AUTOMATIC-</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">ROUTER=-ROUTED-</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">IPNETMASK=-AUTOMATIC-</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">IPBROADCAST=-AUTOMATIC-</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">NETMASTER=-NO-</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">YPDOMAIN=-NO-</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">TIME=-AUTOMATIC-</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The differences between the two files are in the values for HOSTNAME, INETADDR, and NETMASTER.</font>
+
+<p><font face="Times" size="+1">If a computer has HOSTNAME and INETADDR set to -AUTOMATIC- when it starts up, it requests its host name and Internet address from a configuration server. When a computer running a configuration server starts itself up, the NetInfo database might not yet be available (as the NetInfo server is usually running on the same computer as the configuration server), so its host name and Internet address are supplied from the <b>hostconfig</b> file. If NETMASTER is set to -YES-, the computer will run a configuration server.</font>
+
+<p><font face="Times" size="+1"><b>Note:</b>&nbsp; Because of the importance of <b>hostconfig</b>, make sure you maintain reliable backups of it.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>NetInfo Server Processes</b></font>
+
+<p><font face="Times" size="+1">Each NetInfo database needs a process to serve it; that is, a program running all the time that can get information from the database to provide to other programs that need it. For example, the login process needs to check the user name and password against information in the database. The login program contacts the database server, which returns the necessary information.</font>
+
+<p><font face="Times" size="+1">Each NetInfo database must be accessed through the <b>netinfod</b> server process, which runs constantly.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Open a terminal window on a machine running a network-wide NetInfo server process and enter the following command:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>ps -ax</b></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">The <b>ps</b> command displays process information. For more information about <b>ps</b>, see the UNIX manual page and Chapter 14, &quot;General Troubleshooting.&quot;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Find lines in the output with <b>netinfod</b> in them, like these:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">63 ?&nbsp; S&nbsp;&nbsp;&nbsp;&nbsp; 2:02 /usr/etc/netinfod local</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">65 ?&nbsp; S&nbsp;&nbsp;&nbsp; 16:00 /usr/etc/netinfod network</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">These are the two NetInfo server processes, one for the local domain and the other for the network domain. If your computer runs server processes for more than two domains, you'll see a process for the other domain(s) as well. They must be running for the network to function.</font>
+
+<p><font face="Times" size="+1">Each server process is started up with a tag that defines the database it serves; this tag matches the prefix of the <i>tag</i><b>.nidb</b> directory that holds the database information. Thus the server <b>netinfod local</b> serves information from the directory <b>/etc/netinfo/local.nidb</b>. On a computer that's not a server, you'll find only the NetInfo daemon with the tag <b>local</b>.</font>
+
+<p><font face="Times" size="+1">The following figure shows the same three computers as in the earlier figures. Below each computer is a list that includes the processes running on that computer to serve NetInfo domains, and the directories in <b>/etc/netinfo </b>storing the databases.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F23.gif" width=414 height=134></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">Because <b>mars</b> and <b>venus</b> only run server processes for their respective local domains, they each have a single <b>netinfod</b> process running and a single subdirectory in <b>/etc/netinfo</b> (tagged <b>local</b>). The host <b>earth</b> runs a server process for the root domain, so it has an additional <b>netinfod</b> process and <b>/etc/netinfo</b> subdirectory for the root domain (tagged <b>network</b>).</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Troubleshooting</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">This section discusses actions to take if you encounter problems performing the procedures in this chapter, or if you're having network difficulties.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Automatic Host Addition Problems</b></font>
+
+<p><font face="Times" size="+1">When you add a new or modified host using automatic host addition, you might see one of the following messages:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Courier">Name recognized. New CPU board or ROM chip [y/n]?</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">This message indicates that the configuration server already has a host entry for the host name you entered, but that computer isn't currently running on the network. If you see this message while adding a new host, answer <b>no</b> (or <b>n</b>). You'll be prompted for another host name. This may also indicate a spurious value in the trusted_networks property of the root directory for a domain. See the section Automatically Adding a Modified Host earlier in this chapter.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Courier">Host name already in use</font><font face="Times" size="+1">.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">This message indicates that the host name you entered is the name of a computer currently running on the network. After a brief delay, you'll be prompted for a different host name.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Courier">Incorrect password.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">You'll get this message if you entered the network password incorrectly. You'll be returned to the beginning of the configuration process, where you'll need to enter the host name again.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Courier">Server error: no available IP address.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">You'll get this message if you try to create a new host entry and the configuration server has no more addresses available to assign. The range of assignable addresses will need to be modified on the configuration server, as described earlier in the section &quot;Enabling Automatic Host Addition.&quot; Once additional addresses are available, you can then add the new host. (For additional information, see the section Manually Adding a New Host earlier in this chapter.)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>NetInfo Directory Problems</b></font>
+
+<p><font face="Times" size="+1">You may see a directory in NetInfoManager that's listed as <b>dir:</b><i>#</i> (where <i>#</i> is replaced by a number) rather than a name, as in the following figure.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F43.gif" width=529 height=263></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">What's displayed in the directory browser is actually the value of the <b>name</b> property for each directory. By default NetInfoManager presents directories by name. You can use the View By selection to direct NetInfoManager to present directories by some other property.</font>
+
+<p><font face="Times" size="+1">While not required for operation, each directory should have a name. Note that many dirctories, such as <b>/users</b> and <b>/machines</b> and others, do require a <b>name</b> property for proper system operation. If the <b>name</b> property does not exist, NetInfoManager displays the directory number instead. To create a name for a directory, follow these steps:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Double-click the directory name to open the Directory window.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F44.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">As you can see in this example, there isn't a property with the key <b>name</b>. It's accidentally been renamed <b>mynewgroup</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">To fix this, enter <b>name</b> in the text field and press Return, giving the property its correct key; <b>name</b> should now show in the Properties list.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Save from the Directory menu to make the change permanent. Click Change in the confirmation panel if it appears.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The value of the <b>name</b> property should now show in the domain window in place of <b>dir:</b> <i>#</i>.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Network Communication Problems</b></font>
+
+<p><font face="Times" size="+1">If you suspect that there's trouble with the underlying network mechanisms, Ethernet (or token ring) and TCP/IP, the programs <b>ping</b> and <b>netstat</b> can help you check to be sure these lower levels of the communication link are all right.</font>
+
+<p><font face="Times" size="+1">The program <b>ping</b> exchanges low-level messages between two hosts, confirming a connection. Ping other hosts on the network to see if they're receiving your messages and able to exchange information. See the UNIX manual page for <b>ping</b> for details.</font>
+
+<p><font face="Times" size="+1">A simple and direct test is given by <b>ping</b>; more detailed network information is returned by <b>netstat</b>. Once you can ping other hosts and you know that you have a sound network connection, you can get reports of network statistics and status with <b>netstat</b>. The UNIX manual page for <b>netstat</b> explains the details.</font>
+
+<p><font face="Times" size="+1">Once you've checked the basic level of the network with these commands and found them to be operating successfully, you can concentrate on finding problems in your network configuration.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Replacing a Corrupted NetInfo Database</b></font>
+
+<p><font face="Times" size="+1">If you're having major problems that you believe stem from a corrupted NetInfo database, you can restore the NetInfo and configuration servers to their original, standalone states. In addition, if you're not confident about changes you've made to the local domain, you may want to restore it, too.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=34></td>
+
+<td nowrap><font face="Times" size="+1"><b>Warning:</b></font></td>
+
+<td><font face="Times" size="+1">Making a new NetInfo database is a drastic measure. Only do this as a last resort. If you've invested a lot of time creating the NetInfo database, ask an expert for help before replacing it. A better choice is to restore the <b>hostconfig</b>, <b>local.nidb</b>, and <b>network.nidb</b> files from backups made when the network was working properly.</font></td></tr>
+
+<tr valign=top>
+
+<td width=34 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=34></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">Follow these steps to restore each NetInfo server to its original state:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Restore the NetInfo databases on the computer running the server process for the root domain. Be sure to do this in single-user mode (see Chapter 9, &quot;System Startup and Shutdown,&quot; for details). On the computer running the server process for the root domain:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>a.</b></font></td>
+
+<td><font face="Times" size="+1">Copy <b>/usr/template/client/etc/hostconfig</b> to <b>/etc</b>. This restores the <b>hostconfig</b> file to its default configuration.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">cp -r /usr/template/client/etc/hostconfig /etc</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>b.</b></font></td>
+
+<td><font face="Times" size="+1">Remove the directory in <b>/etc/netinfo</b> to delete all NetInfo domains on that computer.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>c.</b></font></td>
+
+<td><font face="Times" size="+1">Copy the files in <b>/usr/template/client/etc/netinfo</b> to <b>/etc/netinfo</b> to restore the netinfo domain to its original state.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">cp -r /usr/template/client/etc/netinfo /etc/netinfo</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Restore the NetInfo databases on any computers running clone NetInfo servers by logging into each computer and following the procedures in step 1.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Restore the local information on any computers running just local domain servers that you think are damaged. On each such computer follow steps (a) through (c) from step 1.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Reboot all the computers.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Set up the NetInfo network from scratch, beginning with the procedures in Chapter 2.</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

@@ -1,0 +1,956 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/EnterpriseObjects/Guide/Part3_Programming/12_WorkingWithInterfaceLayer.rtfd -->
+<!-- Date: Sun Jan  1 17:05:35 2023 -->
+<head>
+<title>12_WorkingWithInterfaceLayer</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+4" color="#FF00FF"><b>12</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<p><font face="Times" size="+4"><i>Working with the Interface Layer</i></font>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Much of the functionality of the interface layer is accessible through Interface Builder. Assuming your data store is a relational database, you can create a model in EOModeler and drag the model (or a single entity in the model) into a nib file to create an entity controller. You can use Interface Builder to customize the behavior of a controller, form associations between a controller and user interface objects, add a control to perform a fetch operation, and thereby have a fully functioning (if minimal) application.</font>
+
+<p><font face="Times" size="+1">While working in Interface Builder has the advantage of convenience, sometimes you need to interact with interface layer objects more directly: for example, if you're not using a relational database, or if you want to modify the behavior of interface layer objects at run time. This chapter describes how to work with the interface layer programmatically.</font>
+
+<p><font face="Times" size="+1">This chapter is organized into the following sections:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">&quot;Configuring a Controller&quot; shows you how to set the behavior of a controller.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">&quot;A Controller and its Associations&quot; explains how to add associations to a controller.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">&quot;A Controller and its Data Source&quot; explains how to add a data source to a controller.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">&quot;Linking Controllers&quot; shows you how to use controllers in combination with each other: by setting up a master-detail or master-peer configuration, or by simply chaining controllers together.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">&quot;Monitoring Activity&quot; explains how to use EOController delegate methods to monitor the activity in the interface layer.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">&quot;Modifying an Enterprise Object Directly&quot; describes how to directly apply changes to enterprise objects, and how to coerce a string value into the appropriate value class type before sending it to an enterprise object.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This chapter doesn't provide a detailed explanation of the objects in the interface layer; for an overview of how objects in the interface layer interact, see Chapter 3, &quot;From Objects to the User Interface,&quot; as well as the interface layer class specifications in the <i>Enterprise Objects Framework Reference</i>. For information on working in the access layer to fetch and modify records, see the appropriate chapter in this section.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Configuring a Controller</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">An EOController synchronizes values in enterprise objects with the data displayed in user interface objects. Several aspects of an EOController's behavior are configurable: For example, you can set a controller to buffer edits to objects and to buffer data source operations, direct it to maintain an undo stack, and define the characteristics of its undo stack.</font>
+
+<p><font face="Times" size="+1">You can use the EOController Inspector in Interface Builder to set the behavior of a controller. However, you can also accomplish this programmatically; this enables you to dynamically control the behavior of a controller at run time.</font>
+
+<p><font face="Times" size="+1">The following code excerpt configures a controller to immediately apply edits and operations, maintain an undo stack that records up to 10 undo marks, and set undo marks by operation:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOController *myController;  /* Assume this exists. */</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[myController setSavesToObjectsAutomatically:YES];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[myController setSavesToDataSourceAutomatically:YES];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[myController setUndoEnabled:YES];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[myController setMarksEveryOperation:YES];
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1></font><font face="Courier">[myController setMaximumUndoMarks:10];</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">When automatic saving to objects and the data source are <i>not</i> in effect, you must explicitly send the controller <b>saveToObjects </b>and <b>saveToDataSource</b> messages to apply buffered changes. The default behavior of EOController is to buffer data source operations and edits to enterprise objects; controllers created in Interface Builder default to the opposite behavior.</font>
+
+<p><font face="Times" size="+1">Buffering data source operations is useful if, for example, your application uses screens that include multiple fields. In that case, you might choose to associate <b>saveToDataSource</b> with a Save button that's used to save changes made to all of the fields in a particular screen. Or if your application uses a master-detail interface, you can design it to perform <b>saveToDataSource</b> in the detail whenever the selection in the master table changes.</font>
+
+<p><font face="Times" size="+1">When you direct a controller to set undo marks for every operation (using <b>setMarksEveryOperation:</b>), the controller records an undo mark whenever you end editing of a field--typically, by pressing Tab or Return. However, if you disable <b>setMarksEveryOperation:</b>, you can set undo marks at any arbitrary point by sending the controller a <b>markUndo</b> message. For example, if your application performs operations on multiple fields or records (such as deletions), you probably don't want the deletion of each individual record to be marked as a separate undoable operation. Rather, you'd set an undo point for the entire set of deletions.</font>
+
+<p><font face="Times" size="+1">To give another example, you can set up your controller to maintain an undo stack and buffer edits to enterprise objects. You can then use the delegate method <b>controller:willSaveEdits:toObject</b> to set an undo mark every time the controller receives a <b>saveToObjects</b> message (<b>controller:willSaveEdits:toObject</b> is sent to the delegate whenever the controller is about to perform a <b>saveToObjects</b> operation):</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">- (NSDictionary *)controller:(EOController *)controller</font><br>
+<img src="../../../../Images/sp.gif" width=167 height=1><font face="Courier">willSaveEdits:(NSDictionary *)edits toObject:object</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">{</font><br>
+<img src="../../../../Images/sp.gif" width=145 height=1><font face="Courier">[controller markUndo];</font><br>
+<img src="../../../../Images/sp.gif" width=145 height=1><font face="Courier">return edits;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Subsequently sending the controller an <b>undo</b> message has the effect of undoing the entire set of edits that were buffered at the time you sent the controller <b>saveToObjects</b>. As a point of contrast, if you configured your controller to buffer edits and to set an undo mark for every operation (using the <b>setMarksEveryOperation:</b> method) instead of explicitly setting marks as shown above, issuing an <b>undo</b> message would undo the edits made to each field one by one, instead of undoing the edits as a group.</font>
+
+<p><font face="Times" size="+1">For more discussion of edit buffering and undo, see Chapter 3, &quot;From Objects to the User Interface&quot; and the EOController class specification in the <i>Enterprise Objects Framework Reference</i>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>A Controller and its Associations</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">A controller uses EOAssociation objects to mediate between enterprise objects and the user interface. Associations connect a single user interface object to a named property (key) in an enterprise object or objects managed by the controller. The enterprise object's value for the property is displayed in the association's user interface object. A controller communicates with its associations to coordinate the consistency of data displayed in the user interface with enterprise object data.</font>
+
+<p><font face="Times" size="+1">You can create most associations in Interface Builder, but sometimes you may need to create one programmatically--for example, when an association crosses nib file boundaries, such as to a panel in another nib file. Or if you create a custom association for a user interface object for which the Framework already provides an association, the only way to use your custom association would be to create and add it programmatically at run time.</font>
+
+<p><font face="Times" size="+1">This code excerpt shows how to create a qualified association between one controller and another:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOController *deptController;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOController *empController;&nbsp;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOQualifiedAssociation* qualAssoc;</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">qualAssoc =[[EOQualifiedAssociation alloc]</font><br>
+<img src="../../../../Images/sp.gif" width=145 height=1><font face="Courier">initWithController:deptController key:@&#34;toEmployee&#34;</font><br>
+<img src="../../../../Images/sp.gif" width=145 height=1><font face="Courier">destination:empController];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[deptController addAssociation:qualAssoc];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">A qualified association is a special type of association used to link controllers. For more information, see the EOQualifiedAssociation specification in the <i>Enterprise Objects Framework Reference</i>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>A Controller and its Data Source</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Every controller has a data source that supplies it with enterprise objects, and with which it communicates when those enterprise objects change.</font>
+
+<p><font face="Times" size="+1">If your controller's data source is an instance of EODatabaseDataSource, you can programmatically set the data source, apply qualifiers and fetch ordering to the data source (qualifiers and fetch ordering are described in Chapter 8, &quot;Retrieving Records&quot;), and even swap data sources at run time.</font>
+
+<p><font face="Times" size="+1">In this code excerpt, an application switches between a conventional EODatabaseDataSource and a dictionary data source custom class. If you swap in a new data source, you must first send the controller either a <b>saveToDataSource</b> or a <b>discardOperations</b> message to resolve any outstanding data source operations.</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOController *controller;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EODatabaseDataSource *realSource;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">DictionaryDataSource *dictSource;</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Save any data source operations. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[controller saveToDataSource];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Preserve original data source; swap in temporary datasource. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">realSource = [(EODatabaseDataSource *)[controller dataSource]</font><br>
+<img src="../../../../Images/sp.gif" width=167 height=1><font face="Courier">retain];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">dictSource = [[[DictionaryDataSource alloc] init] autorelease];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[controller setDataSource: dictSource];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[controller fetch];</font>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Linking Controllers</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">You can link controllers together into a &quot;controller chain&quot; to take advantage of the fact that certain messages (<b>fetch</b>, <b>saveToObjects</b>, <b>saveToDataSource</b>, and <b>redisplay</b>) are propagated downward from one controller to the next controller in the chain.</font>
+
+<p><font face="Times" size="+1">There are three possible configurations:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Master-detail, in which the detail controller uses a detail data source that gets its objects based on the selection in the master controller, and forwards all database operations to the master controller's data source.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Master-peer, in which each controller has its own data source and can fetch and modify objects independently.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Linking otherwise independent controllers using the <b>setNextController:</b> message.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">When a controller receives a <b>fetch</b>, <b>saveToObjects</b>, <b>saveToDataSource</b>, or <b>redisplay</b> message, it checks the destination of each of its associations to see if that object also responds to the message. If the object is a controller it responds to the message, checks its own associations, and continues to propagate the message down the controller chain.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Creating a Master-Detail Configuration</b></font>
+
+<p><font face="Times" size="+1">A master-detail configuration consists of two controllers connected by an EOQualifiedAssociation. The qualified association allocates and directs the detail controller's data source according to what is selected in the master controller. When the object selected in the master controller changes, the qualified association applies a qualifier to the detail controller's data source so that the detail data source returns only those objects that are related to the one selected in the master.</font>
+
+<p><font face="Times" size="+1">Chapter 8, &quot;Creating an Enterprise Objects Framework Project,&quot; shows how to create a detail controller by dragging a controller object into your nib file from Interface Builder's EOPalette and connecting it to an entity controller. In order to create a master-detail configuration programmatically, however, follow these basic steps:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Create the master controller.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Create the master data source.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Create the detail controller.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Establish a qualified association between the master controller and the detail controller.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The following method shows a simple master-detail configuration. This example lists each department (by name) and the names of all employees who work in each department. The department objects are obtained from the master controller, while the employee objects are obtained by selecting each department object in turn and then retrieving the corresponding employee objects from the detail controller. Note that in practice, this could be done more quickly and efficiently using the data source directly.</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">- listAllEmployees:sender</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">{</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">NSArray *empObjects;</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">NSArray *deptObjects;</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">EODatabaseDataSource *deptDataSource;</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">int i, j;</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">int deptCount, empCount;</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">EOController *myDetailController;</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">EOController *deptController;</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">EOQualifiedAssociation *myQualAssociation;
+
+<p><br><br>
+
+<p><img src="../../../../Images/sp.gif" width=152 height=1></font><font face="Courier">/* Create and initialize the data source. */</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">deptDataSource = [[EODatabaseDataSource alloc]</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">initWithModelName:@&#34;People&#34; entityName:@&#34;Department&#34;];</font>
+
+<p><img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Create the master EOController. */</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">deptController = [[EOController alloc]</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">initWithDataSource:deptDataSource];</font>
+
+<p><img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Create the detail EOController. */</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">myDetailController = [[EOController alloc]</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">initWithDataSource:nil];</font>
+
+<p><img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Establish the association between the master data source */</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* and the detail.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; */</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">myQualAssociation = [[EOQualifiedAssociation alloc]</font><br>
+<img src="../../../../Images/sp.gif" width=173 height=1><font face="Courier">initWithController:deptController key:@&#34;toEmployee&#34;</font><br>
+<img src="../../../../Images/sp.gif" width=201 height=1><font face="Courier">destination:myDetailController];</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">[deptController addAssociation:myQualAssociation];</font>
+
+<p><img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Get the entire set of objects. */</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">[deptController fetch];</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">deptObjects = [deptController allObjects];</font>
+
+<p><img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Iterate through each department, and display its employees. */</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">for(i = 0, deptCount = [deptObjects count]; i &lt; deptCount; i++){</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">NSLog(@&#34;%@&#34;, [[deptObjects objectAtIndex:i] departmentName]);</font>
+
+<p><img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">/* From the detail controller, get all of the&nbsp; */</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">/* employee objects that work in the currently */</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">/* selected department.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; */</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">empObjects = [myDetailController allObjects];</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">for(j = 0, empCount = [empObjects count]; j &lt; empCount; j++){</font><br>
+<img src="../../../../Images/sp.gif" width=208 height=1><font face="Courier">NSLog(@&#34;%@&#34;, [[empObjects objectAtIndex:j] lastName]);</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">}</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">/* Change the selection in the master; this */</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">/* automatically updates the detail.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; */</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">[deptController selectNext];</font><br>
+<img src="../../../../Images/sp.gif" width=145 height=1><font face="Courier">}</font><br>
+<img src="../../../../Images/sp.gif" width=145 height=1><font face="Courier">return self;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The enterprise object classes in the above example implement convenience methods for directly accessing the properties <b>lastName</b> and <b>departmentName</b> for employee and department enterprise objects, respectively.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Creating a Master-Peer Configuration</b></font>
+
+<p><font face="Times" size="+1">When you want two linked controllers to have more autonomy than a master-detail configuration allows, you can create a master-peer configuration. Master-peer configurations are similar to master-detail, except:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">A peer controller has its own data source (an EODatabaseDataSource). This data source may have an auxiliary qualifier, which further limits the data specified by the EOQualifiedAssociation linking the master controller with the peer controller. In a master-detail configuration, the detail data source can't be further qualified.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The peer data source does its own fetching and inserting. In a master-detail configuration, the master controller's data source fetches and inserts data at the behest of the detail controller.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Because the peer data source can act independently, if you change data supplied by the peer, the changes aren't necessarily reflected in the master. In a master-detail configuration, if data changes in the detail, the master is updated accordingly.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">One way to form a master-peer configuration is drag two model files (or entities from EOModeler) into a nib file (one for the master controller, and one for the peer controller) and connect them as you would for a master-detail configuration.</font>
+
+<p><font face="Times" size="+1">To programmatically create a master-peer configuration, follow these basic steps:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Create the master data source and controller.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Create the peer data source and controller.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Establish a qualified association between the master controller and the peer controller.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Optionally, apply an auxiliary qualifier to the peer's data source.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">In the following example, it's assumed that you've created the two controllers (the master controller <b>deptController</b> and its peer controller <b>empController</b>) and their data sources by the common approach of dragging two models (or entities from models) into Interface Builder. Further, it's assumed that you've formed a qualified association between the two controllers by Control-dragging in Interface Builder; this can also be achieved programmatically (see &quot;Creating a Master-Detail Configuration&quot; for examples). For information on creating a master-peer interface, see Chapter 6, &quot;Creating an Enterprise Objects Framework Project.&quot;</font>
+
+<p><font face="Times" size="+1">The following method constructs a qualifier that selects all employees whose salaries are over $5000 a month, and applies the qualifier to the peer's data source (<b>empDataSource</b>). The peer controller is then directed to perform a fetch operation.</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">- getQualifiedEmployees:sender</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">{</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">EOController *empController;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">EODatabaseDataSource *empDataSource;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">EOQualifier *myQualifier;</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">EOEntity *anEntity;</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">EOQualifiedAssociation *qualAssoc;</font>
+
+<p><img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">empDataSource = (EODatabaseDataSource*)[empController dataSource];</font>
+
+<p><img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Construct qualifier. */
+
+<p><img src="../../../../Images/sp.gif" width=152 height=1></font><font face="Courier">anEntity = [empDataSource entity];</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">myQualifier = [[EOQualifier alloc] initWithEntity:anEntity</font><br>
+<img src="../../../../Images/sp.gif" width=195 height=1><font face="Courier">qualifierFormat:@&#34;%A &gt; %f&#34;, @&#34;Salary&#34;, 5000.0];</font>
+
+<p><img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Apply qualifier to peer data source. */</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">[empDataSource setAuxiliaryQualifier:myQualifier];</font>
+
+<p><img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Tell peer controller to fetch. */</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">[empController fetch];</font>
+
+<p><img src="../../../../Images/sp.gif" width=145 height=1><font face="Courier">return self;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Figure 55 shows a user interface that could be associated with this method.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F0.gif" width=718 height=266></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 55</b></font><font face="Times" size="+1">. Master-Peer Interface</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">The Fetch button causes the master controller <b>deptController</b> to fetch. The Qualify Employees button invokes the <b>getQualifiedEmployees:</b> method shown above--that is, it applies a qualifier to the peer's data source, and then directs the peer controller <b>empController</b> to fetch. When you start up the application and click one of the two buttons, the result varies according to what you do first:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">If you click the Fetch button first, all of the department data is displayed in the master table, and all of the employees who work in the selected department are displayed in the peer table (regardless of their salaries).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">If you click the Qualify Employees button first, the master table remains empty, and all of the employees in all departments whose salaries are over $5000 are displayed in the peer table. Subsequently clicking Fetch fetches the department data; then only employees with salaries over $5000 a month who work in the selected department are displayed in the peer table.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Once you have clicked both Fetch and Qualify Employees, all of the departments and all of the employees with salaries over $5000 who work in the currently selected department are displayed in the master and peer tables, respectively (this is illustrated in Figure 55). Once a qualifier has been applied to the peer data source, the qualifier remains in effect until you remove it or supply a different qualifier.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Setting a Next Controller</b></font>
+
+<p><font face="Times" size="+1">You can also chain controllers together to take advantage of the fact that controllers propagate the messages <b>fetch</b>, <b>saveToObjects</b>, <b>saveToDataSource</b>, and <b>redisplay</b> to a specified next controller. You can either set a next controller in Interface Builder or programmatically, using <b>setNextController:</b>.</font>
+
+<p><font face="Times" size="+1">When you chain controllers together, it allows the otherwise independent controllers, each managing their own sets of enterprise objects, to remain synchronized with all significant operations. You can chain any number of controllers together using this method, but remember that messages are propagated down the chain only.</font>
+
+<p><font face="Times" size="+1">This code excerpt links the controller <b>empController</b> to <b>deptController</b>:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[deptController setNextController:empController];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[deptController fetch];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">When you send a fetch message to <b>deptController</b>, it propagates the message to <b>empController</b>, which then performs its own fetch operation. If you told <b>empController</b> to fetch, however, <b>deptController</b> wouldn't get the message since messages only go down the chain.</font>
+
+<p><font face="Times" size="+1">Unlike master-peer and master-detail configurations, chained controllers have no interdependencies other than the propagation of <b>fetch</b>, <b>saveToObjects</b>, <b>saveToDataSource</b>, and <b>redisplay</b> messages to the next specified controller. In other words, changing the selection in the data displayed for one controller has no effect on the other.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Monitoring Activity</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">An EOController notifies its delegate of nearly every operation it performs, both before and after performing the operation. The delegate then has the opportunity to respond, by allowing or blocking the operation, for example, or by performing its own action in response.</font>
+
+<p><font face="Times" size="+1">A controller informs its delegate before and after it performs insertions, deletions, and updates; it also notifies the delegate of changes in selection and of undo and save operations. If a change to the data source fails, the delegate has the opportunity to tell the controller whether to continue or to roll back changes (assuming the data source supports roll back).</font>
+
+<p><font face="Times" size="+1">All a delegate need do to receive a notification from its controller is implement the appropriate methods.</font>
+
+<p><font face="Times" size="+1">For example, the following implementation of <b>controller:willSaveToDataSource:</b> displays an attention panel when the controller receives a <b>saveToDataSource</b> message; depending on the user response, the operation either proceeds or aborts:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">- (BOOL)controllerWillSaveToDataSource:(EOController *)controller</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">{</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">if(NXRunAlertPanel(&#34;Save Changes&#34;,</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">&#34;Are you sure you want to make this change?&#34;,</font><br>
+<img src="../../../../Images/sp.gif" width=208 height=1><font face="Courier">&#34;Save&#34;, &#34;Don't Save&#34;, NULL)) {</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">NSLog(@&#34;Saving to data source...\n&#34;);</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">return YES;</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">}</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">else {</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">NSLog(@&#34;Operation aborted; discarding operations.\n&#34;);</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">[myController discardOperations];</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">return NO;</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">}</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Modifying an Enterprise Object Directly</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">When you edit an enterprise object's values in a user interface object managed by an EOAssociation object, the association communicates the changes to its controller, and a chain of events is set in motion that ultimately results in the new value being applied to the enterprise object, saved to the data source, and refreshed in the display. Sometimes, however, you need to modify an enterprise object directly without the intermediation of an association. You can do this using the method <b>setValues:forObject:</b>, with the added benefit that EOController treats changes you make using <b>setValues:forObject:</b> as if they were made by an association. So if the controller is buffering edits, for example, it buffers the edits you make using <b>setValues:forObject:</b>; if it's maintaining an undo stack, it puts the change on the undo stack.</font>
+
+<p><font face="Times" size="+1">The following action method takes a value entered in a TextField, adds it to the salary of the currently selected employee object, and uses <b>setValues:forObject:</b> to apply the new value to the object. This example is just for the purpose of illustration; a more common approach would be to form an association between the TextField and the <b>salary</b> key in the enterprise object so that you could edit the salary directly.</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">- bonusEntered:sender</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">{</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">EOController *employeeController;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">EOGenericRecord *record;</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">NSNumber *salary;</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">NSDictionary *tmpDictionary;</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">NSEnumerator *arrayEnum;</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">NSString *key = @&#34;Salary&#34;;</font>
+
+<p><img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">arrayEnum = [[employeeController selectedObjects]</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">objectEnumerator];</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">while((record = [arrayEnum nextObject]) != nil) {</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">/* Get the original value. */</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">salary = [record objectForKey:key];</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">/* Add the bonus to the original value. */</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">salary = [NSNumber numberWithDouble:</font><br>
+<img src="../../../../Images/sp.gif" width=208 height=1><font face="Courier">[salary doubleValue] + [sender doubleValue]];</font>
+
+<p><img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">/* Create a dictionary containing the new value. */</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">tmpDictionary = [NSDictionary dictionaryWithObjects:&amp;salary</font><br>
+<img src="../../../../Images/sp.gif" width=208 height=1><font face="Courier">forKeys:&amp;key count:1];</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">/* Use the dictionary to update the employee object. */</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">[employeeController setValues:tmpDictionary forObject:record];</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">}</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">return self;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+2"><b>Coercing Values</b></font>
+
+<p><font face="Times" size="+1">Except in the case of images, most associations return values edited in user interface objects as NSStrings. To ensure that the value returned is converted to the appropriate value class type before applying it to the corresponding enterprise object, a controller sends its data source a <b>coerceValue:forKey:</b> message.</font>
+
+<p><font face="Times" size="+1">When you aren't using a controller and you directly apply edits to an enterprise object, you need to use <b>coerceValue:forKey:</b> to convert the value to the appropriate type before delivering the new values to the enterprise object in a <b>takeValuesFromDictionary:</b> message.</font>
+
+<p><font face="Times" size="+1">The basic steps for doing this are:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Send the value you need coerced to a data source.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Create a dictionary and add the coerced value to it.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Use the dictionary to deliver the new value to the enterprise object using <b>takeValuesFromDictionary:</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">For example, suppose you have an edited string representation of an employee's salary, and you want apply the new value to the corresponding enterprise object. Since the appropriate value class for <b>salary</b> is NSNumber, the value needs to be coerced before it can be sent to the object.</font>
+
+<p><font face="Times" size="+1">This code excerpt shows how to coerce the value and then apply it to the Employee object:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">id &lt;EODataSources&gt; aDataSource;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">id Employee;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSString *salaryString;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">id coercedSalary;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSMutableDictionary *dictionary;</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Coerce the value. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">coercedSalary = [aDataSource coerceValue:salaryString</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">forKey:@&#34;salary&#34;];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Put the coerced value in a dictionary. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">dictionary = [NSMutableDictionary dictionaryWithCapacity:1];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[dictionary setObject:coercedSalary forKey:@&#34;salary&#34;];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Apply the changes to the enterprise object. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[Employee takeValuesFromDictionary:dictionary];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[aDataSource updateObject:Employee];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[aDataSource saveObjects];</font>
+
+
+
+</body>
+</html>

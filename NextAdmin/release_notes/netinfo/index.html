@@ -1,0 +1,804 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextAdmin/ReleaseNotes/NetInfo.rtf -->
+<!-- Date: Sun Jan  1 13:56:49 2023 -->
+<head>
+<title>NetInfo</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Release 3.3 Copyright</font> &copy;<font face="Times">1994 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+3">3.3 Release Notes:</font><br>
+<font face="Times" size="+3">NetInfo</font>
+
+<p><br><br><br>
+
+<p><font face="Times" size="+1">This file contains release notes for NetInfo.&nbsp; Items specific to Release 3.3 are listed first, and notes from previous releases follow.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Notes Specific to Release 3.3</b></font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Helvetica" size="+1"><b>Changes to NetInfo internals</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">These changes improve performance and enhance system administration:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Clone servers check the master database to make sure the master has correct configuration information for the clone. Errors are written to <b>syslog</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">A new NetInfo binding strategy improves performance in wide-area networks. Servers preferentially bind to parent servers on the local host, if possible. If binding fails or isn't possible on the local host, a second bind request is sent to all servers on the same subnet, including servers on the local host. If binding fails or isn't possible on the local subnet, then bind requests are sent to all known parent servers.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The text of NetInfo messages sent to <b>syslog</b> have been improved to make them easier to understand.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">NetInfo client processes detect rogue servers at the time of their initial connection. Clients print a log message if they detect a rogue server, and they reconnect to another server rather than remain connected to the original server.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">NetInfo clients reconnect to a new server using the same strategy outlined above for binding. A client tries to connect to a server first on the local host, then on the local subnet, and finally to any server.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>lookupd</b> has been modified to send a trace of all its current NetInfo server connections to <b>syslog </b>upon receipt of a USR1 signal. The trace is logged at LOG_INFO priority.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>lookupd</b> prints all arguments to its log file if logging is enabled. (In previous releases, some arguments weren't logged).</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>lookupd</b> logging can be disabled or reenabled on the fly. You can toggle logging on and off by sending <b>lookupd</b> a USR2 signal. If logging is started with the <b>-l</b> option rather than <b>-L</b>, logging is disabled until you start it with a USR2 signal.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">PIDs for <b>nibindd</b> and <b>lookupd</b> are written to <b>/etc/nibindd.pid</b> and <b>/etc/lookupd.pid</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>nibindd</b> has been changed to allow remote operations, including creating and deleting clone servers. You can access this new functionality in NetInfoManager.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Helvetica" size="+1"><b>Domain Name System (DNS) configuration</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Resolver configuration can be maintained in NetInfo. The resolver searches for the NetInfo directory <b>/locations/resolver</b> following the typical search strategy of checking the local domain and then climbing the NetInfo hierarchy. The directory should contain a domain property that has the DNS domain name as its value as well as a nameserver property that contains the IP address of one or more nameservers as values.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Helvetica" size="+1"><b>New command-line utilities</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">There are new <b>niutil</b> options in Release 3.3 as well as three new NetInfo command-line utilities:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The <b>niutil</b> command supports the following new operations:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=108></td>
+
+<td nowrap><font face="Times" size="+1">-appendprop</font></td>
+
+<td><font face="Times" size="+1">append a value to a property</font></td></tr>
+
+<tr valign=top>
+
+<td width=108 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=108></td>
+
+<td nowrap><font face="Times" size="+1">-insertprop</font></td>
+
+<td><font face="Times" size="+1">append a value to a property only if it's a new value</font></td></tr>
+
+<tr valign=top>
+
+<td width=108 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=108></td>
+
+<td nowrap><font face="Times" size="+1">-insertval</font></td>
+
+<td><font face="Times" size="+1">insert a value at a given index in a property</font></td></tr>
+
+<tr valign=top>
+
+<td width=108 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=108></td>
+
+<td nowrap><font face="Times" size="+1">-destroyval</font></td>
+
+<td><font face="Times" size="+1">remove a value at a given index in a property</font></td></tr>
+
+<tr valign=top>
+
+<td width=108 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=108></td>
+
+<td nowrap><font face="Times" size="+1">-renameprop</font></td>
+
+<td><font face="Times" size="+1">rename a property key</font></td></tr>
+
+<tr valign=top>
+
+<td width=108 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=108></td>
+
+<td nowrap><font face="Times" size="+1">-rparent</font></td>
+
+<td><font face="Times" size="+1">get a server's current NetInfo parent</font></td></tr>
+
+<tr valign=top>
+
+<td width=108 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=108></td>
+
+<td nowrap><font face="Times" size="+1">-resync</font></td>
+
+<td><font face="Times" size="+1">force master and clone servers to resynchronize databases</font></td></tr>
+
+<tr valign=top>
+
+<td width=108 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=108></td>
+
+<td nowrap><font face="Times" size="+1">-statistics</font></td>
+
+<td><font face="Times" size="+1">print server version number and database checksum</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=90></td>
+
+<td><font face="Times" size="+1">You can also specify a user name and password on the command line for authentication, and you can specify a connection timeout value. For information on how to do this, invoke the <b>niutil </b>command without specifying any arguments and see the resulting usage message.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">You can use the <b>nigrep</b> command to search for regular expressions in a NetInfo domain.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">You can use the <b>nifind</b> command to search for directories with given key-value pairs. <b>nifind </b>normally searches the local NetInfo domain, then climbs the hierarchy to the root domain. You can also use <b>nifind</b> to search for directories in an entire hierarchy.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">You can use the <b>nireport</b> command much as you use <b>niutil -list</b>, but you can specify multiple keys. <b>nireport</b> produces a tab-separated list of the values for those keys in all subdirectories of a given directory.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Helvetica" size="+1"><b>Bug fixes</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">The following changes and bug fixes been made to NetInfo since Release 3.2.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>nibindd</b> correctly restarts all NetInfo servers on a host upon receipt of a HUP signal.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The _writers property has been removed from all NetInfo directories except</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1"><b>/localconfig/screens</b> and <b>/locations/renderers/localhost</b>. This improves NEXTSTEP system security.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Access to <b>/etc/netinfo</b> is limited to the <b>root</b> user and members of the <b>wheel</b> group.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Helvetica" size="+1"><b>Known Problems</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">A bug in <b>netinfod</b> causes the server to incorrectly manage a directory's subdirectory list if you create a subdirectory with no properties. Avoid removing all the properties from a directory using <b>niutil</b> or NetInfoManager. If you're using the <b>netinfo(3)</b> access library to write programs that access NetInfo, don't create zero-sized directories or remove all the properties from a directory.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Notes Specific to Release 3.2</b></font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Helvetica" size="+1"><b>New Features</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">The following features have been added to NetInfo since Release 2.0.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Performance improvements</b></font>
+
+<p><font face="Times" size="+1">A number of performance improvements have been made to ensure that NetInfo scales efficiently to networks containing hundreds or thousands of computers.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The protocol between NetInfo master and clone servers has been improved to eliminate excessive data transfers, and the distribution of NetInfo changes has been streamlined. When a number of NetInfo changes are made in succession, as often occurs when high-level applications are used, <b>netinfod</b> will coalesce the individual changes into a single composite update. Since only one transaction with each clone server is needed to distribute the composite update, the overhead associated with updating clones is reduced.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">In addition, the distribution of updates is now multi-threaded. Modifications made to the master database are distributed immediately to clones; an update need not wait for prior updates to finish before it is handled. Update threads operate independently, except that updates are guaranteed to arrive at each individual clone in the correct order.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The disk format for NetInfo databases has changed to increase the default record size. In most cases, this reduces the number of files in a database by about 90 percent and decreases the cost of large searches by about 25 percent. Release 3 NetInfo is compatible with both new and old database formats, and all versions of NetInfo can be used together on a network, regardless of the revision level or database format of the individual servers. All configurations, including master and clone servers which use different versions of software and different database formats, are supported.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">In order to deter NetInfo servers from binding to inappropriate parent servers over a slow network link, NetInfo servers now check for the existence of a local clone of the parent domain before broadcasting to find a suitable parent server. Since clients typically inherit the bindings of their NetInfo servers, this can help reduce the frequency with which NetInfo clients bind to relatively distant servers.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Two sources of excess network traffic have been quashed: the automatic reload of <b>lookupd</b>'s user information cache every half hour, and the execution of <b>atrun</b> by <b>cron</b> every fifteen minutes. The user information cache in Release 3 is not reloaded unless actively used, and <b>cron</b> has been modified to avoid using library routines which access NetInfo when possible.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Several caches have been added to <b>lookupd</b>, the NetInfo daemon which accesses NetInfo, NIS, and DNS information on behalf of the UNIX libraries. The most frequent requests seek information about the current host, the currently logged-in user, and the <b>root</b> account. In Release 3, <b>lookupd </b>answers these requests from caches, avoiding use of the network completely. The logged-in user and <b>root</b> caches persist for at most twenty minutes; they are explicitly reset when a user logs in or out, or when a password change is made. Local host information is never reset, and the computer must be restarted if its Internet address is changed.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">UNIX groups, mount points, printer database entries, and password file entries are also cached, but <b>lookupd</b> checks NetInfo to be sure the cached information is valid before these caches are used. In Release 3, about 80 percent of <b>lookupd</b> requests are satisfied from a cache.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">If NetInfo is the only source for user and group information on your network, some additional optimizations are possible due to the database-like nature of NetInfo. To determine which UNIX groups a user belongs to, for example, it is no longer necessary to enumerate all groups across the network. This helps to speed up logging in and the UNIX <b>su</b> command.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Helvetica" size="+1"><b>Other changes and enhancements</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>lookupd</b> supports three ways of handling the <b>getpwent</b> family of library routines. By default, <b>lookupd</b> maintains a cache of user data which is checked for accuracy only after servicing a client request. If the data have become outdated and a certain amount of time has passed since the last update (thirty minutes by default, settable with the <b>-m</b> option), the cache is reloaded. Since the client request is answered before the cache is reloaded, it is possible for a second enumeration of user data to yield different results. The <b>-f</b> option forces the cache to be reloaded on a regular schedule, and <b>-m 0</b> turns it off completely.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>lookupd</b> may be passed a <b>-L</b> <i>filename</i> argument to ask that all lookup requests be logged to the specified file. Cache hits are marked with an asterisk. The <b>lookupd</b> log can become quite large over time.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>niload</b> now allows the use of a tagged domain specification.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The interface between the UNIX libraries and <b>lookupd</b> is considered private API, and the header files which define it have been removed.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The file <b>/etc/exports</b> is obsolete, and export information is now stored in NetInfo. The <b>niload</b> and <b>nidump</b> commands can be used to load or dump export files in the standard UNIX format.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Each user record in NetInfo now has a user-writable subdirectory called &#34;info&#34;, which may be used by applications to store configuration information. <b>niload</b> will create these info subdirectories when a UNIX passwd file is loaded.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">To force <b>lookupd</b> to rebind its connections to NetInfo servers, it can be restarted by sending it a SIGHUP (signal number 1). To restart all NetInfo servers on a computer, kill <b>nibindd</b> with a SIGTERM and restart it by running <b>/usr/etc/nibindd</b> from a shell.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Release 3 includes several security enhancements which may be enabled through NetInfo. To turn on security features, create a security_options property in the <b>root</b> directory of a NetInfo domain and add one or more of the following values:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=90></td>
+
+<td nowrap><font face="Times" size="+1">login_auditing</font></td>
+
+<td><font face="Times" size="+1">Asks that all successful logins, including those to the workspace, be recorded in the standard UNIX files, and that unsuccessful logins be reported through syslog.</font></td></tr>
+
+<tr valign=top>
+
+<td width=90 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=90></td>
+
+<td nowrap><font face="Times" size="+1">secure_passwords</font></td>
+
+<td><font face="Times" size="+1">Raises the standards of obscurity which passwords must meet in order to be accepted by the <b>Preferences</b> application and the <b>passwd</b> command. With secure_passwords on, all passwords must be at least six characters long and contain non-alpha characters.</font></td></tr>
+
+<tr valign=top>
+
+<td width=90 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=90></td>
+
+<td nowrap><font face="Times" size="+1">lockout</font></td>
+
+<td><font face="Times" size="+1">When a login attempt fails, progressively increases the delay enforced between login attempts.</font></td></tr>
+
+<tr valign=top>
+
+<td width=90 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=90></td>
+
+<td nowrap><font face="Times" size="+1">all</font></td>
+
+<td><font face="Times" size="+1">Selects all current and future options.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=90></td>
+
+<td><font face="Times" size="+1">There is no way to turn off a security option. A computer uses all the security options enabled in its local domain and all of its parent domains.</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

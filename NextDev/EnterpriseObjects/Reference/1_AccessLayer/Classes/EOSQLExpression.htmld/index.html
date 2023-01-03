@@ -1,0 +1,1155 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/EnterpriseObjects/Reference/1_AccessLayer/Classes/EOSQLExpression.rtf -->
+<!-- Date: Sun Jan  1 17:05:22 2023 -->
+<head>
+<title>EOSQLExpression</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>EOSQLExpression</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Inherits From:</b></font></td>
+
+<td><font face="Times" size="+1">NSObject</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Conforms To:</b></font></td>
+
+<td><font face="Times" size="+1">NSCopying</font><br>
+<font face="Times" size="+1">EOExpressionContext</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">eoaccess/EOSQLExpression.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Adaptors use instances of EOSQLExpression to perform their four basic operations: select, insert, update, and delete. EOSQLExpression is an abstract superclass, which you can subclass for your own adaptor if you need to. EOSQLExpression objects are used internally by the Framework and by an adaptor; your application should never need to create or use one itself.</font>
+
+<p><font face="Times" size="+1">EOSQLExpression's default implementations of its expression-building methods obtain the adaptor's query language expression subclass and use it to build an expression object describing the desired operation. This expression object can then be turned into a string with an <b>expressionValueForContext:</b> message (with itself as the context) and be passed to <b>evaluateExpression:</b> for interpretation by the database server.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Building Expressions</b></font>
+
+<p><font face="Times" size="+1">These four class methods build SQL statements:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=125></td>
+
+<td><font face="Times" size="+1">deleteExpressionWithQualifier:channel:</font><br>
+<font face="Times" size="+1">insertExpressionForRow:entity:channel:</font><br>
+<font face="Times" size="+1">selectExpressionForAttributes:lock:qualifier:fetchOrder:channel:</font><br>
+<font face="Times" size="+1">updateExpressionForRow:qualifier:channel:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">An individual SQL statement is constructed from the expression values of any modeling or value objects specified in the &quot;build&quot; method and combining them in the appropriate form. An object's expression value is a string representation that the database understands; for example, an EOAttribute's expression value is ultimately its column name. See the EOExpression informal protocol specification for more information. The EOSQLExpression usually asks its adaptor to get the expression values for attributes and values with the <b>formatAttribute:</b> and <b>formatValue:forAttribute:</b> messages; for other kinds of objects (such as EORelationships and EOExpressionArrays) it simply sends <b>expressionValueForContext:</b>.</font>
+
+<p><font face="Times" size="+1">Each of the &quot;build&quot; methods mentioned above invokes a number of instance methods. These methods are documented individually below.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Variables</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">None declared in this class.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Adopted Protocols</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">NSCopying</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">copy</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">copyWithZone:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">EOExpressionContext:</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">expressionValueForAttribute:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">expressionValueForAttributePath:</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Building SQL expressions</font></td>
+
+<td><font face="Times" size="+1">+ deleteExpressionWithQualifier:channel:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font face="Times" size="+1">+ insertExpressionForRow:entity:channel:</font><br>
+<font face="Times" size="+1">+ selectExpressionForAttributes:lock:qualifier:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=333></td>
+
+<td><font face="Times" size="+1">fetchOrder:channel:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font face="Times" size="+1">+ updateExpressionForRow:qualifier:channel:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Creating components</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">columnListForRow:entity:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">fromClauseForRelationshipPaths:entity:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">joinExpressionForOperator:semantic:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=333></td>
+
+<td><font face="Times" size="+1">source:destination:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">joinExpressionForRelationshipPaths:entity:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">lockClause</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">orderByClauseForFetchOrder:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">selectListWithAttributes:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">updateListForRow:entity:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">valueListForRow:entity:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">whereClauseForQualifier:joinExpresssion:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Final initialization</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">finishBuildingExpression</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Caching aliases</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">relationshipPathsForAttributes:qualifier:fetchOrder:</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Getting the entity</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">entity</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>deleteExpressionWithQualifier:channel:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ <b>deleteExpressionWithQualifier:</b>(EOQualifier *)<i>aQualifier</i> <b>channel:</b>(EOAdaptorChannel *)<i>aChannel</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Creates and returns a SQL DELETE statement to delete the rows described by <i>aQualifier</i>. Invokes <b>whereClauseForQualifier: </b>to create the WHERE clause and <b>finishBuildingExpression</b> to finalize the statement.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>insertExpressionForRow:entity:channel:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ <b>insertExpressionForRow:</b>(NSDictionary *)<i>aRow</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>entity:</b>(EOEntity *)<i>anEntity</i></font><br>
+<font face="Times" size="+1"><b>channel:</b>(EOAdaptorChannel *)<i>aChannel</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Creates and returns a SQL INSERT statement to insert the values in <i>row</i> as a new row in the table corresponding to <i>anEntity</i>. Invokes <b>columnListForRow:</b> and <b>valueListForRow:</b> to create the INSERT statement and <b>finishBuildingExpression</b> to finalize the statement.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>selectExpressionForAttributes:lock:qualifier:fetchOrder:channel:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ <b>selectExpressionForAttributes:</b>(NSArray *)<i>attributes</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>lock:</b>(BOOL)<i>flag</i></font><br>
+<font face="Times" size="+1"><b>qualifier:</b>(EOQualifier *)<i>aQualifier</i></font><br>
+<font face="Times" size="+1"><b>fetchOrder:</b>(NSArray *)<i>fetchOrder</i></font><br>
+<font face="Times" size="+1"><b>channel:</b>(EOAdaptorChannel *)<i>aChannel</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Creates and returns a SQL SELECT statement to select <i>attributes</i> according to <i>aQualifier</i>, locking according to <i>flag</i> and ordering by <i>fetchOrder</i>. Invokes <b>selectListWithAttributes:</b>, <b>fromClauseForRelationshipPaths:entity:</b>, <b>orderByClauseForFetchOrder:</b>, <b>joinExpressionForRelationshipPaths:entity:</b> and <b>whereClauseForQualifier:joinExpression:</b> to create the SELECT statement and <b>finishBuildingExpression</b> to finalize the statement. If <i>flag</i> is YES, invokes <b>lockClause</b>.</font>
+
+<p><font face="Times" size="+1">An EOSQLExpression caches different references to tables under the relationship paths used to access them, and performs aliasing when generating the expression. These aliases are computed by <b>relationshipPathsForAttributes:qualifier:fetchOrder:</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>updateExpressionForRow:qualifier:channel:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ <b>updateExpressionForRow:</b>(NSDictionary *)<i>newValues</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>qualifier:</b>(EOQualifier *)<i>aQualifier</i></font><br>
+<font face="Times" size="+1"><b>channel:</b>(EOAdaptorChannel *)<i>aChannel</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Creates and returns a SQL UPDATE statement to set <i>newValues</i> for the row described by <i>aQualifier</i>, each of which contains only the information needed to update values that are changing. Invokes <b>updateListForRow:entity:</b>, <b>whereClauseForQualifier:joinExpression:</b> to create the UPDATE statement and <b>finishBuildingExpression</b> to finalize the statement.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>columnListForRow:entity:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>columnListForRow:</b>(NSDictionary *)<i>aRow</i> <b>entity:</b>(EOEntity *)<i>anEntity</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Builds and returns an expression object containing a list of column names from <i>aRow</i>, suitable for use in a SQL insert statement. For example, with a row containing values for attributes with the external names &quot;emp_id&quot;, &quot;last_name&quot;, and &quot;first_name&quot; this method returns an object whose expression value is &quot;(emp_id, last_name, first_name)&quot;.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>entity</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(EOEntity *)<b>entity</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the entity of the qualifier the EOSQLExpression was created with.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>finishBuildingExpression</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>finishBuildingExpression</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This method is invoked on each EOSQLExpression object created by any of the four principal statement-building methods just before it is returned to the caller. This gives subclasses one last chance to make final modifications to the statement after it has been completely assembled. Returns <b>self</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>fromClauseForRelationshipPaths:entity:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>fromClauseForRelationshipPaths:</b>(NSDictionary *)<i>relationshipPaths</i> <b>entity:</b>(EOEntity *)<i>anEntity</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Builds and returns an expression object representing a SQL FROM clause using a dictionary of aliased relation paths. The aliases for the relationship paths are built from the attributes, qualifier, and fetch order specified to <b>selectExpressionForAttributes:lock:qualifier:fetchOrder:channel:</b>, which invokes this method.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>joinExpressionForOperator:semantic:source:destination:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>joinExpressionForOperator:</b>(EOJoinOperator)<i>operator</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>semantic:</b>(EOJoinSemantic)<i>semantic</i></font><br>
+<font face="Times" size="+1"><b>source:</b><i>sourceExpression</i></font><br>
+<font face="Times" size="+1"><b>destination:</b><i>destinationExpression</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Builds and returns an expression object joining <i>sourceExpression</i> and <i>destinationExpression</i>, and which specifies the join operator and join semantic. For example, with the following argument values:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Argument</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Value</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><i>operator</i></font></td>
+
+<td><font face="Times" size="+1"><b>EOJoinEqualTo</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><i>semantic</i></font></td>
+
+<td><font face="Times" size="+1"><b>EOLeftOuterJoin</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><i>sourceExpression</i></font></td>
+
+<td><font face="Times" size="+1">&quot;t0.empID&quot;</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><i>destinationExpression</i></font></td>
+
+<td><font face="Times" size="+1">&quot;t1.empID&quot;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">this method returns an object whose expression value is &quot;t0.empID * = t1.empID&quot;.</font>
+
+<p><font face="Times" size="+1">You may need to override this method for a particular database server.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>joinExpressionForRelationshipPaths:entity:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>joinExpressionForRelationshipPaths:</b>(NSDictionary *)<i>relationshipPaths</i> <b>entity:</b>(EOEntity *)<i>entity</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Builds and returns an expression object specifying all the joins of the relationships in <i>relationshipPaths</i> for a SELECT statement.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1">+ <b>selectExpressionForAttributes:lock:qualifier:fetchOrder:channel:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>lockClause</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>lockClause</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns a string that can be inserted into a SELECT statement to cause the server to lock any records fetched by the SELECT statement. You usually have to override this method for a particular database server.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1">+ <b>selectExpressionForAttributes:lock:qualifier:fetchOrder:channel:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>orderByClauseForFetchOrder:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>orderByClauseForFetchOrder:</b>(NSArray *)<i>fetchOrder</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Builds and returns an expression object representing a SQL ORDER-BY clause for <i>fetchOrder</i>. This clause is used in building a SELECT statement.</font>
+
+<p><font face="Times" size="+1">For example, with a fetch order as defined in the following table:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Attribute Column Name</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Ordering</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">salary</font></td>
+
+<td><font face="Times" size="+1">EODescendingOrder</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">last_name</font></td>
+
+<td><font face="Times" size="+1">EOAscendingOrder</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">first_name</font></td>
+
+<td><font face="Times" size="+1">EOAscendingOrder</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">this method returns an object whose expression value is &quot; ORDER BY salary DESC, last_name, first_name&quot;.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1">+ <b>selectExpressionForAttributes:lock:qualifier:fetchOrder:channel:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>relationshipPathsForAttributes:qualifier:fetchOrder:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSMutableDictionary *)<b>relationshipPathsForAttributes:</b>(NSArray *)<i>attributes</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>qualifier:</b>(EOQualifier *)<i>aQualifier</i></font><br>
+<font face="Times" size="+1"><b>fetchOrder:</b>(NSArray *)<i>fetchOrder</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Computes aliases for all relationships referred to within <i>attributes</i>, <i>aQualifier</i>, and <i>fetchOrder</i>. Returns a dictionary whose keys are the data paths aliased and whose values are the aliases for those data paths. These aliases are used for constructing the select list and the join expressions in a SELECT statement.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1">+ <b>selectExpressionForAttributes:lock:qualifier:fetchOrder:channel:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>selectListWithAttributes:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>selectListWithAttributes:</b>(NSArray *)<i>attributes</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Builds and returns an expression object containing a list of aliased attribute names, suitable for use in a SQL SELECT list.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1">+ <b>selectExpressionForAttributes:lock:qualifier:fetchOrder:channel:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>updateListForRow:entity:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>updateListForRow:</b>(NSDictionary *)<i>row</i> <b>entity:</b>(EOEntity *)<i>entity</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Builds and returns an expression object containing a list of column assignment clauses suitable for use in a SQL UPDATE statement.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1">+ <b>updateExpressionForRow:qualifier:channel:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>valueListForRow:entity:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>valueListForRow:</b>(NSDictionary *)<i>aRow</i> <b>entity:</b>(EOEntity *)<i>anEntity</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Builds and returns an expression object containing a list of values suitable for use in a SQL INSERT statement.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1">+ <b>insertExpressionForRow:entity:channel:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>whereClauseForQualifier:joinExpresssion:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>whereClauseForQualifier:</b>(EOQualifier *)<i>aQualifier</i> <b>joinExpresssion:</b><i>joinExpression</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Builds and returns an expression object containing a SQL WHERE clause using <i>aQualifier</i> and <i>joinExpression</i>. <i>joinExpression </i>is an NSString or EOExpressionArray created with <b>joinExpressionForOperator:semantic:source:destination:</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1">+ <b>insertExpressionForRow:entity:channel:</b>, + <b>selectExpressionForAttributes:lock:qualifier:fetchOrder:channel:</b>, + <b>updateExpressionForRow:qualifier:channel:</b></font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

@@ -1,0 +1,403 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/EnterpriseObjects/Reference/1_AccessLayer/Classes/EOAttributeOrdering.rtf -->
+<!-- Date: Sun Jan  1 17:05:18 2023 -->
+<head>
+<title>EOAttributeOrdering</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>EOAttributeOrdering</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Inherits From:</b></font></td>
+
+<td><font face="Times" size="+1">NSObject</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Conforms To:</b></font></td>
+
+<td><font face="Times" size="+1">NSCopying</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">eoaccess/EOAttributeOrdering.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">EOAttributeOrdering defines the order that an EOAdaptorChannel or EODatabaseChannel fetches rows or objects in. You usually create EOAttributeOrderings and put them into an NSArray for a select operation. The order within the array determines the precedence when sorting. For example, the following code excerpt selects Employee objects so that they'll be fetched alphabetically by last name and then first name:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOQualifier *empQualifier;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAttribute *firstNameAttribute;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAttribute *lastNameAttribute;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EODatabaseChannel *myDBChannel;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAttributeOrdering *firstNameOrdering;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAttributeOrdering *lastNameOrdering;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSArray *nameOrder;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">BOOL ok;</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">firstNameOrdering = [EOAttributeOrdering</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">attributeOrderingWithAttribute:firstNameAttribute</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">ordering:EOAscendingOrder];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">lastNameOrdering = [EOAttributeOrdering</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">attributeOrderingWithAttribute:lastNameAttribute</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">ordering:EOAscendingOrder];</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">nameOrder = [NSArray arrayWithObjects:lastNameOrdering,</font><br>
+<img src="../../../../../Images/sp.gif" width=271 height=1><font face="Courier">firstNameOrdering, nil];</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">ok = [myDBChannel selectObjectsDescribedByQualifier:empQualifier</font><br>
+<img src="../../../../../Images/sp.gif" width=250 height=1><font face="Courier">fetchOrder:nameOrder];</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">if (ok) {</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Go on to fetch objects. */</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Variables</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">None declared in this class.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Adopted Protocols</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">NSCopying</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">copy</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">copyWithZone:</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Creating an attribute ordering</font></td>
+
+<td><font face="Times" size="+1">+ attributeOrderingWithAttribute:ordering:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">initWithAttribute:ordering:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Getting values</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">attribute</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">ordering</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>attributeOrderingWithAttribute:ordering:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ <b>attributeOrderingWithAttribute:</b>(EOAttribute *)<i>anAttribute</i> <b>ordering:</b>(EOOrdering)<i>anOrdering</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns an EOAttributeOrdering with <i>anAttribute</i> and <i>anOrdering</i>. <i>anOrdering</i> may be <b>EOAnyOrder</b> (no ordering), <b>EOAscendingOrder</b> (lowest-valued attribute first), or <b>EODescendingOrder</b> (highest-valued attribute first).</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>initWithAttribute:ordering:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>attribute</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(EOAttribute *)<b>attribute</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the attribute that the ordering is defined for.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>initWithAttribute:ordering:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>initWithAttribute:</b>(EOAttribute *)<i>anAttribute</i> <b>ordering:</b>(EOOrdering)<i>anOrdering</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Initializes a newly allocated EOAttributeOrdering with <i>anAttribute</i> and <i>anOrdering</i>. <i>anOrdering</i> may be <b>EOAnyOrder</b> (no ordering), <b>EOAscendingOrder</b> (lowest-valued attribute first), or <b>EODescendingOrder</b> (highest-valued attribute first). This is the designated initializer for the EOAttributeOrdering class. Returns <b>self</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1">+ <b>attributeOrderingWithAttribute:ordering:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>ordering</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(EOOrdering)<b>ordering</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the ordering defined for the attribute.</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

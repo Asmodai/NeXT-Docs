@@ -1,0 +1,228 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/Foundation/Classes/NSRecursiveLock.rtf -->
+<!-- Date: Sun Jan  1 17:05:13 2023 -->
+<head>
+<title>NSRecursiveLock</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>NSRecursiveLock</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Inherits From:</b></font></td>
+
+<td><font face="Times" size="+1">NSObject</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Conforms To:</b></font></td>
+
+<td><font face="Times" size="+1">NSLocking</font><br>
+<font face="Times" size="+1">NSObject (NSObject)</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">foundation/NSLock.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">NSRecursiveLock defines a lock that may be acquired multiple times by the same thread without causing a deadlock, a situation where a thread is permanently blocked waiting for itself to relinquish a lock. While the locking thread has one or more locks, all other threads are prevented from accessing the code protected by the lock. Here's an example where a recursive lock functions properly but other lock types would deadlock:</font></td></tr>
+
+</table>
+
+<p><img src="../../../Images/sp.gif" width=124 height=1><font face="Courier">NSRecursiveLock&nbsp; *theLock = [[NSRecursiveLock alloc] init];</font><br>
+<img src="../../../Images/sp.gif" width=124 height=1><font face="Courier">...</font><br>
+<img src="../../../Images/sp.gif" width=124 height=1><font face="Courier">[theLock lock];</font><br>
+<img src="../../../Images/sp.gif" width=124 height=1><font face="Courier">/* lengthy operations involving global data */</font><br>
+<img src="../../../Images/sp.gif" width=124 height=1><font face="Courier">[theLock lock];&nbsp;&nbsp; /* possibly invoked in a subroutine */</font><br>
+<img src="../../../Images/sp.gif" width=124 height=1><font face="Courier">...</font><br>
+<img src="../../../Images/sp.gif" width=124 height=1><font face="Courier">[theLock unlock]; /* relinquishes most recent lock */</font><br>
+<img src="../../../Images/sp.gif" width=124 height=1><font face="Courier">...</font><br>
+<img src="../../../Images/sp.gif" width=124 height=1><font face="Courier">[theLock unlock]; /* relinquishes the first lock */</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The NSConditionLock, NSLock, and NSRecursiveLock classes all implement the NSLocking protocol with various features and performance characteristics; see the other class descriptions for more information.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Adopted Protocols</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">NSLocking</font></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">lock</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">unlock</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Acquiring a Lock</font></td>
+
+<td><font face="Times" size="+1">- lockBeforeDate:</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>lockBeforeDate:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>lockBeforeDate:</b>(NSDate *)<i>limit</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Attempts to acquire a lock before the date represented by <i>limit</i>. Returns YES if the lock is acquired within this time limit. Returns NO if the time limit expires before a lock can be acquired.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>lock</b> (NSLocking protocol),</font> <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>unlock</b> (NSLocking protocol)</font></td></tr>
+
+</table>
+
+
+
+<p><br>
+
+</body>
+</html>

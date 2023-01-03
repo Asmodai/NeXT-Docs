@@ -1,0 +1,395 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/GeneralRef/07_IndexingKit/Protocols/IXComparisonSetting.rtf -->
+<!-- Date: Sun Jan  1 17:04:16 2023 -->
+<head>
+<title>IXComparisonSetting</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>IXComparisonSetting</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Adopted By:</b></font></td>
+
+<td><font face="Times" size="+1">IXBTree</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">btree/protocols.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Protocol Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The IXComparisonSetting protocol is implemented by objects that compare data elements of unknown type using a comparison format that encodes the types of the data elements.&nbsp; The comparison format is a string containing an Objective C type encoding.</font>
+
+<p><font face="Times" size="+1">An object implementing this protocol compares two arrays of Objective C scalar values: signed and unsigned short and long integers, signed and unsigned bytes (characters), and single- and double-precision floating-point numbers.&nbsp; Based on the comparison format, an object implementing this protocol iteratively compares the elements of the two arrays until it finds an element that isn't equal to its counterpart in the other array, or until it exhausts the elements of one or both arrays.&nbsp; If the two arrays are otherwise equal, the shorter one is considered the lesser of the two.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Comparison Format Interpretation</b></font>
+
+<p><font face="Times" size="+1">A comparison format is simply a string containing an Objective C type encoding for the arrays to be compared.&nbsp; For example, to compare data items as arrays of long integers, the comparison format would be &quot;[5I]&quot; (the number specified in the array is currently ignored).</font>
+
+<p><font face="Times" size="+1">There are two classes and one function in the Indexing Kit that interpret comparison formats: IXRecordManager, IXPostingList and <b>IXFormatComparator()</b>.&nbsp; A given comparison format may be interpreted differently by all three, due to differences in the physical representation of the data.&nbsp; The following table summarizes the general interpretation policy as implemented by <b>IXFormatComparator()</b>:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Code</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Meaning</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">c</font></td>
+
+<td><font face="Times" size="+1">A <b>char</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">i</font></td>
+
+<td><font face="Times" size="+1">An <b>int</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">s</font></td>
+
+<td><font face="Times" size="+1">A <b>short int</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">l</font></td>
+
+<td><font face="Times" size="+1">A <b>long int</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">C</font></td>
+
+<td><font face="Times" size="+1">An <b>unsigned char</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">I</font></td>
+
+<td><font face="Times" size="+1">An <b>unsigned int</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">S</font></td>
+
+<td><font face="Times" size="+1">An <b>unsigned short int</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">L</font></td>
+
+<td><font face="Times" size="+1">An <b>unsigned long int</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">f</font></td>
+
+<td><font face="Times" size="+1">A <b>float</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">d</font></td>
+
+<td><font face="Times" size="+1">A <b>double</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">*</font></td>
+
+<td><font face="Times" size="+1">A character string (<b>char *</b>, null-terminated)</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">@</font></td>
+
+<td><font face="Times" size="+1">treated as an <b>unsigned long int</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">#</font></td>
+
+<td><font face="Times" size="+1">treated as an <b>unsigned long int</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">:</font></td>
+
+<td><font face="Times" size="+1">treated as an character string</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">^<i>type</i></font></td>
+
+<td><font face="Times" size="+1">A pointer to valid <i>type</i></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">[</font></td>
+
+<td><font face="Times" size="+1">ignored (count is stripped)</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">]</font></td>
+
+<td><font face="Times" size="+1">ignored if balanced by start of array</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><b>IXFormatComparator()</b> doesn't follow pointers, since the data is assumed to be serialized.&nbsp; Also, since <b>IXFormatComparator()</b> uses the other comparator functions to perform its comparisons, only the first valid component is used, except that the following pairs are legal:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Format String</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Comparator used</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">&quot;I*&quot;</font></td>
+
+<td><font face="Times" size="+1"><b>IXCompareUnsignedAndStrings()</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">&quot;L*&quot;</font></td>
+
+<td><font face="Times" size="+1"><b>IXCompareUnsignedAndStrings()</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">&quot;*I&quot; or &quot;*L&quot;</font></td>
+
+<td><font face="Times" size="+1"><b>IXCompareStringAndUnsigneds()</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">IXRecordManager derives comparison formats automatically from the return types of its attributes' selectors.&nbsp; Pointers are followed, and class references (&quot;@&quot;) are treated as name (&quot;*&quot;) followed by version (&quot;I&quot;), and <b>IXCompareStringAndUnsigneds()</b> is used.</font>
+
+<p><font face="Times" size="+1">IXPostingList also derives comparison formats from the return types of the selectors used to sort its contents.&nbsp; Pointers are followed to arbitrary depth.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>comparisonFormat</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(const char *)<b>comparisonFormat</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns a character string containing an Objective C type encoding describing data elements compared by the receiver.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setComparisonFormat:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setComparisonFormat:</b>(const char *)<i>format</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Records a character string containing an Objective C type encoding describing data elements compared by the receiver. Returns <b>self</b>.</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

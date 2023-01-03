@@ -1,0 +1,198 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextAdmin/ReleaseNotes/Workspace.rtf -->
+<!-- Date: Sun Jan  1 13:56:50 2023 -->
+<head>
+<title>Workspace</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Release 3.3&nbsp; Copyright</font> &copy;<font face="Times">1994 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+3">3.3 Release Notes:</font><br>
+<font face="Times" size="+3">Workspace Manager</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">This file contains release notes for the 3.3 release of Workspace Manager.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Notes Specific to Release 3.3</b></font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Helvetica" size="+1"><b>New features and changes for 3.3</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">You can set the Workspace Manager to automatically log out users on computers that have been idle for a period of time. To do this, add the <b>inactivity_timeout</b> property to the <b>/ </b>directory in the appropriate domain. The property should have an integer value which is the number of idle minutes before the user is logged out.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">In the disk initialization panel, Workspace allows the user to manually select the density of floppy disks on machines without autosensing capabilities (most Intel-based machines).</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Workspace now notifies users when their machine is running out of local disk space. There are two levels of warnings: the first occurs at 10 MB, and the second occurs at 2 MB. Although there is no UI to control this feature, there are a number of dwrites you can use to control the parameters:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=82></td>
+
+<td><img src="../../images/sp.gif" width=8 height=1><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3>&nbsp;&nbsp; SwapCheckEnabled ([YES] / NO) - turns the feature on and off</font><br>
+<img src="../../images/sp.gif" width=8 height=1><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3>&#160;&nbsp; SwapCheckPeriod (number of seconds: [60]) - how often to check</font><br>
+<img src="../../images/sp.gif" width=8 height=1><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3>&nbsp;&nbsp; FirstSwapWarning (first threshold in kilobytes [10240])</font><br>
+<img src="../../images/sp.gif" width=8 height=1><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3>&#160;&nbsp; LastSwapWarning (last threshold in kilobytes [2048])</font>
+
+<p><font face="Times" size="+1">Note that this feature is designed to give you a good idea of when you're going to run out of space for your swap file to grow.&nbsp; It currently doesn't parse /etc/swaptab and check available space on all drives.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">If you have a hard disk drive attached to your computer that contains data in a format that NEXTSTEP doesn't recognize (for example, an HP/UX or NT file system), you can edit the <b>/etc/fstab</b> file in your NEXTSTEP file system to prevent the Workspace Manager from asking if want to initialize that disk each time you log in.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">Normally, NEXTSTEP assumes that any disk containing data it doesn't recognize is unformatted. Each time you log into the NEXTSTEP workspace, a panel asks if you want to initialize the disk. If the disk is always attached to your computer and has real data on it, you may want to configure your computer so that this panel doesn't appear. To do this, edit the <b>/etc/fstab</b> file by adding an entry for the non-NEXTSTEP hard disk drive listing the file system type <b>ignore</b>. As an example, an <b>fstab</b> file with sd0a as your NEXTSTEP <b>root</b> disk and sd1a as an HPUX disk you want NEXTSTEP to ignore might look like this:</font></td></tr>
+
+</table>
+
+<p><img src="../../images/sp.gif" width=108 height=1><font face="Courier">/dev/sd0a / 4.3 rw,noquota,noauto 0 1</font><br>
+<img src="../../images/sp.gif" width=108 height=1><font face="Courier">/dev/sd1a /HPUX ignore ro,noquota 0 2</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=90></td>
+
+<td><font face="Times" size="+1">Note that for an &quot;ignore&quot; file system type, the only parts of the entry that have any significance are the device (<b>/dev/sd1a</b>) and the file system type (<b>ignore</b>). For more information, see the UNIX manual page for <b>fstab</b>.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Helvetica" size="+1"><b>Major bugs fixed for 3.3</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Dock preferences don't screw up when dealing with screens larger than or smaller than 1120 x 832.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Sometimes, floppies would appear as removable hard drives, and CD-ROMs would appear as floppies.&nbsp; Workspace now displays the approrpiate icons.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Workspace now behaves properly with mounted NFS filesystems greater than 2 gigabytes.</font></td></tr>
+
+</table>
+
+
+
+</body>
+</html>

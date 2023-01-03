@@ -1,0 +1,175 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/Foundation/Protocols/NSMutableCopying.rtf -->
+<!-- Date: Sun Jan  1 17:05:14 2023 -->
+<head>
+<title>NSMutableCopying</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>NSMutableCopying</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Adopted By:</b></font></td>
+
+<td><font face="Times" size="+1"><i>&lt;&lt;various&gt;&gt;</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">foundation/NSObject.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Protocol Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">A class that defines an &quot;immutable vs. mutable&quot; distinction adopts this protocol to allow mutable copies of its instances to be made. A mutable copy of an object is usually a <i>shallow copy</i> (as opposed to the <i>deep copy</i> defined in the NSCopying protocol specification). The original and its copy share references to the same instance variables, so that if a component of the copy is changed, for example, that change is reflected in the original.</font>
+
+<p><font face="Times" size="+1">A class that doesn't define an &quot;immutable vs. mutable&quot; distinction but that needs to offer both deep and shallow copying shouldn't adopt this protocol.&nbsp; The NSCopying&nbsp; methods should by default be assumed to produce deep copies; the class can then also implement methods to produce shallow copies.</font>
+
+<p><font face="Times" size="+1">The copied instance returned by the methods in this protocol are not autoreleased.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>mutableCopy</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>mutableCopy</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invokes <b>mutableCopyWithZone:</b> with the same memory zone as the receiver. Subclasses should implement their own versions of <b>mutableCopyWithZone:</b>, not <b>mutableCopy</b>, to define class-specific copying.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>copy</b> (NSCopying protocol)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>mutableCopyWithZone:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>mutableCopyWithZone:</b>(NXZone *)<i>zone</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns a new instance that's an exact copy of the receiver.&nbsp; Memory for the new instance is allocated from <i>zone</i>.&nbsp; The copy returned is mutable if the consideration &quot;immutable vs. mutable&quot; applies to the receiving object.&nbsp; The returned copy is not autoreleased.</font>
+
+<p><font face="Times" size="+1">This method usually creates only one new object, performing a shallow copy of the receiver.&nbsp; If the receiver has instance variables that point to other objects, the instance variables in the copy will point to the same objects.&nbsp; The values of the instance variables are copied, but the objects they point to are not.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>copyWithZone:</b> (NSMutableCopying protocol)</font></td></tr>
+
+</table>
+
+
+
+<p><br><br><br>
+
+</body>
+</html>

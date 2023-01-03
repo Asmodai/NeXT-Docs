@@ -1,0 +1,4394 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextAdmin/ApD_UsingSendmail.rtfd -->
+<!-- Date: Sun Jan  1 13:56:37 2023 -->
+<head>
+<title>ApD_UsingSendmail</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Release 3.3 Copyright</font> &copy;<font face="Times">1994 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap><font face="Helvetica" size="+4"><b>D</b></font></td>
+
+<td><font face="Times" size="+4"><i>The sendmail Program</i></font></td></tr>
+
+<tr valign=top>
+
+<td width=36 height=80></td></tr>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">From a user's perspective, sending a mail message is a simple procedure. Actually getting the message to its destination can be, as you might know or suspect, fairly complicated. An integral part of the mail system is the <b>sendmail</b> program, a message routing facility. It gathers mail from user-level mail sending programs, such as NeXT's Mail.app, and distributes it to mail forwarding or delivery facilities, such as UUCP.</font></td></tr>
+
+<tr valign=top>
+
+<td width=36 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">In order to understand <b>sendmail</b>, you need to understand <b>sendmail</b> configuration files and how they relate to the environment in which they are interpreted (possibly including NetInfo, NIS, and DNS). This appendix presents some background information about the operation of <b>sendmail</b>, discusses the configuration files, and gives some debugging examples. The <b>sendmail</b> facility is notoriously complex. This appendix covers the basics, and isn't intended as a complete description. See Appendix H, &quot;Suggested Reading,&quot; for a list of references covering <b>sendmail</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=36 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap></td>
+
+<td><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">The information in this appendix, particularly the tables, is adapted from &quot;Sendmail Installation and Operation Guide&quot; by Eric Allman. This paper is contained in <i>UNIX System Manager's Manual, 4.3 Berkeley Software Distribution</i> (see Appendix H).</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=34></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Warning:</b></font></td>
+
+<td><font face="Times" size="+1">The <b>sendmail</b> system is designed to handle general electronic mail addressing and forwarding, which is extremely complicated. Don't undertake modifications to the existing configuration files unless you're absolutely sure it's necessary and you're confident you know what you're doing. Be sure to make backup copies of the existing files in case something goes wrong.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Background</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The <b>sendmail</b> program does four things:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Determines how to dispose of a message--how to forward it to a mail sending program.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Rewrites parts of the message header so addresses have the correct format and content.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Performs alias resolution (converts aliases into user names) and processes <b>.forward</b> files for local delivery.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Forwards mail using SMTP (Simple Mail Transfer Protocol, the TCP/IP network protocol for mail transfer).</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Notice that <b>sendmail</b> does not by itself deliver mail, and, with the exception of mail forwarded over SMTP, it does not forward mail. Instead, <b>sendmail</b> depends on other programs (<b>/bin/mail</b> or <b>uux</b>, for example) to deliver and forward mail messages.</font>
+
+<p><font face="Times" size="+1">The <b>sendmail</b> program functions as a traffic director. It takes messages from programs which send mail, such as NeXT's Mail.app, determines how to forward the message, and passes the message along to a forwarding or delivery agent. The forwarding agent might be another computer's <b>sendmail</b> using SMTP, or another computer's <b>rmail</b> program using UUCP. The delivery agent might be <b>/bin/mail</b> for local delivery. The instructions that specify how to determine what to do with a given message are in the <b>sendmail</b> configuration file.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Configuration Files</b></font>
+
+<p><font face="Times" size="+1">In addition to the instructions regarding what to do with a particular mail message, the configuration file also contains information unique to the network running <b>sendmail</b>. Each computer can have its own configuration file, but the configuration files on most of the computers in a given network are usually identical. Typically, the configuration file on the mail server is different from the files on the mail clients, but the files on the clients are the same.</font>
+
+<p><font face="Times" size="+1">By default, the <b>sendmail</b> configuration file is <b>/etc/sendmail/sendmail.cf</b>. This might be a symbolic link to another file in <b>/etc/sendmail</b>, such as <b>sendmail.mailhost.cf</b>. In addition, the location of the configuration file can be stored in the NetInfo database as the value of the <b>sendmail.cf</b> property in the <b>/locations/sendmail</b> NetInfo directory. For more information, see Chapter 6, &quot;Managing Electronic Mail.&quot;</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">Entries in the NetInfo <b>/locations</b> directory override&nbsp; <b>/etc/sendmail/sendmail.cf</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">Some implementations of <b>sendmail</b> support a &quot;frozen&quot; configuration file, <b>sendmail.cf</b>. This file is not supported on NeXT computers, and the ability to create a frozen configuration file has been removed.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Headers and Envelopes</b></font>
+
+<p><font face="Times" size="+1">Mail messages contain addresses in two places: the <i>header</i> of the message (the <b>From:</b>, <b>To:</b>, and <b>Cc:</b> lines, for example) and the <i>envelope</i> of the message, which includes the return address and the current destination addresses (for this copy of the message). Messages are delivered to the destination addresses contained in the envelope. The envelope addresses are those specified on the command line. When you use NeXT's Mail.app, these are hidden. See &quot;Tricks of the Trade&quot; later in this chapter.</font>
+
+<p><font face="Times" size="+1">Not all recipients are always shown in the headers. For exam[ple, if you send a &quot;blind&quot; copy to somone, their address won't be lited anywhere in the received message.&nbsp; Recipients won't see all of the envelope addresses (that's the whole point of a &quot;blind&quot; copy). The envelope return address can be found in the <b>From</b> line (the &quot;From&lt;space&gt;&quot; line as opposed to <b>From:</b> line) and <b>Return-Path:</b> header lines of a delivered message.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">The &quot;from&lt;space&gt;&quot; lines aren't header lines, but rather they separate messages in UNIX mailboxes.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Configuration File Components</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The <b>sendmail</b> configuration file consists of five basic components. In increasing order of importance and complexity, they are: options, macros, classes, maps, mailers, and rulesets and rewriting rules.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=34></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Warning:</b></font></td>
+
+<td><font face="Times" size="+1">Modifying your <b>sendmail</b> configuration files should be a last resort. First, try to find an existing configuration file (or set of files) known to work for your situation. If you do modify the <b>sendmail</b> configuration file, be sure to have a backup copy in case your modifications don't do quite what you intend. It's <i>extremely</i> easy to render your mail system inoperative with an inappropriate modification to a <b>sendmail</b> configuration file.</font></td></tr>
+
+<tr valign=top>
+
+<td width=34 height=50></td></tr>
+
+<tr valign=top>
+
+<td width=34></td>
+
+<td nowrap></td>
+
+<td><font face="Helvetica" size="+3"><b>Options</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=34 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=34></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">Options control various simple aspects of <b>sendmail</b> operation. Options can be set both in the configuration file and on the command line used to invoke <b>sendmail</b> (usually executed from <b>/etc/rc</b>).</font></td></tr>
+
+<tr valign=top>
+
+<td width=34 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=34></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">In the configuration file, options are set using the <b>O</b> directive. Here's an example:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">OT3d</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">This option says to return mail if it hasn't been delivered within 3 days. Other options control such things as the permissions (&quot;mode&quot;) of temporary files, the locations of the aliases file and the spool directory, and the SMTP timeout. For more information, see the UNIX manual page for <b>sendmail</b>.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Macros</b></font>
+
+<p><font face="Times" size="+1">Macros are simple variables. Some macros are defined by <b>sendmail</b> itself, such as the current date and the sender's host name. Others can be defined in the <b>sendmail</b> configuration file. Such macros might include the name of a computer to which mail should be sent if it can't be delivered locally. Macro names consist of a single letter.</font>
+
+<p><font face="Times" size="+1">A number of built-in macros are available. All have lowercase names. By convention, macros with uppercase names are reserved for user definition.</font>
+
+<p><font face="Times" size="+1">Macros are defined with the <b>D</b> directive:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">DMetherl</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">This example defines the <b>M</b> macro to contain the string <b>etherl</b>.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Classes</b></font>
+
+<p><font face="Times" size="+1">Classes define collections of equivalent strings (or names, or tokens). This is typically used to indicate that a group of hosts or host names should be treated the same way. For example, all the computers that are UUCP partners might be in a class, as might all the different names for the current computer.</font>
+
+<p><font face="Times" size="+1">Classes are defined with the <b>C</b> and <b>F</b> directives. With <b>C</b>, you explicitly list the members of the class; with <b>F</b>, the members are obtained from a file or from the standard output of a command. Here's an example of each:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">CRmailhost mail-relay mail-server</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">FV|/usr/bin/uuname</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">FA/etc/sysadmins</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The first line defines the <b>R</b> class to contain the strings <b>mailhost</b>, <b>mail-relay</b>, and <b>mail-server</b>. The second defines the <b>V</b> class to hold the output of the command <b>/usr/bin/uuname</b>. The final example defines the <b>A</b> class to hold the contents of the file <b>/etc/sysadmins</b>.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Maps</b></font>
+
+<p><font face="Times" size="+1">A <i>map</i> can be used to look up a token or sequence of tokens in a database, and translate that token or those tokens into something else. For example, a map can be used to translate a user's login name (for example, <b>tracy</b>) to some canonical alias (for example, <b>Tracy_Roykirk</b>). Maps are used with the <b>$(...$)</b> metasymbol, described below.</font>
+
+<p><font face="Times" size="+1">Three types of maps are supported: NetInfo, NIS, and dbm. To define a map, you use the K directive, whose syntax is:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">K<i>mapname maptype mapname</i> [<i>arguments</i>]</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Here, <i>mapname</i> is a single-letter name for this map, and <i>maptype</i> is either <b>netinfo</b>, <b>nis</b>, or <b>dbm</b>. The syntax of both <i>mapname</i> and the optional <i>arguments</i> depend on the <i>maptype</i>, as follows:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Map Type</b></font></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Map Name</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Arguments</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">netinfo</font></td>
+
+<td nowrap><font face="Times" size="+1">[domain<b>:</b>]directory</font></td>
+
+<td><font face="Times" size="+1">propertykey</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">nis</font></td>
+
+<td nowrap><font face="Times" size="+1">map name</font></td>
+
+<td></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">dbm</font></td>
+
+<td nowrap><font face="Times" size="+1">dbm file&nbsp; (without extension)</font></td>
+
+<td></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Here are examples of each definition type, NetInfo, NIS, and dbm, respectively. In each case, the Z map is defined; in each case, the intent is to use this map to translate a login name to a canonical alias (known as &quot;inverse alias translation&quot;).</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">KZnetinfo localhost/network:/users  email</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">KZnis mail.byaddr</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">KZdbm /etc/sendmail/inverse_aliases</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Let's examine the arguments for the first map definition more carefully. The mapname specification, <b>localhost/network:/users</b>, has two portions: the domain name (<b>localhost/network</b>), and the directory (<b>/users</b>). This particular domain name uses tagged domain specification, for efficiency. The assumption here is that this configuration file's <b>sendmail</b> process will be running on a machine which also runs a NetInfo server for a domain tagged <b>network</b>. There's also an assumption that we're not willing to look for another server of the domain if, for some reason, the <b>local netinfod</b> network is slow to respond. More on this in a moment.</font>
+
+<p><font face="Times" size="+1">If no domain portion is specified, a standard search up the domain hierarchy will be performed, starting with the local domain. If full domain path notation is used--for example, <b>/</b> or <b>/sales</b>--a connection will be made to an available server for the domain.&nbsp; (Note that both no domain specification and a full domain path specification might be expensive in a large domain hierarchy: the domain hierarchy will have to be traversed for each invocation message sent.) A relative domain path can also be used (for example, <b>.</b> or <b>..</b> or even <b>../..</b>); this has the advantage of being able to contact servers on other computers, but still being relatively efficient.</font>
+
+<p><font face="Times" size="+1">The directory portion specifies the parent of the directory to be accessed, or the directory itself. For example, if the directory portion is <b>/users</b> and the token to be translated is <b>tracy</b>, then the NetInfo directory <b>/users/tracy</b> will be accessed. The token can be included as other than the last component of the directory path, by using the notation <b>%s</b>. For example, if the directory portion is <b>/users/%s/info</b> and <b>tracy</b> is to be translated, then <b>/users/tracy/info</b> will be examined. (One way to think about this is that if there's no explicit <b>%s</b> in the directory portion specification, there's an implicit <b>/%s</b> at the end of the specification.)</font>
+
+<p><font face="Times" size="+1">The PropertyKey denotes the key of the property whose first value should be substituted for the token(s) being translated. In our example, where we're looking up <b>tracy</b> in the NetInfo map shown above, the first value of the email property in <b>/users/tracy</b> will be substituted.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Using a Map</b></font>
+
+<p><font face="Times" size="+1">We've been discussing maps in a rather abstract manner. Let's take a very specific example: actually implementing inverse alias translation for the addresses of people sending messages. You might want to reread this section after completing the rest of this appendix: we'll be using some information explained in later sections.</font>
+
+<p><font face="Times" size="+1">The first step in implementing inverse alias translation is to define the appropriate information in NetInfo. You could add a new property, <b>alias</b>, to each user's record in <b>/users</b> in the root domain, for example. Or, you could add such a property to each user's <b>info</b> subdirectory. Let's take the latter approach; using NetInfoManager or an appropriate script with <b>niutil</b>, add all the canonical aliases.&nbsp; Also, be sure that you've defined an appropriate alias in the <b>/aliases </b>directory to handle the forward translation of, for example, <b>Tracy_Roykirk</b> into <b>tracy</b>.</font>
+
+<p><font face="Times" size="+1">We have a few choices regarding which messages are subject to inverse alias translation. It could be just messages being delivered locally, or just messages going out over the Internet, or just messages being forwarded using UUCP. Or, we could perform inverse alias translation on all messages.&nbsp; Let's take this latter option.</font>
+
+<p><font face="Times" size="+1">As described in &quot;Ruleset Flow and Application,&quot; all sender addresses are translated by Ruleset 1, the Sender Preprocessing ruleset.&nbsp; This is a good place to put inverse alias translation. In the configuration files shipped in NEXTSTEP, Ruleset 1 is empty.</font>
+
+<p><font face="Times" size="+1">We're going to make two more assumptions here. First, the mailhost machine--the machine (or machines) providing centralized mail services--run a server for the root NetInfo domain, which is tagged <b>Rhino</b>. Second, if the NetInfo server for the root domain running on the mailhost doesn't respond, we're willing not to look for another server for the domain.</font>
+
+<p><font face="Times" size="+1">Let's define the map, and add a rule to Ruleset 1. A good place to define the map is just above Ruleset 1; you only need to modify the configuration file for the mailhost.&nbsp; Here's the map definition, along with the new Ruleset 1.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">KZnetinfo localhost/Rhino:/users/%s/info alias</font>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">#&nbsp; Sender Field Pre-rewriting</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">S1</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">R$- $:$&gt;3$(Z$1$)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; invert account to alias</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The <b>Z</b> map is of type <b>netinfo</b>, and will query the <b>netinfod Rhino</b> running on the local computer. The first value of the <b>alias</b> property in the <b>info</b> subdirectory of the appropriate user directory will be substituted for the word to be translated.</font>
+
+<p><font face="Times" size="+1">In Ruleset 1, if there's exactly one token in the sender's address, that token will be translated using the <b>Z</b> map. The resulting adddress will be sent back through Ruleset 3 for canicalization.&nbsp; Thus, a sender address of <b>tracy</b> will result in the value of the <b>alias</b> property in <b>/users/tracy/info</b>--for example, <b>Tracy_Roykirk</b>--being substituted for <b>tracy</b>.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Debugging NetInfo Lookups</b></font>
+
+<p><font face="Times" size="+1">If you invoke <b>sendmail</b> in address test mode (see &quot;Using sendmail in Address Test Mode&quot;), you can see the results of the NetInfo lookups. If you want to get some specific, detailed information, you can run <b>sendmail</b> in debug mode by specifying the <b>-d</b> flag, and giving it the argument <b>60</b> (for example, <b>-d60</b>).&nbsp; See the section &quot;Address Test on a Mail Server&quot; for an example.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Mailers</b></font>
+
+<p><font face="Times" size="+1">A mailer defines the program and options used to forward or deliver mail. Different mailers are used for reasons such as the following:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Forwarding over different media or using different protocols (UUCP versus SMTP, for example)</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Using different options (such as maximum message length) for different circumstances</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Using different sorts of rewriting for the sender and recipient addresses</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Mailers can be named anything, except for three names which have special meaning to <b>sendmail</b>: <b>local</b>, <b>prog</b>, and <b>error</b>.</font>
+
+<p><font face="Times" size="+1">Mailers are defined with the <b>M</b> directive:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">Muucp, P=/usr/bin/uux, F=msDFMhuU, S=13, R=23, E=\n</font><br>
+<img src="../images/sp.gif" width=152 height=1><font face="Courier">A=uux - -r $h!rmail ($u)</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">This example defines the <b>uucp</b> mailer. Here's a breakdown of the components:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>P</b> (path)--Defines the program to be invoked, in this case, <b>/usr/bin/uux</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>F</b> (flags)--Defines the <i>mailer flags</i>, which control details of the execution of and arguments to the program invoked for this mailer. A complete description can be found in Eric Allman's paper.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>S</b> (sender)--Specifies the ruleset used for rewriting sender addresses of messages sent to this mailer. See &quot;Ruleset Flow and Application,&quot; later in this chapter, for further information.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>R</b> (recipient)--Same as <b>S</b>, but for recipient addresses.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>E</b> (eol)--Specifies the end-of-line string, in this case, <b>\n</b> (a newline character).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>A</b> (argv)--Defines the argument vector sent to the program. It begins with a restatement of the program (often in shortened form), and continues with the arguments you would provide to the program on the command line.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Not used in this example is the <b>M</b> (maxsize) option, which defines the maximum message length (in bytes). If this maximum size is exceeded, the message is not delivered and an error message is returned to the sender.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>The local Mailer</b></font>
+
+<p><font face="Times" size="+1">The mailer called <b>local</b> must be defined in the configuration file. The <b>local</b> mailer is used for final delivery of messages destined for users on the local computer. Alias resolution will only be performed for mail that will be processed by the <b>local</b> mailer.</font>
+
+<p><font face="Times" size="+1">Typically, the <b>local</b> mailer will invoke <b>/bin/mail</b>, which actually writes a copy of the message to the user's mail spool file:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">Mlocal, P=/bin/mail, F=rlsDFMmnu; see below for a discussion of sender domain additionP, S=10, R=20, A=mail -d $u</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>The prog Mailer</b></font>
+
+<p><font face="Times" size="+1">The mailer called <b>prog</b> also must be defined in the configuration file. This mailer is used for final message delivery when the address specifies a program as the recipient. For example, the following mail alias specifies that the program <b>/usr/local/bin/ambigmail</b> should receive the incoming message:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">&#34;|/usr/local/bin/ambigmail&#34;</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The <b>prog</b> mailer is invoked in place of the <b>local</b> mailer for such addresses. Typically, the <b>prog</b> mailer will invoke <b>/bin/sh</b>:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">Mprog, P=/bin/sh, F=lsDFMeup, S=10, R=20, A=sh -c $u</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>The error Mailer</b></font>
+
+<p><font face="Times" size="+1">The <b>error</b> mailer is built into <b>sendmail</b>, and shouldn't be defined in the configuration file. This mailer is used to report errors, such as an unknown local host, to the sender and possibly to <b>postmaster</b>, an alias for the users responsible for the mail installation. For an example using the <b>error</b> mailer, see the next section.</font>
+
+<p><font face="Times" size="+1">Error messages can also be generated from other sources. For example, if the <b>local</b> mailer determines that a user doesn't exist locally, an error will be generated, but the <b>error</b> mailer isn't used to report it.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Rulesets and Rewriting Rules</b></font>
+
+<p><font face="Times" size="+1">Much of a <b>sendmail.cf</b> file consists of instructions for interpreting and modifying mail addresses. These instructions are called <i>rewriting rules</i>, and they're grouped together into <i>rulesets</i>. A ruleset contains a collection of rules to perform a certain function. For example, one ruleset transforms addresses into a standard (<i>canonical</i>) format which is easier for the other rulesets to parse.</font>
+
+<p><font face="Times" size="+1">Rulesets are named with a number, and are defined using the <b>S</b> directive:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">S30</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">A ruleset is followed immediately by the rewriting rules that make up that ruleset. Rewriting rules are defined with the <b>R</b> directive:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">R$+@$+&nbsp;&nbsp;&nbsp; $:$1&lt;@$2&gt;&nbsp;&nbsp;&nbsp; focus on domain</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">This rule is made up of three components, separated by tab characters: the left-hand side, the right-hand side, and a comment.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Left-hand Side</b></font>
+
+<p><font face="Times" size="+1">The pattern contained in the left-hand side of a rule is compared to an address. The pattern is similar to a regular expression, except that it compares <i>tokens</i>, or words, rather than characters. For example, the following address has five tokens:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">amm@Tute.EDU</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The five tokens are <b>amm</b>, <b>@</b>, <b>Tute</b>, <b>.</b>, and <b>EDU</b>.</font>
+
+<p><font face="Times" size="+1">The following table describes the metasymbols used in left-hand side patterns:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Metasymbol</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Meaning</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">$*</font></td>
+
+<td><font face="Times" size="+1">Match zero or more tokens.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">$+</font></td>
+
+<td><font face="Times" size="+1">Match one or more tokens.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">$-</font></td>
+
+<td><font face="Times" size="+1">Match exactly one token.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">$=<i>c</i></font></td>
+
+<td><font face="Times" size="+1">Match any token in Class <i>c</i>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">$~<i>c</i></font></td>
+
+<td><font face="Times" size="+1">Match any token not in Class <i>c</i>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Here's the example rewriting rule again:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">R$+@$+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $:$1&lt;@$2&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; focus on domain</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The left-hand side of this rule matches one or more tokens (<b>$+</b>), followed by the token <b>@</b>, and one or more additional tokens (<b>$+</b>).</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Right-hand Side</b></font>
+
+<p><font face="Times" size="+1">The right-hand side of a rule specifies what to do with an address if the left-hand side of the rule matches it. The following table describes the metasymbols used in the right-hand side of a rewriting rule:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Metasymbol</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Meaning</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">$<i>n</i></font></td>
+
+<td><font face="Times" size="+1">Substitute the tokens that match metasymbol number <i>n</i> from the left-hand side.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">$[<i>name</i>$]</font></td>
+
+<td><font face="Times" size="+1">Transform host name (or address) <i>name</i> into standard form (<i>canonicalize</i>).</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">$&gt;<i>n</i></font></td>
+
+<td><font face="Times" size="+1">Call ruleset number <i>n</i>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">$#<i>name</i></font></td>
+
+<td><font face="Times" size="+1">Resolve the address to the mailer <i>name</i>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">$@<i>name</i></font></td>
+
+<td><font face="Times" size="+1">Specify the host as <i>name</i>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">$:<i>name</i></font></td>
+
+<td><font face="Times" size="+1">Specify the user as <i>name</i>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">${<i>m name</i>$}</font></td>
+
+<td><font face="Times" size="+1">Look up <i>name</i> in the NIS map specified in the macro <i>m</i> [obsolete; superceded by $(...$)].</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">$(<i>m word</i>$)</font></td>
+
+<td><font face="Times" size="+1">Look up <i>word</i> in the map specified by <i>m</i> (<i>m</i> is defined using the <b>K</b><i>m</i> directive, below).</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">The $# and the $@ and the $: metasymbols are used together in the form $#mailer $@host $:user.</font>
+
+<p><font face="Times" size="+1">In addition to these metasymbols, there are two prefixes which can be used to modify the behavior of the rule or ruleset, as described in the following table:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Prefix</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Meaning</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">$:</font></td>
+
+<td><font face="Times" size="+1">Terminate this rule immediately, but allow the ruleset to continue.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">$@</font></td>
+
+<td><font face="Times" size="+1">Return from this ruleset with the remainder of the right-hand side as the result of the ruleset.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">The two above prefix usages apply only when they appear first on the Right Hand Side.</font>
+
+<p><font face="Times" size="+1">Here's the example rewriting rule again:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">R$+@$+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $:$1&lt;@$2&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; focus on domain</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The right-hand side rewrites the address into the following form:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier"><i>Tokens1</i>&lt;@<i>Tokens2</i>&gt;</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">If this rule were applied to the address <b>amm@Tute.EDU</b>, <i>Tokens1</i> would match <b>amm</b>, and <i>Tokens2</i> would match <b>Tute.EDU</b>. The right-hand side of the rule transforms the address into the following:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">amm&lt;@Tute.EDU&gt;</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">By putting the domain portion of the address between angle brackets (&lt;&gt;), it's more easily identified by other rules (this is called <i>focusing</i>).</font>
+
+<p><font face="Times" size="+1">The right-hand side prefix <b>$:</b> causes the rule to terminate, preventing application of the rule to the rewritten address. (The rewritten address might still match the left-hand side, which would otherwise cause the rule to be applied to the rewritten address.)</font>
+
+<p><font face="Times" size="+1">Here's an example of a rewriting rule that invokes the <b>error</b> mailer:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">R$*&lt;@$*.LOCAL&gt;$*&nbsp;&nbsp;&nbsp; $#error $:Never heard of host $2 in domain $m</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">If the left-hand side matches the address, the error mailer is called to return the indicated error message (everything after <b>$:</b>). Tab characters can't be used in the text of the error message since a tab separates the right-hand side of a rewriting rule from the comment.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">The <b>error</b> mailer should only be invoked in Ruleset 0 (see the next section).</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Translating Addresses</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Perhaps the most important aspect of <b>sendmail</b> configuration files is how the rulesets are used to translate a mail address.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Address Syntax</b></font>
+
+<p><font face="Times" size="+1">Electronic mail addresses have many different forms--that's why <b>sendmail</b> configuration files are so complex.</font>
+
+<p><font face="Times" size="+1">A mail address is usually in one of three forms:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Simple user name or alias, such as <b>suser</b>, <b>Sandy_User</b>, or <b>all_sales</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">User name or alias at some other computer, such as <b>suser@Rhino.COM</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">User name or alias on another computer reached using UUCP, such as <b>rhino!suser</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Other address forms are possible, including combining address forms. The following table describes some sample mail addresses:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Address</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Interpretation</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=123></td>
+
+<td nowrap><font face="Times" size="+1">amm</font></td>
+
+<td><font face="Times" size="+1">Local user or alias <b>amm</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=123 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=123></td>
+
+<td nowrap><font face="Times" size="+1">amm@rhino</font></td>
+
+<td><font face="Times" size="+1"><b>amm</b> on the computer <b>rhino</b> in the local domain</font></td></tr>
+
+<tr valign=top>
+
+<td width=123 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=123></td>
+
+<td nowrap><font face="Times" size="+1">rhino!amm</font></td>
+
+<td><font face="Times" size="+1"><b>amm</b> on the computer <b>rhino</b> reached using UUCP</font></td></tr>
+
+<tr valign=top>
+
+<td width=123 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=123></td>
+
+<td nowrap><font face="Times" size="+1">amm@rhino.UUCP</font></td>
+
+<td><font face="Times" size="+1"><b>amm</b> on the computer <b>rhino</b> reached using UUCP</font></td></tr>
+
+<tr valign=top>
+
+<td width=123 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=123></td>
+
+<td nowrap><font face="Times" size="+1">rhino!hippo!conure!amm</font></td>
+
+<td><font face="Times" size="+1"><b>amm</b> on the computer <b>conure</b> reached with UUCP through <b>rhino</b> and then <b>hippo</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=123 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=123></td>
+
+<td nowrap><font face="Times" size="+1">amm@Rhino.COM</font></td>
+
+<td><font face="Times" size="+1"><b>amm</b> in the domain <b>Rhino.COM</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=123 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=123></td>
+
+<td nowrap><font face="Times" size="+1">amm@flyer.Rhino.COM</font></td>
+
+<td><font face="Times" size="+1"><b>amm</b> in the domain <b>flyer.Rhino.COM</b>; often, this is the computer <b>flyer</b> in the domain <b>Rhino.COM</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=123 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=123></td>
+
+<td nowrap><font face="Times" size="+1">&lt;@Rhino.COM:amm@Tute.EDU&gt;</font></td>
+
+<td><font face="Times" size="+1"><b>amm</b> in the domain <b>Tute.EDU</b>, reached through the domain <b>Rhino.COM</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=123 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=123></td>
+
+<td nowrap><font face="Times" size="+1">amm%rhino.UUCP@Tute.EDU</font></td>
+
+<td><font face="Times" size="+1"><b>amm</b> on the computer <b>rhino.UUCP</b> reached through the domain <b>Tute.EDU</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=123 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=123></td>
+
+<td nowrap><font face="Times" size="+1">amm%Rhino.COM@Tute.EDU</font></td>
+
+<td><font face="Times" size="+1"><b>amm</b> at <b>Rhino.COM</b> reached through <b>Tute.EDU</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The <b>sendmail</b> configuration file translates all addresses into conforming addresses, called <i>domain-style addresses</i>. A simple domain-style address is <i>user</i>@<i>domain</i>, where <i>domain</i> is the name of a computer or collection of computers (a network, for example). If <i>domain</i> is a collection of computers, one of those computers will be designated to handle the incoming mail for the collection. The <b>sendmail</b> program (or its equivalent) on the computer that handles mail for <i>domain</i> interprets <i>user</i>.</font>
+
+<p><font face="Times" size="+1">For example, the address <b>rhino!suser</b>, which isn't a domain-style address, will be translated to <b>suser@rhino.uucp</b>. In this case, <b>rhino.uucp</b> is a notation used for convenience: there isn't really a <b>uucp</b> domain, and therefore no subdomain called <b>rhino.uucp</b>. The translation into a standard, or canonical, domain-style address is called <i>canonicalization</i>.</font>
+
+<p><font face="Times" size="+1">In general, mail addresses aren't case-sensitive--the address <b>amm@rhino</b> is the same as <b>amm@Rhino</b>. The exception to this is UUCP addresses--<b>amm@rhino.uucp</b> is <i>not</i> the same as <b>amm@Rhino.uucp</b>.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Ruleset Flow and Application</b></font>
+
+<p><font face="Times" size="+1">Rulesets are applied to an address in a specific order. This section describes which rulesets are applied to different kinds of addresses. The rulesets themselves are described in the next&nbsp; section.</font>
+
+<p><font face="Times" size="+1">The following figure shows the rulesets used during mailer resolution--determining what to do with a message being sent to a given address.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F0.gif" width=353 height=49></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The envelope address (which might be different from the addresses in the message itself, or might not appear in the message) is processed first by Ruleset 3, and then by Ruleset 0. The function of Ruleset 3 is to convert the address into standard (canonical) form, and to &quot;focus&quot; <b>sendmail</b> on the domain part of the address by placing it in angle brackets (&lt;&gt;). Ruleset 0 determines what to do with the message sent to that address.</font>
+
+<p><font face="Times" size="+1">The next figure shows the rulesets used to rewrite sender addresses in the message header, such as the <b>From:</b> line.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F1.gif" width=450 height=141></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Ruleset 3 is called first, possibly followed by a process called <i>sender domain addition</i> (represented here by the box labeled <b>D</b>). Sender domain addition adds a domain portion to the address, if necessary; it is explained below. Next, Ruleset 1 is invoked, which performs general sender address preprocessing, such as translating a login name to an alias. Then, the ruleset specified by the <b>S</b> option in the mailer definition is invoked, followed by Ruleset 4, which performs general postprocessing, including undoing some of the focusing performed by Ruleset 3.</font>
+
+<p><font face="Times" size="+1">The next figure shows the rulesets used to rewrite recipient addresses in the message header, such as the <b>To:</b> line.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F2.gif" width=454 height=141></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Here, Ruleset 3 and D are as before. Ruleset 2 performs general recipient address processing (frequently not required, so Ruleset 2 is often empty). Then, the ruleset specified by the <b>R</b> option in the mailer definition is invoked, followed by Ruleset 4, which performs general postprocessing.</font>
+
+<p><font face="Times" size="+1">The following figure is a combination of the previous three figures, showing how the various rulesets are used when processing an address. Which path an address takes through the rulesets depends on the type of address. This diagram is adapted from the paper by Eric Allman, cited earlier, and appears in many <b>sendmail</b> references.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F3.gif" width=399 height=77></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Specific Rulesets</b></font>
+
+<p><font face="Times" size="+1">This section describes in detail the various rulesets introduced in the previous section.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Ruleset 3--Canonicalize and Focus</b></font>
+
+<p><font face="Times" size="+1">Ruleset 3 translates an address into standard form (canonicalization), and encloses the domain portion of the address between angle brackets (focusing). The example rewriting rule used earlier is a sample from Ruleset 3.</font>
+
+<p><font face="Times" size="+1">Here are a couple examples of how addresses are translated by Ruleset 3:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Original Address</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>After Translation</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">amm@Rhino.COM</font></td>
+
+<td><font face="Times" size="+1">amm&lt;@Rhino.COM&gt;</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">rhino!amm</font></td>
+
+<td><font face="Times" size="+1">amm&lt;@rhino.uucp&gt;</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Ruleset 0--Mailer Resolution</b></font>
+
+<p><font face="Times" size="+1">Ruleset 0 determines what to do with the message for an address: which mailer should be used to forward or deliver the mail, which host receives the message if it's to be forwarded, and which address should be given to the forwarding or delivery agent. This process is called <i>resolving</i> the address. The output of Ruleset 0 contains three things:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Mailer to be used to forward or deliver the mail (<b>ddn</b>, for example)</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Host to which the message should be sent (<b>Tute.EDU</b>, for example)</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Address of the user receiving the mail (<b>amm@Tute.EDU</b>, for example)</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">If the mail is to be delivered locally, the host will be empty.</font>
+
+<p><font face="Times" size="+1">The next table shows the result of applying Ruleset 0 to a number of addresses. This table assumes that address resolution is occurring on the mail server (the computer responsible for delivering local mail and forwarding remote mail), and that mail destined for off-site delivery is forwarded over the Internet.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Address</b></font></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Mailer</b></font></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Host</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>User</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">suser</font></td>
+
+<td nowrap><font face="Times" size="+1">local</font></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">suser</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">suser@rhino</font></td>
+
+<td nowrap><font face="Times" size="+1">ether</font></td>
+
+<td nowrap><font face="Times" size="+1">rhino</font></td>
+
+<td><font face="Times" size="+1">suser@rhino</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">suser@Tute.EDU</font></td>
+
+<td nowrap><font face="Times" size="+1">ddn</font></td>
+
+<td nowrap><font face="Times" size="+1">Tute.EDU</font></td>
+
+<td><font face="Times" size="+1">suser@Tute.EDU</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">rhino!suser</font></td>
+
+<td nowrap><font face="Times" size="+1">uucp</font></td>
+
+<td nowrap><font face="Times" size="+1">rhino</font></td>
+
+<td><font face="Times" size="+1">suser</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">suser@rhino.uucp</font></td>
+
+<td nowrap><font face="Times" size="+1">uucp</font></td>
+
+<td nowrap><font face="Times" size="+1">rhino</font></td>
+
+<td><font face="Times" size="+1">suser</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">rhino!conure!suser</font></td>
+
+<td nowrap><font face="Times" size="+1">uucp</font></td>
+
+<td nowrap><font face="Times" size="+1">rhino</font></td>
+
+<td><font face="Times" size="+1">conure!suser</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">suser%Rhino.COM@Tute.EDU</font></td>
+
+<td nowrap><font face="Times" size="+1">ddn</font></td>
+
+<td nowrap><font face="Times" size="+1">Tute.EDU</font></td>
+
+<td><font face="Times" size="+1">suser%Rhino.COM@Tute.EDU</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">If you want to use some other mailer to forward off-site mail, you need to define that mailer with the <b>M</b> directive, as described earlier. Additionally, the <b>M</b> macro should be defined as the name of that mailer, the <b>R</b> macro as the preferred name of the remote forwarding computer, and the <b>R</b> class as the preferred name and any aliases for the remote forwarding computer.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Ruleset D--Sender Domain Addition</b></font>
+
+<p><font face="Times" size="+1">There really isn't a Ruleset D; it's actually a built-in process called sender domain addition. The sender's address is run through the mailer resolution sequence (Ruleset 3, then Ruleset 0), then <b>sendmail</b> checks to see if the <b>C</b> mailer flag is present for the mailer that the message was <i>received</i> from. If the flag is present, the domain portion of the sender's address is added to any addresses in the header that don't already have a domain portion (that is, that appear to be local addresses). This makes sure that any replies to the message are delivered to the correct address. For example, if the message is sent from the user <b>amm</b>, sender domain addition might convert the address to <b>amm@Rhino.COM</b>.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Ruleset 1--Standard Sender Address Preprocessing</b></font>
+
+<p><font face="Times" size="+1">Ruleset 1 provides an opportunity to do site-wide processing of a sender's address. For example, a site might implement a standard format for mail addresses, so that, regardless of a user's actual login name, mail from that user would appear to come from this standard address. Specifically, you might want to translate a login name like <b>rkabir</b> to <b>Randy_Kabir</b>.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Ruleset 2--Standard Recipient Address Preprocessing</b></font>
+
+<p><font face="Times" size="+1">Just as you can do standard preprocessing of sender addresses with Ruleset 1, you can perform standard preprocessing for recipient addresses with Ruleset 2. For example, you might perform host name translation for some of the computers on your local network. Usually, little if any recipient address preprocessing is required.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Ruleset 4--Final Address Postprocessing</b></font>
+
+<p><font face="Times" size="+1">Ruleset 4 undoes some of the address translation performed by Ruleset 3. It also defocuses the address by removing the angle brackets around the domain portion. For example, it might convert <b>amm&lt;@rhino.uucp&gt;</b> back into <b>rhino!amm</b>.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Information Services</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Depending on how the system is configured, <b>sendmail</b> uses various sources for network-wide information, including NetInfo, DNS, NIS, and some UNIX flat files. How these are used depends on the information needed.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">User Names--When <b>sendmail</b> looks for a user name, NetInfo is checked first. If the name is not found in NetInfo, and if NIS is enabled, the appropriate UNIX file will be examined, and then the NIS map will be checked.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Host Names--In addition to NetInfo and NIS, the DNS is searched for host names. Once a message's destination has been determined, the DNS is searched to determine if a <i>mail exchanger</i> exists for the destination computer. A mail exchanger is a computer that handles all the mail destined for another computer. Mail exchanger records in the DNS are called <i>MX records</i>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">If an MX record is found for the destination domain, that computer is used for the destination in the mail transmission (but <i>not</i> in the message headers). The information in the MX record includes the address of the mail exchanger, so no further reference to NetInfo or NIS is made to resolve the address of the mail exchanger.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">The order of search is NetInfo, DNS, NIS, then DNS for MX records.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Aliases--Aliases are translated only for messages being delivered with the <b>local</b> mailer. To resolve an alias, <b>sendmail</b> looks for the address in three places, in this order: the <b>/aliases</b> NetInfo directory, the <b>mail.aliases</b> NIS map (if NIS is running), and the file specified by the <b>A</b> option in the <b>sendmail</b> configuration file (usually <b>/etc/sendmail/aliases</b>). The latter locations are only checked if the address isn't found in an earlier one. If the address is not found in any of these places, it's left as is. Note that this is independent of the <b>l</b> mailer flag.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">After alias resolution, <b>sendmail</b> looks for a file called <b>.forward</b> in the recipient's home directory. This file, if present, specifies that the mail should be forwarded: to another user (not necessarily local), a file, or a program.</font>
+
+<p><font face="Times" size="+1">The following table describes examples of each of the variations of the <b>.forward</b> file.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Type</b></font></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Format</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Example</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">User</font></td>
+
+<td nowrap><font face="Times" size="+1">Mail address</font></td>
+
+<td><font face="Times" size="+1">amm@Tute.EDU</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">Literal user</font></td>
+
+<td nowrap><font face="Times" size="+1">Escaped address</font></td>
+
+<td><font face="Times" size="+1">\amm</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">File</font></td>
+
+<td nowrap><font face="Times" size="+1">Full path</font></td>
+
+<td><font face="Times" size="+1">/Net/rhino/Users/amm/.maillog</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">Program</font></td>
+
+<td nowrap><font face="Times" size="+1">| <i>program</i></font></td>
+
+<td><img src="../images/sp.gif" width=3 height=1><font face="Times" size="+1">&#34;|/usr/local/bin/answermail -a&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>Important:</b></font>&nbsp; <font face="Times" size="+1">If a file is specified, it must already exist in order for mail to be written to it--<b>sendmail</b> will not create a new file.</font>
+
+<p><font face="Times" size="+1">If a command is specified in a <b>.forward</b> file, the command is run in the mail queue spool directory as if executed by the mail recipient. The mail queue spool directory is specified by the <b>Q</b> option (usually <b>/usr/spool/mqueue</b>). If the command is a shell script, the user's <b>.profile</b> or <b>.cshrc</b> is run. If arguments are provided to the command, the entire command line must be enclosed in quotes, as in the previous example.</font>
+
+<p><font face="Times" size="+1">To forward the mail to multiple recipients (for example, to a file and to a program), specify each entry on a separate line in the <b>.forward</b> file.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=34></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Warning:</b></font></td>
+
+<td><font face="Times" size="+1">In order to resolve forwarding, <b>sendmail</b> attempts to access the recipient's home directory. If the home directory is on an imported file system and the file server is unavailable, the <b>sendmail</b> process might have to wait until the server becomes available.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Debugging</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Debugging <b>sendmail</b> problems can be a complex, frustrating experience. The suggestions in this section are a starting point.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>The mail and sendmail -v Option</b></font>
+
+<p><font face="Times" size="+1">The <b>-v</b> (verbose) option to the Berkeley <b>mail</b> command displays the <b>sendmail</b> conversation or actions as the mail is sent. What follows is an example of this command. The example shows user input in boldface and comments in a different typeface.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rhino [~]-175% <b>mail -v rkabir</b></font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Send mail in verbose mode to <b>rkabir</b>.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">Subject: <b>Testing</b></font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier"><b>This is a test</b></font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier"><b>.</b></font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Enter a message, ending with a period on a line by itself.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">Cc:</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">No copies to anyone.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rkabir... Connecting to mailhost via etherl...</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Local computer attempts to send mail to <b>rkabir</b>. Since this computer is a mail client, mail is sent to the mail server (<b>mailhost</b>) using the <b>etherl</b> mailer.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">Trying 192.42.172.66...&nbsp; connected.</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">192.42.172.66 is the Internet address of the mail server.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">220 cockatoo.Rhino.COM Sendmail NX5.67c/NX3.0M ready at Wed, 15 Jul 92 09:14:18 -0700</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">The greeting from the mail server (<b>cockatoo</b>).</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">&gt;&gt;&gt; HELO conure.Rhino.COM</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">250 cockatoo.Rhino.COM Hello conure.rhino.com, pleased to meet you</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Both computers identify themselves to each other.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">&gt;&gt;&gt; MAIL From:&lt;amm&gt;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">250 &lt;amm&gt;... Sender ok</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Mail is being sent from the user <b>amm</b>; the sender address is accepted.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">&gt;&gt;&gt; RCPT To:&lt;rkabir&gt;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">250 &lt;rkabir&gt;... Recipient ok</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Mail is being sent to <b>rkabir</b>; the recipient address is accepted. If there were some problem with the address, an error message would be printed.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">&gt;&gt;&gt; DATA</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">354 Enter mail, end with &#34;.&#34; on a line by itself</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">&gt;&gt;&gt; .</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">250 Mail accepted</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Mail message sent and received.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">&gt;&gt;&gt; QUIT</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">221 cockatoo.Rhino.COM delivering mail</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rkabir... Sent</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">You can also invoke <b>sendmail</b> directly with the verbose option. The output is identical to that from a verbose <b>mail </b>session. When you run <b>sendmail</b> directly, you must supply all the headers that your mail sending program provides for you (usually including <b>From:</b>, <b>To:</b>, <b>Cc:</b>, and <b>Subject:</b>). Delivery will be attempted to the addresses provided on the command line regardless of the headers.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Using sendmail in Address Test Mode</b></font>
+
+<p><font face="Times" size="+1">You can run <b>sendmail</b> in <i>address test mode</i>, which displays the results of processing an address by the various rulesets in the configuration file. In address test mode, you can specify the rulesets to be applied to a specific address. You specify a ruleset by number, with a sequence of rulesets separated by commas and the rulesets separated from the address by a space. To see how a specific address would be processed by <b>sendmail</b>, specify the sequence of rulesets according to the information in &quot;Ruleset Flow and Application&quot; earlier in this chapter.</font>
+
+<p><font face="Times" size="+1">Normally, the address is resolved to a mailer first. Run the envelope recipient address (the address of the actual recipient) through Ruleset 0 to resolve it to a mailer. The envelope address might be different from the address in the header. For example, the address of a recipient of a blind copy of a message will not show up in the message header, but will be on the envelope. However, a recipient's header address and envelope address will usually be the same.</font>
+
+<p><font face="Times" size="+1">After invoking Ruleset 0 on an address, check the definition of the resulting mailer to determine which sequence of rulesets to use for the sender address, and which to use for the recipient address. Remember, the <b>S</b> and <b>R</b> macros in a mailer definition specify the rulesets for sender and recipient addresses.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">When mail is being delivered, <b>sendmail</b> normally performs sender domain addition. In address test mode, however, <b>sendmail</b> doesn't perform sender domain addition. Remember to add the sender domain yourself to any addresses that apply when running <b>sendmail</b> in address test mode. See &quot;Ruleset D--Sender Domain Addition&quot; earlier in this chapter for details.</font>
+
+<p><font face="Times" size="+1">What follows is a series of annotated sessions with <b>sendmail</b> in address test mode, both on a mail client and a mail server. The examples show user input in boldface and comments in a different typeface.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Address Test on a Mail Client</b></font>
+
+<p><font face="Times" size="+1">The first session examines <b>sendmail</b> ruleset processing on a mail client. This example assumes you're sending mail from <b>cockatoo</b>, in the domain <b>Rhino.COM</b>. Other computers on the local network include the mail server (<b>mailbox</b>, with the alias <b>mailhost</b>) and the computer <b>conure</b>.</font>
+
+<p><font face="Times" size="+1">Remember that mail clients know nothing about mail delivery. Instead, they depend on the mail server for forwarding services.</font>
+
+<p><font face="Times" size="+1">Here's the definition of the <b>etherl</b> mailer from the file <b>sendmail.sharedsubsidiary.cf</b>:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">Metherl, P=[TCP], F=msDFuXn, S=12, R=22, A=TCP $h</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>Local Address</b></font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">cockatoo [~]-329% <b>/usr/lib/sendmail -bt</b></font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Run <b>sendmail</b> in address test mode.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">ADDRESS TEST MODE</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">Enter &lt;ruleset&gt; &lt;address&gt;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">[Note: No automatic ruleset 3 call]</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">A greeting is printed. Unlike some other sendmails, we don't automatically run Ruleset 3; this allows you to test individual rulesets without interference from Ruleset 3.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">&gt; <b>3,0 amm</b></font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Run Rulesets 3 and 0 on <b>amm</b> to resolve the address to a mailer.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 input: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 returns: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 0 input: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 9 input: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 9 returns: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 0 returns: $# &#34;etherl&#34; $@ &#34;mailhost&#34; $: &#34;amm&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Ruleset 3 is invoked, followed by Ruleset 0, according to the instructions. Ruleset 0, in turn, calls Ruleset 9 as a subroutine. The input and output of each ruleset are shown. Ruleset 0 returns the values <b>etherl</b> (mailer), <b>mailhost </b>(host to which the message should be sent), and <b>amm</b> (the user to receive the mail). The strings <b>$#</b>, <b>$@</b>, and <b>$: </b>indicate that the words following are the mailer, the host, and the user.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">&gt; <b>3,1,12,4 tracy</b></font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Run the sender's address (<b>tracy</b>) through the appropriate ruleset sequence. The <b>etherl</b> mailer definition specifies sender Ruleset 12 (S=12).</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 input: &#34;tracy&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 returns: &#34;tracy&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Execution of Ruleset 3.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 1 input: &#34;tracy&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 1 returns: &#34;tracy&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Ruleset 1 doesn't modify the address.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 12 input: &#34;tracy&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 12 returns: &#34;tracy&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Neither does Ruleset 12, the mailer-specific ruleset.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 4 input: &#34;tracy&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 9 input: &#34;tracy&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 9 returns: &#34;tracy&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Ruleset 4 calls Ruleset 9.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 4 returns: &#34;tracy&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">No changes made to the address.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">&gt; <b>3,2,22,4 amm</b></font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Run the recipient address (<b>amm</b>) through the appropriate ruleset sequence. The <b>etherl</b> mailer definition specifies recipient Ruleset 22 (R=22).</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 input: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 returns: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 2 input: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 2 returns: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 22 input: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 22 returns: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 4 input: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 9 input: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 9 returns: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 4 returns: &#34;amm&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">As with the sender's address, no changes were needed.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>Simple Remote Address</b></font>
+
+<p><font face="Times" size="+1">Next, mail to be sent to a remote address is examined (<b>amm</b> at the site <b>Tute.EDU</b>). This is still a mail client, so the <b>sendmail</b> configuration file is the same, including the definition of the <b>etherl</b> mailer.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">&gt; <b>3,0 amm@Tute.EDU</b></font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Run the recipient address through Rulesets 3 and 0 to resolve to a mailer.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 input: &#34;amm&#34; &#34;@&#34; &#34;Tute&#34; &#34;.&#34; &#34;EDU&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 6 input: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;Tute&#34; &#34;.&#34; &#34;EDU&#34; &#34;&gt;&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Ruleset 3 accomplishes focusing before calling Ruleset 6.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 6 returns: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;tute&#34; &#34;.&#34; &#34;edu&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 returns: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;tute&#34; &#34;.&#34; &#34;edu&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 0 input: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;tute&#34; &#34;.&#34; &#34;edu&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 9 input: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;tute&#34; &#34;.&#34; &#34;edu&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 9 returns: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;tute&#34; &#34;.&#34; &#34;edu&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 0 returns: $# &#34;etherl&#34; $@ &#34;mailhost&#34; $: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;tute&#34; &#34;.&#34; &#34;edu&#34; &#34;&gt;&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">The address is resolved to the <b>etherl</b> mailer. The message would be sent to <b>mailhost</b>, to be sent along to <b>amm@tute.edu</b>.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">&gt; <b>3,1,12,4 tracy</b></font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Run the sender address through the appropriate ruleset sequence. Again, Ruleset 12 is defined as the mailer-specific sender ruleset (S=12).</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 input: &#34;tracy&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 returns: &#34;tracy&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 1 input: &#34;tracy&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 1 returns: &#34;tracy&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 12 input: &#34;tracy&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 12 returns: &#34;tracy&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 4 input: &#34;tracy&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 9 input: &#34;tracy&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 9 returns: &#34;tracy&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 4 returns: &#34;tracy&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">No changes--mail is forwarded to the mail server, where changes might be made.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">&gt; <b>3,2,22,4 amm@tute.edu</b></font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Send the recipient address through the ruleset sequence. Ruleset 22 is specified in the <b>etherl</b> mailer definition (R=22).</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 input: &#34;amm&#34; &#34;@&#34; &#34;tute&#34; &#34;.&#34; &#34;edu&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 6 input: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;tute&#34; &#34;.&#34; &#34;edu&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 6 returns: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;tute&#34; &#34;.&#34; &#34;edu&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 returns: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;tute&#34; &#34;.&#34; &#34;edu&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 2 input: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;tute&#34; &#34;.&#34; &#34;edu&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 2 returns: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;tute&#34; &#34;.&#34; &#34;edu&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 22 input: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;tute&#34; &#34;.&#34; &#34;edu&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 22 returns: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;tute&#34; &#34;.&#34; &#34;edu&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 4 input: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;tute&#34; &#34;.&#34; &#34;edu&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 9 input: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;tute&#34; &#34;.&#34; &#34;edu&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 9 returns: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;tute&#34; &#34;.&#34; &#34;edu&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 4 returns: &#34;amm&#34; &#34;@&#34; &#34;tute&#34; &#34;.&#34; &#34;edu&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Again, the address is unchanged.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Notice that mail sent to the mail server will never have its header addresses rewritten.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>UUCP Address with Local Connection</b></font>
+
+<p><font face="Times" size="+1">Now examine the transformations that occur to a message address when sent over UUCP, from <b>amm</b> to <b>ranger!sandy </b>This example assumes the computer <b>ranger</b> is a UUCP partner of <b>cockatoo</b>. Here's the <b>uucp</b> mailer definition from <b>sendmail.sharedsubsidiary.cf</b>:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">Muucp,&nbsp;&nbsp;&nbsp; P=/usr/bin/uux, F=msDFMhuU, S=13, R=23, E=\n,</font><br>
+<img src="../images/sp.gif" width=194 height=1><font face="Courier">A=uux - -r $h!rmail ($u)</font>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">&gt; <b>3,0 ranger!sandy</b></font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Resolve the recipient address to a mailer.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 input: &#34;ranger&#34; &#34;!&#34; &#34;sandy&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 6 input: &#34;sandy&#34; &#34;&lt;&#34; &#34;@&#34; &#34;ranger&#34; &#34;.&#34; &#34;uucp&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 6 returns: &#34;sandy&#34; &#34;&lt;&#34; &#34;@&#34; &#34;ranger&#34; &#34;.&#34; &#34;uucp&#34; &#34;&gt;&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Canonicalization and focusing accomplished.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 returns: &#34;sandy&#34; &#34;&lt;&#34; &#34;@&#34; &#34;ranger&#34; &#34;.&#34; &#34;uucp&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 0 input: &#34;sandy&#34; &#34;&lt;&#34; &#34;@&#34; &#34;ranger&#34; &#34;.&#34; &#34;uucp&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 0 returns: $# &#34;uucp&#34; $@ &#34;ranger&#34; $: &#34;sandy&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">This address is resolved to the <b>uucp</b> mailer, rather than being forwarded to <b>mailhost</b>. The assumption is that even mail clients can have their own UUCP partners.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">&gt; <b>3,1,13,4 amm</b></font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Run the sender adress through the appropriate ruleset sequence; the <b>uucp</b> mailer definition specifies Ruleset 13 for sender addresses (S=13).</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 input: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 returns: &#34;amm&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Ruleset 3 canonicalization and focusing (no changes needed here).</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 1 input: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 1 returns: &#34;amm&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">No changes by Ruleset 1.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 13 input: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 5 input: &#34;amm&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Ruleset 13 calls Ruleset 5, which does UUCP address conversion.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 5 returns: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 13 returns: &#34;cockatoo&#34; &#34;!&#34; &#34;amm&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Ruleset 13 added <b>cockatoo!</b> to the front of the address, to indicate that the sender's address, relative to the receiving computer, is <b>cockatoo!amm</b>.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 4 input: &#34;cockatoo&#34; &#34;!&#34; &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 9 input: &#34;cockatoo&#34; &#34;!&#34; &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 9 returns: &#34;cockatoo&#34; &#34;!&#34; &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 4 returns: &#34;cockatoo&#34; &#34;!&#34; &#34;amm&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Since the address started off as a local address, no focusing was necessary. So there's nothing to do in Ruleset 4 for unfocusing. In addition, the address is already in canonical form.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">&gt; <b>3,2,23,4 ranger!sandy</b></font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Translate the recipient's address; the <b>uucp</b> mailer definition includes R=23.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 input: &#34;ranger&#34; &#34;!&#34; &#34;sandy&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 6 input: &#34;sandy&#34; &#34;&lt;&#34; &#34;@&#34; &#34;ranger&#34; &#34;.&#34; &#34;uucp&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 6 returns: &#34;sandy&#34; &#34;&lt;&#34; &#34;@&#34; &#34;ranger&#34; &#34;.&#34; &#34;uucp&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 returns: &#34;sandy&#34; &#34;&lt;&#34; &#34;@&#34; &#34;ranger&#34; &#34;.&#34; &#34;uucp&#34; &#34;&gt;&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">A canonical, focused address is returned.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 2 input: &#34;sandy&#34; &#34;&lt;&#34; &#34;@&#34; &#34;ranger&#34; &#34;.&#34; &#34;uucp&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 2 returns: &#34;sandy&#34; &#34;&lt;&#34; &#34;@&#34; &#34;ranger&#34; &#34;.&#34; &#34;uucp&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 23 input: &#34;sandy&#34; &#34;&lt;&#34; &#34;@&#34; &#34;ranger&#34; &#34;.&#34; &#34;uucp&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 5 input: &#34;sandy&#34; &#34;&lt;&#34; &#34;@&#34; &#34;ranger&#34; &#34;.&#34; &#34;uucp&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 5 returns: &#34;ranger&#34; &#34;!&#34; &#34;sandy&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 23 returns: &#34;ranger&#34; &#34;!&#34; &#34;sandy&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 4 input: &#34;ranger&#34; &#34;!&#34; &#34;sandy&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 9 input: &#34;ranger&#34; &#34;!&#34; &#34;sandy&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 9 returns: &#34;ranger&#34; &#34;!&#34; &#34;sandy&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 4 returns: &#34;ranger&#34; &#34;!&#34; &#34;sandy&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Nothing else to do with this address.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>Remote Address on the Local Network</b></font>
+
+<p><font face="Times" size="+1">As a further example, examine what happens when mail is sent directly to a computer other than the mail server on the local network. Here's the definition of the <b>etherl</b> mailer from the file <b>sendmail.sharedsubsidiary.cf</b> again:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">Metherl, P=[TCP], F=msDFuXn, S=12, R=22, A=TCP $h</font>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">&gt; <b>3,0 amm@cockatoo</b></font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 input: &#34;amm&#34; &#34;@&#34; &#34;cockatoo&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 6 input: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;cockatoo&#34; &#34;&gt;&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Focus on the host part.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 6 returns: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;cockatoo&#34; &#34;.&#34; &#34;LOCAL&#34; &#34;&gt;&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Canonicalize: indicate that the address is local.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 returns: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;cockatoo&#34; &#34;.&#34; &#34;LOCAL&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 0 input: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;cockatoo&#34; &#34;.&#34; &#34;LOCAL&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 30 input: &#34;amm&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Ruleset 30 simply invokes Ruleset 3 and then Ruleset 0. There is redundant routing information in this local address; this is handled in Ruleset 0. Since you're on a network with a shared mail server, the assumption is that all mail destined for local addresses goes to the mail server. Any other routing on the local network is superfluous.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 input: &#34;amm&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Restart the address resolution, now with a local address.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 returns: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 0 input: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 9 input: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 9 returns: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 0 returns: $# &#34;etherl&#34; $@ &#34;mailhost&#34; $: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 30 returns: $# &#34;etherl&#34; $@ &#34;mailhost&#34; $: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 0 returns: $# &#34;etherl&#34; $@ &#34;mailhost&#34; $: &#34;amm&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Resolved to the <b>etherl</b> mailer.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">If you run the header addresses through the appropriate rulesets, you find that no changes are made, just as with the other examples where the address was resolved to use the <b>etherl</b> mailer.</font>
+
+<p><font face="Times" size="+1">Here's what happens if you address mail to a user specifically at the mail server:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">&gt; <b>3,0 amm@mailhost</b></font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 input: &#34;amm&#34; &#34;@&#34; &#34;mailhost&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 6 input: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;mailhost&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 6 returns: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;LOCAL&#34; &#34;&gt;&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Ruleset 6 sees that <b>mailhost</b> is an alias for the local mail server, and indicates that the address is a local one.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 returns: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;LOCAL&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 0 input: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;LOCAL&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 9 input: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;rhino&#34; &#34;.&#34; &#34;com&#34; &#34;&gt;&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Ruleset 0 invokes Ruleset 9 after having converted <b>LOCAL</b> to <b>rhino.com</b>, this computer's domain.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 9 returns: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;rhino&#34; &#34;.&#34; &#34;com&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 0 returns: $# &#34;etherl&#34; $@ &#34;mailhost&#34; $: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;rhino&#34; &#34;.&#34; &#34;com&#34; &#34;&gt;&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">As expected, the mail goes to the mail server. Notice, though, that the envelope address will be <b>amm@rhino.com</b>. You might assume that the mail server will recognize an address like this as a local address.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">If you examine the header addresses, you'll see that the sender address is unchanged, but the recipient address is modified:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">&gt; <b>3,2,22,4 amm@mailhost</b></font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Run the recipient address through the ruleset sequence.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 input: &#34;amm&#34; &#34;@&#34; &#34;mailhost&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 6 input: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;mailhost&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 6 returns: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;LOCAL&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 returns: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;LOCAL&#34; &#34;&gt;&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">The address is now focused and canonicalized.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 2 input: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;LOCAL&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 2 returns: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;LOCAL&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 22 input: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;LOCAL&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 22 returns: &#34;amm&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Ruleset 22, the mailer-specific ruleset, does something in this case. It converts <b>amm@LOCAL</b> to <b>amm</b>, thus making the header address appear to be local.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 4 input: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 9 input: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 9 returns: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 4 returns: &#34;amm&#34;</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Address Test on a Mail Server</b></font>
+
+<p><font face="Times" size="+1">Now that you've seen what happens to messages and addresses on a mail client, here's what happens with some similar addresses on a mail server. The examples assume that the server is connected to the Internet, and is both the local mail server and the Internet mail gateway. Again, the name of the mail client is <b>cockatoo</b>; the name of the mail server is <b>mailbox</b>.</font>
+
+<p><font face="Times" size="+1">Here's the <b>local</b> mailer definition from <b>sendmail.mailhost.cf</b>:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">Mlocal,&nbsp;&nbsp;&nbsp; P=/bin/mail, F=rlsDFMmnP, S=10, R=20, A=mail -d $u</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>Local Address</b></font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">mailbox [~]-20% <b>/usr/lib/sendmail -bt</b></font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">ADDRESS TEST MODE</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">Enter &lt;ruleset&gt; &lt;address&gt;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">[Note: No automatic ruleset 3 call]</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">&gt; <b>3,0 amm</b></font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 input: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 returns: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 0 input: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 9 input: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 9 returns: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 0 returns: $# &#34;local&#34; $: &#34;amm&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">The address is resolved to the <b>local</b> mailer.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">&gt; <b>3,1,10,4 tracy</b></font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">The local mailer defines its sender ruleset (S=) as 10.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 input: &#34;tracy&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 returns: &#34;tracy&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 1 input: &#34;tracy&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 1 returns: &#34;tracy&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 10 input: &#34;tracy&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 10 returns: &#34;tracy&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 4 input: &#34;tracy&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 9 input: &#34;tracy&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 9 returns: &#34;tracy&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 4 returns: &#34;tracy&#34;</font>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">&gt; <b>3,2,20,4 amm</b></font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">The local mailer defines its recipient ruleset (R=) as 20.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 input: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 returns: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 2 input: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 2 returns: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 20 input: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 20 returns: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 4 input: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 9 input: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 9 returns: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 4 returns: &#34;amm&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Not surprisingly, no changes were made to either the sender or the recipient addresses.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>Debugging Inverse Alias Translation</b></font>
+
+<p><font face="Times" size="+1">Let's take a look at the output from running address test mode with NetInfo lookup debugging turned on.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">cockatoo [~]-330% <b>/usr/lib/sendmail -bt -d60 -Cinvert.cf</b></font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Invoke sendmail in address test mode with NetInfo debugging output.&nbsp; Use the configuration file <b>invert.cf</b>.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">Version NX5.67e</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">defining map Z: netinfo localhost/Rhino:/users/%s/info alias</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Define a NetInfo map called <b>Z</b>, accessing <b>netinfod Rhino</b> on the local computer.&nbsp; Use the value of the <b>alias </b>property in the <b>info</b> subdirectory of the sender's <b>/user</b> directory.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">ADDRESS TEST MODE</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">Enter &lt;ruleset&gt; &lt;address&gt;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">[Note: No automatic ruleset 3 call]</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">&gt; 3,1 tracy</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Let's assume the user <b>tracy</b> is sending this message</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset&nbsp; 3&nbsp;&nbsp; input: &#34;tracy&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset&nbsp; 3 returns: &#34;tracy&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset&nbsp; 1&nbsp;&nbsp; input: &#34;tracy&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Ruleset 1 is where inverse alias translation is implemented.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">looking up map Z: tracy (NULL)</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Accessing the <b>Z</b> map, to translate <b>tracy</b>.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">lookup result: Tracy_Roykirk</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times"><b>Tracy_Roykirk</b> is the first value of the <b>alias</b> property in <b>/users/tracy/info</b>.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset&nbsp; 3&nbsp;&nbsp; input: &#34;Tracy_Roykirk&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset&nbsp; 3 returns: &#34;Tracy_Roykirk&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset&nbsp; 1 returns: &#34;Tracy_Roykirk&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">The preferred sender's address is <b>Tracy_Roykirk</b>.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>Simple Remote Address</b></font>
+
+<p><font face="Times" size="+1">Here, mail is sent to a remote computer, with a sender address of <b>amm</b>, this time at <b>Tute.EDU</b>. Here's the <b>ddn</b> mailer definition from <b>sendmail.mailhost.cf</b>:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">Mddn,&nbsp;&nbsp;&nbsp; P=[TCP], F=msDFMuCX, S=22, R=22, A=TCP $h, E=\r\n</font>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">&gt; <b>3,0 amm@Tute.EDU</b></font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 input: &#34;amm&#34; &#34;@&#34; &#34;Tute&#34; &#34;.&#34; &#34;EDU&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 6 input: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;Tute&#34; &#34;.&#34; &#34;EDU&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 6 returns: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;tute&#34; &#34;.&#34; &#34;edu&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 returns: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;tute&#34; &#34;.&#34; &#34;edu&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 0 input: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;tute&#34; &#34;.&#34; &#34;edu&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 9 input: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;tute&#34; &#34;.&#34; &#34;edu&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 9 returns: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;tute&#34; &#34;.&#34; &#34;edu&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 0 returns: $# &#34;ddn&#34; $@ &#34;tute&#34; &#34;.&#34; &#34;edu&#34; $: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;tute&#34; &#34;.&#34; &#34;edu&#34; &#34;&gt;&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">The address is resolved to the <b>ddn</b> mailer.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">&gt; <b>3,1,22,4 tracy</b></font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">The <b>ddn</b> mailer defines its sender ruleset as 22.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 input: &#34;tracy&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 returns: &#34;tracy&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 1 input: &#34;tracy&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 1 returns: &#34;tracy&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">If Ruleset 1 implemented a translation to a standard (canonical) mail address such as <b>Tracy_Roykirk</b>, then its output here would be <b>tracy_roykirk</b> instead.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 22 input: &#34;tracy&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 22 returns: &#34;tracy&#34; &#34;&lt;&#34; &#34;@&#34; &#34;mailbox&#34; &#34;.&#34; &#34;rhino&#34; &#34;.&#34; &#34;com&#34; &#34;&gt;&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Ruleset 22 adds the fully-qualified host name. It also performs the standard (canonical) address translation just mentioned (see <b>sendmail.mailhost.cf</b> for details). Here, the assumption is that the standard translation should be done only for messages being sent to remote computers. You might also choose not to include the host name of the mail server and use only <b>rhino.com</b> as your return site. (This would require ensuring that the external network understands that <b>rhino.com</b> means <b>mailbox.rhino.com</b>.)</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 4 input: &#34;tracy&#34; &#34;&lt;&#34; &#34;@&#34; &#34;mailbox&#34; &#34;.&#34; &#34;rhino&#34; &#34;.&#34; &#34;com&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 9 input: &#34;tracy&#34; &#34;&lt;&#34; &#34;@&#34; &#34;mailbox&#34; &#34;.&#34; &#34;rhino&#34; &#34;.&#34; &#34;com&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 9 returns: &#34;tracy&#34; &#34;&lt;&#34; &#34;@&#34; &#34;mailbox&#34; &#34;.&#34; &#34;rhino&#34; &#34;.&#34; &#34;com&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 4 returns: &#34;tracy&#34; &#34;@&#34; &#34;mailbox&#34; &#34;.&#34; &#34;rhino&#34; &#34;.&#34; &#34;com&#34;</font>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">&gt; <b>3,2,22,4 amm@Tute.EDU</b></font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">The <b>ddn</b> mailer defines its recipient ruleset as 22, the same as the sender ruleset.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 input: &#34;amm&#34; &#34;@&#34; &#34;Tute&#34; &#34;.&#34; &#34;EDU&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 6 input: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;Tute&#34; &#34;.&#34; &#34;EDU&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 6 returns: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;tute&#34; &#34;.&#34; &#34;edu&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 returns: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;tute&#34; &#34;.&#34; &#34;edu&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 2 input: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;tute&#34; &#34;.&#34; &#34;edu&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 2 returns: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;tute&#34; &#34;.&#34; &#34;edu&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 22 input: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;tute&#34; &#34;.&#34; &#34;edu&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 22 returns: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;tute&#34; &#34;.&#34; &#34;edu&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 4 input: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;tute&#34; &#34;.&#34; &#34;edu&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 9 input: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;tute&#34; &#34;.&#34; &#34;edu&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 9 returns: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;tute&#34; &#34;.&#34; &#34;edu&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 4 returns: &#34;amm&#34; &#34;@&#34; &#34;tute&#34; &#34;.&#34; &#34;edu&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">No change to the recipient's address.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>Remote Address on the Local Network</b></font>
+
+<p><font face="Times" size="+1">Things aren't quite as straightforward on a mail server, even with simple remote addresses. These examples show sending mail explicitly to the mail server (from the mail server), and sending mail explicitly to another local host. Here's the <b>ether</b> mailer definition from <b>sendmail.mailhost.cf</b>:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">Mether,&nbsp;&nbsp;&nbsp; P=[TCP], F=msDFMuX, S=11, R=21, A=TCP $h</font>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">&gt; <b>3,0 amm@mailhost</b></font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Use the host alias <b>mailhost</b>, rather than explicitly using the host name of this mail server. Either has the same effect.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 input: &#34;amm&#34; &#34;@&#34; &#34;mailhost&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 6 input: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;mailhost&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 6 returns: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;LOCAL&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 returns: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;LOCAL&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 0 input: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;LOCAL&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 30 input: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 input: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 returns: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 0 input: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 9 input: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 9 returns: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 0 returns: $# &#34;local&#34; $: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 30 returns: $# &#34;local&#34; $: &#34;amm&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 0 returns: $# &#34;local&#34; $: &#34;amm&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times"><b>sendmail</b> recognizes that <b>mailhost</b> is a name for the current computer. It removes the <b>@mailhost</b> specification and runs the address back through Rulesets 3 and 0, resolving the address to the local mailer.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">&gt; <b>3,0 amm@cockatoo</b></font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Recipient address explicitly to another host on the network.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 input: &#34;amm&#34; &#34;@&#34; &#34;cockatoo&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 6 input: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;cockatoo&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 6 returns: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;cockatoo&#34; &#34;.&#34; &#34;LOCAL&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 returns: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;cockatoo&#34; &#34;.&#34; &#34;LOCAL&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 0 input: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;cockatoo&#34; &#34;.&#34; &#34;LOCAL&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 0 returns: $# &#34;ether&#34; $@ &#34;cockatoo&#34; $: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;cockatoo&#34; &#34;&gt;&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">The mail is sent to <b>cockatoo</b> using the <b>ether</b> mailer.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">&gt; <b>3,1,11,4 tracy</b></font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">The <b>ether</b> mailer defines the sender ruleset as 11.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 input: &#34;tracy&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 returns: &#34;tracy&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 1 input: &#34;tracy&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 1 returns: &#34;tracy&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 11 input: &#34;tracy&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 11 returns: &#34;tracy&#34; &#34;&lt;&#34; &#34;@&#34; &#34;mailbox&#34; &#34;&gt;&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Ruleset 11 adds the host name of this computer.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 4 input: &#34;tracy&#34; &#34;&lt;&#34; &#34;@&#34; &#34;mailbox&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 9 input: &#34;tracy&#34; &#34;&lt;&#34; &#34;@&#34; &#34;mailbox&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 9 returns: &#34;tracy&#34; &#34;&lt;&#34; &#34;@&#34; &#34;mailbox&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 4 returns: &#34;tracy&#34; &#34;@&#34; &#34;mailbox&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Since you used an explicit host name in the message address, the return address (the sender's address) should have the explicit host name of the sending computer.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">&gt; <b>3,2,21,4 amm@cockatoo</b></font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Ruleset 21 is specified as the reipient address ruleset in the <b>ether</b> mailer definition.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 input: &#34;amm&#34; &#34;@&#34; &#34;cockatoo&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 6 input: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;cockatoo&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 6 returns: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;cockatoo&#34; &#34;.&#34; &#34;LOCAL&#34; &#34;&gt;&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Known computer on the local network recognized, and .<b>LOCAL</b> appended.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 3 returns: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;cockatoo&#34; &#34;.&#34; &#34;LOCAL&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 2 input: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;cockatoo&#34; &#34;.&#34; &#34;LOCAL&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 2 returns: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;cockatoo&#34; &#34;.&#34; &#34;LOCAL&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 21 input: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;cockatoo&#34; &#34;.&#34; &#34;LOCAL&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 21 returns: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;cockatoo&#34; &#34;.&#34; &#34;LOCAL&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 4 input: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;cockatoo&#34; &#34;.&#34; &#34;LOCAL&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 9 input: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;cockatoo&#34; &#34;.&#34; &#34;LOCAL&#34; &#34;&gt;&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 9 returns: &#34;amm&#34; &#34;&lt;&#34; &#34;@&#34; &#34;cockatoo&#34; &#34;.&#34; &#34;rhino&#34; &#34;.&#34; &#34;com&#34; &#34;&gt;&#34;</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=219></td>
+
+<td><font face="Times">Ruleset 9 converts the <b>LOCAL</b> pseudodomain to the actual domain.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 4 returns: &#34;amm&#34; &#34;@&#34; &#34;cockatoo&#34; &#34;.&#34; &#34;rhino&#34; &#34;.&#34; &#34;com&#34;</font>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Configuration Files on NeXT Computers</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Three different <b>sendmail</b> configuration files are shipped with NeXT computers. Each is used in a different situation:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>sendmail.subsidiary.cf</b>--For use on a computer that has local mail spool storage but doesn't have complete mail routing information; it isn't a mail client or mail server. This is the default configuration file.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>sendmail.mailhost.cf</b>--For use on a mail server.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>sendmail.sharedsubsidiary.cf</b>--For use on client computers that import the <b>/usr/spool/mail</b> directory from a server.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Macros</b></font>
+
+<p><font face="Times" size="+1">The following table describes how macros are defined and used in the standard <b>sendmail</b> configuration files on NeXT computers.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Macro</b></font></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Use</b></font></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Definition</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Where Used</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">M</font></td>
+
+<td nowrap><font face="Times" size="+1">Relay mailer</font></td>
+
+<td nowrap><font face="Times" size="+1">uucp</font></td>
+
+<td><font face="Times" size="+1">mailhost</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td nowrap></td>
+
+<td nowrap><font face="Times" size="+1">ether</font></td>
+
+<td><font face="Times" size="+1">subsidiary</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td nowrap></td>
+
+<td nowrap><font face="Times" size="+1">etherl</font></td>
+
+<td><font face="Times" size="+1">sharedsubsidiary</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">R</font></td>
+
+<td nowrap><font face="Times" size="+1">Relay</font></td>
+
+<td nowrap><font face="Times" size="+1">hostmail-relay</font></td>
+
+<td><font face="Times" size="+1">mailhost</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td nowrap></td>
+
+<td nowrap><font face="Times" size="+1">mailhost</font></td>
+
+<td><font face="Times" size="+1">subsidiary</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td nowrap></td>
+
+<td nowrap><font face="Times" size="+1">mailhost</font></td>
+
+<td><font face="Times" size="+1">sharedsubsidiary</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">V</font></td>
+
+<td nowrap><font face="Times" size="+1">Configuration file version</font></td>
+
+<td nowrap><font face="Times" size="+1">NX3.0M</font></td>
+
+<td><font face="Times" size="+1">mailhost</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td nowrap></td>
+
+<td nowrap><font face="Times" size="+1">NX3.0S</font></td>
+
+<td><font face="Times" size="+1">subsidiary</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td nowrap></td>
+
+<td nowrap><font face="Times" size="+1">NX3.0X</font></td>
+
+<td><font face="Times" size="+1">sharedsubsidiary</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Z</font></td>
+
+<td nowrap><font face="Times" size="+1">Canonical address map</font></td>
+
+<td nowrap><font face="Times" size="+1">mail.byaddr</font></td>
+
+<td><font face="Times" size="+1">mailhost</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">e</font></td>
+
+<td nowrap><font face="Times" size="+1">SMTP greeting</font></td>
+
+<td nowrap><font face="Times" size="+1">$j Sendmail $v/$V ready at $b</font></td>
+
+<td><font face="Times" size="+1">All</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">j</font></td>
+
+<td nowrap><font face="Times" size="+1">Host name</font></td>
+
+<td nowrap><font face="Times" size="+1">$?m $w.$m $| $w $.</font></td>
+
+<td><font face="Times" size="+1">All</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">l</font></td>
+
+<td nowrap><font face="Times" size="+1">From header format</font></td>
+
+<td nowrap><font face="Times" size="+1">From $g $d</font></td>
+
+<td><font face="Times" size="+1">All</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">n</font></td>
+
+<td nowrap><font face="Times" size="+1">Mailer agent name</font></td>
+
+<td nowrap><font face="Times" size="+1">Mailer-Agent</font></td>
+
+<td><font face="Times" size="+1">All</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">o</font></td>
+
+<td nowrap><font face="Times" size="+1">Operators in addresses</font></td>
+
+<td nowrap><font face="Times" size="+1">.:%@!^=/[]</font></td>
+
+<td><font face="Times" size="+1">All</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">q</font></td>
+
+<td nowrap><font face="Times" size="+1">Format of sender's address</font></td>
+
+<td nowrap><font face="Times" size="+1">Dq$?x$x $.&lt;$g&gt;</font></td>
+
+<td><font face="Times" size="+1">All</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Some of these macros are defined the same way in all the configuration files, some are defined differently in each file, and others are only defined in some files.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">The <b>$?</b> metasymbol denotes an <b>if</b> statement; the <b>$.</b> metasymbol denotes the end of an <b>if</b> statement; the <b>$| </b>metasymbol denotes an else statement. Thus <b>Dq$?x$x $.&lt;$g&gt;</b> can be read &quot;define the sender's address (<b>Dq</b>), if the full name is present (<b>$?x</b>), put in the full name with a space character (<b>$x</b> ), end of the <b>if</b> construct (<b>$.</b>), put in a begin angle bracket (<b>&lt;</b>), put in the sender's address (<b>$g</b>), put in the end angle bracket (&gt;)&quot;.&nbsp; Similarly, the construct <b>$?x$x$|$g$. </b>reads &quot;if there's a full name (<b>$?x</b>), put it in (<b>$x</b>), else (<b>$|</b>) put in the sender's address (<b>$g</b>), end of the <b>if-else</b> construct (<b>$.</b>)&quot;.</font>
+
+<p><font face="Times" size="+1">The <b>Z</b> macro lists the name of an NIS map to be used for &quot;reverse alias&quot; translation. For example, if a user with the login name <b>rkabir</b> sends mail, the map referenced by the <b>Z</b> macro will contain an entry translating <b>rkabir</b> to another name, such as <b>Randy_Kabir</b>. If NIS is not running, or the referenced map isn't defined, no translation will occur (and no error will result).</font>
+
+<p><font face="Times" size="+1">The <b>o</b> macro defines the operators used in addresses. Operators separate tokens from each&nbsp; other.</font>
+
+<p><font face="Helvetica" size="+1"><b>Tip:</b></font>&nbsp; <font face="Times" size="+1">If you change your configuration file, also make a small change to the definition of the <b>V</b> macro to indicate that the file has been modified. This is a good way for you to track changes, and can help other people recognize changes.</font>
+
+<p><font face="Times" size="+1">The next table describes sample values for those macros that are defined in terms of other macros.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Macro</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Sample Value</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">e</font></td>
+
+<td><font face="Times" size="+1">rhino.Tute.EDU Sendmail NX5.67c/NX3.0X ready at Wed, 15 Jul 92 14:03:06 -0700</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">j</font></td>
+
+<td><font face="Times" size="+1">rhino.Tute.EDU</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">l</font></td>
+
+<td><font face="Times" size="+1">From amm Fri Jan 3 13:54:40 1992</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">q</font></td>
+
+<td><font face="Times" size="+1">amm</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Classes</b></font>
+
+<p><font face="Times" size="+1">The following table describes the classes defined in the configuration files. Remember that a macro and a class may have the same name but have completely different values and they are used in completely different ways. However, it's much easier to understand a configuration file if macros and classes with the same name are used in similar ways.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Class</b></font></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Use</b></font></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Definition</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Where Used</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">R</font></td>
+
+<td nowrap><font face="Times" size="+1">Relay host</font></td>
+
+<td nowrap><font face="Times" size="+1">mail-relay</font></td>
+
+<td><font face="Times" size="+1">mailhost</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap></td>
+
+<td nowrap></td>
+
+<td nowrap><font face="Times" size="+1">mailhost</font></td>
+
+<td><font face="Times" size="+1">subsidiary</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap></td>
+
+<td nowrap></td>
+
+<td nowrap><font face="Times" size="+1">mailhost</font></td>
+
+<td><font face="Times" size="+1">sharedsubsidiary</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">V</font></td>
+
+<td nowrap><font face="Times" size="+1">UUCP partners</font></td>
+
+<td nowrap><font face="Times" size="+1">Output of <b>/usr/bin/uuname</b></font></td>
+
+<td><font face="Times" size="+1">All</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Notice that the <b>R</b> class is defined with the same value as the <b>R</b> macro. Both store the name (or names, in the case of the class) of the mail relay host. The <b>R</b> class defines all the names of the relay host, including aliases, and the <b>R</b> macro defines the preferred name of the relay host. Both are needed, because each is used differently--classes are lists of equivalent things, macros are variables used for simple substitution.</font>
+
+<p><font face="Times" size="+1">You can use the <b>R</b> class to determine whether a host is &quot;equivalent&quot; to the relay host by using the <b>$=</b> metasymbol in the left-hand side of a rule. If the host is equivalent, you might want to process the mail differently. (Note that the <b>R</b> class, though defined, is not used in the default configuration files.)</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Address Resolution</b></font>
+
+<p><font face="Times" size="+1">Mail addresses can be purely local (for example, <b>user</b>), can explicitly name another local host (for example, <b>user@host</b>), or can be remote (for example, <b>user@host.domain</b>). The following table shows how the various addresses are resolved for each of the three configuration files.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Address</b></font></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>mailhost</b></font></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>subsidiary</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>sharedsubsidiary</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">user</font></td>
+
+<td nowrap><font face="Times" size="+1">local</font></td>
+
+<td nowrap><font face="Times" size="+1">local</font></td>
+
+<td><font face="Times" size="+1">etherl to mailhost</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">user@host</font></td>
+
+<td nowrap><font face="Times" size="+1">ether</font></td>
+
+<td nowrap><font face="Times" size="+1">ether</font></td>
+
+<td><font face="Times" size="+1">etherl to mailhost</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">user@host.domain</font></td>
+
+<td nowrap><font face="Times" size="+1">ddn</font></td>
+
+<td nowrap><font face="Times" size="+1">ether to mailhost</font></td>
+
+<td><font face="Times" size="+1">ether to mailhost</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Examine the line for <b>user@host.domain</b>. If this address is resolved on the mail server (using <b>sendmail.mailhost.cf</b>), the <b>ddn</b> mailer will be used. If the address is resolved on a computer using <b>sendmail.subsidiary.cf</b>, it will be forwarded using the <b>ether</b> mailer to the computer called <b>mailhost</b>. It will also be sent using the <b>ether</b> mailer to <b>mailhost</b> if resolved on a mail client using <b>sendmail.sharedsubsidiary.cf</b>.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Rulesets</b></font>
+
+<p><font face="Times" size="+1">The configuration files on a NeXT computer use the various rulesets in a consistent manner--Ruleset 5 in <b>sendmail.mailhost.cf</b> does the same thing as Ruleset 5 in <b>sendmail.sharedsubsidiary.cf</b>. The following three tables summarize the uses of the various rulesets. The rulesets are divided into three groups: the standard rulesets, the nonstandard rulesets that aren't mailer-specific rewriting rulesets, and the mailer-specific rewriting rulesets. The following table describes the standard rulesets.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Ruleset</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Purpose</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><img src="../images/sp.gif" width=32 height=1><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Mailer resolution</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><img src="../images/sp.gif" width=32 height=1><font face="Times" size="+1">1</font></td>
+
+<td><font face="Times" size="+1">Standard sender header address preprocessing</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><img src="../images/sp.gif" width=32 height=1><font face="Times" size="+1">2</font></td>
+
+<td><font face="Times" size="+1">Standard recipient header address preprocessing</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><img src="../images/sp.gif" width=32 height=1><font face="Times" size="+1">3</font></td>
+
+<td><font face="Times" size="+1">Canonicalization and focusing</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><img src="../images/sp.gif" width=32 height=1><font face="Times" size="+1">4</font></td>
+
+<td><font face="Times" size="+1">Standard header address postprocessing</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The following table shows rulesets that aren't standard rulesets and aren't used by any of the mailers for address rewriting. These rulesets are usually called by other rulesets to perform frequently used operations.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Ruleset</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Purpose</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><img src="../images/sp.gif" width=32 height=1><font face="Times" size="+1">5</font></td>
+
+<td><font face="Times" size="+1">Converts <b>user@host.uucp</b> to <b>host!user</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><img src="../images/sp.gif" width=32 height=1><font face="Times" size="+1">6</font></td>
+
+<td><font face="Times" size="+1">Implementation of various local conventions</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><img src="../images/sp.gif" width=32 height=1><font face="Times" size="+1">9</font></td>
+
+<td><font face="Times" size="+1">Address cleanup prior to passing address to a mailer</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><img src="../images/sp.gif" width=32 height=1><font face="Times" size="+1">30</font></td>
+
+<td><font face="Times" size="+1">Runs Ruleset 3 followed by Ruleset 0</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The next table summarizes the mailer-specific rewriting rulesets. Ruleset 12 is used only by mail clients, and Ruleset 22 is used only by mail servers and mail clients (it isn't used in <b>sendmail.subsidiary.cf</b>).</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Ruleset</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Purpose</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><img src="../images/sp.gif" width=32 height=1><font face="Times" size="+1">10</font></td>
+
+<td><font face="Times" size="+1">Sender address rewriting ruleset for <b>local</b> and <b>prog</b> mailers</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><img src="../images/sp.gif" width=32 height=1><font face="Times" size="+1">20</font></td>
+
+<td><font face="Times" size="+1">Recipient address rewriting ruleset for <b>local</b> and <b>prog</b> mailers</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><img src="../images/sp.gif" width=32 height=1><font face="Times" size="+1">11</font></td>
+
+<td><font face="Times" size="+1">Sender address rewriting ruleset for <b>ether</b> mailer</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><img src="../images/sp.gif" width=32 height=1><font face="Times" size="+1">21</font></td>
+
+<td><font face="Times" size="+1">Recipient address rewriting ruleset for <b>ether</b> mailer</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><img src="../images/sp.gif" width=32 height=1><font face="Times" size="+1">12</font></td>
+
+<td><font face="Times" size="+1">Sender address rewriting ruleset for <b>etherl</b> mailer</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><img src="../images/sp.gif" width=32 height=1><font face="Times" size="+1">22</font></td>
+
+<td><font face="Times" size="+1">Recipient address rewriting ruleset for <b>etherl</b> mailer (mail client)</font><br>
+<font face="Times" size="+1">Sender and recipient address rewriting ruleset for <b>ddn</b> mailer (mail server)</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><img src="../images/sp.gif" width=32 height=1><font face="Times" size="+1">13</font></td>
+
+<td><font face="Times" size="+1">Sender address rewriting ruleset for <b>uucp</b> mailer</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><img src="../images/sp.gif" width=32 height=1><font face="Times" size="+1">23</font></td>
+
+<td><font face="Times" size="+1">Recipient address rewriting ruleset for <b>uucp</b> mailer</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Tricks of the Trade</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Supporting <b>sendmail</b> is a challenging task not to be undertaken by the fainthearted. This section provides some general suggestions for <b>sendmail</b> success.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>General Tricks</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Consider finding a mentor to help you learn about <b>sendmail</b>. Look for someone who has experience with <b>sendmail </b>and wouldn't mind answering questions.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">If you want to explore <b>sendmail</b> in depth, source code is potentially available by anonymous FTP from, for example, <b>uunet.uu.net</b> (in <b>/mail/sendmail</b>).</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=53></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Warning:</b></font></td>
+
+<td><font face="Times" size="+1">Any general <b>sendmail</b> source code available from the archives is unlikely to work as is on a NeXT computer. Various NeXT-specific modifications have been made, particularly to support NetInfo.</font></td></tr>
+
+<tr valign=top>
+
+<td width=53 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=53></td>
+
+<td nowrap><img src="../images/sp.gif" width=52 height=1><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">You might find some of the discussions that occur on the UseNet newsgroup <b>comp.mail.sendmail</b> helpful. In addition, other readers might be able to answer your questions or provide assistance.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Operational Tricks</b></font>
+
+<p><font face="Times" size="+1">There are three important operational tricks that can come in handy in specific situations.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Mail to Aliases Including the Sender</b></font>
+
+<p><font face="Times" size="+1">When a user sends mail to a mail alias that, when resolved, includes the sender's account name, the sender normally doesn't receive a copy of the mail. However, if the <b>m</b> option is set in the <b>sendmail</b> configuration file, the sender <i>will </i>receive a copy of the message in this situation. It's important to note that the setting in the <b>sendmail</b> configuration file on a mail client isn't significant--it's the setting in the configuration file on the mail server that determines whether the sender will receive a copy of the mail message.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Including realname in the From: Address</b></font>
+
+<p><font face="Times" size="+1">The definition of the <b>q</b> macro in the sender's configuration file determines the format of the <b>From:</b> address in the header. The definition in <b>sendmail.sharedsubsidiary.cf</b> does not include the <b>realname</b> field. If you want to include the <b>realname</b> field in the <b>From:</b> address, modify the definition to match the following:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">Dq$?x$x &lt;$g&gt;$|$g$.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">With this definition, the format of the return address will be similar to the following, assuming the <b>realname</b> field value is present):</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">Tracy Q. Roykirk &lt;troykirk&gt;</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">If the full name is not present, the format of the return address will be similar to the following:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">Tracy Q. Roykirk &lt;troykirk&gt;</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">If you want to begin with the sender's address and then include the <b>realname</b> field in the <b>From:</b> address, modify the definition to match the following:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">Dq$g$?x ($x)$.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">With this definition, the format of the return address will be similar to the following:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">troykirk (Tracy Q. Roykirk)</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Mail to Unknown Domains</b></font>
+
+<p><font face="Times" size="+1">As described earlier, the <b>M</b> macro, <b>R</b> class, and <b>R</b> macro are used to define the relay mailer and relay computer. In the configuration file <b>sendmail.mailhost.cf</b>, these are defined as <b>uucp</b>, <b>mail-relay</b>, and <b>mail-relay</b>. By default, these values aren't used. Instead, mail to an unknown domain is sent to the <b>ddn</b> mailer, directly to the unknown domain. If your mail server isn't connected to that domain, the mail will be returned as undeliverable.</font>
+
+<p><font face="Times" size="+1">If you want mail to an unknown domain to be handled differently, define the <b>M</b> macro, <b>R</b> class, and <b>R</b> macro with appropriate values in <b>sendmail.mailhost.cf</b>. Then, in the same file, modify Ruleset 0. The lines to be changed begin at line 338 in version NX3.0M:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier"># If you want to pass all other explicit domain names up the ladder</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier"># to our forwarder then uncomment the following line.</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">#R$*&lt;@$*.$+&gt;$*&nbsp;&nbsp; $#$M $@$R&nbsp; $:$1&lt;@$2.$3&gt;$4&nbsp; user@any.domain</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier"># and comment out this one.</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">R$*&lt;@$+.$-&gt;$*&nbsp;&nbsp;&nbsp; $#ddn $@ $2.$3 $:$1&lt;@$2.$3&gt;$4&nbsp;&nbsp;&nbsp; user@any.domain</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Make the changes described in the comments. The result will look like this:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier"># If you want to pass all other explicit domain names up the ladder</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier"># to our forwarder then uncomment the following line.</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">R$*&lt;@$*.$+&gt;$*&nbsp;&nbsp;&nbsp; $#$M&nbsp;&nbsp;&nbsp; $@$R $:$1&lt;@$2.$3&gt;$4&nbsp;&nbsp;&nbsp; user@any.domain</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier"># and comment out this one.</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">#R$*&lt;@$+.$-&gt;$*&nbsp;&nbsp;&nbsp; $#ddn $@ $2.$3 $:$1&lt;@$2.$3&gt;$4&nbsp;&nbsp;&nbsp; user@any.domain</font>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Debugging Tricks</b></font>
+
+<p><font face="Times" size="+1">When debugging a <b>sendmail</b> configuration problem, you might want to examine the values of various macros in order to determine exactly what's defined and how. You can make additions to your configuration files specifically for this purpose.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Adding a Ruleset to Examine Macros</b></font>
+
+<p><font face="Times" size="+1">The following definition for Ruleset 16 uses the <b>error</b> mailer to display the values of the <b>j</b> and <b>m</b> macros.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">S16</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">R$*&nbsp;&nbsp;&nbsp; $#error $:j=$j, m=$m</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Run <b>sendmail</b> in address test mode and invoke Ruleset 16:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">&gt; <b>16 test</b></font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 16&nbsp;&nbsp; input: &#34;test&#34;</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">rewrite: ruleset 16 returns: $# &#34;error&#34; $: &#34;j&#34; &#34;=&#34; &#34;cockatoo&#34; &#34;.&#34; &#34;rhino&#34; &#34;.&#34; &#34;com&#34; &#34;,&#34; &#34;m&#34; &#34;=&#34; &#34;rhino&#34; &#34;.&#34; &#34;com&#34;</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Normally, the <b>error</b> mailer is only invoked in Ruleset 0. However, in this case it provides a simple message printing mechanism. The <b>j</b> macro has the value <b>cockatoo.rhino.com</b>, and the <b>m</b> macro has <b>rhino.com</b> as its value.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Adding Header Lines to Examine Macros</b></font>
+
+<p><font face="Times" size="+1">Some macros don't have meaningful values until a message has been processed, such as <b>u</b> (the recipient's address), or <b>q</b> (the format of a sender address). Using a ruleset to examine these macros won't work. Instead, you can modify the headers to display these values.</font>
+
+<p><font face="Times" size="+1">Add the following lines to the collection of header definitions:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">HX-Test1: j=$j, m=$m</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">HX-Test2: u=$u, q=$q</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Preceding the name of a nonstandard header line with <b>X-</b> follows mail header format conventions, and makes sure that your message complies with all relevant standards.</font>
+
+<p><font face="Times" size="+1">Send a small test message to yourself. You'll see two extra header lines, like this:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier"><b>X-Test1:</b> j=cockatoo.rhino.com, m=rhino.com</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier"><b>X-Test2:</b> u=tr, q=tracy</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The message was sent to the alias <b>tr</b> by the user <b>tracy</b>.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Viewing All the Headers</b></font>
+
+<p><font face="Times" size="+1">NeXT's Mail.app application shows only some of the header lines in a message. If you're using the Mail application from Release 3.3 or later, you can use the Show All Headers command from the Message menu to examine all the headers.&nbsp; If you're using a previous version of Mail and the headers you want to see are not visible in the message window, you can view the full headers of the message by performing the following.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Click the message heading in the mailbox window.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Copy the message with Command-c <i>without</i> clicking in the message area.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Paste the message into, for example, a new Edit window.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">If the message was just ASCII text, you'll see the complete message in the Edit window. You'll see only the headers if the message contained rich text, an attached document, voice, or an image.</font>
+
+<p><font face="Times" size="+1">Here's an example of the complete headers of a message that was sent by Tracy Roykirk from the computer <b>cockatoo</b>. It was forwarded to <b>mailbox</b>, and there delivered to the user <b>amm</b>.</font>
+
+<p><font face="Times" size="+1"><b>From</b> Tracy_Roykirk Wed Jul 15 13:57:41 1992</font><br>
+<font face="Times" size="+1"><b>Next-Reference:</b> Testing.attach, 1/1</font><br>
+<font face="Times" size="+1"><b>Return-Path:</b> &lt;Tracy_Roykirk&gt;</font><br>
+<font face="Times" size="+1"><b>Received:</b> from cockatoo.Rhino.COM (cockatoo) by mailbox.Rhino.COM (NX5.67c/NX3.0M)</font><br>
+<img src="../images/sp.gif" width=12 height=1><font face="Times" size="+1">id AA00320; Wed, 15 Jul 92 13:57:35 -0700</font><br>
+<font face="Times" size="+1"><b>From:</b> Tracy_Roykirk (Tracy Q. Roykirk - SysAdmin)</font><br>
+<font face="Times" size="+1"><b>Message-Id:</b> &lt;9112270031.AA00320@mailbox.Rhino.COM&gt;</font><br>
+<font face="Times" size="+1"><b>Received:</b> by cockatoo.rhino.com (NX5.67c/NX3.0X)</font><br>
+<img src="../images/sp.gif" width=12 height=1><font face="Times" size="+1">id AA00937; Wed, 15 Jul 92 13:57:30 -0700</font><br>
+<font face="Times" size="+1"><b>Date:</b> Wed, 15 Jul 92 13:57:35 -0700</font><br>
+<font face="Times" size="+1"><b>Received:</b> by NeXT.Mailer (1.85)</font><br>
+<font face="Times" size="+1"><b>Received:</b> by NeXT Mailer (1.85)</font><br>
+<font face="Times" size="+1"><b>To:</b> amm</font><br>
+<font face="Times" size="+1"><b>Subject:</b> Testing</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

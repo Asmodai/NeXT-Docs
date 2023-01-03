@@ -1,0 +1,636 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/GeneralRef/07_IndexingKit/Classes/IXPostingSet.rtf -->
+<!-- Date: Sun Jan  1 17:04:12 2023 -->
+<head>
+<title>IXPostingSet</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>IXPostingSet</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Inherits From:</b></font></td>
+
+<td><font face="Times" size="+1">Object</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Conforms To:</b></font></td>
+
+<td><font face="Times" size="+1">IXPostingExchange</font><br>
+<font face="Times" size="+1">IXPostingOperations</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">btree/IXPostingSet.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">An IXPostingSet stores sets of postings in memory.&nbsp; An IXPostingSet can be loaded from any object that conforms to the IXPostingExchange protocol such as IXPostingCursor, IXPostingList, or another IXPostingSet; it can also forms set unions, intersections, and differences with the postings stored in such an object.&nbsp; IXPostingSet is particularly well suited to building up query results for databases.</font>
+
+<p><font face="Times" size="+1">The following example shows how an IXPostingSet might be used to find all of the records in an IXRecordManager whose value for some string valued attribute matches some prefix:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">IXPostingSet *matchPrefix(IXRecordManager *aSource,</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">const char *attributeName, const char *thePrefix)</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">{</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">IXPostingSet&nbsp;&nbsp;&nbsp; *theSet;</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">IXPostingCursor *aCursor;</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">char&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *theKey;</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">unsigned&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keyLength;</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">unsigned&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; theLength;</font>
+
+<p><img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">// get a cursor for the attribute</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">aCursor = [aSource cursorForAttributeNamed:attributeName];</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">if (aCursor == nil) return nil;</font>
+
+<p><img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">// create an empty posting set</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">theSet = [[IXPostingSet alloc] initCount:0 andPostings:NULL];</font>
+
+<p><img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">// iterate over the keys while there's a match</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">theLength = strlen(thePrefix);</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">[aCursor setKey:thePrefix andLength:theLength];</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">while ([aCursor getKey:(void **)&amp;theKey andLength:&amp;keyLength])</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">{</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">// check for key out of bounds</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">if (keyLength &lt; theLength || bcmp(theKey, thePrefix,</font><br>
+<img src="../../../../Images/sp.gif" width=222 height=1><font face="Courier">theLength) break;</font>
+
+<p><img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">// add the postings for this key to the set and move cursor</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">[theSet formUnionWithPostingsIn:aCursor];</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">[aCursor setNext];</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">[aCursor free];</font>
+
+<p><img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">// free set if empty</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">return [theSet count] ? theSet : [theSet free];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Variables</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">unsigned int <b>thisElement</b>;</font>
+
+<p><font face="Times" size="+1">unsigned int <b>numElements</b>;</font>
+
+<p><font face="Times" size="+1">unsigned int <b>maxElements</b>;</font>
+
+<p><font face="Times" size="+1">IXPosting *<b>postings</b>;</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">thisElement</font></td>
+
+<td><font face="Times" size="+1">The position of the selected posting.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">numElements</font></td>
+
+<td><font face="Times" size="+1">The number of postings in the set.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">maxElements</font></td>
+
+<td><font face="Times" size="+1">The maximum allowable number of postings in the set.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">postings</font></td>
+
+<td><font face="Times" size="+1">The postings.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Adopted Protocols</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">IXPostingExchange</font></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setCount:andPostings:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">getCount:andPostings:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">IXPostingOperations</font></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">addHandle:withWeight:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">removeHandle:</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">count</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">empty</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setFirstHandle</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setNextHandle</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setHandle:</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">getHandle:andWeight:</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Initializing instances</font></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">initCount:andPostings:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">initWithPostingsIn:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Setting the postings</font></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setCount:andPostings:byCopy:</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Accessing postings by position</font></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setPosition:</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Performing set operations</font></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">formUnionWithPostingsIn:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">formIntersectionWithPostingsIn:</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">subtractPostingsIn:</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>formIntersectionWithPostingsIn:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>formIntersectionWithPostingsIn:</b>(id &lt;IXPostingExchange&gt;)<i>anObject</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Combines the postings in the IXPostingSet with those in <i>anObject</i>, so that on return the IXPostingSet will contain only those postings that were in both objects; that is, it performs a logical AND on the two sets of postings.&nbsp; If each set has a posting with the same handle, but different weights, the weights are averaged.&nbsp; <i>anObject</i> is unaffected by this method.&nbsp; Returns <b>self</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>formUnionWithPostingsIn:</b>,</font> <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>subtractPostingsIn:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>formUnionWithPostingsIn:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>formUnionWithPostingsIn:</b>(id &lt;IXPostingExchange&gt;)<i>anObject</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Combines the postings in the IXPostingSet with those in <i>anObject</i>, so that on return the IXPostingSet will contain all postings that were in either object (duplicates are reduced to a single posting); that is, it performs a logical OR on the two sets of postings.&nbsp; If each set has a posting with the same handle, the weights are averaged.&nbsp; <i>anObject</i> is unaffected by this method. Returns <b>self</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>formIntersectionWithPostingsIn:</b>,</font> <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>subtractPostingsIn:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>initCount:andPostings:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>initCount:</b>(unsigned int)<i>count</i> <b>andPostings:</b>(const IXPosting *)<i>postings</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Initializes the IXPostingSet with <i>count</i> postings, copied from <i>postings</i>.&nbsp; This is the designated initializer for IXPostingSet objects.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>initWithPostingsIn:</b>,</font> <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setCount:andPostings:byCopy:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>initWithPostingsIn:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>initWithPostingsIn:</b>(id &lt;IXPostingExchange&gt;)<i>anObject</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Initializes the IXPostingSet with the postings in <i>anObject</i>.&nbsp; <i>anObject</i> should conform to the IXPostingExchange protocol. Returns <b>self</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>initCount:andPostings:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setCount:andPostings:byCopy:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setCount:</b>(unsigned int)<i>count</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>andPostings:</b>(const IXPosting *)<i>postings</i></font><br>
+<font face="Times" size="+1"><b>byCopy:</b>(BOOL)<i>flag</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the count and postings in the IXPostingSet, replacing and deallocating any previous contents.&nbsp; If <i>flag</i> is YES, a copy of <i>postings</i> is made and set to be the IXPostingSet's postings; if <i>flag</i> is NO, then the IXPostingSet assumes responsibility for the set of postings, and will free them when they are replaced or when the IXPostingSet is freed.&nbsp; Returns <b>self</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>initCount:andPostings:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setPosition:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(unsigned int)<b>setPosition:</b>(unsigned int)<i>index</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Selects a posting by position in the posting set, and returns that posting's handle.&nbsp; Your code can use this method to quickly access a handle based on its position.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setHandle:</b> (IXPostingSetOperations protocol)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>subtractPostingsIn:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>subtractPostingsIn:</b>(id &lt;IXPostingExchange&gt;)<i>anObject</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Removes from the IXPostingSet those postings that are also in <i>anObject;</i> that is, it performs a logical AND NOT between the two sets of postings.&nbsp; <i>anObject</i> is unaffected by this method.&nbsp; Returns <b>self</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>formUnionWithPostingsIn:</b>,</font> <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>formIntersectionWithPostingsPostingsIn:</b></font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

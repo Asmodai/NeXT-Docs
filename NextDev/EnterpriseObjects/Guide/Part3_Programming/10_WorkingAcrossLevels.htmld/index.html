@@ -1,0 +1,312 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/EnterpriseObjects/Guide/Part3_Programming/10_WorkingAcrossLevels.rtf -->
+<!-- Date: Sun Jan  1 17:05:34 2023 -->
+<head>
+<title>10_WorkingAcrossLevels</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+4" color="#FF00FF"><b>10</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<p><font face="Times" size="+4"><i>Working Across Levels</i></font>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Each level of the Enterprise Objects Framework maintains its own balance between convenience and flexibility. The highest level--the interface layer--is the most convenient but in many ways the least flexible, while the lowest level--the access layer's adaptor level--requires you to do more work but offers a lot of power. The level you choose to work with typically has all the functionality you need, but there may be times when you need to &quot;downshift&quot; and use the more powerful features of a lower level (for example, to invoke database-specific functionality or to debug problems appearing at a higher level).</font>
+
+<p><font face="Times" size="+1">The Framework allows you to do this, as long as you hold to a few simple guidelines. These guidelines are presented in three sections:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">&quot;Encapsulating Lower-level Work&quot; presents the simplest way to access lower-level features: Leave things at the lower level (such as transaction state) the way you found them when you return to the higher level.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">&quot;Matching Lower-level Results with Higher-level Expectations&quot; shows a few cases in which you set up an operation at a lower level and continue it at a higher level.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">&quot;Informing Higher Levels of Lower-level Actions&quot; discusses how you can keep the various levels synchronized when you can't clean up, by letting the higher level know what you (or someone else) have done in the course of bypassing it.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">A final section, &quot;Using Client Libraries,&quot; presents issues you should be aware of on the rare occasions that you need to completely bypass the Framework.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Encapsulating Lower-level Work</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The safest way to use lower-level components is to make sure you finish your work at the lower level before returning to the higher level. You should also revert any other changes in the state of the lower-level components or the database itself before you return to the higher level. For example, if you're working with an EOController and need to find a bug by using the controller's adaptor to fetch raw data, you should finish or cancel the fetch and end any transactions you've begun before resuming work with the EOController.</font>
+
+<p><font face="Times" size="+1">Transaction state is of special concern because the transaction-controlling methods--<b>beginTransaction</b>, <b>commitTransaction</b>, and <b>abortTransaction</b>--are only propagated downward. EODatabaseContext objects send these messages to EOAdaptorContext objects, but the EOAdaptorContext objects don't send these messages &quot;up&quot; to the EODatabaseContext objects that use them. Further, adaptors typically can't track changes in the database server's transaction state. When you use these methods, then, always send them to the higher-level object, even if your actual work involves lower-level objects. If you must leave a state change open, you can use the methods described in &quot;Informing Higher Levels of Lower-level Actions&quot; to notify the higher-level objects of the change.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Matching Lower-level Results with Higher-level Expectations</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sometimes you have to change the state of lower-level objects or of the server to continue work at the higher level. You can do this, provided you acknowledge what state changes have taken place, and what state the higher level expects things to be in. For example, if you're using an EODatabaseDataSource object and need finer control over transactions than its default behavior provides, you can configure it not to begin transactions automatically--but then you have to explicitly begin and end transactions with the data source's EODatabaseContext. By turning off automatic transactions, you claim responsibility for handling them.</font>
+
+<p><font face="Times" size="+1">As another example, the Framework allows you to select database records at a very low level and continue at higher levels. EOAdaptorChannel, the class that actually performs fetching, assumes that attributes have been selected in a certain order; as long as you meet this expectation, you can make a selection by nearly any means available, such as sending raw SQL to the server with <b>evaluateExpression:</b> or with EOEntity's external query feature. The following sections summarize these procedures.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Retrieving Records with Raw SQL</b></font>
+
+<p><font face="Times" size="+1">Normally, when you retrieve records at the adaptor level, you use EOAdaptorChannel's <b>selectAttributes:describedByQualifier:fetchOrder:lock:</b> method to select records, and then proceed through a loop using <b>fetchAttributes:withZone:</b> to fetch the selected records (see Chapter 8, &quot;Retrieving Records&quot;). <b>selectAttributes:...</b> always selects columns in the database in alphabetic order, based on the internal names of the EOAttribute objects requested for selection. <b>fetchAttributes:withZone:</b> then assumes that the columns have been selected in this order.</font>
+
+<p><font face="Times" size="+1">As an alternative to <b>selectAttributes:...</b>, you can use <b>evaluateExpression:</b> to perform a selection with raw SQL; this allows you to access database-specific features, such as stored procedures. When you do this, you have to make sure the columns specified in the SQL expression are ordered based on the names of the EOAttribute objects they're associated with, and then request only those attributes in your <b>fetchAttributes:withZone:</b> messages. Adaptors are responsible for determining whether a SQL expression puts the database server into fetch mode, so you don't have to worry about that; you simply meet the expectations of the EOAdaptorChannel and fetch the records.</font>
+
+<p><font face="Times" size="+1">For more information, see the descriptions for the relevant methods of the EOAdaptorChannel class in the <i>Enterprise Objects Framework Reference</i>.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Retrieving Objects with EOEntity's External Query</b></font>
+
+<p><font face="Times" size="+1">When you specify an external query for an entity in EOModeler, or set one programmatically with EOEntity's <b>setExternalQuery:</b> method, you're packaging a raw SQL expression with that entity. EODatabaseChannel uses this expression whenever you give it an unrestricted qualifier (one that selects all records for the entity). You typically use an external query to hide columns in the database table or to invoke a stored procedure when the table is accessed. As with <b>evaluateExpression:</b>, an external query must select columns in order based on the names of their EOAttribute objects.</font>
+
+<p><font face="Times" size="+1">You can also retrieve objects with an EOAdaptorChannel using <b>evaluateExpression:</b>. Retrieving objects instead of records requires you to specify which enterprise object class to instantiate. This topic is discussed in more detail in the next section.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Informing Higher Levels of Lower-level Actions</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sometimes you need to change the state of a lower-level component and not change it back before returning to the higher level. In these cases you have to inform the higher-level components of any changes that may affect them, such as a change in transaction state. Most of these changes can be made at the higher level to begin with, so you shouldn't have to do this often.</font>
+
+<p><font face="Times" size="+1">As mentioned in &quot;Encapsulating Lower-level Work,&quot; adaptors typically can't track the transaction state for their connection to the database. If you need to change the transaction state at a lower level and not change it back, you must inform the higher-level object (EOAdaptorContext or EODatabaseContext) of this change with the transaction-notification methods: <b>transactionDidBegin</b>, <b>transactionDidCommit</b>, and <b>transactionDidRollback</b>. If a SQL expression you send with <b>evaluateExpression:</b> changes the transaction state, for example, you should send the appropriate transaction-notification method to the database or adaptor context object associated with the EOAdaptorChannel.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Retrieving Objects with Raw SQL</b></font>
+
+<p><font face="Times" size="+1">One notable task that requires you to notify higher levels is performing a selection with raw SQL in order to fetch enterprise objects with an EODatabaseChannel. Normally you use EODatabaseChannel's <b>selectObjectsDescribedByQualifier:fetchOrder:</b> method to select objects. The qualifier you specify determines which entity the selection is made for, and thus which enterprise object class is instantiated when data is actually fetched. If you perform the selection at a lower level, you must explicitly tell the EODatabaseChannel which entity it's fetching for with the <b>setCurrentEntity:</b> method.</font>
+
+<p><font face="Times" size="+1">To perform such a dual-level fetch, you follow these basic steps:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Get your EODatabaseChannel's EOAdaptorChannel.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Perform the selection with EOAdaptorChannel's <b>evaluateExpression:</b> method.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Send <b>setCurrentEntity:</b> to the EODatabaseChannel with the entity you selected in step 2.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Use <b>fetchWithZone:</b> to fetch objects.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The following code excerpt illustrates this procedure by selecting objects for the</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entity:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EODatabaseChannel *dbChannel;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOEntity *employeeEntity;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSString *aRawSQLExpression;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAdaptorChannel *adaptorChannel;</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[dbChannel beginTransaction];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">adaptorChannel = [dbChannel adaptorChannel];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[adaptorChannel evaluateExpression:aRawSQLExpression];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[dbChannel setCurrentEntity:employeeEntity];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">while ([dbChannel isFetchInProgress]) {</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">id theEmployee = [dbChannel fetchWithZone:NULL];</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Process theEmployee. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[dbChannel commitTransaction];</font>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Using Client Libraries</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">In extreme situations, you may find that you have to resort to your database server's client library interface to get something done. If you must do this, you should isolate any code that invokes the client library from code that uses the Enterprise Objects Framework. Any descent into the client library should be as self-contained as possible, leaving no discrepancies between the Framework's view of the database and its true state (especially with regard to transactions). Beyond this warning, little specific advice can be offered.</font>
+
+<p><font face="Times" size="+1">How you link your database server's client library to your application depends on the form of the client library and on the adaptor you're using. See the documentation for each of these components to determine how you can link the code you need into your application. The Sybase and Oracle adaptors included with the Framework are documented in appendices to the <i>Enterprise Objects Framework Reference</i>.</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

@@ -1,0 +1,1877 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextAdmin/12_UUCP.rtf -->
+<!-- Date: Sun Jan  1 13:56:34 2023 -->
+<head>
+<title>12_UUCP</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Release 3.3 Copyright</font> &copy;<font face="Times">1994 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap><font face="Helvetica" size="+4"><b>12</b></font></td>
+
+<td><font face="Times" size="+4"><i>Using UUCP</i></font></td></tr>
+
+<tr valign=top>
+
+<td width=36 height=80></td></tr>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">One of the most powerful facilities on a computer is electronic data transfer--whether it's transferring files or sending electronic mail. On a NEXTSTEP computer, as on other UNIX computers, UUCP is one of the facilities used for electronic data transfer over serial communication lines. This chapter describes the configuration required for correct operation of UUCP on a NEXTSTEP computer.</font></td></tr>
+
+<tr valign=top>
+
+<td width=36 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap></td>
+
+<td><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">UUCP refers to the facility as a whole, and <b>uucp</b> refers to a specific program (part of the overall facility) for copying files between computers.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Planning Your UUCP Configuration</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Setting up UUCP can be somewhat involved. As with most things, it's a good idea to take the time to make a plan before you begin the actual work. Here are some decisions you'll need to make.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Dial-in or Dial-out</b></font>
+
+<p><font face="Times" size="+1">When you use UUCP to communicate, you can choose to set up your system to initiate calls to other sites, to receive calls from other computers, or to do both. Two considerations that may influence your decision are:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Security--Allowing dial-in access to your computer is more of a security risk than just dialing out.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Finance--Somebody has to pay for the phone call.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The choice between initiating and receiving calls doesn't affect the end result; either way, the mail is transferred, the files copied, or the commands executed.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Remote Sites</b></font>
+
+<p><font face="Times" size="+1">A UUCP configuration is always a cooperative undertaking. If you set up your computer to call another system, the remote site must be set up to receive your calls. If your system will receive calls from a remote site, some computer must be prepared to initiate calls. Your UUCP partner might be a remote computer within your own organization, or a computer at another organization. Either way, the administrator at the other site must set up the remote computer to communicate with yours.</font>
+
+<p><font face="Times" size="+1">Of course, you're not limited to a single partner; you might want to exchange data with dozens of other computers. In addition, transferring data to a remote computer doesn't mean you can only communicate with the computers attached to that remote network. By connecting with the remote computer, you have access to all of its UUCP partners as well. For example, a mail message transferred with UUCP might travel through several different systems before arriving at its final destination. A global network of such connections has been established.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Functions</b></font>
+
+<p><font face="Times" size="+1">UUCP can be used to transfer files, execute remote commands, and transfer mail. An overwhelming majority of UUCP connections are used solely to transfer mail. Although the procedures in this chapter apply to all kinds of UUCP communications, the primary focus is on mail transfer.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Calling</b></font>
+
+<p><font face="Times" size="+1">When a user takes some action that involves UUCP, such as sending a mail message to a remote user or queuing a command to be executed remotely, the action isn't completed until the remote connection is made. You can make a call to a remote computer by executing a UNIX command, or you can just wait until the remote computer calls you. You can also configure your system so that calls are made automatically at specific times, or whenever a mail message is ready to be delivered.</font>
+
+<p><font face="Times" size="+1">When deciding how you'll initiate remote connections, consider how many transactions you expect to make, and how long you're willing to wait before the transaction is completed. If your users will be sending hundreds of mail messages to remote users on a daily basis, you probably don't want to initiate a call every time a mail message is sent. On the other hand, you want calls made frequently enough that users won't have to wait a long time before receiving mail.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>User Accounts</b></font>
+
+<p><font face="Times" size="+1">When one computer makes a UUCP connection with another, it logs in using a user account. You'll need to know the account name and password on the remote computer before configuring your system for dial-out connections. If other computers will be calling you, you'll need to set up an account for each remote system. See &quot;Configuring Dialing In&quot; later in this chapter.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Setting Up UUCP</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">When you set up your system to communicate with UUCP, several steps are involved. You need to set up your hardware, modify configuration files, and test connections.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Configuring the Modem</b></font>
+
+<p><font face="Times" size="+1">Follow these steps to configure your modem for use with UUCP:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Connect the modem to one of the serial ports using an appropriate cable. For more information about cabling, see Appendix B, &quot;Cable and Modem Configuration.&quot;</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">To set up your modem for dialing out, edit the file <b>/etc/remote</b> so that it includes an entry similar to the following:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><i>a2400</i>|Dial out on <i>cua</i> at <i>2400</i> baud:\</font><br>
+<img src="../images/sp.gif" width=171 height=1><font face="Courier">:dv=/dev/<i>cua</i>:br#<i>2400</i>:el=^C^S^Q^U^D:ie=%$:oe=^D:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">Replace <i>a2400</i> with the name you want to use to reference the modem when using <b>tip</b>; replace both instances of <i>cua </i>with the appropriate device file name (<b>cua</b> or <b>cub</b> for dialing out without hardware flow control, <b>cufa</b> or <b>cufb</b> for dialing out with hardware flow control); replace both instances of <i>2400</i> by the appropriate baud rate. For more information, see Chapter 7, &quot;Attaching Peripherals,&quot; and the UNIX manual page for <b>remote</b>. Note that there may already be an entry in <b>/etc/remote</b> that will meet your needs.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Configure the modem parameters as follows:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Set DCD (data carrier detect) when a remote carrier signal is sensed.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Hang up when the DTR (data terminal ready) signal is dropped, and answer an incoming call only when DTR is high.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Turn off software flow control. You can enable hardware flow control if your modem supports it and you're using a 68040-based NeXT computer. Be sure you have used the appropriate device name in <b>/etc/remote</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">If your modem has a guard time associated with the escape sequence, set it to at least 3 seconds, if possible.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">See Appendix B for several configuration examples.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Configuring Calling Out</b></font>
+
+<p><font face="Times" size="+1">To set up your system to call out, you need to modify a few UUCP configuration files. All the files are located in <b>/etc/uucp</b>, and you must be logged in as <b>root</b> in order to modify them. You might also need to change the permissions on a file before you can edit it. Be sure to change the permissions back to their original setting when you're done.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Modifying L.sys</b></font>
+
+<p><font face="Times" size="+1">The <b>L.sys</b> file contains information about the systems with which you will communicate. Follow these steps to set up <b>L.sys</b>:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Gather the information necessary to connect with the remote site:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Host name of the remote computer</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Device name and baud rate for the modem</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Phone number for the remote computer</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Login name and password on the remote computer</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Open <b>L.sys</b> and create an appropriate entry. The following section provides some examples.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>Sample L.sys Entries</b></font>
+
+<p><font face="Times" size="+1">Here's an example of an entry in <b>L.sys</b>:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier"><i>remote</i> Any DIR <i>2400 cub</i> \</font><br>
+<img src="../images/sp.gif" width=152 height=1><font face="Courier">&#34;&#34; ATDT<i>95557878</i> \</font><br>
+<img src="../images/sp.gif" width=152 height=1><font face="Courier">ogin: <i>loginname</i> \</font><br>
+<img src="../images/sp.gif" width=152 height=1><font face="Courier">ssword: <i>password</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Note that this entry is on separate lines solely for readability. In order to continue the entry on multiple lines, each ends with a space followed by a backslash (\).</font>
+
+<p><font face="Times" size="+1">Here's a breakdown of the various fields:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><i>remote</i>--Host name of the remote computer.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Any--Calls can be made at any time.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">DIR--Call through a direct connection.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><i>2400</i>--Call at 2400 baud.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><i>cub</i>--Call through the device <b>/dev/cub</b>. There must be an entry in <b>L-devices</b> for any device named in an <b>L.sys </b>entry. See the next section for details.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The rest of the entry is a series of &quot;expect/send&quot; pairs, which specify what the computer should send in response to receiving the indicated character strings.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">&#34;&#34; ATDT<i>95557878</i>--Without waiting for anything, send the modem dialing sequence. Note that this example is for a Hayes-compatible modem; yours may use a different dialing sequence.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">ogin: <i>loginname</i>--When the string &quot;ogin:&quot; is received, send the user name of the account on the remote computer.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">ssword: <i>password</i>--When the characters &quot;ssword:&quot; are received, send the password of the remote account.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Here's an example of an entry that includes more advanced features:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier"><i>remote</i> Any DIR 19200 cufa \</font><br>
+<img src="../images/sp.gif" width=152 height=1><font face="Courier">ABORT BUSY \</font><br>
+<img src="../images/sp.gif" width=152 height=1><font face="Courier">&#34;&#34; AT \</font><br>
+<img src="../images/sp.gif" width=152 height=1><font face="Courier">OK~3-AT-OK~3 ATx3s50=255 \</font><br>
+<img src="../images/sp.gif" width=152 height=1><font face="Courier">OK~3 ATDT<i>95552424</i> \</font><br>
+<img src="../images/sp.gif" width=152 height=1><font face="Courier">CONNECT~80 PAUSE \</font><br>
+<img src="../images/sp.gif" width=152 height=1><font face="Courier">ogin:~15-CR-ogin:~10-BREAK-ogin:~5-BREAK-ogin:~5 <i>loginname</i> \</font><br>
+<img src="../images/sp.gif" width=152 height=1><font face="Courier">ssword:~8 <i>password</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The first line of this entry is similar to the first line of the previous example. The main differences are in the expect/send pairs:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">ABORT BUSY--Tells UUCP to abort the call if it receives the string BUSY at any time during the call. ABORT is a special keyword; BUSY is just the character string the modem returns when it gets a busy signal.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">&#34;&#34; AT--Without waiting for anything, send the attention sequence to the modem.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">OK~3-AT-OK~3 ATx3s50=255--Expect the string OK. If it's not received within 3 seconds (~3), send AT again, then wait for up to 3 seconds for OK. Once OK is received, send ATx3s50=255, which sets the modem result codes (this example assumes a Telebit T2500 configured as shown in Appendix B). A string in the form ~<i>n</i> sets the timeout to <i>n</i> seconds, overriding the default of 45 seconds.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">OK~3 ATDT<i>95552424</i>--Expect OK within 3 seconds, then dial the phone number.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">CONNECT~80 PAUSE--Wait for up to 80 seconds to receive CONNECT, then pause for 3 seconds.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">ogin:~15-CR-ogin:~10-BREAK-ogin:~5-BREAK-ogin:~5 <i>loginname</i>--Wait for 15 seconds for &quot;ogin:&quot;; if not received, send a carriage return (CR), then wait 10 seconds for &quot;ogin:&quot;. If still not received, send a break signal (BREAK), then wait another 5 seconds; if still not received, send another break signal, then wait 5 more seconds. Once &quot;ogin:&quot; is received, send the user name.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">ssword:~8 <i>password</i>--Wait up to 8 seconds for &quot;ssword:&quot;, then send the password for the remote account.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">For more information, see the UNIX manual page for <b>L.sys</b>.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Other Configuration Files</b></font>
+
+<p><font face="Times" size="+1">In addition to setting up entries in <b>L.sys</b>, you also need to modify <b>L-devices</b> and possibly <b>L.aliases</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Modify <b>L-devices</b> to contain an entry indicating the device to be used when calling out:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">DIR <i>cua</i> unused <i>19200</i> none</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">Replace <i>cua</i> with the appropriate device name and <i>19200</i> with the correct baud rate. The device specified in the <b>L.sys</b> entry must have an entry in <b>L-devices</b>. More information can be found in the UNIX manual page for <b>L-devices</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Set up <b>L.aliases</b> if you want to recognize the remote computer by something other than its host name. If you do create an alias, you must also modify <b>L.sys</b> to contain an entry similar to the following:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><i>alias</i> Never none <i>19200</i> none</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">Replace <i>alias</i> with the alias in <b>L.aliases</b> and <i>19200</i> with the correct baud rate. For more information, see the UNIX manual page for <b>L.aliases</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Make sure the owner, group, and permissions for the configuration files are set correctly. The output from the command <b>ls -lg /etc/uucp</b> should look like this:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">-rw-------&nbsp; 1&nbsp;&nbsp; uucp&nbsp;&nbsp; daemon&nbsp;&nbsp; 380&nbsp;&nbsp; Apr 17 17:06&nbsp;&nbsp; L-devices</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">-rw-------&nbsp; 1&nbsp;&nbsp; uucp&nbsp;&nbsp; daemon&nbsp;&nbsp; 300&nbsp;&nbsp; Apr 13 15:28&nbsp;&nbsp; L-dialcodes</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">-rw-------&nbsp; 1&nbsp;&nbsp; uucp&nbsp;&nbsp; daemon&nbsp;&nbsp;&nbsp; 56&nbsp;&nbsp; Jun 5 15:18&nbsp;&nbsp;&nbsp; L.aliases</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">-rw-------&nbsp; 1&nbsp;&nbsp; uucp&nbsp;&nbsp; daemon&nbsp;&nbsp; 907&nbsp;&nbsp; Jul 5&nbsp; 1989&nbsp;&nbsp;&nbsp; L.cmds</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">-rw-------&nbsp; 1&nbsp;&nbsp; uucp&nbsp;&nbsp; daemon&nbsp; 2195&nbsp;&nbsp; Jul 10 13:58&nbsp;&nbsp; L.sys</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">-rw-------&nbsp; 1&nbsp;&nbsp; uucp&nbsp;&nbsp; daemon&nbsp;&nbsp; 414&nbsp;&nbsp; Jul 10 13:59&nbsp;&nbsp; USERFILE</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=53></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Warning:</b></font></td>
+
+<td><font face="Times" size="+1">A great deal of sensitive information is in the UUCP configuration files, including account passwords for remote sites. <i>Only</i> the account <b>uucp</b> should be able to read and write to these files. Setting the ownerships or permissions to anything else poses a <i>very</i> serious security risk not only for your site, but also for the remote sites.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Testing Dialing Out</b></font>
+
+<p><font face="Times" size="+1">Now that you've configured dialing out, it's a good idea to run a test:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Use the <b>uupoll</b> command to test dialing out. Enter the following command in a shell window, replacing <i>rhino</i> with the host name of a remote site that is set up to accept incoming calls from your computer:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>uupoll</b> <i>rhino</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">The <b>uupoll</b> command initiates a call to the remote site, according to the information stored in <b>L.sys</b> and <b>L-devices</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Examine the messages generated during the call by entering the following into a shell window:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>tail -f</b> /usr/spool/uucp/LOGFILE</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">Messages from <b>uupoll</b> are sent to <b>/usr/spool/uucp/LOGFILE</b>. The <b>tail</b> command with the <b>f</b> option examines the contents of the file as it is created. The output should look something like this:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">frank rhino (7/18-06:55-4088) SUCCEEDED (call to rhino)</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">frank rhino (7/18-06:55-4088) OK (startup cufa 19200 baud)</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">frank rhino (7/18-06:55-4088) OK (conversation complete)</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">The first line shows that the remote login was successful. The second indicates successful communication with <b>rhino</b>, and the third that the call was terminated successfully. If you find any other messages, see the &quot;Troubleshooting&quot; section at the end of this chapter.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Press Control-c to interrupt the <b>tail</b> command.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Automating Dialing Out</b></font>
+
+<p><font face="Times" size="+1">You can enter the <b>uupoll</b> command in a shell window whenever you want to initiate a call to a remote site. However, you can also set up your system to initiate calls automatically.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Initiating a Call when Mail Is Queued</b></font>
+
+<p><font face="Times" size="+1">The <b>sendmail</b> configuration file determines how to deal with mail that is sent through UUCP. As shipped, mail messages are queued until one site polls the other to check for waiting messages. If you want mail to be delivered as soon as it is queued, you need to modify the configuration files.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Determine which <b>sendmail</b> configuration files to modify. On a mail server, you should edit the file <b>sendmail.mailhost.cf</b>. The file <b>sendmail.sharedsubsidiary.cf</b> is used by network mail clients, and standalone computers use the file <b>sendmail.subsidiary.cf</b>. All the files are in <b>/etc/sendmail</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Open the appropriate configuration file and find the following entry:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">Muucp, P=/usr/bin/uux, F=msDFMhuU, S=13, R=23, E=\n</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">A=uux - -r $h!rmail ($u)</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Remove <b>-r</b> from the entry so that it looks like this:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">Muucp, P=/usr/bin/uux, F=msDFMhuU, S=13, R=23, E=\n</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">A=uux - $h!rmail ($u)</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">Without the <b>-r</b> flag, <b>uux</b> queues the request and then immediately executes <b>uucico</b> to initiate a call.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Save the file.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Initiating Calls at Specific Times</b></font>
+
+<p><font face="Times" size="+1">Another way to automate UUCP connections is to have calls placed periodically at specific times. You can use the <b>cron</b> facility to set up such an arrangement.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Open <b>/etc/crontab.local</b> (create it, if needed) and add an entry similar to the following, replacing <i>remotesite1</i> and <i>remotesite2</i> with the host names of the remote computers:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">3&nbsp; 7-20 * * 1-5&nbsp; uucp&nbsp; uupoll -n <i>remotesite1</i></font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">3&nbsp; 7-20 * * 1-5&nbsp; uucp&nbsp; uupoll -n <i>remotesite2</i></font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">5&nbsp; 7-20 * * 1-5&nbsp; uucp&nbsp; /usr/lib/uucp/uucico -r1</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">This entry executes <b>uupoll</b> once an hour for each remote site, then runs <b>uucico</b> separately. This scheme invokes <b>uucico</b> only once, after the last <b>uupoll</b> is run. If you prefer, you can eliminate the <b>-n</b> option to the <b>uupoll</b> entries and delete the final line executing <b>uucico</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">For more information, see the UNIX manual pages for <b>cron</b> and <b>crontab</b>.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Polling at Boot Time</b></font>
+
+<p><font face="Times" size="+1">You might want to initiate calls to the remote sites each time the computer boots. You do this by modifying one of the startup scripts.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Open <b>/etc/rc.local</b> and add the following lines:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">if [ -f /etc/rc.uucp ]; then</font><br>
+<img src="../images/sp.gif" width=199 height=1><font face="Courier">sh /etc/rc.uucp $1</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">fi</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">These lines will execute the <b>rc.uucp</b> script, which in turn executes <b>uucico</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">If you also want to force an explicit poll of a remote site, such as a central mail routing hub, insert a line similar to the following above the lines that execute <b>rc.uucp</b>:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">/usr/bin/uupoll -n <i>rhino</i></font>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Configuring Dial-in</b></font>
+
+<p><font face="Times" size="+1">If one or more remote sites will be calling your system, you need to configure it for dial-in:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Create a user account for each of the remote sites with UserManager. Even though you usually shouldn't have two accounts with the same user ID, you might assign the same user ID to all of the UUCP accounts--the number 5 is recommended. Don't use the same user ID as the <b>uucp</b> account, which is 4. Be sure to assign a password to each of these accounts.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Open <b>/etc/uucp/USERFILE</b> and modify it to list the directories you want to make available to remote users. Entries look something like this:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">Urhino,rhino /usr/spool/uucppublic</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">This entry permits the user <b>Urhino</b> (an account on the local computer) and the remote host <b>rhino</b> (the same name used in <b>L.sys</b>) to access <b>/usr/spool/uucppublic</b>. You can also include default entries to be used by any users or hosts not specifically listed. For more information, see the UNIX manual page for <b>USERFILE</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=53></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Warning:</b></font></td>
+
+<td><font face="Times" size="+1">To avoid a serious security risk, make sure that each user or host is only granted access to the directories necessary. Be particularly careful with directories that are accessible by any host or user. In general, no user or host should have access to the root directory from UUCP.</font></td></tr>
+
+<tr valign=top>
+
+<td width=53 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=53></td>
+
+<td nowrap><img src="../images/sp.gif" width=52 height=1><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Edit <b>/etc/uucp/L.cmds</b> so that it only includes those commands that you want to be executed by remote hosts. Be sure to include <b>rmail</b> so that mail transfer will work. Be careful when you select the commands to be executed by remote users, and only include those that you're sure they'll need.</font></td></tr>
+
+<tr valign=top>
+
+<td width=53 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=53></td>
+
+<td nowrap><img src="../images/sp.gif" width=52 height=1><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">If you want a remote site to access your computer by something other than its host name, put the alias in <b>/etc/uucp/UUCPNAME</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=53 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=53></td>
+
+<td nowrap><img src="../images/sp.gif" width=52 height=1><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Make sure that there is an entry in <b>/etc/uucp/L.aliases</b> for every remote site. If there is a site that your computer doesn't call, but calls your system, you need a special entry for that remote site. Add an entry to <b>L.aliases</b> similar to the following, replacing <i>remote</i> with the host name of the remote computer and <i>19200</i> with the appropriate baud rate:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><i>remote</i> Never none <i>19200</i> none</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Edit <b>/etc/ttys</b> so that remote users can log in through your modem. Find the appropriate line for your modem port--<b>ttyda</b>, <b>ttydb</b>, <b>ttydfa</b>, or <b>ttydfb</b>. Change the baud rate, if necessary; change <b>unknown</b> to <b>dialup</b>, and <b>off</b> to <b>on</b>. When you're done, the line will look something like this:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">ttydb &#34;/usr/etc/getty D19200&#34; dialup on</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=53></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Warning:</b></font></td>
+
+<td><font face="Times" size="+1">Don't include the <b>secure</b> flag on lines for dial-up ports, as this allows remote <b>root</b> login--a serious security hole.</font></td></tr>
+
+<tr valign=top>
+
+<td width=53 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=53></td>
+
+<td nowrap><img src="../images/sp.gif" width=52 height=1><font face="Helvetica" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Make sure that <b>/etc/gettytab</b> contains an appropriate entry for your modem port. The existing entries are probably sufficient, but you might need an additional entry. For example, if your modem support speeds up to 19200 baud, you'll need to add an entry in the section of the file labeled &quot;Fast dialup terminals&quot; similar to the following:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">D19200:nx=D9600:tc=19200-baud:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">Notice that the label for this entry (<b>D19200</b>) must match the argument to <b>getty</b> specified in the line for your modem port in <b>/etc/ttys</b>. The <b>nx</b> field lists the next entry to be used if a BREAK signal is received; in this example, <b>D9600</b>. For more information, see the UNIX manual page for <b>gettytab</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Testing Dial-in</b></font>
+
+<p><font face="Times" size="+1">Once you've set up your system to accept remote logins, it's a good idea to test the configuration.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Have someone at the remote site set up and test their connection following the instructions in &quot;Configuring Calling Out&quot; earlier in this chapter.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">If the remote site calls your system by using <b>uucico</b> with debugging turned on, you can find debugging output in <b>/usr/spool/uucp/AUDIT/</b><i>remotesite</i>, where <i>remotesite</i> is the host name of the remote computer.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Ongoing UUCP Management</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Once your UUCP connections are functioning properly, you'll probably want to keep track of the activity. Several log files and an activity report are available to help you do this.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Log Files</b></font>
+
+<p><font face="Times" size="+1">You can examine the following log files to keep track of UUCP activity:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>/usr/spool/uucp/LOGFILE</b>--Log of incoming and outgoing calls</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>/usr/spool/uucp/SYSLOG</b>--Log of files transferred</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>/usr/spool/mqueue/syslog</b>--Log of mail messages; maintained by <b>sendmail</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Each of these files is trimmed periodically to prevent them from growing indefinitely.</font>
+
+<p><font face="Times" size="+1">If you want to keep a record of remote logins, you can set up an additional log:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Open <b>/etc/syslog.conf</b> and add the following line:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">auth.debug&nbsp; /usr/adm/auth.log</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">Remote logins will now be recorded in <b>/usr/adm/auth.log</b>. For additional information, see the UNIX manual page for <b>syslogd</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">To prevent this log file from growing indefinitely, edit <b>/usr/adm/weekly</b>. Open the file and find the following line:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">for i in hourly.log daily.log weekly.log monthly.log lpd-errs aculog</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Add a space to the end of this line, followed by <b>auth.log</b>. Now the log file will be trimmed once a week when <b>cron </b>runs <b>/usr/adm/weekly</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Activity Reports</b></font>
+
+<p><font face="Times" size="+1">If you want to see detailed information about all UUCP activity, you can use the shell script <b>/etc/uucp/uucp.day.sh</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Set up a mail alias to receive the activity data in NetInfo. An appropriate name for the alias might be <b>uucpstats</b>. The value of the <b>members</b> property for the alias should be:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">| /etc/uucp/uucp.day.sh -l</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">For information on setting up mail aliases, see Chapter 6, &quot;Managing Electronic Mail.&quot;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Open <b>uucp.day.sh</b> and find the following line (it's almost halfway through the file):</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">STATSPERSON=uucpstats@localhost.com</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">This line defines the user that will receive mail containing the raw activity data. The value of this variable should be the name of an alias.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Modify the line to indicate the mail alias you created, then save the file.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Open <b>/etc/crontab.local</b> (or create it, if it doesn't exist), and add a line like the following:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">20 23 * * * su uucp -c /usr/lib/uucp/uucp.day.sh</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">This will run the script every evening, and the activity report will be stored in <b>/usr/spool/uucp/STATS</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">In addition to creating and archiving activity reports, <b>uucp.day.sh</b> cleans up old log files and directories, and queues up a set of jobs to force polling of remote sites. For more information, see the comments in <b>uucp.day.sh</b>.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Troubleshooting</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">UUCP communication involves several pieces of equipment, many programs, and quite a few configuration files. Tracking down a problem can get fairly involved. Here are some suggestions.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Testing</b></font>
+
+<p><font face="Times" size="+1">You can make several tests to help isolate a problem:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Use <b>uupoll</b>, following the instructions in &quot;Testing Dialing Out&quot; earlier in this chapter.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Use <b>tip</b> to attempt to connect with the remote site. You should be able to call the remote site and log in. For more information, see Chapter 7, &quot;Attaching Peripherals,&quot; and the UNIX manual page for <b>tip</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Run <b>uucico</b> in debugging mode. The final message from <b>uucico</b> should be</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">OK (conversation complete)</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">For more information, see Appendix G, &quot;Annotated <b>uucico</b> Debug Output,&quot; and the UNIX manual page for <b>uucico</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Call the remote site using a phone. You should hear a tone from the remote modem. If you don't, you'll know that there's something wrong with the phone number, the phone line, or the remote modem.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Problem Solving</b></font>
+
+<p><font face="Times" size="+1">Here are some specific guidelines for solving problems you might encounter while testing communications:</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Can't Connect to Modem</b></font>
+
+<p><font face="Times" size="+1">If you attempt to connect to the modem and get no response, or see a message such as &quot;device busy,&quot; your problem might be one of the following:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Cable configured incorrectly--Make sure you're using the proper cable. See Appendix B.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Incorrect device--For dial-in use, always specify one of <b>ttyda</b>, <b>ttydb</b>, <b>ttydfa</b>, or <b>ttydfb</b> in <b>/etc/ttys</b>. For outgoing use, always use one of <b>cua</b>, <b>cub</b>, <b>cufa</b>, or <b>cufb</b> in the configuration files, including <b>/etc/remote</b>. If you're using hardware flow control, make sure you've specified the appropriate device names (the ones containing an &quot;f&quot; in their name).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Port locked--When a port is in use, a file named <b>LCK..</b><i>device</i>, where <i>device</i> is the device name, is created in <b>/usr/spool/uucp/LCK</b>. If such a file exists and you're absolutely sure another user isn't accessing the modem, remove the lock file.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">For more information, see Chapter 7.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Can't Connect to Remote Site</b></font>
+
+<p><font face="Times" size="+1">If you can connect to your modem but can't complete the connection to the remote modem (you don't get a ring, the remote modem doesn't answer), one of these might be the problem:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Incorrect phone number--Verify that you're using the correct number for the remote site.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Phone line problems--Try connecting your modem to a different phone line. If the problem persists, do the same at the remote site.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Incorrectly configured remote modem--Make sure the remote modem has been configured to answer.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Can't Log into Remote Site</b></font>
+
+<p><font face="Times" size="+1">If you can connect to the remote modem, but can't log in with <b>tip</b>, or if you see FAILED (LOGIN) from <b>uucico</b>, this might be the problem:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">User account problem--Make sure the remote site has set up an account for you, and verify the user name and password.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Problems Once Logged In</b></font>
+
+<p><font face="Times" size="+1">If the login is successful, but you see garbage output from <b>tip</b>, or <b>uucico</b> reports TIMEOUT (<i>hostname</i>), one of these could be the problem:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Modem speed mismatch--Make sure your modem and the remote modem are communicating at compatible baud rates. Make sure the argument to <b>getty</b> in <b>/etc/ttys</b> matches an entry in <b>/etc/gettytab</b>. Make sure the <b>gettytab</b> entry cycles through appropriate baud rates. Make sure the <b>L.sys</b> entry sends break signals when an expected response isn't received.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Parity mismatch--Make sure that you and your remote site are using the same parity scheme. Add the appropriate keyword to the entry in <b>L.sys</b>. For details, see the UNIX manual page for <b>L.sys</b>.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Problems with uucico</b></font>
+
+<p><font face="Times" size="+1">There are two known bugs that will make <b>uucico</b> fail:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Blank line in <b>L.sys</b>--Make sure there are no blank lines in <b>L.sys</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Missing final &quot;none&quot;--Make sure that any entries in <b>L.sy</b>s similar to the following include the second &quot;none&quot;:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">remote Never none 19200 none</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Other Problems</b></font>
+
+<p><font face="Times" size="+1">Two other situations can cause problems. These can be identified from <b>uucico</b> debugging output:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Incorrect host names--Make sure all host names in the configuration files are spelled correctly.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Wrong calling time--Make sure you aren't attempting to call during a time that's not allowed in the <b>L.sys</b> entry.</font></td></tr>
+
+</table>
+
+
+
+<p><br>
+
+</body>
+</html>

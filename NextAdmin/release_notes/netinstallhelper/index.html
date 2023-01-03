@@ -1,0 +1,764 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextAdmin/ReleaseNotes/NetInstallHelper.rtfd -->
+<!-- Date: Sun Jan  1 13:56:50 2023 -->
+<head>
+<title>NetInstallHelper</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Release 3.3 Copyright</font> &copy;<font face="Times">1994 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+3">3.3 Release Notes:</font><br>
+<font face="Times" size="+3">Installing NEXTSTEP across a Network</font>
+
+<p><br><br><br>
+
+<p><font face="Times" size="+1">This document describes how to set up and use Network Installation (NetInstall) for NEXTSTEP Release 3.3.&nbsp; The instructions assume your computer is an Intel-based PC.&nbsp; Specific notes will guide you if you are working with a NeXT computer.</font>
+
+<p><font face="Times" size="+1">You can use NetInstallHelper to set up computers to provide NetInstall services, name target computers on which you want to install NEXTSTEP, and create the NetInstall floppy disks that are required to boot target computers from the network.</font>
+
+<p><font face="Times" size="+1">As a convenience to larger sites that need fine-grained control over their network configurations, shell scripts for setting up servers, clients, and for making NetInstall floppy disks are provided in the <b>/NextAdmin/NetInstallHelper.app</b> directory.&nbsp; These are described below in the section &quot;Using the shell scripts in /NextAdmin/NetInstallHelper.app.&quot;</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Using NetInstallHelper to set up servers and clients</b></font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Helvetica" size="+1"><b>Setting up a NetInstall server</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">To use NetInstall, you must set up a NetInstall server on each subnet where you wish to install target (client) systems from the network.&nbsp; A computer running a NetInstall server stores an image of the entire NEXTSTEP Release 3.3 CD-ROM, so it will require enough free disk space to hold the CD-ROM image (approximately 300 megabytes).</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1">1.</font></td>
+
+<td><font face="Times" size="+1">Start up NetInstallHelper (located in /<b>NextAdmin</b>) on the computer you want to provide the NetInstall services.&nbsp; The NetInstallHelper main window appears with a popup list.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1">2.</font></td>
+
+<td><font face="Times" size="+1">Select the Server Configuration panel.&nbsp; Specify the name of the NEXTSTEP Release CD-ROM and the name of a directory that you'd like to set up to hold an image of the CD-ROM.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">The NEXTSTEP CD-ROM&nbsp; field must match the name of the CD-ROM.&nbsp; For NEXTSTEP Release 3.3, the correct name appears as the default value in this field.</font>
+
+<p><img src="paste.gif" width=370 height=250>
+
+<p><font face="Times" size="+1">The NetInstall directory must be empty.&nbsp; If it doesn't exist yet, NetInstallHelper will create it for you.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1">3.</font></td>
+
+<td><font face="Times" size="+1">Press the Configure button, and NetInstallHelper will transfer a copy of the CD-ROM to the NetInstall directory.&nbsp; This will take slightly longer than an hour on most computers.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">In the NetInfo root domain NetInstallHelper creates a <b>/locations/install_servers</b> subdirectory that has a subdirectory named for the computer running the NetInstall server (e.g., <b>/locations/install_servers/sirius</b>).&nbsp; It also creates the <b>clients</b> and <b>client_domains</b> properties.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Helvetica" size="+1"><b>Setting up NetInstall clients</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">After you've set up a computer to provide NetInstall services, you can configure target (client) computers for that server.&nbsp; The clients must be on the server's subnet and must already have host entries in the <b>/machines</b> directory of the root NetInfo domain.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1">1.</font></td>
+
+<td><font face="Times" size="+1">Start up NetInstallHelper.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1">2.</font></td>
+
+<td><font face="Times" size="+1">Select Client Configuration in the main window's pop-up list.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">NetInstallHelper displays a list of computers that run NetInstall servers.</font>
+
+<p><img src="629509_paste.gif" width=370 height=250></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1">3.</font></td>
+
+<td><font face="Times" size="+1">Choose a server for the client you wish to add, and press the Add Client button.&nbsp; The Select Client panel appears.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><img src="paste.jpeg" width=298 height=460></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1">4.</font></td>
+
+<td><font face="Times" size="+1">Choose the root domain.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1">5.</font></td>
+
+<td><font face="Times" size="+1">Click the hostname of the server to see its current list of clients.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1">6.</font></td>
+
+<td><font face="Times" size="+1">Choose client names from the list of hosts.&nbsp; The first time you use this the system will prompt you for the root password for the root domain.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">To delete a client, select its name and click Delete Client (the NetInfo host entry for the selected client isn't deleted--only the NetInstall configuration information associated with that client is removed).</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Helvetica" size="+1"><b>Setting up a new computer</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><img src="../../images/sp.gif" width=3 height=1><font face="Times" size="+1">If you are setting up a new computer and wish to use NetInstall, follow the instructions in the section <i>Manually Adding a New Host</i> in Chapter 3 of the <i>Network and System Administration</i> manual before running NetInstallHelper to configure it as a client.&nbsp; If you don't know the new computer's hardware address, set it to &#34;0:0:0:0:0:0&#34;.&nbsp; When you boot the NetInstall client for the first time, it will display the message:</font></td></tr>
+
+</table>
+
+<p><img src="../../images/sp.gif" width=90 height=1><font face="Courier">Network doesn't recognize computer.</font><br>
+<img src="../../images/sp.gif" width=90 height=1><font face="Courier">Enter host name:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">Enter the name you've given to the new host.&nbsp; You'll see the message:</font></td></tr>
+
+</table>
+
+<p><img src="../../images/sp.gif" width=90 height=1><font face="Courier">Name recognized.&nbsp; New CPU or network card? [y/n]?</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">Answer &quot;y&quot; and press return to proceed with network installation.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Helvetica" size="+1"><b>Building NetInstall floppy disks</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">To install NEXTSTEP on a target Intel-based PC computer from the network, you must boot the target computer using a special set of two floppy disks.&nbsp;&nbsp; The first is called the <i>installation disk</i> (containing the booter and kernel), and the second is the <i>device drivers disk</i> (containing SCSI or IDE and network device drivers).</font>
+
+<p><font face="Times" size="+1">You can create a boot floppy disk with NetInstallHelper.&nbsp; Note that to build a NetInstall floppy disk, the computer providing NetInstall services must be set up on the network.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1">1.</font></td>
+
+<td><font face="Times" size="+1">Select the NetInstall Disks item in the NetInstallHelper main window's pop-up list.&nbsp; Don't put a floppy disk in until the system prompts you for it.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><img src="965938_paste.gif" width=370 height=250></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1">2.</font></td>
+
+<td><font face="Times" size="+1">Choose the Installation Disk button and press the Build button.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">NetInstallHelper will prompt you to insert a floppy disk--don't insert one until you are prompted to do so.&nbsp; It takes a few minutes to build a boot floppy disk.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1">3.</font></td>
+
+<td><font face="Times" size="+1">Choose the Device Drivers Disk button and press the Build button.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">It will take a few minutes to format and build the disk.&nbsp;&nbsp; If a second floppy disk is required to hold all the network and disk drivers available, you'll be prompted to remove the floppy disk and insert a new one.&nbsp; If you need to install drivers that were not included in the release, you must place a copy of these drivers in the <b>/</b><i>image_directory_name</i><b>/private/Drivers/i386</b> directory.</font>
+
+<p><font face="Times" size="+1">The installation disk holds a copy of the operating system kernel and a few system files.&nbsp; When you boot a computer using an installation disk, these files are loaded, then you are asked to insert a floppy disk containing device drivers for the network and disk drives for your computer's hardware.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Helvetica" size="+1"><b>Building quick custom NetInstall floppy disks</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">If your network has many computers that have the same hardware configuration (at least the same network and disk controller cards), then you can simplify the NetInstall process by creating a set of custom floppy disks for that hardware configuration.</font>
+
+<p><font face="Times" size="+1">The floppy disks you create are different from the default disks--in particular, the installation disk skips the warning that the install process will destroy the contents of your hard disk.&nbsp; You can still opt not to continue, thus saving the contents of your disk.&nbsp; The custom device drivers disk contains only the hard disk and network drivers required for the target system rather than all drivers included in the release.</font>
+
+<p><font face="Times" size="+1">Choose the &quot;Custom disk for selected drivers&quot; button, then press the Select buttons for both the network and disk drivers.</font>
+
+<p><img src="007082_paste.gif" width=370 height=250>
+
+<p><font face="Times" size="+1">The system will present a Select Device Drivers panel.</font>
+
+<p><img src="283131_paste.jpeg" width=356 height=332>
+
+<p><font face="Times" size="+1">Select the appropriate drivers from the list, then press the Build button.&nbsp; If you need device drivers not included in the release, you must already have copied them into the <b>/</b><i>image_directory_name</i><b>/private/Drivers/i386</b> directory.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Helvetica" size="+1"><b>NeXT computers</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">Only a boot floppy disk is required for NetInstall on NeXT computers.&nbsp; To use the NeXT boot floppy, power up your NeXT computer and interrupt the normal startup sequence by pressing the right Command key or the Command bar and the tilde key (just above 7 on the number pad) <i>as soon as</i> the Testing System message disappears from the screen.&nbsp; Then enter the ROM Monitor command:</font></td></tr>
+
+</table>
+
+<p><img src="../../images/sp.gif" width=90 height=1><font face="Courier">NeXT&gt; bfd sdmach rootdev=en0</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">You must build NetInstall floppy disks using a computer of the same type as the target computer.&nbsp; That is, you must use an Intel system to make NetInstall floppy disks for other Intel systems, and you must use a NeXT computer to make a NetInstall boot floppy disk (or magneto-optical disk) for a NeXT computer.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Using the shell scripts in /NextAdmin/NetInstallHelper.app</b></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">If your site requires that you set up a large number of NetInstall clients, or if you need to customize NetInstall configuration at your site, you can take advantage of the shell programs included in the <b>NetInstallHelper.app</b> directory.&nbsp; These program are not used by NetInstallHelper.&nbsp; You use these scripts as they are, or use them as starting points to write your own shell scripts to set up customized NetInstall procedures at your site.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Helvetica" size="+1"><b>Setting up a NetInstall server using the setup script</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">You must set up a NetInstall server on each subnet that will have NetInstall clients.&nbsp; The server must have enough free space available on a directly attached disk to hold an image of the NEXTSTEP 3.3 release CD-ROM (approximately 300 megabytes).&nbsp; The server must have a CD-ROM drive attached, and you must have the NEXTSTEP 3.3 CD-ROM disk available.</font>
+
+<p><font face="Times" size="+1">To set up the server, start up <b>/NextApps/Terminal.app</b>, and run the command:</font></td></tr>
+
+</table>
+
+<p><img src="../../images/sp.gif" width=90 height=1><font face="Courier">setup_netinstall_server</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">If the NEXTSTEP Release 3.3 CD-ROM disk isn't already in the CD-ROM drive, you'll be prompted to insert it.&nbsp; By default, an image of the CD-ROM disk will be copied to the directory named <b>/NEXTSTEP_INSTALL</b>.&nbsp; If you wish to have the CD-ROM image placed in a different directory, you can specify its name following the <b>-image</b> option to the setup program:</font></td></tr>
+
+</table>
+
+<p><img src="../../images/sp.gif" width=90 height=1><font face="Courier">setup_netinstall_server -image /<i>DirectoryName</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">The directory must be empty or nonexistent.</font>
+
+<p><font face="Times" size="+1">If you are setting up a NetInstall server using a custom CD-ROM, you can specify the CD-ROM name when you run the setup program:</font></td></tr>
+
+</table>
+
+<p><img src="../../images/sp.gif" width=90 height=1><font face="Courier">setup_netinstall_server -cdrom /<i>CDName</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">You can use the <b>-image</b> and <b>-cdrom</b> options together.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Helvetica" size="+1"><b>Setting up a NetInstall client using the setup script</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">A NetInstall client requires a NetInstall server on the same subnet.&nbsp;&nbsp; To enable NetInstall for a client, run the client setup program:</font></td></tr>
+
+</table>
+
+<p><img src="../../images/sp.gif" width=90 height=1><font face="Courier">setup_netinstall_client -client <i>hostname</i> -server <i>hostname</i> -domain <i>name</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">You must provide the client's name, the server's name, and the name of the client's parent NetInfo domain.&nbsp; A host entry must already exist for the client in its parent NetInfo domain.&nbsp; If you are setting up a new computer and wish to use NetInstall, follow the instructions in the section &quot;Manually Adding a New Host&quot; in the <i>Network and System Administration</i> manual first.&nbsp; If you don't know the new computer's hardware address, set it to &#34;0:0:0:0:0:0&#34;.&nbsp; When you boot the NetInstall client for the first time, it will display the message:</font></td></tr>
+
+</table>
+
+<p><img src="../../images/sp.gif" width=90 height=1><font face="Courier">Network doesn't recognize computer.</font><br>
+<img src="../../images/sp.gif" width=90 height=1><font face="Courier">Enter host name:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">Enter the name you've given to the new host.&nbsp; You'll see the message:</font></td></tr>
+
+</table>
+
+<p><img src="../../images/sp.gif" width=90 height=1><font face="Courier">Name recognized.&nbsp; New CPU or network card? [y/n]?</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">Answer &quot;y&quot; and press Return to proceed with network installation.</font>
+
+<p><font face="Times" size="+1">To install NEXTSTEP software over the network, you'll need a NetInstall floppy disk and a drivers floppy disk that contains device drivers for the network and disk controllers in the client computer. Boot the computer using the NetInstall disk.&nbsp; Insert the disk containing the device drivers when you are prompted, and follow the instructions that appear on the screen.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Helvetica" size="+1"><b>Creating a NetInstall floppy and a Drivers floppy using the floppy-builder script</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">You can create a NetInstall floppy disk or a drivers floppy disk with the <b>make_netinstall_floppy </b>program.&nbsp; To create a NetInstall (boot) floppy disk, run the program:</font></td></tr>
+
+</table>
+
+<p><img src="../../images/sp.gif" width=90 height=1><font face="Courier">make_netinstall_floppy</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">Don't insert a floppy disk in the drive until you are prompted.&nbsp; The program will format the disk and create all the necessary files on the disk.&nbsp; If you wish to skip the formatting step, you can use the <b>-n </b>flag:</font></td></tr>
+
+</table>
+
+<p><img src="../../images/sp.gif" width=90 height=1><font face="Courier">make_netinstall_floppy -n</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">If you plan to use NetInstall to load software on many clients that have the same network and disk controllers, you can create a custom NetInstall floppy disk that specifies those devices.&nbsp; When you boot your client computer using this custom NetInstall floppy disk, it will automatically load the network and disk drivers from the Drivers floppy disk.&nbsp; This saves you time and makes the installation process simpler.&nbsp; To create a custom NetInstall floppy disk, you must specify the names of the network and disk drivers following the <b>-c</b> option:</font></td></tr>
+
+</table>
+
+<p><img src="../../images/sp.gif" width=90 height=1><font face="Courier">make_netinstall_floppy -c <i>network disk</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">For example, to create a custom floppy disk for a NetInstall client that uses an EtherExpress16 network card and an Adaptec1542B SCSI card, run the command:</font></td></tr>
+
+</table>
+
+<p><img src="../../images/sp.gif" width=90 height=1><font face="Courier">make_netinstall_floppy -c EtherExpress16 Adaptec1542B</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">To create a drivers floppy disk, specify the <b>-d</b> flag when you run the program:</font></td></tr>
+
+</table>
+
+<p><img src="../../images/sp.gif" width=90 height=1><font face="Courier">make_netinstall_floppy -d</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">The program will locate all network and disk drivers available on your system, and ask you which ones you'd like to copy to the floppy disk.&nbsp; If there isn't enough room on a single disk, you'll be prompted to insert a new floppy disk when the first disk is full.</font>
+
+<p><font face="Times" size="+1">If you want to create a drivers floppy with only a pair of drivers, one for a network card and one for a disk controller, corresponding to a custom NetInstall floppy disk, then you can specify both the <b>-c</b> and <b>-d</b> flags when you run the program:</font></td></tr>
+
+</table>
+
+<p><img src="../../images/sp.gif" width=90 height=1><font face="Courier">make_netinstall_floppy -d -c EtherExpress16 Adaptec1542B</font>
+
+
+
+<p>
+
+</body>
+</html>

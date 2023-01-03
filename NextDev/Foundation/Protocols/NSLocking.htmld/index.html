@@ -1,0 +1,304 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/Foundation/Protocols/NSLocking.rtf -->
+<!-- Date: Sun Jan  1 17:05:15 2023 -->
+<head>
+<title>NSLocking</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>NSLocking</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Adopted By:</b></font></td>
+
+<td><font face="Times" size="+1">NSConditionLock</font><br>
+<font face="Times" size="+1">NSLock</font><br>
+<font face="Times" size="+1">NSRecursiveLock</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">foundation/NSLock.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Protocol Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The NSLocking protocol declares the elementary methods adopted by classes that define lock objects. A lock object is used to coordinate the actions of multiple threads of execution within a single application. By using a lock, an application can protect critical sections of code from being executed simultaneously by separate threads, thus protecting shared data and other shared resources from corruption.</font>
+
+<p><font face="Times" size="+1">For example, consider a multithreaded application in which each thread updates a shared counter. If two threads simultaneously fetch the current value into local storage, increment it, and then write the value back, the counter will be incremented only once, losing one thread's contribution. However, if the code that manipulates the shared data (the <i>critical section</i> of code) must be locked before being executed, only one thread at a time can perform the updating operation, and collisions are prevented.</font>
+
+<p><font face="Times" size="+1">A lock object has two states in regard to the lock it represents: locked or unlocked. You <i>acquire</i> a lock by sending the object a <b>lock</b> message, thus putting the object in the locked state. You <i>relinquish</i> a lock by sending an <b>unlock</b> message, and thus putting the object in the unlocked state. (The NEXTSTEP classes that adopt this protocol define additional ways to acquire and relinquish locks.)</font>
+
+<p><font face="Times" size="+1">The <b>lock</b> method as declared in this protocol is blocking. That is, the thread that sends a <b>lock</b> message is blocked from further execution until the lock is acquired (presumably because some other thread relinquishes its lock). Classes that adopt this protocol typically add methods that offer nonblocking alternatives.</font>
+
+<p><font face="Times" size="+1">Three NEXTSTEP classes conform to the NSLocking protocol:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Class</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Adds these features to the basic protocol</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">NSLock</font></td>
+
+<td><font face="Times" size="+1">A nonblocking lock method; the ability to limit the duration of a locking attempt.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">NSConditionLock</font></td>
+
+<td><font face="Times" size="+1">The ability to postpone entry to a critical section until a condition is met.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">NSRecursiveLock</font></td>
+
+<td><font face="Times" size="+1">The ability for a single thread to acquire a lock more than once without deadlocking.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The locking mechanism that these classes use causes a thread to sleep while waiting to acquire a lock rather than to poll the system constantly. Thus, lock objects can be used to lock time-consuming operations without causing system performance to degrade. See the class specifications for these classes for further information on their behavior and usage.</font>
+
+<p><font face="Times" size="+1">There is some performance cost in acquiring a lock, so it's best to avoid the overhead if possible. An application developer has control over whether the application will execute with multiple threads, so it's clear when locking is appropriate. A library developer doesn't necessarily know whether library code will execute in a multithreaded environment. In this case, it's best to test whether the code is executing in a multithreaded environment before attempting to acquire a lock. The following example illustrates how this is done.</font>
+
+<p><font face="Times" size="+1">Assume your application uses a Counter object to record various operations. Here's one design that let's the Counter know whether it is multithreaded:</font></td></tr>
+
+</table>
+
+<p><img src="../../../Images/sp.gif" width=124 height=1><font face="Courier">+ (void)initialize</font><br>
+<img src="../../../Images/sp.gif" width=124 height=1><font face="Courier">{</font><br>
+<img src="../../../Images/sp.gif" width=152 height=1><font face="Courier">if ([NSThread isMultiThreaded]) {</font><br>
+<img src="../../../Images/sp.gif" width=181 height=1><font face="Courier">[self taskNowMultiThreaded:nil];</font><br>
+<img src="../../../Images/sp.gif" width=156 height=1><font face="Courier">} else {</font><br>
+<img src="../../../Images/sp.gif" width=181 height=1><font face="Courier">[[NSNotificationCenter defaultCenter] addObserver:self</font><br>
+<img src="../../../Images/sp.gif" width=206 height=1><font face="Courier">selector:@selector(taskNowMultiThreaded:)</font><br>
+<img src="../../../Images/sp.gif" width=206 height=1><font face="Courier">name:NSBecomingMultiThreaded object:nil];</font><br>
+<img src="../../../Images/sp.gif" width=156 height=1><font face="Courier">}</font><br>
+<img src="../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">In the initialize method (which, by definition, is invoked before any Counter objects are created), the Counter class object first checks whether the application has already become multithreaded and if so invokes its own <b>taskNowMultiThreaded:</b> method. Otherwise, it registers as an observer of the NSBecomingMultiThreaded notification so that <b>taskNowMultiThreaded:</b> will be invoked when the application become multithreaded.</font>
+
+<p><font face="Times" size="+1">The <b>taskNowMultiThreaded:</b> method creates a lock object that the threads use to coordinate their activities:</font></td></tr>
+
+</table>
+
+<p><img src="../../../Images/sp.gif" width=124 height=1><font face="Courier">+ (void)taskNowMultiThreaded:(NSNotification *)event</font><br>
+<img src="../../../Images/sp.gif" width=124 height=1><font face="Courier">{</font><br>
+<img src="../../../Images/sp.gif" width=156 height=1><font face="Courier">if (!theLock)</font><br>
+<img src="../../../Images/sp.gif" width=181 height=1><font face="Courier">theLock = [[NSLock alloc] init];</font><br>
+<img src="../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><b>theLock</b> is an instance variable and as such has a value of <b>nil</b> until <b>taskNowMultiThreaded:</b> is invoked. Since messages sent to <b>nil</b> are permitted and have no effect, code within Counter that acts on shared data can be written like this:</font></td></tr>
+
+</table>
+
+<p><img src="../../../Images/sp.gif" width=124 height=1><font face="Courier">[theLock lock];</font><br>
+<img src="../../../Images/sp.gif" width=124 height=1><font face="Courier">/* operate on shared data */</font><br>
+<img src="../../../Images/sp.gif" width=124 height=1><font face="Courier">[theLock unlock];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">With this approach, the overhead associated with lock operations is only incurred if the application is multithreaded. This code, however, raises another issue. What happens if one of the statements between the <b>lock</b> and <b>unlock</b> messages cause the application to become multithreaded? Then the <b>unlock</b> message wouldn't be paired with the preceding <b>lock</b>.</font>
+
+<p><font face="Times" size="+1">In normal usage, locking and unlocking messages are paired. However, as in the example above, it might be convenient to unlock a lock object that hasn't yet been locked. This is permitted with two restrictions. First, you can send an unpaired unlocking message to a lock object as long as the object has never before been locked. Second, of the NEXTSTEP classes that conform to the NSLocking protocol, only NSConditionLock and NSLock allow an unpaired unlocking message. NSRecursiveLock requires locking and unlocking messages to be paired.</font>
+
+<p><font face="Times" size="+1">NEXTSTEP's locking classes are designed to work in a well-behaved, multithreaded environment: The protection they offer can be subverted by the use of signal handlers. A signal handler can interrupt a thread, execute code that affects shared data, and then let the thread resume without alerting the thread that the application has, in effect, become multithreaded. For this reason, it's recommended that you don't use signal handlers in multithreaded NEXTSTEP applications.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>lock</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>lock</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Attempts to acquire a lock. This method blocks a thread's execution until the lock can be acquired.</font>
+
+<p><font face="Times" size="+1">An application protects a critical section of code by requiring a thread to acquire a lock before executing the code. Once the critical section is past, the thread relinquishes the lock by invoking <b>unlock</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>unlock</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>unlock</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Relinquishes a previously acquired lock.</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

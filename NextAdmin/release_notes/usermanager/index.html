@@ -1,0 +1,342 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextAdmin/ReleaseNotes/UserManager.rtf -->
+<!-- Date: Sun Jan  1 13:56:49 2023 -->
+<head>
+<title>UserManager</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Release 3.3 Copyright</font> &copy;<font face="Times">1994 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+3">3.3 Release Notes:</font><br>
+<font face="Times" size="+3">The UserManager Application</font>
+
+<p><br><br><br>
+
+<p><font face="Times" size="+1">This file contains release notes for the UserManager application.&nbsp; Items specific to Release 3.3 are listed first, and notes from previous releases follow.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Notes Specific to Release 3.3</b></font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Helvetica" size="+1"><b>New features</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">You can now open multiple windows for individual user accounts or user groups.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">User templates are supported. When you create a new user account, the new user's home directory contents are copied from a template user. One template (named <b>user</b>) is provided in the NEXTSTEP Release 3.3 software. You can create additional templates of your own.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">A template is actually a local user account. If you create a new template named <b>engineer</b>, a new user account named <b>engineer</b> is created on the local system. To customize the <b>engineer</b> template, you log in as the user named <b>engineer</b> and add icons to the dock, create files and subdirectories in this user's home directory, change application preferences, and so on. You must log out to complete making the changes to the <b>engineer</b> template. When you then create users using the <b>engineer </b>template, their home directories, workspace setup, Mail messages, and application preferences are copied from the <b>engineer</b> user. Subsequent changes to the <b>engineer</b> template don't affect these users.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">Template user accounts are created in the local NetInfo domain. The home directory for a template is created in <b>/usr/template/loca</b>l. Any subdirectory of&nbsp; <b>/usr/template/local</b> will be regarded as a user account template, including template directories NFS-mounted from remote systems.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Extra resources can be added for new user accounts according to the new user's language. When a user's home directory is created, the contents of the language-specific directory <b>/usr/template/languages/<i>Language</i>.lproj</b> (where <b><i>Language</i></b> is a language that has been installed on the computer) are copied to the user's home directory. NEXTSTEP Release 3.3 software includes a language-specific <b>Mailboxes</b> directory. You can add other language-specific resources to these directories, which are copied to new users' home directories.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">A special file named <b>#DEFAULTS#</b> in each language-specific directory is not copied to new home directories. This file contains a set of user defaults that are installed in the user's defaults database. The file contains lines of the form:</font></td></tr>
+
+</table>
+
+<p><img src="../../images/sp.gif" width=108 height=1><font face="Courier">owner name value</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=90></td>
+
+<td><font face="Times" size="+1">These lines are written, one at a time, to the user's defaults database. See the documentation for the <b>dread</b> and <b>dwrite</b> commands for more information on the defaults system.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">UserManager writes a log of all of its operations to a file. Included in the log are the calling arguments of all program hooks and their return values. Additionally, any output printed by a program hook is also written to the log file. The default log file is <b>/usr/adm/nu.log</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">You can now create and delete user accounts in &quot;bulk.&quot; Several input file formats are supported for bulk user account creation, including files containing just names as well as <b>/etc/passwd</b> format files. UserManager doesn't allow duplicate names or UIDs. You can specify several formats for user names as well as starting values for UIDs, home directory locations, shells, languages, and so on. Passwords can be supplied from an <b>/etc/passwd</b> format file, or they can be generated randomly. UserManager displays a table of all account values. You can edit entries in this table and save a copy of the table to a report file before you create the accounts. The report records, in plain text, all randomly generated passwords, so the file should be protected appropriately.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">UserManager offers several options for deleting users in bulk. For example, you can delete all users with UIDs in a certain range or all users in a particular user group. UserManager displays a table of all the user accounts that match your choice. You can selectively remove entries from the table so those accounts aren't deleted. You can also choose to disable the accounts rather than delete them.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Default user and group parameter values can be assigned for each NetInfo domain. UserManager no longer reads default values and configuration information from the file <b>/etc/nu.cf</b>. Defaults are now set for each NetInfo domain. These parameters include the starting value for UIDs, default group GIDs, shell, template, language, and so on.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Programming hooks are supported for all user and group management operations. You can specify that a custom program run before and/or after any major operation--such as before a user account is added to NetInfo, after a user's home directory is created, or after a user's account is disabled. Your program is called with all pertinent information (for example, the user's name, UID, and default group) passed on the command line. For details, see Chapter 5 of the on-line <i>Network and System Administration</i> manual.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">It's important to note that program hooks are not required. You only need to write program hooks if you want to customize or override UserManager's operation.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">Program hooks are assigned to UserManager through the Defaults panel. Note that program hooks (and other defaults) are set up independently for each NetInfo domain. This means you customize user account management independently for any of your site's NetInfo domains.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Helvetica" size="+1"><b>Changes and bug fixes</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">You can disable and reenable user accounts without resetting passwords. To disable an account, UserManager prepends an asterisk (*) character to the encrypted value of a user's password. The account is enabled by removing the asterisk.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Group membership can be managed for all parent domains as well as a user's domain. In previous versions of UserManager, group assignments were limited to the domain in which the user's account was defined. You can now assign group memberships in a user's domain and all domains above it in your site's NetInfo hierarchy. The user's default group is marked with an asterisk in the group's browser.</font></td></tr>
+
+<tr valign=top>
+
+<td width=72 height=8></td></tr>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">UserManager no longer reads defaults from <b>/etc/nu.cf</b>, nor does it run the shell scripts in <b>/etc/nulib</b>. These files are still used by <b>nu</b>, which has not been changed for Release 3.3.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Notes Specific to Release 3.2</b></font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td><font face="Helvetica" size="+1"><b>New Features</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=72></td>
+
+<td><font face="Times" size="+1">The following features have been added to the UserManager application since Release 3.0.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=71></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">UserManager sets the default language of the user when the user's home directory is created.</font></td></tr>
+
+<tr valign=top>
+
+<td width=71 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=71></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">UserManager is integrated with SimpleNetworkStarter to allow the selection of home directory servers from a pop-up list in the simple entry form.</font></td></tr>
+
+<tr valign=top>
+
+<td width=71 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=71></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">UserManager starts adding users after 100 instead of 21.</font></td></tr>
+
+</table>
+
+
+
+</body>
+</html>

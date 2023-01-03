@@ -1,0 +1,515 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/Foundation/Classes/NSNotificationCenter.rtf -->
+<!-- Date: Sun Jan  1 17:05:09 2023 -->
+<head>
+<title>NSNotificationCenter</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>NSNotificationCenter</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Inherits From:</b></font></td>
+
+<td><font face="Times" size="+1">NSObject</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">foundation/NSNotification.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The NSNotificationCenter class defines the behavior of notification-center objects (or simply, <i>notification centers</i>). A notification center is essentially a notification dispatch table. It notifies all observers of notifications meeting the specific criteria of notification name and object. Client objects register themselves as observers of a specific notification originating in another object. When the condition occurs to signal a notification, that other object notifies all of its observers by posting an appropriate notification object to the notification center. (See the class specification of NSNotification for more on notification objects.)&nbsp;&nbsp; The notification center dispatches a message to each observer (using the selector provided by the observer), with the notification as the sole argument.</font>
+
+<p><font face="Times" size="+1">As an example, suppose you have an array of text-converter objects (for instance, MIF to RTF or RTF to ASCII), whose services a word-processing application can access. The word-processing application has a client object that wants to be notified when converter objects are added to or removed from the array, allowing the application to reflect the available options in its menus. The application would register itself as an observer by sending the following message to the notification center:</font></td></tr>
+
+</table>
+
+<p><img src="../../../Images/sp.gif" width=124 height=1><font face="Courier">[[NSNotificationCenter defaultCenter] addObserver:self</font><br>
+<img src="../../../Images/sp.gif" width=181 height=1><font face="Courier">selector:@selector(updateConvMenu:)</font><br>
+<img src="../../../Images/sp.gif" width=181 height=1><font face="Courier">notificationName:@&#34;NSConvertersChanged&#34; object:converterArray];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">When a user installs or removes a converter, the object managing the array sends the following message to the notification center:</font></td></tr>
+
+</table>
+
+<p><img src="../../../Images/sp.gif" width=124 height=1><font face="Courier">[[NSNotificationCenter defaultCenter] postNotificationName:@&#34;NSConvertersChanged&#34; object:self];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The notification center identifies all observers of converterArray who are interested in the NSConvertersChanged notification and invokes the method they specified in the selector argument of <b>addObserver:selector:notificationName:object</b>. In the case of our example observer, that is updateConvMenu:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=125></td>
+
+<td><img src="../../../Images/c2D-1.gif" width=7 height=4> <font face="Courier">updateConvMenu:(NSNotification *)notification</font><br>
+<font face="Courier">{</font><br>
+<img src="../../../Images/sp.gif" width=31 height=1><font face="Courier">NSEnumerator *enumerator = [[notification object]</font><br>
+<img src="../../../Images/sp.gif" width=232 height=1><font face="Courier">objectEnumerator];</font><br>
+<img src="../../../Images/sp.gif" width=31 height=1><font face="Courier">id object;</font></td></tr>
+
+</table>
+
+<p><img src="../../../Images/sp.gif" width=156 height=1><font face="Courier">while (object = [enumerator nextObject]) {</font><br>
+<img src="../../../Images/sp.gif" width=181 height=1><font face="Courier">// update menu ...</font><br>
+<img src="../../../Images/sp.gif" width=156 height=1><font face="Courier">}</font><br>
+<img src="../../../Images/sp.gif" width=156 height=1><font face="Courier">// ...</font><br>
+<img src="../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">There is one notification center per task. Subclassing NSNotificationCenter is not recommended.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Variables</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">None declared in this class.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Accessing the default center</font></td>
+
+<td><font face="Times" size="+1">+ defaultCenter</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Adding and removing observers</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=308></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">addObserver:selector:notificationName:object:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">removeObserver:</font><br>
+<font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">removeObserver:notificationName:object:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Posting notifications</font></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">postNotification:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">postNotificationName:object:</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>defaultCenter</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ (NSNotificationCenter *)<b>defaultCenter</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the notification-center object for the current task.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>addObserver:selector:notificationName:object:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>addObserver:</b><i>anObserver</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>selector:</b>(SEL)<i>aSelector</i></font><br>
+<font face="Times" size="+1"><b>notificationName:</b>(NSString *)<i>notificationName</i></font><br>
+<font face="Times" size="+1"><b>object:</b><i>anObject</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">By invoking this method, an object that wants to be notified of a notification registers itself as an observer of the object originating the notification. The method selector specified in <i>aSelector</i> must have one and only one argument (which, by default, is the notification object). If <i>notificationName</i> is <b>nil</b>, the notification center notifies the observer of all notifications with an object matching <i>anObject</i>. If <i>anObject</i> is <b>nil</b>, the notification center notifies the object of all notifications with the notification name, regardless of object. This method does not return anything.</font>
+
+<p><font face="Times" size="+1">The notification center does not retain the observer object or the object specified in <i>anObject</i>. Therefore, you should always send <b>removeObserver:</b> to the notification center before invalidating these objects.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>removeObserver:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>postNotification:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>postNotification:</b>(NSNotification *)<i>aNotification</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Posts the notification object <i>aNotification</i> to the notification center. You can create this object with the NSNotification class method <b>notificationWithName:object:</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>postNotificationName:object:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>postNotificationName:object:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>postNotificationName:</b>(NSString *)<i>notificationName</i> <b>object:</b><i>anObject</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Creates a notification name <i>notificationName</i> from originating object <i>anObject</i> and posts it to the notification center. This method is the preferred one for posting notifications. To post anonymously, make <i>anObject</i> <b>nil</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>postNotification:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>removeObserver:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>removeObserver:</b><i>anObserver</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Removes the <i>anObserver</i> object from all notification associations in the notification center. Be sure to invoke this method (or <b>removeObserver:notificationName:object:</b>) before deallocating the observer object or any object specified in <b>addObserver:selector:notificationName:object:</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>addObserver:selector:notificationName:object:</b>,</font> <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>removeObserver:notificationName:object:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>removeObserver:notificationName:object:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>removeObserver:</b><i>anObserver</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b><i>notificationName:</i></b><i>(NSString *)notificationName</i></font><br>
+<font face="Times" size="+1"><b><i>object:</i></b><i>anObject</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Removes all <i>anObserver</i> objects with the same <i>notificationName</i> and <i>anObject</i> (even when <i>anObject</i> is nil) from the notification center. Be sure to invoke this method (or <b>removeObserver:</b>) before deallocating the observer object or any object specified in <b>addObserver:selector:notificationName:object:</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>addObserver:selector:notificationName:object:</b>,</font> <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>removeObserver:</b></font></td></tr>
+
+</table>
+
+
+
+<p><br>
+
+</body>
+</html>

@@ -1,0 +1,1075 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/EnterpriseObjects/Guide/Part3_Programming/08_RetrievingRecords.rtf -->
+<!-- Date: Sun Jan  1 17:05:33 2023 -->
+<head>
+<title>08_RetrievingRecords</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+4" color="#FF00FF"><b>8</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<p><font face="Times" size="+4"><i>Retrieving Records</i></font>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The Enterprise Objects Framework offers two ways to fetch, or retrieve, persistent data. The first is by fetching the entire data set with a single fetch command. You fetch in this manner when you're working with a data source (or at the controller level). The second way to retrieve persistent data is to select the desired data and then fetch the selected records one-by-one in a <i>fetch loop</i>, which you do at the database and adaptor levels.</font>
+
+<p><font face="Times" size="+1">To reflect these two ways of working, two sections make up the bulk of this chapter:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">&quot;Fetching All Objects at Once&quot; talks about how you retrieve records into enterprise objects at or above the data source level.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">&quot;Retrieving Data with a Fetch Loop&quot; discusses the technique you use when retrieving records at the database and adaptor levels. Although the technique is the same at either of these levels, the outcome is different. At the database level, you fetch records into enterprise objects. At the adaptor level, you fetch records into NSDictionary objects.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Each of these sections discusses the indicated fetch technique, how to retrieve records that contain relationships, how to control various aspects of the transaction, and how to handle any errors that might arise.</font>
+
+<p><font face="Times" size="+1">This chapter also contains two sections that discuss techniques common to both retrieval methods:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">&quot;Qualifying the Results&quot; discusses how you can limit the set of records that are retrieved from the database.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">&quot;Specifying the Retrieval Order&quot; shows you how to indicate that you want the records returned in a particular order.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This chapter only discusses fetching. For information on altering the contents of a database, see Chapter 9, &quot;Inserting, Deleting, and Updating Records.&quot; This chapter assumes that you already know how to establish a connection to the database; see Chapter 7, &quot;Connecting to the Database&quot; if you need more information.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Fetching All Objects at Once</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The EODatabaseDataSource and EOController classes each provide a method that obtains all of the selected enterprise objects for their associated entity in a single operation (<b>fetchObjects</b> and <b>fetch</b>, respectively). At this level, the Enterprise Objects Framework does the bulk of the work for you. You don't have to concern yourself with fetch loops, fetching across relationships, and so on.</font>
+
+<p><font face="Times" size="+1">Convenience has its trade-offs, however. Fetching all objects at once can consume a great deal of memory. For most applications, though, this isn't significant enough to outweigh the convenience of being able to issue a single fetch command and immediately have all objects at hand.</font>
+
+<p><font face="Times" size="+1">The basic procedure to use when fetching objects with a data source is:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Apply any relevant qualifiers to the data source object. See &quot;Qualifying the Results&quot; for instructions on constructing and using qualifiers.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">If the order of the objects in the resulting NSArray is important, specify your desired retrieval order. &quot;Specifying the Retrieval Order&quot; discusses how you do this.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Fetch the selected set of objects.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The following code excerpt illustrates these steps:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EODatabaseDataSource *myDbDataSource;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSArray *myObjects;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSArray *sortOrder;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOQualifier *salaryQualifier;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAttribute *primaryAttribute;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAttributeOrdering *primaryOrdering;</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Qualify the fetch: all employees who make more than $5000/month. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">salaryQualifier = [[[EOQualifier alloc]</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">initWithEntity:[myDbDataSource entity]</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">qualifierFormat:@&#34;%A &gt; %f&#34;, @&#34;salary&#34;, 5000.0] autorelease];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[myDbDataSource setQualifier:salaryQualifier];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Specify the fetch order - sort by last name. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">primaryAttribute = [[myDbDataSource entity]</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">attributeNamed:@&#34;lastName&#34;];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">primaryOrdering = [EOAttributeOrdering</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">attributeOrderingWithAttribute:primaryAttribute</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">ordering:EOAscendingOrder];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">sortOrder = [NSArray arrayWithObject:primaryOrdering];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[myDbDataSource setFetchOrder:sortOrder];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Get the entire set of objects. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">myObjects = [myDbDataSource fetchObjects];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Process the set of objects in myObjects. */</font>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+2"><b>Fetching Across a Relationship</b></font>
+
+<p><font face="Times" size="+1">When working with enterprise objects, the Framework effectively fetches related objects as well. For to-one relationships, the value for the relationship contains the related object. For to-many relationships, the relationship's value contains an array object that in turn contains the related set of zero or more objects. (In reality, the Framework constructs fault objects to stand in for related objects. For more information, see Chapter 2, &quot;From Database to Objects,&quot; or the EOFault class specification in the <i>Enterprise Objects Framework Reference</i>.)</font>
+
+<p><font face="Times" size="+1">As an illustration of this simplicity, the following code extract prints (using Foundation's <b>NSLog()</b> function) an employee's last name and the name of the department to which the employee belongs, given an employee object (myObject) and a related department object:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSLog(@&#34;%@\n&#34;, [myObject lastName]);</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSLog(@&#34;%@\n&#34;, [[myObject department] departmentName]);</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The enterprise object classes in the above example implement convenience methods for directly accessing the given attributes: <b>lastName</b> and <b>department</b> for employee enterprise objects, and <b>departmentName</b> for department enterprise objects.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Controlling Transactions with a Data Source</b></font>
+
+<p><font face="Times" size="+1">An Enterprise Objects Framework application needs to define a transaction scope, even if it's only fetching data. By default, all EODatabaseDataSources begin transactions automatically. You can verify this for a particular data source by sending it <b>beginsTransactionsAutomatically</b> and checking the returned value.</font>
+
+<p><font face="Times" size="+1">If your data source doesn't automatically start a transaction for you, your application has to explicitly start one before performing any database operations. The following line of code shows how you do this, given a data source object named <b>myDataSource</b>:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">transactionStarted = [[[myDataSource databaseChannel]</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">databaseContext] beginTransaction];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Starting and ending a transaction does more than just send the appropriate messages to the database. The database level takes advantage of this information when uniquing objects and making snapshots. For more information on how objects are uniqued, see Chapter 2, &quot;From Database to Objects.&quot;</font>
+
+<p><font face="Times" size="+1">Your application can also gain a measure of control over database transactions by providing the database channel with a delegate. In particular, by implementing <b>databaseChannel:willFetchObjectOfClass:withZone:</b>, the delegate can approve each fetch before it's performed.</font>
+
+<p><font face="Times" size="+1">For a complete list of all database channel delegate methods, see the EODatabaseChannel class specification in the <i>Enterprise Objects Framework Reference</i>.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Handling Errors at the Data Source Level</b></font>
+
+<p><font face="Times" size="+1">EODatabaseDataSources don't send delegate messages when an error occurs. Because a data source relies on methods in the access layer, however, you can take advantage of the access layer's error-reporting methods to catch errors as they occur. For a discussion of error handling in the access layer, see &quot;Handling Errors in the Access Layer.&quot;</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Handling Exceptions</b></font>
+
+<p><font face="Times" size="+1">Certain errors cause exceptions to be raised. These errors typically occur in the Foundation Kit or in the Enterprise Object Framework's access layer. NEXTSTEP's exception-handling capabilities can be used to catch and handle these exceptions.</font>
+
+<p><font face="Times" size="+1">One common situation in which exceptions are raised is when the database doesn't have a destination row for a to-one relationship. Because to-one relationships must have exactly one destination object (no more, no less), the Framework assumes that there is a real object there. When the source object is fetched, a fault object is constructed to stand in for the destination. When your code sends a message that requires that the real object be fetched and substituted for the stand-in fault object, an exception is raised when the Framework discovers that no such object actually exists. The correct way to deal with this problem is either to ensure that the data in the database is correct, or to make the relationship to-many. If neither of these options will work in your application, you'll have to place an exception handler around your code at the point where it attempts to resolve the relationship, as shown in this example (which assumes that a set of employee objects--<b>myObjects</b>--has already been fetched, and that a related set of department objects are currently represented by fault objects):</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">for (i = [myObjects count] - 1; i &gt;= 0; i--) {</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">NSLog(@&#34;%@\n&#34;, [[myObjects objectAtIndex:i] lastName]);</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">NS_DURING</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">NSLog(@&#34;%@\n&#34;, [[[myObjects objectAtIndex:i] department]</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">departmentName]);</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">NS_HANDLER</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">NSLog(@&#34;&lt;none&gt;&#34;);</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">NS_ENDHANDLER</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The enterprise object classes in the above example implement convenience methods for directly accessing the given attributes: <b>lastName</b> and <b>department</b> for employee enterprise objects, and <b>departmentName</b> for department enterprise objects.</font>
+
+<p><font face="Times" size="+1">Note that the above technique isn't possible when these values are displayed in the user interface by an EOController, since in that case the controller or an association triggers the fault.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Retrieving Data with a Fetch Loop</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">When you don't want the overhead of bringing all of your objects into memory at once, and are willing to live with the additional programming involved, you can retrieve data using a fetch loop. You can use a fetch loop to fetch data either as enterprise objects (at the database level) or as dictionary rows (at the adaptor level). Whichever form you prefer, the basic procedure is the same.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>The Basic Fetch Loop</b></font>
+
+<p><font face="Times" size="+1">Assuming that you have already opened a channel to a database, the basic steps in a fetch loop are:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Get an entity for the database table from which you want to retrieve data.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Build a qualifier to select only the desired records.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Specify the order in which the records are to be retrieved.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Begin a transaction.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Select the records to be fetched.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Fetch a record from the database.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Process the record.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>8.</b></font></td>
+
+<td><font face="Times" size="+1">Repeat steps 6 and 7 until done.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>9.</b></font></td>
+
+<td><font face="Times" size="+1">Commit or roll back the transaction.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+2"><b>Fetching Enterprise Objects</b></font>
+
+<p><font face="Times" size="+1">The following code illustrates the basic fetch loop used when retrieving records as enterprise objects:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EODatabaseChannel *myDbChannel;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOEntity *myEntity;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOQualifier *myQualifier;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">id myObject;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">BOOL ok;</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Channel should be open at this point. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">myQualifier = [myEntity qualifier];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[[myDbChannel databaseContext] beginTransaction];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Select the records to be fetched. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">ok = [myDbChannel selectObjectsDescribedByQualifier:myQualifier</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">fetchOrder:nil];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">if (ok) {</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* This is the fetch loop. */</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">while (myObject = [myDbChannel fetchWithZone:NULL]) {</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">/* Process the object. */</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">}</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[[myDbChannel databaseContext] commitTransaction];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">For information on qualifying the records to be fetched, see &quot;Qualifying the Results.&quot; For instructions on specifying the order in which records are fetched, see &quot;Specifying the Retrieval Order.&quot;</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Resolving Relationships When Fetching Objects</b></font>
+
+<p><font face="Times" size="+1">When you fetch an enterprise object using database level methods, resolving a relationship can be as simple as accessing the value for the enterprise object key that represents the relationship. For a to-one relationship, the relationship's value contains the related object. For a to-many relationship, the value for the relationship contains an array object that in turn contains the related set of zero or more objects.</font>
+
+<p><font face="Times" size="+1">As an illustration of this simplicity, when used outside of a fetch loop the following code excerpt prints an employee's last name and the name of the department to which the employee belongs, given an employee object (myObject) and a related department object:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSLog(@&#34;%@\n&#34;, [myObject lastName]);</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSLog(@&#34;%@\n&#34;, [[myObject department] departmentName]);</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The enterprise object classes in the above example implement convenience methods for directly accessing the given attributes: <b>lastName</b> and <b>department</b> for employee enterprise objects, and <b>departmentName</b> for department enterprise objects.</font>
+
+<p><font face="Times" size="+1">Because the Framework actually uses fault objects to represent relationships, however, this code won't work as written within a fetch loop. When you try to resolve a relationship within a fetch loop using code such as that shown above, the fault is triggered, causing the Framework to try to fetch the related objects. Since your code is already in the middle of a fetch, it won't be able to start another in order to resolve the relationship.</font>
+
+<p><font face="Times" size="+1">There are two ways around this problem:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Fetch all objects first, issue a <b>cancelFetch</b> if the fetch isn't finished, and then evaluate the relationship. Of course, this implies that you fetch all objects into an array, cancel the fetch, and then work with the objects in the array. While you can write your own code to do this, the methods provided by EODatabaseDataSource can do this for you.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Open a second channel, and use that channel to resolve the relationship. You can take advantage of EOFault's <b>qualifierForFault:</b> class method; given a fault object, it returns the qualifier used to fetch the object that the fault represents. Once you have this qualifier, you can then use it in a <b>selectObjectsDescribedByQualifier:fetchOrder: </b>message on the second channel to obtain the destination objects.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">For an extensive discussion of fault objects, see Chapter 2, &quot;From Database to Objects,&quot; or the EOFault class specification in the <i>Enterprise Objects Framework Reference</i>.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Fetching Row Data</b></font>
+
+<p><font face="Times" size="+1">When working at the adaptor level, rows are returned as NSDictionary objects. The following code illustrates the basic fetch loop used when retrieving records from the adaptor. It assumes that you have already opened a channel at the adaptor level.</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAdaptorChannel *adaptorChannel;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAdaptorContext *adaptorContext;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOModel *myModel;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOEntity *entity;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOQualifier *myQualifier;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSArray *allAttributes;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">id myRow;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">BOOL ok;</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">entity = [myModel entityNamed:@&#34;Employee&#34;];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">myQualifier = [entity qualifier];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">allAttributes = [entity attributes];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Channel should be open at this point. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[adaptorContext beginTransaction];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Select the records to be fetched. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">ok = [adaptorChannel selectAttributes:allAttributes</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">describedByQualifier:myQualifier</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">fetchOrder:nil lock:NO];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">if (ok) {</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* This is the fetch loop. */</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">while (myRow = [adaptorChannel fetchAttributes:allAttributes</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">withZone:NULL]) {</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">/* Process the dictionary object. */</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">}</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[adaptorContext commitTransaction];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">For information on qualifying the records to be fetched, see &quot;Qualifying the Results.&quot; For instructions on specifying the order in which the records are to be fetched, see &quot;Specifying the Retrieval Order.&quot;</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Resolving Relationships When Fetching Rows</b></font>
+
+<p><font face="Times" size="+1">At the adaptor level, the Framework doesn't do any special processing to deal with relationships. Using the value for the relationship from the source row, you must construct a qualifier and set up a second fetch (with a separate channel, if you need to resolve the relationship within the fetch loop) to obtain the destination row or rows. For example, the following code excerpt displays the last name and department for each employee in the database, given that the department information is stored in department objects that are related to the employee objects. A separate context and channel are used to fetch the department information, so that the relationship can be resolved for each employee record as it's fetched.</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOEntity *empEntity;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOEntity *deptEntity;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAdaptorContext *empContext;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAdaptorChannel *empChannel;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAdaptorChannel *deptChannel;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">BOOL ok;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSDictionary *empRow;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSDictionary *deptRow;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOQualifier *deptQualifier;</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* empChannel should be open at this point. */</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Both channels share a single context. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">deptChannel = [[empContext createAdaptorChannel] retain];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[deptChannel openChannel];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">if([empContext beginTransaction]){</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">ok = [empChannel selectAttributes:[empEntity attributes]</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">describedByQualifier:[empEntity qualifier]</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">fetchOrder:nil lock:NO];</font>
+
+<p><img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">if (ok) {</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">while(empRow = [empChannel</font><br>
+<img src="../../../../Images/sp.gif" width=208 height=1><font face="Courier">fetchAttributes:[empEntity attributes] withZone:NULL]){</font>
+
+<p><img src="../../../../Images/sp.gif" width=208 height=1><font face="Courier">NSLog(@&#34;%@\n&#34;, [empRow objectForKey:@&#34;lastName&#34;]);</font>
+
+<p><img src="../../../../Images/sp.gif" width=208 height=1><font face="Courier">/* Construct a qualifier for the department channel. */</font><br>
+<img src="../../../../Images/sp.gif" width=208 height=1><font face="Courier">deptQualifier = [[EOQualifier alloc]</font><br>
+<img src="../../../../Images/sp.gif" width=236 height=1><font face="Courier">initWithEntity:deptEntity</font><br>
+<img src="../../../../Images/sp.gif" width=236 height=1><font face="Courier">qualifierFormat:@&#34;deptID = %@&#34;,</font><br>
+<img src="../../../../Images/sp.gif" width=236 height=1><font face="Courier">[empRow objectForKey:@&#34;deptID&#34;]];</font>
+
+<p><img src="../../../../Images/sp.gif" width=208 height=1><font face="Courier">/* Select and fetch the department record. */</font><br>
+<img src="../../../../Images/sp.gif" width=208 height=1><font face="Courier">[deptChannel selectAttributes:[deptEntity attributes]</font><br>
+<img src="../../../../Images/sp.gif" width=236 height=1><font face="Courier">describedByQualifier:deptQualifier</font><br>
+<img src="../../../../Images/sp.gif" width=236 height=1><font face="Courier">fetchOrder:nil lock:NO];</font><br>
+<img src="../../../../Images/sp.gif" width=208 height=1><font face="Courier">deptRow = [deptChannel fetchAttributes:</font><br>
+<img src="../../../../Images/sp.gif" width=236 height=1><font face="Courier">[deptEntity attributes] withZone:NULL];</font><br>
+<img src="../../../../Images/sp.gif" width=208 height=1><font face="Courier">[deptChannel cancelFetch];</font>
+
+<p><img src="../../../../Images/sp.gif" width=208 height=1><font face="Courier">if (deptRow) {</font><br>
+<img src="../../../../Images/sp.gif" width=236 height=1><font face="Courier">NSLog(@&#34;%@\n&#34;,</font><br>
+<img src="../../../../Images/sp.gif" width=264 height=1><font face="Courier">[deptRow objectForKey:@&#34;departmentName&#34;]);</font><br>
+<img src="../../../../Images/sp.gif" width=208 height=1><font face="Courier">}</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">}</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">}</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">[empContext commitTransaction];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">In the above example, the qualifier could have been constructed using information obtained from the model. For more information, see Chapter 11, &quot;Exploring and Constructing Models.&quot;</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Controlling Transactions in the Access Layer</b></font>
+
+<p><font face="Times" size="+1">When interacting with the database, an Enterprise Objects Framework application needs to define a transaction scope, even if it's only fetching data. Starting and ending a transaction does more than just send the appropriate messages to the database. The Enterprise Objects Framework takes advantage of this information when uniquing objects and taking snapshots. (For more information on how objects are uniqued, see Chapter 2, &quot;From Database to Objects.&quot;)</font>
+
+<p><font face="Times" size="+1">As shown in the previous example, you begin a transaction by sending a <b>beginTransaction</b> message to your channel. The value returned from <b>beginTransaction</b> can be checked to ensure that the transaction was started successfully. When you're done with the channel, but before you close it, send it a <b>commitTransaction</b> message (or <b>rollbackTransaction</b>, if appropriate).</font>
+
+<p><font face="Times" size="+1">Your application can also gain a measure of control over database transactions by providing the channel with a delegate. In particular, by implementing <b>databaseChannel:willFetchObjectOfClass:withZone:</b> (or <b>adaptorChannel:willFetchAttributes:withZone:</b>, if you are working strictly at the adaptor level), the delegate can approve each fetch before it is performed.</font>
+
+<p><font face="Times" size="+1">For a complete list of all channel delegate methods, see the EODatabaseChannel and EOAdaptorChannel class specifications in the <i>Enterprise Objects Framework Reference</i>.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Handling Errors in the Access Layer</b></font>
+
+<p><font face="Times" size="+1">EODatabaseChannel, EOAdaptorChannel, and EOAdaptorContext all notify their respective delegates before performing most database operations, using &quot;will&quot; messages (such as <b>adaptor:willReportError:</b>). Delegates can then check for possible error conditions before they occur, and then allow or disallow the operation, or alter an operation's result. All a delegate need do to receive a notification from its channel or context is implement the appropriate methods. The specific action available to the delegate depends on the message received. If the delegate doesn't implement a particular method, the method isn't invoked.</font>
+
+<p><font face="Times" size="+1">The delegate's response to most of these &quot;will&quot; messages indicates how the operation should proceed:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Return Value</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Interpretation</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">EODelegateRejects</font></td>
+
+<td><font face="Times" size="+1">Abort the requested operation and return a failure result.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">EODelegateApproves</font></td>
+
+<td><font face="Times" size="+1">Continue the requested operation and return an</font><br>
+<font face="Times" size="+1">appropriate result.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">EODelegateOverrides</font></td>
+
+<td><font face="Times" size="+1">Do nothing, but return a success result.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">When your delegate overrides an operation, it's responsible for seeing that the result of that operation is performed successfully. For example, if the delegate returns <b>EODelegateOverrides</b> after being sent a <b>databaseChannel:willFetchObjectOfClass:withZone:</b> message, it must have itself successfully fetched an object of the named class.</font>
+
+<p><font face="Times" size="+1">One of these &quot;will&quot; messages, EOAdaptor's <b>adaptor:willReportError:</b>, is sent to the EOAdaptor's delegate when an error is generated by the database. These errors are passed to the adaptor's delegate as NSStrings. Because these errors are generated by the database itself, the strings are not guaranteed to be easily parsed by your application. Note that adaptors often have additional database-specific error-handling methods; see the documentation supplied with your adaptor for more information.</font>
+
+<p><font face="Times" size="+1">You may also want to consider implementing one or both of the following database channel delegate methods:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Since an EOEntity can be associated with an enterprise object class that isn't linked into the application, it's possible that the database channel won't find the class when it fetches the first object for that entity. In this case, it sends <b>databaseChannel:failedToLookupClassNamed:</b> to its delegate, which is then responsible for finding and loading that class (probably from a bundle).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>databaseChannel:willRefetchConflictingObject:withSnapshot:</b> is invoked whenever an object is fetched in one transaction while an update on the object is pending in another transaction. This situation frequently arises as the result of a programming error. If this situation occurs, a delegate <i>must</i> respond to this method or the Enterprise Objects Framework will raise an exception.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">See the EODatabaseChannel, EOAdaptorChannel, and EOAdaptorContext class specifications in the <i>Enterprise Objects Framework Reference</i> for more information on these delegate methods.</font>
+
+<p><font face="Times" size="+1">For information on handling exceptions, see &quot;Handling Exceptions.&quot;</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Qualifying the Results</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Qualifiers limit the set of objects selected for a fetch. For instance, you can select all employees with a salary greater than $5000 per month. Or, you could select just those employees that work in a particular department. You can even combine the two, so that you select all employees in a particular department who earn more than $5000 per month.</font>
+
+<p><font face="Times" size="+1">When fetching all objects at once, you set the qualifier before fetching your objects with EODatabaseDataSource's <b>setQualifier:</b> method. When retrieving data in a fetch loop, you specify the qualifier to the select method appropriate to the level at which you are working.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Unrestricted Qualifiers</b></font>
+
+<p><font face="Times" size="+1">You use an unrestricted qualifier to indicate that all objects for an entity should be fetched. When you create a data source object, its qualifier is unrestricted by default. When working at the database or adaptor levels, however, you must explicitly specify a qualifier to the <b>selectObjectsDescribedByQualifier:fetchOrder:</b> or <b>selectAttributes:describedByQualifier:fetchOrder:lock:</b> method. To obtain an unrestricted qualifier from your entity that you can then pass to the select method, send it a <b>qualifier</b> message:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">unrestrictedQualifier = [myEntity qualifier];</font>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+2"><b>Qualifier Format</b></font>
+
+<p><font face="Times" size="+1">Qualifiers are based on the attributes of the entity being qualified. The Framework uses your qualifier in a SQL WHERE clause; thus, your qualifier can be any valid SQL expression using the internal names of properties belonging to the qualifier's entity. You're responsible for ensuring that the SQL you use in your qualifiers is valid for your database server.</font>
+
+<p><font face="Times" size="+1">The following are examples of typical qualifier strings:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=125></td>
+
+<td><font face="Times" size="+1">lastName = `Smith'</font><br>
+<font face="Times" size="+1">salary &gt; 5000</font><br>
+<font face="Times" size="+1">department.departmentName = `Sales and Marketing'</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">An EOQualifier can embed strings, numbers, and other objects into its format string using the conversion specifications listed in the EOQualifier class specification (see the <i>Enterprise Objects Framework Reference</i>). This allows qualifiers to be built dynamically, based on the return values of methods.</font>
+
+<p><font face="Times" size="+1">The following code excerpts build qualifiers similar to the qualifier strings mentioned above, but take the specific values from an already-fetched enterprise object:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">myQualifier = [[EOQualifier alloc] initWithEntity:empEntity</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">qualifierFormat:@&#34;%A = '%@'&#34;, @&#34;lastName&#34;,</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">[anEmpObject lastName]];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">myQualifier = [[EOQualifier alloc] initWithEntity:empEntity</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">qualifierFormat:@&#34;%A &gt; %f&#34;, @&#34;salary&#34;, [anEmpObject salary]];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">myQualifier = [[EOQualifier alloc] initWithEntity:peopleEntity</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">qualifierFormat:@&#34;%A = '%@'&#34;, @&#34;department.departmentName&#34;,</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">[aDepartmentObject departmentName]];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The enterprise object classes here implement convenience methods for directly accessing the given attributes: <b>lastName</b> and <b>salary</b> for employee enterprise objects, and <b>departmentName</b> for department enterprise objects.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Specifying the Retrieval Order</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The order in which the set of enterprise objects or dictionary rows are retrieved can be specified by an array of EOAttributeOrdering objects. This array is passed in the select method of a database or adaptor channel, or in a <b>setFetchOrder:</b> method on an EODatabaseDataSource.</font>
+
+<p><font face="Times" size="+1">You don't have to specify a retrieval order. To indicate that the retrieval order isn't important when working at the database or adaptor level, specify <b>nil</b> as the fetch order in the select message you send to the database or adaptor channel.</font>
+
+<p><font face="Times" size="+1">No matter which level you are working at (data source, database, or adaptor), the object you use to specify the fetch order is constructed in the same manner. Because you might want to sort on multiple attributes, the fetch order is specified as an array of EOAttributeOrdering objects. The position of each EOAttributeOrdering object within the array determines the attribute's priority within the sort; the first object in the array indicates the primary sort order, the second object in the array (if there is one) indicates the secondary sort order, and so forth.</font>
+
+<p><font face="Times" size="+1">EOAttributeOrdering objects encompass two pieces of information: the attribute to be used for sorting, and the order--ascending or descending--that's used to arrange objects with those attributes. The following table lists the ways in which the objects can be ordered:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Parameter</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Sort Order</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">EOAnyOrder</font></td>
+
+<td><font face="Times" size="+1">unspecified</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">EOAscendingOrder</font></td>
+
+<td><font face="Times" size="+1">lowest-valued first</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">EODescendingOrder</font></td>
+
+<td><font face="Times" size="+1">highest-valued first</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The basic steps when specifying the retrieval order are:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Identify the EOAttribute object for each attribute needed to order the fetched data.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Create an EOAttributeOrdering object for each EOAttribute object, specifying the sort order.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Create an NSArray whose elements are the EOAttributeOrdering objects created in the previous step, placing the primary EOAttributeOrdering object first, followed in order of decreasing importance by the remaining EOAttributeOrdering objects.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The following excerpt illustrates how to specify that objects or rows be ordered first by last name, then by first name:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAttribute *primaryAttribute;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAttribute *secondaryAttribute;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAttributeOrdering *primaryOrdering;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAttributeOrdering *secondaryOrdering;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSArray *sortOrder;</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Identify the attribute objects. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">primaryAttribute = [entity attributeNamed:@&#34;lastName&#34;];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">secondaryAttribute = [entity attributeNamed:@&#34;firstName&#34;];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Create the attribute ordering objects, specifying whether each */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* attribute should be sorted in ascending or descending order.&nbsp;&nbsp; */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">primaryOrdering = [EOAttributeOrdering</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">attributeOrderingWithAttribute:primaryAttribute</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">ordering:EOAscendingOrder];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">secondaryOrdering = [EOAttributeOrdering</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">attributeOrderingWithAttribute:secondaryAttribute</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">ordering:EOAscendingOrder];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Finally, create the array of attribute ordering objects. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">sortOrder = [NSArray arrayWithObjects:primaryOrdering,&nbsp;&nbsp;&nbsp;&nbsp; secondaryOrdering, nil];</font>
+
+
+
+<p><br><br>
+
+</body>
+</html>

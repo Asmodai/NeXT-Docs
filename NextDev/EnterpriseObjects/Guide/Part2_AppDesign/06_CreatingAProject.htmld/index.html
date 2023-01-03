@@ -1,0 +1,1597 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/EnterpriseObjects/Guide/Part2_AppDesign/06_CreatingAProject.rtfd -->
+<!-- Date: Sun Jan  1 17:05:33 2023 -->
+<head>
+<title>06_CreatingAProject</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+4" color="#FF00FF"><b>6</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<p><font face="Times" size="+4"><i>Creating an Enterprise Objects Framework Project</i></font>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Organizing an Enterprise Objects Framework application, as with all applications in NEXTSTEP, starts in Project Builder.</font>
+
+<p><font face="Times" size="+1">Setting up your project entails:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Including the Enterprise Objects Framework libraries.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Including the Foundation library.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Forcing the loading of unreferenced symbols.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Setting your application class to be EOApplication.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">After you use Project Builder to prepare your project for the needs of an Enterprise Objects Framework application, you design the application's user interface with Interface Builder and write its code.</font>
+
+<p><font face="Times" size="+1">This chapter describes the things you do in Project Builder and Interface Builder to create an Enterprise Objects Framework application. The majority of the material presented here describes how to use Interface Builder to manipulate the objects in the EOPalette. The fundamentals of Project Builder and Interface Builder are presented in <i>NEXTSTEP Development Tools and Techniques</i>; it's assumed that you have some familiarity with these applications. For more information about the version of Interface Builder used with Enterprise Objects Framework, see <i>Working With Interface Builder</i>.</font>
+
+<p><font face="Times" size="+1">The interface layer of the Enterprise Objects Framework allows you to create user interfaces for any enterprise object class. The examples in this chapter are based on creating user interfaces for enterprise object classes specified in EOModeler. Using EOModeler and Interface Builder together automates the development process significantly, because you can rely on the default behaviors of the Framework. You can drag a model file or entity into Interface Builder to create a controller that includes an EODatabaseDataSource, and use the class properties you specified in EOModeler as the class keys (&quot;keys&quot; in this context refers to the key-value coding protocol used to access the data of an enterprise object). For more information on creating a model, see Chapter 5, &quot;Using EOModeler.&quot;</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Creating a Project</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">To create your project, launch Project Builder and choose New from the Project menu. In the New Project panel, give your project the name you want to use for your application and click OK. The new project is displayed.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Adding the Enterprise Objects Framework Libraries</b></font>
+
+<p><font face="Times" size="+1">The Enterprise Objects Framework libraries contain the code you need to make your application work. You also need to include the Foundation library. To include the libraries in your project, double-click the Libraries suitcase in Project Builder's File Viewer, and select the files <b>libEOAccess_s.a</b>, <b>libEOInterface_s.a</b>, and <b>libFoundation_s.a</b> in the Add Libraries panel.</font>
+
+<p><font face="Times" size="+1">In the File Viewer's list of libraries, the libraries appear as <b>EOAccess_s</b>, <b>EOInterface_s</b>, and <b>Foundation_s</b>.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F2.gif" width=501 height=377></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 35</b></font><font face="Times" size="+1">. Adding Libraries to Your Project</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Loading Unreferenced Symbols</b></font>
+
+<p><font face="Times" size="+1">The Enterprise Objects Framework dynamically loads the adaptor or adaptors your application needs. The adaptor code may refer to symbols from the Enterprise Objects Framework library, but since not all of these references are resolved when your application is being compiled, they won't necessarily be loaded into your application's executable image. To rectify this, you need to force the loader to load all the symbols that the adaptor might refer to; this is done by editing your project's <b>Makefile.preamble</b> file (located in <b>Supporting Files</b> in your project) to include this line:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">OTHER_LDFLAGS = -all_load</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This tells the loader to load all the symbols from the named libraries--even if they aren't referred to when the application is being compiled. When, in the course of your application's execution, an adaptor is dynamically loaded and used, the symbols that it needs are thus guaranteed to be present.</font>
+
+<p><font face="Times" size="+1">To keep these symbols from being stripped when you build your application with the &quot;install&quot; target (that is, when you &quot;make install&quot; your application), edit your <b>Makefile.postamble</b> file (also located in <b>Supporting Files</b>) to include this line:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">APP_STRIP_OPTS = $(DYLD_APP_STRIP_OPTS)</font>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+2"><b>Setting Your Application Class</b></font>
+
+<p><font face="Times" size="+1">To allow your application to take advantage of the Foundation Kit's autorelease behavior, you need to set your project's application class to be EOApplication.</font>
+
+<p><font face="Times" size="+1">To set the application class:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">In your project window, click the Attributes button to change to the Attributes display.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Edit the App. Class text field to contain the text &quot;EOApplication&quot;.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">For more information on the Foundation Kit, see the <i>Foundation Kit Reference</i>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Creating the Interface</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">To begin creating a user interface for your application, launch Interface Builder. The interface objects that are provided by the Enterprise Objects Framework for use in Interface Builder are manipulated in the same manner as standard Application Kit objects such as Buttons and Sliders: You drag an object into a window and drop it on or connect it to some other object.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Loading EOPalette</b></font>
+
+<p><font face="Times" size="+1">The palette provided for use in the Enterprise Objects Framework is the EOPalette. To load the EOPalette, choose Open from the Interface Builder Palettes submenu of the Tools menu. The Open Palette panel appears.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F13.gif" width=298 height=339></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 36</b></font><font face="Times" size="+1">. The Open Palette Panel</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">In the Open Palette panel, select <b>EOPalette.palette</b> in <b>/NextDeveloper/Palettes</b> and click OK.</font>
+
+<p><font face="Times" size="+1">The EOPalette includes three objects: EOController, NXTableView and NXImageView.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F12.gif" width=309 height=196></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 37</b></font><font face="Times" size="+1">. The EOPalette</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">An NXImageView object displays images (one image at a time).</font>
+
+<p><font face="Times" size="+1">An NXTableView object displays two-dimensional tables of data.</font>
+
+<p><font face="Times" size="+1">An EOController object maintains associations between values in enterprise objects and user interface controls. In addition, it provides an undo facility, optionally buffers editing and operations, and interacts with a data source.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Controllers, Associations, and Class Keys</b></font>
+
+<p><font face="Times" size="+1">Controllers synchronize the data displayed in the user interface with the corresponding data in an enterprise object. An EOController:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Tracks the selection as the user changes it.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Applies updates from user interface objects to enterprise objects.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Applies changes in enterprise objects back to user interface objects.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Controllers use EOAssociations to mediate between enterprise objects and the user interface. An association ties a single user interface object to a value corresponding to a key (named property) in an enterprise object or objects managed by the controller. Controllers maintain an array of associations and an array of their enterprise objects. Associations retain their class key, their destination, and a reference to their controller.</font>
+
+<p><font face="Times" size="+1">The term <i>class keys</i> in this context refers to the EOKeyValueCoding informal protocol, in which the properties in an enterprise object are accessed as key-value pairs. An enterprise object class can carry its properties either as instance variables or as an NSDictionary object. In a specific instance of an enterprise object, each key has a corresponding value. For example, an instance of the Employee class has the key <b>lastName</b>, which might have the value &quot;Smith.&quot; An association can access the value &quot;Smith&quot; through the key <b>lastName</b>. So, for example, if you change the value &quot;Smith&quot; to &quot;Jones&quot; in a TextField for the key <b>lastName</b>, the association communicates the change back to the enterprise object through the controller.</font>
+
+<p><font face="Times" size="+1">For more information about the relationship between enterprise objects and the interface layer, see Chapter 3, &quot;From Objects to the User Interface.&quot; For more information about key-value coding, see the EOKeyValueCoding protocol specification in the <i>Enterprise Objects Framework Reference</i>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Creating a New Application</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The following sections describe how to use the EOPalette objects, as well as the standard control objects, to create a user interface for an application.</font>
+
+<p><font face="Times" size="+1">When you open a nib file from your project to start designing your user interface, Interface Builder displays the nib file window.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F11.gif" width=356 height=240></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 38</b></font><font face="Times" size="+1">. The Interface Builder nib File Window</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Adding an NXTableView</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">You can use an NXTableView object to display rows of data in your user interface. A new NXTableView that you drag into a window has two columns with enough room for about six records. You can add columns by cutting and pasting an existing column, or by connecting directly to the NXTableView (see &quot;Forming Associations Between an Entity Controller and an NXTableView&quot; for information on how to do this). Figure 39 shows an NXTableView to which a third column has been added.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F8.gif" width=380 height=304></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 39</b></font><font face="Times" size="+1">. An NXTableView in a Window</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Adding EOController and EODatabaseDataSource Objects</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">To display data in your user interface, you need an EOController object. Controllers manage associations between the values of class keys and objects (typically, user interface objects). You also need an EODatabaseDataSource, which acts on behalf of the controller to fetch enterprise objects from and save them to the database. In combination, EOController and EODatabaseDataSource coordinate the flow of data between the user interface and the database.</font>
+
+<p><font face="Times" size="+1">You use either of two approaches to produce an <i>entity controller</i>, which consists of an EOController pre-connected to an EODatabaseDataSource:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Dragging a model file from Workspace Manager into the nib file window, or</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Dragging an entity from EOModeler into the nib file window.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Both of these approaches give you access to all of the entities defined in your model; the entity controllers they create are identical.</font>
+
+<p><font face="Times" size="+1">The EOPalette provides a plain EOController object that can be used to create a detail controller; it can also be used if you want to programmatically set a data source. For more information on using detail controllers, see &quot;Creating a Master-Detail Interface.&quot;</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Dragging a Model File into the nib File Window</b></font>
+
+<p><font face="Times" size="+1">You use EOModeler to display the entities available for a particular database, and to define the mapping between an entity and an enterprise object class. Once you've defined a model, you can use it to create an entity controller in Interface Builder by dragging in either the model file itself or a single entity. For more information on using EOModeler to create model files, see Chapter 3, &quot;Using EOModeler.&quot;</font>
+
+<p><font face="Times" size="+1">To create an entity controller from a model file:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Drag a model file from Workspace Manager into the Interface Builder nib file window.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">Interface Builder displays a panel, asking if you want to add the model file to your project. Adding a model file to your project places it in the project's Other Resources suitcase. Click Yes to add the model file to your project. If you don't place the model file in your project it stays in its current location. At run time Enterprise Objects Framework looks for the model first in your application's main bundle, then in <b>~/Library/Models</b>, then in <b>/LocalLibrary/Models</b>, and finally in <b>/NextLibrary/Models</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">Once you've specified the destination of your model file, Interface Builder displays the Set Entity panel, prompting you to select the entity for which you want to create an entity controller.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F7.gif" width=300 height=339></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 40</b></font><font face="Times" size="+1">. The Set Entity Panel</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">In the Set Entity panel, select the entity you want to use and click OK.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">Note that this should be an entity for which you've specified a primary key in EOModeler; this is essential for your application to work properly.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Figure 41 shows the nib file window after the model file has been dragged into it. The resulting entity controller that's created has the same name as the entity you selected in the Set Entity panel.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F4.gif" width=367 height=173></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 41</b></font><font face="Times" size="+1">. An Entity Controller</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">Double-clicking an entity controller in the nib file window launches EOModeler, where you can edit the model that includes the entity. Any edits you make and save to a model file after you drag it into Interface Builder are reflected in the entity controller created from the model.</font>
+
+<p><font face="Times" size="+1">By clicking the Outline mode button in the nib file window and clicking the<img src="F0.gif" width=11 height=11> button to the left of EOController, you can see that the entity controller actually includes both an EOController and an EODatabaseDataSource object, as shown in Figure 42. Clicking the button expands and contracts the outline.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F15.gif" width=389 height=173></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 42</b></font><font face="Times" size="+1">. Examining an Entity Controller in Outline Mode</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Inspecting an Entity Controller</b></font>
+
+<p><font face="Times" size="+1">An entity controller has access to the keys of its associated enterprise object class. These keys correspond to the properties you supplied for the class in EOModeler. For more information on class keys, see &quot;Controllers, Associations, and Class Keys.&quot;</font>
+
+<p><font face="Times" size="+1">The EOController Inspector lets you examine class keys and set options used by the entity controller. To display the EOController Inspector, select the entity controller in the nib file window and choose Inspector from the Tools menu.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F14.gif" width=274 height=424></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 43</b></font><font face="Times" size="+1">. Inspecting an Entity Controller</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Entity</b></font>
+
+<p><font face="Times" size="+1">The Entity field displays the name of the entity associated with the entity controller. The format of the name in this field is <i>modelFile.entityName</i>. For example, the Entity field in Figure 43 contains the name <b>myModel.Employee</b>, which indicates that the entity is named</font> <font face="Helvetica" size="+1">Employee</font><font face="Times" size="+1">, from the model file <b>myModel</b>. You can't edit this field.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Set</b></font>
+
+<p><font face="Times" size="+1">The Set button lets you specify a different entity for the entity controller. When you click Set, Interface Builder displays the Set Entity panel, where you can select a new entity. If you try to specify a new entity for an entity controller that has connections, Interface Builder displays a warning and allows you to cancel the operation.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Options</b></font>
+
+<p><font face="Times" size="+1">The Options area supplies additional information for how the data flow is orchestrated between the user interface and enterprise objects:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The &quot;Enable undo&quot; checkbox causes the controller to maintain an undo stack. When undo is enabled, the result of performing an undo operation depends on whether you have undo marks set (see below). If you don't have undo marks set, an undo operation undoes all of the changes currently on the undo stack. Note that performing a fetch operation clears the undo stack.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The &quot;Undo marks&quot; checkbox allows you to refine the behavior of undo. Enabling undo marks causes undo to be performed at a finer granularity: per operation. By default, an operation is delineated by whatever you do to a field before you finish editing its contents, typically by pressing Tab or Return. However, you can programmatically define undo marks to reflect a coarser level of edits.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">When you have undo marks set, an undo operation reverses all of the changes back to the last defined mark. Subsequent undo operations reverse changes by mark until the stack is empty.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The &quot;Buffer edits&quot; checkbox causes edits to enterprise objects performed in the user interface to be buffered, instead of instantly applied. When you buffer edits, they aren't applied to your enterprise objects until you send the controller a <b>saveToObjects</b> message.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The &quot;Buffer operations&quot; checkbox causes changes made to the enterprise objects held by the controller to be buffered, instead of instantly flushed to the data source. When you buffer data source operations, they aren't applied to your data source until you send the controller a <b>saveToDataSource</b> message.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The Maximum field works in conjunction with the Undo marks checkbox. Maximum lets you set the maximum number of undo marks that will be recorded. Marks added after the maximum is reached cause earlier marks to be discarded. This method is useful for restricting memory usage. Setting the maximum to zero (the default) allows an unlimited undo stack.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Keys</b></font>
+
+<p><font face="Times" size="+1">The Keys area lists the keys for the enterprise object class associated with the entity; keys correspond to the properties you specified for the class in EOModeler. For more information on class keys, see &quot;Controllers, Associations, and Class Keys.&quot;</font>
+
+<p><font face="Times" size="+1">The Keys area provides buttons for adding, renaming, and deleting keys. You can't rename the keys that an entity controller derived from a model; you can only delete them. You can use the Add and Rename buttons to add the keys to a non-entity controller for which you have programmatically supplied a data source, or you can add a key that doesn't correspond to a class property to an entity controller. To add a new key, type the name in the text field below the list of keys.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Parameters</b></font>
+
+<p><font face="Times" size="+1">The Parameters area is used when you want to specify a rendezvous point for multiple entity controllers, which could potentially be in separate nib files. By default, an application uses one EODatabase, one EODatabaseContext, and one EODatabaseChannel. If you have multiple entity controllers and don't specify a rendezvous point in the Parameters area, the entity controllers will still rendezvous on the &quot;empty&quot; (null) names in the Database, Context, and Channel text fields. However, if you want a finer level of control (for example, to use one context but multiple channels), then you should edit the fields accordingly.</font>
+
+<p><font face="Times" size="+1">To specify a rendezvous point for multiple entity controllers, supply the same name in each of the fields that represent the level at which you want the entity controllers to rendezvous. For example, if you want two entity controllers to rendezvous at the Database and Context levels but to have different channels, you can type <b>theDatabase</b> in the Database field for both entity controllers, <b>theContext</b> in the Context field for both entity controllers, and <b>Channel1</b> and <b>Channel2</b> in the Channel fields for each of the entity controllers, respectively. These names are simply used as unique identifiers; they have no other meaning in the Framework.</font>
+
+<p><font face="Times" size="+1">For more information, see the EODatabaseDataSource specification in the <i>Enterprise Objects Framework Reference</i>.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Dragging an Entity into the nib File Window</b></font>
+
+<p><font face="Times" size="+1">Instead of dragging a model file into Interface Builder, you can drag in a single entity from EOModeler. This is the same as dragging in a model file, but with the entity pre-selected. In other words, it eliminates the step of having to select an entity in the Set Entity panel. You can still change the entity associated with the controller from the EOController Inspector.</font>
+
+<p><font face="Times" size="+1">To drag an entity from EOModeler into Interface Builder:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">From the Model Editor in EOModeler, drag an entity into the Interface Builder nib file window, as shown in Figure 44.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F1.gif" width=518 height=379></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 44</b></font><font face="Times" size="+1">. Dragging an Entity from EOModeler into the nib File Window</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">An entity controller named after the entity appears in the nib file window.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Forming Associations Between an Entity Controller and an NXTableView</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Forming an association from an entity controller to columns in an NXTableView enables those columns to display data for the keys of an enterprise object managed by the controller.</font>
+
+<p><font face="Times" size="+1">To form an association:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Display the EOController Inspector for the entity controller and choose Connections from the pop-up list.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Associations from the pop-up list at the top of the left column.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">As you can see in Figure 45, the Inspector lists the keys you just examined in the EOController Inspector. When you form an association between the entity controller and a user interface object, you're associating the value of a particular key of an enterprise object class managed by the controller with that user interface object. For more information on class keys, see &quot;Controllers, Associations, and Class Keys.&quot;</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F9.gif" width=274 height=424></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 45</b></font><font face="Times" size="+1">. Displaying Keys in the EOController Inspector</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Control-drag from the entity controller in the nib file window to the first column in the NXTableView.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">In the Inspector, select the key whose value you want to display in the first column and click Connect (alternatively, you can double-click the key to make the connection).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">For example, using the key <b>lastName</b> in an association to a column causes that column to display the value associated with <b>lastName</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Control-drag to connect the remaining keys to columns in the NXTableView.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">You don't need to make associations for every key in your entity controller; there are no restrictions on what you choose to display in the user interface or the order in which you display it. In addition, a single key may participate in multiple associations.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F8.gif" width=380 height=304></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 46</b></font><font face="Times" size="+1">. Connecting Associations</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">Note that when you make an association between the entity controller and a column in the NXTableView, a number appears next to the key used by the association. This indicates the number of associations in which the key participates.</font>
+
+<p><font face="Times" size="+1">As Figure 47 shows, the <b>lastName</b>, <b>firstName</b>, and <b>department</b> keys participate in one association each.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F6.gif" width=529 height=526></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 47</b></font><font face="Times" size="+1">. Viewing Connected Associations</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Fetching Data</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Once you've formed associations between an entity controller and user interface objects using the methods described in the previous sections, you can add a control object, such as a button, to fetch data.</font>
+
+<p><font face="Times" size="+1">In Figure 48, a button titled &quot;Fetch&quot; has been added to the window. You connect the button to the entity controller through the usual methodology for connecting a control: Control-drag from the control object to the entity controller, select the <b>fetch:</b> action method in the Inspector, and click Connect.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F5.gif" width=483 height=403></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 48</b></font><font face="Times" size="+1">. Adding a Fetch Button to the Interface</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Testing the Interface</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">To test your interface, choose Test Interface from the Document menu. Interface Builder enters test mode, enabling you to fetch the data and display it in the NXTableView. Figure 49 shows the interface in test mode.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F19.gif" width=383 height=302></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 49</b></font><font face="Times" size="+1">. Testing the Interface</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Creating a Master-Detail Interface</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">A master-detail presentation is a way of displaying a to-many or a to-one relationship. In this configuration, the master table holds records for the source of the relationship; the detail table contains records for the destination. As individual records in the master table are selected, the contents of the detail table change to show the records that correspond to the selection in the master.</font>
+
+<p><font face="Times" size="+1">To create a master-detail interface:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">In EOModeler, create a model that includes the relationship you want to display in a master-detail interface.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">For example, in a model based on the People database, you can add a to-many relationship from</font> <font face="Helvetica" size="+1">Department</font> <font face="Times" size="+1">to</font> <font face="Helvetica" size="+1">Employee</font><font face="Times" size="+1">; one department has many employees. For more information on adding relationships to a model, see Chapter 5, &quot;Using EOModeler.&quot;</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Drag the model file containing the relationship into the Interface Builder nib file window and select the entity you want to use for your master.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">In this example,</font> <font face="Helvetica" size="+1">Department</font> <font face="Times" size="+1">is specified as the master controller.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">From the EOPalette, drag an EOController object into the nib file window.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Control-drag from the Department entity controller to the detail EOController, and in the Inspector choose the relationship (in this example,</font> <font face="Helvetica" size="+1">toEmployee</font><font face="Times" size="+1">) you want to represent in the master-detail interface.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F3.gif" width=657 height=424></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 50</b></font><font face="Times" size="+1">. Making a Master-Detail Association</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Drag two NXTableViews into a window; department information will be displayed in one table (the master), while employee information will be displayed in the other (the detail).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Control-drag to make associations from the Department entity controller to columns in the master table.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Control-drag to make associations from the EOController object to columns in the detail table.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The keys available for the detail EOController object correspond to the properties of the</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entity that's the destination of the</font> <font face="Helvetica" size="+1">toEmployee</font> <font face="Times" size="+1">relationship.</font>
+
+<p><font face="Times" size="+1">Figure 51 shows the resulting master-detail interface. Note that when you select a department in the left (master) table, the display in the right (detail) table changes to display all of the employees that work in that department.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F18.gif" width=627 height=264></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 51</b></font><font face="Times" size="+1">. Master-Detail in Action</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Creating a Master-Peer Interface</b></font>
+
+<p><font face="Times" size="+1">You can also create a master-peer interface. In a master-peer configuration, instead of using an entity controller and a plain EOController object as you do in a master-detail interface, you drag two entities or models into Interface Builder. Each of the resulting entity controllers has its own data source. You then connect the two entity controllers in the same manner that you connect an entity controller and a plain EOController in a master-detail interface.</font>
+
+<p><font face="Times" size="+1">Because the peer controller has its own data source, it does its own fetching and inserting. This means that you can put more restrictive qualifiers on its data source than its relationship to the master controller specifies. For example, instead of displaying all employees that work in a certain department, you can use a master-peer configuration to display employees in the selected department who earn more than $5000 a month, sorted by last name. To qualify the peer data source, you use the EODatabaseDataSource <b>setAuxiliaryQualifier:</b> method. For more information, see the EODatabaseDataSource specification in the <i>Enterprise Objects Framework Reference</i>.</font>
+
+<p><font face="Times" size="+1">If you use a master-peer configuration, you should note that insertions and deletions in the peer controller aren't reflected in the master object. For example, if the master-peer configuration is based on a to-many relationship that's a class property (and therefore an NSArray) in the master object, insertions and deletions of records in the peer will update the database, but not the array in the master object.</font>
+
+<p><font face="Times" size="+1">For more information on master-peer configurations, see the EOQualifiableDataSources protocol specification in the <i>Enterprise Objects Framework Reference</i>, and Chapter 8, &quot;Retrieving Records&quot; in this book.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Using an NXImageView</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Connecting a key to an NXImageView object is much like the process described above: You Control-drag an association between your controller and an object in your interface. However, the only keys that an NXImageView accepts are those that represent NXImage objects.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F17.gif" width=72 height=71></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 52</b></font><font face="Times" size="+1">. An NXImageView</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Using the Standard Interface Objects</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">In addition to the objects defined in its palette, the Enterprise Objects Framework knows how to display data in most of the standard interface objects, such as a TextField.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Incorporating a Standard Object</b></font>
+
+<p><font face="Times" size="+1">To incorporate a standard object:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Drag the desired object, such as a TextField, into a window.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Make an association to it for the key whose value you want it to display.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F16.gif" width=465 height=506></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 53</b></font><font face="Times" size="+1">. Making an Association to a TextField</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">In Figure 53, note that the key &quot;salary&quot; is involved in two associations; when you perform a fetch operation, the salary is displayed in both the table column and the TextField.</font>
+
+<p><font face="Times" size="+1">You can connect associations to the following user interface objects:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">PopUpList</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Form</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">TextField</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Text</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Matrix (in some configurations)</font></td></tr>
+
+</table>
+
+
+
+</body>
+</html>

@@ -1,0 +1,278 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/EnterpriseObjects/UsingDistributedObjects.rtf -->
+<!-- Date: Sun Jan  1 17:05:15 2023 -->
+<head>
+<title>UsingDistributedObjects</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br><br><br><br>
+
+<p><font face="Times" size="+4"><i>Using Distributed Objects with the Enterprise Objects Framework</i></font>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">NEXTSTEP's Distributed Objects system provides a relatively simple way for applications to communicate with one another by allowing them to share Objective C objects, even among applications running on different machines across a network. Distributed objects are particularly useful for implementing client-server and cooperative applications.</font>
+
+<p><font face="Times" size="+1">As shipped with NEXTSTEP, the Distributed Objects system allows you to pass messages and objects that descend from the Object class back and forth between applications. This release of the Enterprise Objects Framework augments this capability, allowing you to pass messages and objects that descend from NSObject as well. Note that these added capabilities do not alter the support for working with subclasses of Object in a distributed environment; you now can pass messages and objects that descend from either root class.</font>
+
+<p><font face="Times" size="+1">The material in this document supplements that found in Chapter 6 of the <i>NEXTSTEP General Reference</i>, &quot;Distributed Objects.&quot;</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Strategies for Using Distributed Enterprise Objects</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">There are a number of distinct strategies that you can employ when using the Enterprise Objects Framework in a distributed environment. In particular, two are particularly well supported: that of using a notification server, and that of using a compute server.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Using a Notification Server</b></font>
+
+<p><font face="Times" size="+1">A notification server is used when you have multiple clients that need to coordinate access to a database. Each client runs the Enterprise Objects Framework in its entirety: both the access and the interface layers. They each work directly with the database (through the Enterprise Objects Framework), but use a notification server to ensure that they all remain synchronized.</font>
+
+<p><font face="Times" size="+1">The notification server is a separate task, running either on one of the client machines or on a separate machine altogether. Each client registers with the notification server, and then informs the notification server whenever the client makes a change to the database (typically, messages to the notification server are sent from EODatabaseChannel or EOAdaptorContext delegate methods). The notification server in turn then notifies each client of the change.</font>
+
+<p><font face="Times" size="+1">Messages are passed between the clients and the notification server using the Distributed Objects system. Because the messages need only indicate that the database has changed (perhaps also indicating which objects were affected; see &quot;Passing Unique Identifiers,&quot; below), message traffic between applications is minimized and performance is thus enhanced.</font>
+
+<p><font face="Times" size="+1">For an example of how to construct a notification server, see the example code in <b>/NextDeveloper/Examples/EnterpriseObjects/DistributedEO</b>.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Using a Compute Server</b></font>
+
+<p><font face="Times" size="+1">The notification server has the disadvantage of putting all of the computing burden on each client. Often, you have a high-powered compute server that you want clients to be able to take advantage of. This server might do database queries to determine the set of records that a client is interested in, or it might perform calculations on the records in the database.</font>
+
+<p><font face="Times" size="+1">When using a compute server, the server should have (at a minimum) the Enterprise Objects Framework's access layer installed. Each client should be running both the access and interface layers.</font>
+
+<p><font face="Times" size="+1">When the client sends a request to the compute server (using the Distributed Objects system), the server interacts with the database (using the Framework's access layer methods) to determine the result. If the result is not made up of a set of objects already in the database server--if, for example, the result is a matrix that indicates the risk factors associated with a set of securities--the compute server can pass the result to the client directly. If the result is a set of enterprise objects--the set of securities that meet a particular set of risk criteria, for instance--the server can pass unique identifiers for those objects to the client, who then fetches the records directly (see &quot;Passing Unique Identifiers,&quot; below). This allows the client to take advantage of the compute server without having to suffer the performance penalty that is incurred when passing enterprise objects between applications.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Passing Unique Identifiers</b></font>
+
+<p><font face="Times" size="+1">While you are free to pass enterprise objects between applications, you should consider the impact that this will have on your application's performance. The Enterprise Objects Framework is optimized to move data very rapidly between the database and the end user. By splitting your application so that a server acts as a data source and one or more clients, running the Framework's interface layer, obtain enterprise objects from that data source using the Distributed Objects system, you end up negating any performance advantage you might have gained by enlisting the added power of a separate server.</font>
+
+<p><font face="Times" size="+1">Imagine, for instance, that you have a data source running on one machine and a browser displaying the objects from that data source running on another, client, machine. When the user scrolls the browser, hundreds of messages will be sent back and forth between the client and server, all of which have to be carried by the Distributed Objects system.</font>
+
+<p><font face="Times" size="+1">A general solution to this problem is to pass not the enterprise objects themselves, but a unique identifier for each enterprise object (generally, made up of the object's entity and primary key), encoded into an NSString. When a client or server receives one of these unique identifiers, it can look for the object in its uniquing table (using EODatabase's <b>objectForPrimaryKey:entity:</b> method). If the enterprise object is not currently known to the client or server receiving the unique identifier, it can simply fetch it from the database using the methods provided by the Enterprise Objects Framework. This solution is used by both of the following two scenarios to minimize the number of messages that are passed between applications.</font>
+
+<p><font face="Times" size="+1">Passing unique identifiers also helps you to work around another problem that can arise when passing enterprise objects directly between applications. Suppose that you have two clients, each passing enterprise objects back and forth to a data source running on a server. Now suppose the clients each fetch the same enterprise object from the server. Each client will put that object into its uniquing table. But if one client then passes the object to the other, the receiving client will not automatically recognize that it already possesses the object and will wind up with two distinct objects that represent the same data in the database. And these two objects can rapidly get out of sync.</font>
+
+<p><font face="Times" size="+1">A unique identifier that is made up of an enterprise object's entity name and primary key, however, would have the same value on each client. When the identifier is passed from one client to the other, the receiving client can quickly ascertain that it already possesses the indicated object (applications may want to keep a dictionary of unique identifiers for just this purpose).</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Establishing a Connection</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Because of Foundation's new autorelease mechanism (which is used by all objects that inherit from NSObject), you must ensure that there's an autorelease pool in the run loop on both the server and client sides of the distributed object connection. This is easily done by registering the server using the methods supplied by NXAutoreleaseConnection (NXAutoreleaseConnection is a subclass of NXConnection that adds no new methods of its own). For example:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=124 height=1><font face="Courier">id aServer;</font><br>
+<img src="../../Images/sp.gif" width=124 height=1><font face="Courier">id aConnection;</font>
+
+<p><img src="../../Images/sp.gif" width=124 height=1><font face="Courier">aServer = [[Server alloc] init];</font><br>
+<img src="../../Images/sp.gif" width=124 height=1><font face="Courier">aConnection = [NXAutoreleaseConnection registerRoot:aServer</font><br>
+<img src="../../Images/sp.gif" width=145 height=1><font face="Courier">withName:SERVER_NAME];</font><br>
+<img src="../../Images/sp.gif" width=124 height=1><font face="Courier">if (aConnection) {</font><br>
+<img src="../../Images/sp.gif" width=145 height=1><font face="Courier">[aConnection run];</font><br>
+<img src="../../Images/sp.gif" width=145 height=1><font face="Courier">[aServer release];</font><br>
+<img src="../../Images/sp.gif" width=124 height=1><font face="Courier">} else {</font><br>
+<img src="../../Images/sp.gif" width=145 height=1><font face="Courier">fprintf(stderr, &#34;Couldn't register server - exiting.\n&#34;);</font><br>
+<img src="../../Images/sp.gif" width=152 height=1><font face="Courier">exit(-1);</font><br>
+<img src="../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">In the above example, <b>Server</b> is a subclass of NSObject and <b>SERVER_NAME</b> is a C string that contains the name to be assigned to the server.</font>
+
+<p><font face="Times" size="+1">Here's the code on the client side that connects to the server:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=124 height=1><font face="Courier">id aServer = nil;</font><br>
+<img src="../../Images/sp.gif" width=124 height=1><font face="Courier">unsigned int i;</font>
+
+<p><img src="../../Images/sp.gif" width=124 height=1><font face="Courier">for(i = 0; i &lt; 10; i++){ &nbsp; /* in case it doesn't connect right away... */</font><br>
+<img src="../../Images/sp.gif" width=145 height=1><font face="Courier">aServer = [NXAutoreleaseConnection connectToName:SERVER_NAME</font><br>
+<img src="../../Images/sp.gif" width=167 height=1><font face="Courier">onHost:HOST_NAME];</font><br>
+<img src="../../Images/sp.gif" width=145 height=1><font face="Courier">if(aServer)</font><br>
+<img src="../../Images/sp.gif" width=167 height=1><font face="Courier">break;</font><br>
+<img src="../../Images/sp.gif" width=145 height=1><font face="Courier">sleep(2);</font><br>
+<img src="../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p><img src="../../Images/sp.gif" width=124 height=1><font face="Courier">if(!aServer){</font><br>
+<img src="../../Images/sp.gif" width=145 height=1><font face="Courier">fprintf(stderr, &#34;time out !\n&#34;);</font><br>
+<img src="../../Images/sp.gif" width=145 height=1><font face="Courier">exit(1);</font><br>
+<img src="../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">In the above excerpt, <b>SERVER_NAME</b> is a C string that contains the name of the server to connect to, and <b>HOST_NAME</b> is a C string that identifies the host on which the server is running.</font>
+
+<p><font face="Times" size="+1">When a client establishes a connection to an NSObject on the server, <b>connectToName:onHost:</b> returns a proxy that has been retained (not autoreleased). Once the client is finished with the object returned by <b>connectToName:onHost:</b>, it must send <b>release</b> or <b>autorelease</b> to it. Similarly, the server should release the connection object when it's no longer needed.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">Sending NSObjects over an NXConnection (as opposed to an NXAutoreleaseConnection) results in memory leaks.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Passing Objects</b></font>
+
+<p><font face="Times" size="+1">Suppose you have a method on the server named <b>supplyObject</b> that returns to the client an autoreleased object that's a subclass of NSObject:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=124 height=1><font face="Courier">- (NSObject *)supplyObject</font><br>
+<img src="../../Images/sp.gif" width=124 height=1><font face="Courier">{</font><br>
+<img src="../../Images/sp.gif" width=145 height=1><font face="Courier">id anObject = [[anNSObjectSubclass alloc] init];</font><br>
+<img src="../../Images/sp.gif" width=145 height=1><font face="Courier">return [anObject autorelease];</font><br>
+<img src="../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The object on the server is retained. On the client side, the proxy is autoreleased.</font>
+
+<p><font face="Times" size="+1">Every time an NSObject is passed by reference from a server to a client, the source object's reference count is incremented. When the proxy on the client disappears (due to a <b>release</b> or <b>autorelease</b> message), the appropriate number of <b>release </b>messages are sent to the object on the server.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Restrictions on the Objects Passed</b></font>
+
+<p><font face="Times" size="+1">NSObjects are passed <i>by reference</i> except for the following, which are passed by copy:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">NSString</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">NSNumber</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">NSData</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">NSMutableStrings on the server are passed as NSStrings to the client; on the client, they aren't mutable.</font>
+
+<p><font face="Times" size="+1">While you can share NSObjects through the use of proxies, messages to a local copy require much less overhead (and are thus quicker) than remote messages over a connection. Thus, you may want to avoid passing subclasses of NSObject (other than NSString, NSNumber, and NSData) if your application is sensitive to performance. Do not use the <b>bycopy</b> keyword to force other subclasses of NSObject to be passed by copy. If you really need this behavior, you must implement the methods in the NXTransport protocol for your custom NSObjects.</font>
+
+<p><font face="Times" size="+1">For an example that illustrates how to pass NSArray and NSDictionary objects, see <b>FoundationExtensions.[hm]</b> in <b>/NextDeveloper/Examples/EnterpriseObjects/</b></font><br>
+<font face="Times" size="+1"><b>DistributedEO/DEOClient.subproj/DOExtensions.subproj</b>.</font>
+
+<p><font face="Times" size="+1">See Chapter 6 of the <i>NEXTSTEP General Reference</i> for more information on implementing the methods that make up the NXTransport protocol.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Copying Proxies</b></font>
+
+<p><font face="Times" size="+1">Don't send <b>copy</b> or <b>mutableCopy</b> to proxies. The proxy that you receive for the object's copy is autoreleased, which is contrary to the way that <b>copy</b> operates on local objects. Additionally, in the process of duplicating the object on the server the copy receives an extra <b>retain</b>, which ultimately results in a memory leak when you release the proxy.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Keeping Track of Clients</b></font>
+
+<p><font face="Times" size="+1">Often, it's handy for a server process to keep track of its current clients. You typically use an NSMutableArray on the server, storing proxies to the clients in the array. If a connection is then broken (due to the connection object being released, for instance), you remove the proxy from the array. When doing so, however, avoid using NSMutableArray's <b>removeObject: </b>method; this method uses <b>isEqual:</b>, which causes the entire array to be transferred to each client for comparison. Instead, use <b>removeObjectIdenticalTo:</b>.</font></td></tr>
+
+</table>
+
+
+
+<p><br><br>
+
+</body>
+</html>

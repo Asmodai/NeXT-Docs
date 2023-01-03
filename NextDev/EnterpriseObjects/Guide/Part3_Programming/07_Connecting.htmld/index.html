@@ -1,0 +1,619 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/EnterpriseObjects/Guide/Part3_Programming/07_Connecting.rtf -->
+<!-- Date: Sun Jan  1 17:05:33 2023 -->
+<head>
+<title>07_Connecting</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+4" color="#FF00FF"><b>7</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<p><font face="Times" size="+4"><i>Connecting to the Database</i></font>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">When working with a data source, or at the database or adaptor levels, you must establish a connection to the database before you can interact with it. This chapter shows you how to make that connection in three different ways: When you're working with a data source, when you're working primarily at the database level, and when you're working primarily at the adaptor level. When you're working at the database or adaptor levels, you need to load a model file before you can connect to the database. Therefore, this chapter also shows you how to locate and load a model file into memory.</font>
+
+<p><font face="Times" size="+1">If you're working with a controller, the model is loaded and the database connections are established for you by the Framework; thus, you can skip this chapter.</font>
+
+<p><font face="Times" size="+1">This chapter is organized into the following sections:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">&quot;Loading a Model&quot; discusses how you go about loading a model into memory.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">&quot;Connecting Using a Data Source&quot; shows you how to connect to the database using a data source.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">&quot;Connecting at the Database Level&quot; shows you how to connect to the database using database-level objects.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">&quot;Connecting at the Adaptor Level&quot; shows you how to connect to the database using adaptor-level objects.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">&quot;The Connection Dictionary&quot; talks about the specific items that your application needs to log in to the database server, and how you can obtain that information from the user.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This chapter only discusses how you establish a connection to the database. Operations subsequent to establishing that connection--such as fetching or deleting objects--are covered in later chapters.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Loading a Model</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">If you're working at the adaptor level or at the database level you need to load a model before you can establish a connection to the database. A model file stores a mapping between the database schema and your enterprise objects, along with information needed to log into the database server. You typically create model files with EOModeler, although you can construct them programmatically.</font>
+
+<p><font face="Times" size="+1">Model files must be stored in one of the directories that make up the standard resource directory search path. This path consists of the following directories (in this order):</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=125></td>
+
+<td><font face="Times" size="+1">The application's main bundle</font><br>
+<font face="Times" size="+1">~/Library/Models</font><br>
+<font face="Times" size="+1">/LocalLibrary/Models</font><br>
+<font face="Times" size="+1">/NextLibrary/Models</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Given the base name of a model file, EOModel's <b>findPathForModelNamed:</b> class method searches the directories in this path and returns the full file name of the requested file. You can then supply this name to <b>initWithContentsOfFile:</b> to initialize a newly-allocated model object.</font>
+
+<p><font face="Times" size="+1">The following code excerpt shows how to instantiate and initialize a model object with the contents of a model file named <b>People.eomodel</b>:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSString *modelPath;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOModel *peopleModel;</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">modelPath = [EOModel findPathForModelNamed:@&#34;People&#34;];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">peopleModel = [[EOModel alloc] initWithContentsOfFile:modelPath];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">For instructions on using EOModeler to create a model file, see Chapter 5, &quot;Using EOModeler.&quot; Chapter 11, &quot;Exploring and Constructing Models,&quot; shows you how to examine and create models. Finally, for information on model objects and the methods you use to manipulate them, see the EOModel class specification in the <i>Enterprise Objects Framework Reference</i>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Connecting Using a Data Source</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">If your application uses enterprise objects and the default updating, snapshotting, and uniquing behaviors, the easiest way to programmatically connect to a database is by creating a data source. To create a database data source, you simply instantiate an EODatabaseDataSource object and initialize it with the base name of your model and the name of your entity.</font>
+
+<p><font face="Times" size="+1">The following code excerpt shows one way to connect to the database, given a model file named <b>People.eomodel</b> that contains an</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entity:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EODatabaseDataSource *myDataSource;</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">myDataSource = [[EODatabaseDataSource alloc]</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">initWithModelName:@&#34;People&#34; entityName:@&#34;Employee&#34;];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Note that you only supply the base name of the model file (the file name without extensions) to <b>initWithModelName:entityName:</b>. The model file must be located in one of the directories that make up the standard resource directory search path (see &quot;Loading a Model&quot; for more information).</font>
+
+<p><font face="Times" size="+1">In the above example, the data source was initialized with the <b>initWithModelName:entityName:</b> method. To set up a second data source object using the same channel (for a different entity in the same database), you can either use the <b>initWithDatabaseChannel:entityNamed:</b> method and supply the database channel object that was created when the first channel was opened, or you can use <b>initWithModelName:entityName:</b> and supply the same model name. The latter works because <b>initWithModelName:entityName:</b> first checks to see if the model is already loaded; if it is, the database data source is initialized with the loaded model and pre-existing channel.</font>
+
+<p><font face="Times" size="+1">Note that you can only have a single fetch or update operation in progress on a single channel. If you need to perform multiple operations at one time, create other data sources that use separate channels.</font>
+
+<p><font face="Times" size="+1">For more information on the methods you use to initialize an EODatabaseDataSource object, see the EODatabaseDataSource class specification in the <i>Enterprise Objects Framework Reference</i>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Connecting at the Database Level</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">If your application is going to fetch enterprise objects using a fetch loop, you need to connect to the database at the database level (see Chapter 8, &quot;Retrieving Records&quot; for more information on fetch loops). You make this connection by opening a channel to the database, using an EODatabaseChannel object to represent the channel. See the EODatabaseChannel class specification in the <i>Enterprise Objects Framework Reference</i> for a complete description of database channel objects and methods.</font>
+
+<p><font face="Times" size="+1">To open a channel with a database channel object, follow these basic steps:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">If you don't have a model already loaded, load or create one (see &quot;Loading a Model&quot;).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Instantiate a database object and initialize it from your model.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Instantiate a database context object and initialize it from your database object.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Instantiate a database channel object and initialize it from your database context object. Send <b>autorelease</b> to it if you intend to vend it and not keep your own reference.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Verify that the adaptor associated with your database object has a valid connection dictionary (see &quot;Verifying the Connection Information&quot;).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Open the channel.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The following code excerpt illustrates the above steps, given a model that's already been loaded:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOModel *myModel;&nbsp;&nbsp;&nbsp; /* Assume this exists */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EODatabase *myDatabase;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EODatabaseContext *myContext;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EODatabaseChannel *myChannel;</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">myDatabase = [[EODatabase alloc] initWithModel:myModel];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">myContext =&nbsp; [[EODatabaseContext alloc] initWithDatabase:myDatabase];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">myChannel =&nbsp; [[[EODatabaseChannel alloc]</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">initWithDatabaseContext:myContext] autorelease];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Verify connection information here. */</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">if ([myChannel openChannel] == NO) {</font><br>
+<img src="../../../../Images/sp.gif" width=159 height=1><font face="Courier">/* Handle error... */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Connecting at the Adaptor Level</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">You connect at the adaptor level primarily if you're writing an application, such as a report writer, that is concerned only with raw data, and not with the methods that an enterprise object couples to that data. At the adaptor level, each record is returned as a dictionary.</font>
+
+<p><font face="Times" size="+1">You connect at the adaptor level by opening a channel to the database, using an EOAdaptorChannel object to represent the channel. See the EOAdaptorChannel class specification in the <i>Enterprise Objects Framework Reference</i> for a complete description of adaptor channel objects and methods.</font>
+
+<p><font face="Times" size="+1">To open a channel with an adaptor channel object, follow these basic steps:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">If you don't have a model already loaded, load or create one (see &quot;Loading a Model&quot;).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Create an adaptor object from your model.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Create an adaptor context object from your adaptor object.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Create an adaptor channel object from your adaptor context object and retain it (unless you're going to vend it). This keeps the adaptor and adaptor context objects from being deallocated until you release the adaptor channel object.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Verify that the adaptor has a valid connection dictionary (see &quot;Verifying the Connection Information&quot;).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Open the channel.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The following code excerpt illustrates the above steps, given a model that's already been loaded:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOModel *myModel;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAdaptor *myAdaptor;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAdaptorContext *myContext;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAdaptorChannel *myChannel;</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">myAdaptor = [EOAdaptor adaptorWithModel:myModel];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">myContext = [myAdaptor createAdaptorContext];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">myChannel = [[myContext createAdaptorChannel] retain];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Verify connection information here. */</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">if ([myChannel openChannel] == NO) {</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Handle error... */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>The Connection Dictionary</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">An adaptor object maintains a dictionary that contains connection information used when connecting to the database server. The keys of this dictionary identify the information the server expects; the values associated with those keys are the values that the adaptor tries when logging into the database.</font>
+
+<p><font face="Times" size="+1">The dictionary keys required by the Oracle, Oracle7, and Sybase adaptors are:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Oracle Adaptors</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Sybase Adaptor</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">hostMachine</font></td>
+
+<td><font face="Times" size="+1">hostName</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">serverID</font></td>
+
+<td><font face="Times" size="+1">databaseName</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">userName</font></td>
+
+<td><font face="Times" size="+1">userName</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">password</font></td>
+
+<td><font face="Times" size="+1">password</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">When you initialize an adaptor from a model, any connection information stored with the model is copied into the adaptor object.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Verifying the Connection Information</b></font>
+
+<p><font face="Times" size="+1">Before opening the channel, you should verify that you have sufficient connection information to log into the database server. Sending a <b>hasValidConnectionDictionary</b> message to the adaptor verifies that the adaptor has the proper information needed to log into the server. If the connection dictionary doesn't have valid information (for example, it's common to leave the user name and password unspecified in the model file), you can invoke <b>runLoginPanelAndValidateConnectionDictionary</b> to display a login panel that allows the user to enter the proper connection information. The following code illustrates how to do this:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">myAdaptor = [myDatabase adaptor];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">if ([myAdaptor hasValidConnectionDictionary] == NO &amp;&amp;</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">[myAdaptor runLoginPanelAndValidateConnectionDictionary] == NO) {</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Don't log in. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The methods you use to verify connection information are only supplied at the adaptor level. To obtain the corresponding adaptor object for a database object, use EODatabase's <b>adaptor</b> method. From a data source object, you can obtain the adaptor object it uses with:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">theAdaptor = [[[myDataSourceObject databaseChannel] adaptorChannel]</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">adaptor];</font>
+
+
+
+</body>
+</html>

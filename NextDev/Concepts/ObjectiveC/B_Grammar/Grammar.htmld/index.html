@@ -1,0 +1,575 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/Concepts/ObjectiveC/B_Grammar/Grammar.rtf -->
+<!-- Date: Sun Jan  1 17:04:51 2023 -->
+<head>
+<title>Grammar</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Release 3.3 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+4" color="#FF00FF"><b>B</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<p><font face="Times" size="+4"><i>Reference Manual for the Objective C Language</i></font>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This appendix presents a formal grammar for the Objective C extensions to the C language--as the Objective C language is implemented for the NEXTSTEP development environment.&nbsp; It adds to the grammar for ANSI standard C found in Appendix A of <i>The C Programming Language</i> (second edition, 1988) by Brian W. Kernighan and Dennis M. Ritchie, published by Prentice Hall, and should be read in conjunction with that book.</font>
+
+<p><font face="Times" size="+1">The Objective C extensions introduce some new symbols (such as <i>class-interface</i>), but also make use of symbols (such as <i>function-definition</i>) that are explained in the standard C grammar.&nbsp; The symbols mentioned but not explained here are listed below:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=131></td>
+
+<td nowrap><font face="Times" size="+1"><i>compound statement</i></font></td>
+
+<td><font face="Times" size="+1"><i>identifier</i></font></td></tr>
+
+<tr valign=top>
+
+<td width=131></td>
+
+<td nowrap><font face="Times" size="+1"><i>constant</i></font></td>
+
+<td><font face="Times" size="+1"><i>parameter-type-list</i></font></td></tr>
+
+<tr valign=top>
+
+<td width=131></td>
+
+<td nowrap><font face="Times" size="+1"><i>declaration</i></font></td>
+
+<td><font face="Times" size="+1"><i>string</i></font></td></tr>
+
+<tr valign=top>
+
+<td width=131></td>
+
+<td nowrap><font face="Times" size="+1"><i>declaration-list</i></font></td>
+
+<td><font face="Times" size="+1"><i>struct-declaration-list</i></font></td></tr>
+
+<tr valign=top>
+
+<td width=131></td>
+
+<td nowrap><font face="Times" size="+1"><i>enum-specifier</i></font></td>
+
+<td><font face="Times" size="+1"><i>struct-or-union</i></font></td></tr>
+
+<tr valign=top>
+
+<td width=131></td>
+
+<td nowrap><font face="Times" size="+1"><i>expression</i></font></td>
+
+<td><font face="Times" size="+1"><i>typedef-name</i></font></td></tr>
+
+<tr valign=top>
+
+<td width=131></td>
+
+<td nowrap><font face="Times" size="+1"><i>function-definition</i></font></td>
+
+<td><font face="Times" size="+1"><i>type-name</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Of these, <i>identifier</i> and <i>string</i> are undefined terminal symbols.&nbsp; Objective C adds no undefined terminal symbols of its own.</font>
+
+<p><font face="Times" size="+1">Two notational conventions used here differ from those used in <i>The C Programming Language</i>:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Literal symbols are shown in <b>bold</b> type.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Brackets enclose optional elements and are in <i>italic</i> type.&nbsp; Literal brackets, like other literal symbols, are nonitalic and bold.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Otherwise, this appendix follows the conventions of the C reference manual.&nbsp; Each part of the grammar consists of a symbol followed by a colon and an indented list of mutually-exclusive possibilities for expanding the symbol.&nbsp; For example:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=125></td>
+
+<td><font face="Times" size="+1"><i>receiver:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>expression</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>class-name</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>super</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">However, there is an exception:&nbsp; Even though they're not mutually exclusive, the constituents of classes, categories, and protocols are listed on separate lines to clearly show the ordering of elements.&nbsp; For example:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=125></td>
+
+<td><font face="Times" size="+1"><i>protocol-declaration:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>@protocol</b>&nbsp; <i>protocol-name</i></font><br>
+<img src="../../../../Images/sp.gif" width=37 height=1><font face="Times" size="+1"><i>[ protocol-reference-list ]</i></font><br>
+<img src="../../../../Images/sp.gif" width=37 height=1><font face="Times" size="+1"><i>[ interface-declaration-list ]</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>@end</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This exception to the general rule is easily recognized since each list terminates with <b>@end</b>.</font>
+
+<p><font face="Times" size="+1">There are just four entry points where the Objective C language modifies the rules defined for standard C:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">External declarations</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Type specifiers</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Type qualifiers</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Primary expressions</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This appendix is therefore divided into four sections corresponding to these points.&nbsp; Where a rule in the standard C grammar is modified by an Objective C extension, the entire rule is repeated in its modified form.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>External Declarations</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><i>external-declaration:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>function-definition</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>declaration</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>class-interface</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>class-implementation</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>category-interface</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>category-implementation</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>protocol-declaration</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>class-declaration-list</i></font>
+
+<p><font face="Times" size="+1"><i>class-interface:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>@interface</b>&nbsp; <i>class-name&nbsp; [</i> <b>:</b>&nbsp; <i>superclass-name ]</i></font><br>
+<img src="../../../../Images/sp.gif" width=37 height=1><font face="Times" size="+1"><i>[ protocol-reference-list ]</i></font><br>
+<img src="../../../../Images/sp.gif" width=37 height=1><font face="Times" size="+1"><i>[ instance-variables ]</i></font><br>
+<img src="../../../../Images/sp.gif" width=37 height=1><font face="Times" size="+1"><i>[ interface-declaration-list ]</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>@end</b></font>
+
+<p><font face="Times" size="+1"><i>class-implementation:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>@implementation</b>&nbsp; <i>class-name&nbsp; [</i> <b>:</b>&nbsp; <i>superclass-name ]</i></font><br>
+<img src="../../../../Images/sp.gif" width=37 height=1><font face="Times" size="+1"><i>[ instance-variables ]</i></font><br>
+<img src="../../../../Images/sp.gif" width=37 height=1><font face="Times" size="+1"><i>[ implementation-definition-list ]</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>@end</b></font>
+
+<p><font face="Times" size="+1"><i>category-interface:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>@interface</b>&nbsp; <i>class-name</i>&nbsp; <b>(</b>&nbsp; <i>category-name</i>&nbsp; <b>)</b></font><br>
+<img src="../../../../Images/sp.gif" width=37 height=1><font face="Times" size="+1"><i>[ protocol-reference-list ]</i></font><br>
+<img src="../../../../Images/sp.gif" width=37 height=1><font face="Times" size="+1"><i>[ interface-declaration-list ]</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>@end</b></font>
+
+<p><font face="Times" size="+1"><i>category-implementation:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>@implementation</b>&nbsp; <i>class-name</i>&nbsp; <b>(</b>&nbsp; <i>category-name</i>&nbsp; <b>)</b></font><br>
+<img src="../../../../Images/sp.gif" width=37 height=1><font face="Times" size="+1"><i>[ implementation-definition-list ]</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>@end</b></font>
+
+<p><font face="Times" size="+1"><i>protocol-declaration:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>@protocol</b>&nbsp; <i>protocol-name</i></font><br>
+<img src="../../../../Images/sp.gif" width=37 height=1><font face="Times" size="+1"><i>[ protocol-reference-list ]</i></font><br>
+<img src="../../../../Images/sp.gif" width=37 height=1><font face="Times" size="+1"><i>[ interface-declaration-list ]</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>@end</b></font>
+
+<p><font face="Times" size="+1"><i>class-declaration-list:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>@class</b>&nbsp; <i>class-list</i>&nbsp; <b>;</b></font>
+
+<p><font face="Times" size="+1"><i>class-list:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>class-name</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>class-list</i>&nbsp; <b>,</b>&nbsp; <i>class-name</i></font>
+
+<p><font face="Times" size="+1"><i>protocol-reference-list:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>&lt;</b>&nbsp; <i>protocol-list</i>&nbsp; <b>&gt;</b></font>
+
+<p><font face="Times" size="+1"><i>protocol-list:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>protocol-name</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>protocol-list</i>&nbsp; <b>,</b>&nbsp; <i>protocol-name</i></font>
+
+<p><font face="Times" size="+1"><i>class-name:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>identifier</i></font>
+
+<p><font face="Times" size="+1"><i>superclass-name:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>identifier</i></font>
+
+<p><font face="Times" size="+1"><i>category-name:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>identifier</i></font>
+
+<p><font face="Times" size="+1"><i>protocol-name:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>identifier</i></font>
+
+<p><font face="Times" size="+1"><i>instance-variables:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>{</b>&nbsp; <i>[ visibility-specification ]&nbsp; struct-declaration-list&nbsp; [ instance-variables ]</i>&nbsp; <b>}</b></font>
+
+<p><font face="Times" size="+1"><i>visibility-specification:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>@private</b></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>@protected</b></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>@public</b></font>
+
+<p><font face="Times" size="+1"><i>interface-declaration-list:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>declaration</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>method-declaration</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>interface-declaration-list&nbsp; declaration</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>interface-declaration-list&nbsp; method-declaration</i></font>
+
+<p><font face="Times" size="+1"><i>method-declaration:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>class-method-declaration</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>instance-method-declaration</i></font>
+
+<p><font face="Times" size="+1"><i>class-method-declaration:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>+</b>&nbsp; <i>[ method-type ]&nbsp; method-selector</i>&nbsp; <b>;</b></font>
+
+<p><font face="Times" size="+1"><i>instance-method-declaration:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font>&nbsp; <font face="Times" size="+1"><i>[ method-type ]&nbsp; method-selector</i>&nbsp; <b>;</b></font>
+
+<p><font face="Times" size="+1"><i>implementation-definition-list:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>function-definition</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>declaration</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>method-definition</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>implementation-definition-list&nbsp; function-definition</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>implementation-definition-list&nbsp; declaration</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>implementation-definition-list&nbsp; method-definition</i></font>
+
+<p><font face="Times" size="+1"><i>method-definition:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>class-method-definition</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>instance-method-definition</i></font>
+
+<p><font face="Times" size="+1"><i>class-method-definition:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>+</b>&nbsp; <i>[ method-type ]&nbsp; method-selector&nbsp; [ declaration-list ]&nbsp; compound-statement</i></font>
+
+<p><font face="Times" size="+1"><i>instance-method-definition:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font>&nbsp; <font face="Times" size="+1"><i>[ method-type ]&nbsp; method-selector&nbsp; [ declaration-list ]&nbsp; compound-statement</i></font>
+
+<p><font face="Times" size="+1"><i>method-selector:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>unary-selector</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>keyword-selector&nbsp; [</i> <b>,&nbsp; ...</b> <i>]</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>keyword-selector&nbsp; [</i> <b>,</b>&nbsp; <i>parameter-type-list ]</i></font>
+
+<p><font face="Times" size="+1"><i>unary-selector:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>selector</i></font>
+
+<p><font face="Times" size="+1"><i>keyword-selector:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>keyword-declarator</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>keyword-selector&nbsp; keyword-declarator</i></font>
+
+<p><font face="Times" size="+1"><i>keyword-declarator:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>:</b>&nbsp; <i>[ method-type ]&nbsp; identifier</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>selector</i>&nbsp; <b>:</b>&nbsp; <i>[ method-type ]&nbsp; identifier</i></font>
+
+<p><font face="Times" size="+1"><i>selector:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>identifier</i></font>
+
+<p><font face="Times" size="+1"><i>method-type:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>(</b>&nbsp; <i>type-name</i>&nbsp; <b>)</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Type Specifiers</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><i>type-specifier:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>void</b></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>char</b></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>short</b></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>int</b></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>long</b></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>float</b></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>double</b></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>signed</b></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>unsigned</b></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>id</b>&nbsp; <i>[ protocol-reference-list ]</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>class-name&nbsp; [ protocol-reference-list ]</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>struct-or-union-specifier</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>enum-specifier</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>typedef-name</i></font>
+
+<p><font face="Times" size="+1"><i>struct-or-union-specifier:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>struct-or-union&nbsp; [ identifier ]</i>&nbsp; <b>{</b>&nbsp; <i>struct-declaration-list</i>&nbsp; <b>}</b></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>struct-or-union&nbsp; [ identifier ]</i>&nbsp; <b>{&nbsp; @defs&nbsp; (</b>&nbsp; <i>class-name</i>&nbsp; <b>)&nbsp; }</b></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>struct-or-union&nbsp; identifier</i></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Type Qualifiers</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><i>type-qualifier:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>const</b></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>volatile</b></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>protocol-qualifier</i></font>
+
+<p><font face="Times" size="+1"><i>protocol-qualifier:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>in</b></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>out</b></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>inout</b></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>bycopy</b></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>oneway</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Primary Expressions</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><i>primary-expression:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>identifier</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>constant</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>string</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>(</b>&nbsp; <i>expression</i>&nbsp; <b>)</b></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>self</b></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>message-expression</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>selector-expression</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>protocol-expression</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>encode-expression</i></font>
+
+<p><font face="Times" size="+1"><i>message-expression:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>[</b>&nbsp; <i>receiver&nbsp; message-selector</i>&nbsp; <b>]</b></font>
+
+<p><font face="Times" size="+1"><i>receiver:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>expression</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>class-name</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>super</b></font>
+
+<p><font face="Times" size="+1"><i>message-selector:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>selector</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>keyword-argument-list</i></font>
+
+<p><font face="Times" size="+1"><i>keyword-argument-list:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>keyword-argument</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>keyword-argument-list&nbsp; keyword-argument</i></font>
+
+<p><font face="Times" size="+1"><i>keyword-argument:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>selector</i>&nbsp; <b>:</b>&nbsp; <i>expression</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>:</b>&nbsp; <i>expression</i></font>
+
+<p><font face="Times" size="+1"><i>selector-expression:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>@selector&nbsp; (</b>&nbsp; <i>selector-name</i>&nbsp; <b>)</b></font>
+
+<p><font face="Times" size="+1"><i>selector-name:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>selector</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>keyword-name-list</i></font>
+
+<p><font face="Times" size="+1"><i>keyword-name-list:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>keyword-name</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>keyword-name-list&nbsp; keyword-name</i></font>
+
+<p><font face="Times" size="+1"><i>keyword-name:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><i>selector</i>&nbsp; <b>:</b></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>:</b></font>
+
+<p><font face="Times" size="+1"><i>protocol-expression:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>@protocol&nbsp; (</b>&nbsp; <i>protocol-name</i>&nbsp; <b>)</b></font>
+
+<p><font face="Times" size="+1"><i>encode-expression:</i></font><br>
+<img src="../../../../Images/sp.gif" width=18 height=1><font face="Times" size="+1"><b>@encode&nbsp; (</b>&nbsp; <i>type-name</i>&nbsp; <b>)</b></font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

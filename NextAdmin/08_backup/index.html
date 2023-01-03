@@ -1,0 +1,1973 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextAdmin/08_BackUp.rtf -->
+<!-- Date: Sun Jan  1 13:56:31 2023 -->
+<head>
+<title>08_BackUp</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Release 3.3 Copyright</font> &copy;<font face="Times">1994 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap><font face="Helvetica" size="+4"><b>8</b></font></td>
+
+<td><font face="Times" size="+4"><i>Managing System Backups</i></font></td></tr>
+
+<tr valign=top>
+
+<td width=36 height=80></td></tr>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">System backup is an important but sometimes overlooked operation. The unexpected happens occasionally--a file is inadvertently deleted, or a power failure interrupts your work in a document. It's a common, but unfortunate, practice to delay creating backups because the procedure can be troublesome and time-consuming. Experienced people (sadder and wiser) will tell you that a regular backup routine is an essential element of system administration. This chapter contains some suggestions to simplify the task.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Backup Strategies</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">A backup schedule and scheme are essential. How often you do a backup--that is, make a copy and store it in a safe place--depends on such factors as how frequently your files change, how much time a backup requires, and how much data you're willing to lose. For example, a full backup of your entire system is thorough, but it requires so much time and storage media that it might not be practical on a daily basis. Since many files change infrequently, it's sensible to do a full backup less often (once a month is common), and do a more frequent backup of those files that change regularly.</font>
+
+<p><font face="Times" size="+1">Your backup strategy might include several levels of backups, each of which copies different files:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">A <i>full backup</i> completely copies all data on your system, although you can omit certain directories or file systems, such as <b>/tmp</b>, if you don't want to save the data they contain.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">An <i>incremental backup</i> copies only those files that have changed since the last backup. Some programs (such as <b>dump</b>) have a built-in incremental backup feature.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">A <i>partial backup</i> copies only the files or directories that you specify.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">If you're a user on a standalone system, your backup strategy can be as simple as making a copy of your work on a floppy disk each day. In addition, you'll probably want to make a full backup periodically (weekly or monthly).</font>
+
+<p><font face="Times" size="+1">If you're responsible for administering a network, your backup strategy becomes far more complex. The safest backup strategy is to schedule several levels of backups into an overlapping routine. Here's a good strategy to use:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Once a month, perform a full backup. It's a good idea to permanently store the media containing these backups in a secure, off-site location.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Once a week, perform an incremental backup that copies all files that have changed since the most recent monthly backup. You can recycle the media you use for these backups on a monthly basis.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Once a day, perform an incremental backup that copies all files that have changed since the most recent weekly backup, and perform a separate full backup of administrative information located in <b>/private/etc</b> and <b>/private/adm </b>(this includes the NetInfo databases and administrative logs and scripts). The media you use for these backups can be recycled weekly.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=34></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Warning:</b></font></td>
+
+<td><font face="Times" size="+1">Always write a backup to a different tape or disk than the one on which you've stored your most recent backup. This ensures that a failure during a backup today will not destroy yesterday's backup in the process. For the same reason, always check that your most recent backup is readable before disposing of the previous backup.</font></td></tr>
+
+<tr valign=top>
+
+<td width=34 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=34></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">To save effort, you can use <b>cron</b> to perform backups automatically at regular intervals. Incorporate your backup commands into the <b>cron</b> scripts <b>daily</b>, <b>weekly</b>, and <b>monthly</b> located in <b>/usr/adm</b>. The <b>cron</b> utility will execute <b>/usr/adm/daily</b> at 2:00 am each day, <b>/usr/adm/weekly</b> each Saturday at 3:30 am, and <b>/usr/adm/monthly</b> at 5:30 am on the first day of each month.</font></td></tr>
+
+<tr valign=top>
+
+<td width=34 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=34></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">Using <b>cron</b>, your backups can run unattended. Make sure you insert the backup medium into the appropriate drive each evening. The following morning, remove the backup, label it, and file it in a secure location. With careful planning, you can structure your backups to avoid the need for multiple volumes.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>What to Back Up</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Any data that you can't afford to lose should be backed up. However, some files are more important to back up frequently, either because they change a lot, or because they contain vital information. Give special attention to the following files:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Documents you've been working on--It's a good idea to back up these files nightly, so you don't risk losing more than a day's work. Remember, too, that a printed copy is a form of backup. Although it's not as easy to restore as an electronic file, a printed copy of your work is insurance against total loss.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Home directories--If you're only backing up your own work, once a week is probably enough, as long as you're backing up critical files daily. If you're responsible for users on a network, you should back up their home directories more often (probably daily).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>/private/etc</b> and <b>/private/adm</b>--Backing up these directories protects the most important parts of the system databases. For example, these directories contain the administrative information about user accounts, including their encrypted passwords. These directories should be backed up separately and completely to protect the internal consistency of the NetInfo database.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">A NetInfo database is made up of separate files, and you need to make sure they're backed up together at the same time. The <b>tar</b> program is a good choice for this task because it lets you copy all files at once. Incremental backups, such as those created with <b>dump</b>, might copy the files at different times, introducing inconsistencies. If you're administering a network, the <b>/private/etc</b> and <b>/private/adm</b> directories should be backed up daily.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Directories that change often--Any files that change frequently should be backed up frequently. Some directories that might fall into this category are: <b>/LocalLibrary</b>, <b>/LocalApps</b>, and <b>/LocalAdmin</b> (if you have them), <b>/usr/local</b>, and <b>/usr/spool/mail</b>. Remember to back up any other files or directories you change, such as shared project directories.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Critical, site-specific files--If there are any other files that you would need to recover in case of a major catastrophe (such as fire or flood), back them up and store them off-site.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Since the system software doesn't change frequently, and takes up a lot of space, you can omit it from your regular backup schedule. If you choose to do this, be sure you have a copy of the system software available, as well as the means to restore the system software from the archived copy.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Ways to Back Up</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Backup techniques range from the simple to the complex. For example, you can do a small backup simply by copying a file or directory to another computer on the network or to a second storage device (such as an optical disk, second hard drive, or floppy disk).</font>
+
+<p><font face="Times" size="+1">To do more sophisticated backups, you can use a number of programs. Each has its advantages and disadvantages. This section discusses six: <b>dump</b> and <b>restore</b> (used together), <b>rdump</b> and <b>rrestore</b> (used together), <b>tar</b>, and <b>cpio</b>.</font>
+
+<p><font face="Times" size="+1">Here are some things to consider in your backup procedures:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Log in as <b>root</b>, a member of the <b>operator</b> group (best choice), or the owner of the files you're backing up or restoring. When you're restoring, make sure you have write permission in the directory that will receive the backed-up material. It's a good idea to add the accounts of those who do backups to the <b>operator</b> group so they can create backups without becoming <b>root</b>. Remember that <b>root</b> might not have access to remote NFS directories.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Back up the most important data first. If something goes wrong during the backup, or if your backup media runs out of space, you can then be sure that the most important data is safe. Typically, you should back up user data before system data, since user files change more frequently. However, the system files in <b>/etc</b> change frequently and are critically important, so consider backing up these files first.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Perform backups in single-user mode, if possible, or at a time when no one is using the system. (It's not a good idea for a file to be modified while it's being backed up.) Usually, backups are done at night.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Label your backup media carefully. A label should contain the date and time of the backup, a list of the contents, and the type of backup done. This descriptive labeling can save you time when data needs to be retrieved. It's also a good idea to keep a written log documenting what you've done. Keep in mind that you may need this information when the system is down, so don't store it on-line.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Create a file containing a table of contents of the backup. This should be the first file you write to the tape.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Set the write protection on your media to protect against accidental overwrites. Be sure to turn off the write protection before you reuse the media.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Store your media in a secure location. Make sure that only authorized people have access to it.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>The dump and restore Programs</b></font>
+
+<p><font face="Times" size="+1">The <b>dump</b> program gives you a way to back up your files using an incremental backup approach. An incremental backup only copies files that have been modified since the last backup. Since some data on the system rarely changes, you can greatly reduce the amount of data you have to back up by copying only what has changed. The <b>restore</b> program lets you retrieve files you've backed up with <b>dump</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>Important:</b></font>&nbsp; <font face="Times" size="+1">It's recommended that you run <b>dump</b> and <b>restore</b> from an account <i>other</i> than <b>root</b> that's a member of the <b>operator</b> group. This precaution protects you from accidentally overwriting your disk by making a typing error when executing <b>dump</b> or <b>restore</b>.</font>
+
+<p><font face="Times" size="+1"><b>Advantages of dump and restore:</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Easy way to store and retrieve a large amount of data</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Can perform and track interactive backups and restores</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Can perform incremental backups</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Fast</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1"><b>Disadvantages of dump and restore:</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Can only back up entire file systems; can't be used to back up a single directory or file</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Using dump</b></font>
+
+<p><font face="Times" size="+1">The <b>dump</b> program keeps track of how extensive a backup should be by assigning each backup a level number from 0 to 9. A level 0 <b>dump</b> copies the entire file system, and each subsequent <b>dump</b> level copies those files that have been modified since the most recent <b>dump</b> with a lower level number. For example, a level 5 <b>dump</b> copies all changed files since the most recent <b>dump</b> with a level of 4 or lower. If executed with the <b>u</b> option, <b>dump</b> keeps a record of the date, time, and numeric level at which a file system was backed up, in the file <b>/etc/dumpdates</b>.</font>
+
+<p><font face="Times" size="+1">A simple backup strategy is to start with a complete level 0 <b>dump</b> and then make incremental backups each day.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=34></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Warning:</b></font></td>
+
+<td><font face="Times" size="+1">Before doing a level 0 <b>dump</b>, it's important to run <b>fsck</b> to be certain you're copying a clean file system. Skipping this step risks dangerous file system corruption. Always run <b>fsck</b> on an unmounted file system. In addition, it's recommended that the file system be unmounted when doing a level 0 <b>dump</b>, to make sure you have a consistent and complete backup. If you're backing up the root file system, you should do this in single-user mode. For more information on <b>fsck</b>, see the UNIX manual page for <b>fsck</b> and Chapter 9, &quot;System Startup and Shutdown.&quot;</font></td></tr>
+
+<tr valign=top>
+
+<td width=34 height=30></td></tr>
+
+<tr valign=top>
+
+<td width=34></td>
+
+<td nowrap></td>
+
+<td><font face="Helvetica" size="+1"><b>Examples Using dump</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">1.</font></td>
+
+<td><font face="Times" size="+1">To make a complete level 0 backup, enter a command similar to the following:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>dump</b> <i>0</i><b>u</b> <i>/dev/rsd0a</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">This creates a full backup of <b>/dev/rsd0a</b>, writing the output to the default backup device (<b>/dev/rxt0</b>, an external SCSI tape drive).</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=53></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Warning:</b></font></td>
+
+<td><font face="Times" size="+1">When making a level 0 <b>dump</b>, <i>never</i> overwrite your most recent backup. Instead, set it aside and create a new one on a second tape. This protects against your only level 0 backup being damaged (for example, if the power should fail while you're doing a backup).</font></td></tr>
+
+<tr valign=top>
+
+<td width=53 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=53></td>
+
+<td nowrap><img src="../images/sp.gif" width=52 height=1><font face="Helvetica" size="+1">2.</font></td>
+
+<td><font face="Times" size="+1">To create a daily, weekly, or monthly backup, enter a command similar to the following (replace <i>9</i> with the appropriate backup level and <i>filesystem</i> with the appropriate device name):</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>dump</b> <i>9</i><b>u</b> <i>filesystem</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">Remember, you can put your backup commands in a <b>cron</b> script to have them run automatically. Be sure to label your <b>dump</b> tapes carefully.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">The specific level numbers used for your backups aren't significant, as long as you use three different numbers and are consistent. You can use level 1 for monthly backups, 2 for weekly backups, and 9 for daily backups, or you could use 1 for monthly, 4 for weekly, and 7 for daily.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">3.</font></td>
+
+<td><font face="Times" size="+1">If you want to specify a different output file or device, use the <b>f</b> option:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>dump</b> <i>9</i><b>uf</b> <i>/Dumps/SD1a-9.dump /dev/rsd1a</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">This example creates a level 9 backup of <b>/dev/rsd1a</b>, writing it to the file <b>/Dumps/SD1a-9.dump</b>. This file might be located on a removable disk (assuming the removable disk is mounted on <b>/Dumps</b>). Here, the <b>.dump</b> suffix is used to help identify the file as a <b>dump</b> backup.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">4.</font></td>
+
+<td><font face="Times" size="+1">To conserve space on your backup media, you can compress the output:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>dump</b> <i>9</i><b>uf -</b> <i>/dev/rsd0b</i> <b>| compress &gt;</b> <i>/Dumps/SD0b-9.dump.Z</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">Using &quot;-&quot; as the output file sends the output to standard out (<b>stdout</b>). The output from <b>dump</b> is then used as input for the <b>compress</b> command. Finally, the output from <b>compress</b> is redirected to the file <b>/Dumps/SD0b-9.dump.Z</b>. (The <b>.Z</b> suffix is a convention indicating the file is compressed.) Use the <b>uncompress</b> or <b>zcat</b> command to recover the original, full-size <b>dump</b> file.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">5.</font></td>
+
+<td><font face="Times" size="+1">To decrease the amount of space required to do a full backup of the root file system, you can omit the system software from the normal full backup (since it should never change). Make sure you have some means of installing the system software, then enter the following command:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>dump 0uf /dev/null</b> <i>/dev/rsd0a</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=53></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Warning:</b></font></td>
+
+<td><font face="Times" size="+1">If you choose to do this, you must create this &quot;phony&quot; level 0 <b>dump</b> <i>before</i> you do anything else with a new system (or immediately after installing the system software, if you're using another disk as your boot disk).</font></td></tr>
+
+<tr valign=top>
+
+<td width=53 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=53></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">This command updates <b>/etc/dumpdates</b> to indicate that a level 0 <b>dump</b> has been performed without actually creating a backup. (The output is sent to <b>/dev/null</b>, the <i>null device</i>, also called the &quot;bit bucket.&quot; Any output sent here is discarded.) From now on, use a level 1 <b>dump</b> to make all your full backups of the root file system. To be consistent, you can also use a level 1 <b>dump</b> to do the full backups of your other file systems, provided that you never do a level 0 <b>dump</b> of them.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">For a complete list and description of the arguments available with <b>dump</b>, see the UNIX manual page for <b>dump</b>.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Using restore</b></font>
+
+<p><font face="Times" size="+1">When you want to retrieve the data you've backed up with <b>dump</b>, use <b>restore</b>. The <b>restore</b> program copies data from the <b>dump</b> file to your current directory. Like <b>dump</b>, <b>restore</b> will use an external tape drive (<b>/dev/rxt0</b>) by default, but you can override this with the <b>f</b> option.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=34></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Warning:</b></font></td>
+
+<td><font face="Times" size="+1">When using <b>restore</b>, be extremely careful that you don't inadvertently overwrite existing data. Files retrieved with <b>restore</b> are written into the current working directory. Have an empty directory ready to receive the restored data. <i>Never</i> restore data into a directory that already contains files unless you're certain of the outcome. The <b>i</b> option to <b>restore</b>, described later in this section, can be particularly helpful.</font></td></tr>
+
+<tr valign=top>
+
+<td width=34 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=34></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">You must always use <b>restore</b> with a key argument. This key determines exactly what <b>restore</b> will do. Here are some of the most important key arguments:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>r</b>--Reads the entire <b>dump</b> file into the current directory. This key should <i>only</i> be used to restore a complete <b>dump </b>file onto a clear file system or to restore an incremental <b>dump</b> file after restoring a full level 0 backup.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>x</b> <i>filename</i>--Extracts the specified file or directory from a <b>dump</b> file. Note that <b>restore</b> must create all the directories leading to the file before restoring the actual file. Keep this in mind when planning where you restore the files--be ready to restore a directory hierarchy, not just an individual file. It's a good idea to restore into a temporary directory, then copy or move the restored files into their permanent location.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>t</b> <i>[filename]</i>--Displays a table of contents for the <b>dump</b> file. With the <i>filename</i> argument, displays the table of contents for the specified file. Without the <i>filename</i> argument, displays the contents for the entire backup.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>i</b>--Performs the restore interactively. This is particularly useful for restoring just part of a backup, and it's a good way to see what's in the <b>dump</b> file. An interactive restore uses a set of commands that you enter into an interface similar to a shell.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>Examples Using restore</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">1.</font></td>
+
+<td><font face="Times" size="+1">Here's an annotated example of an interactive <b>restore</b> session:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>mkdir</b> <i>/new</i></font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>cd</b> <i>/new</i></font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>/etc/restore if</b> <i>/dev/rxt0</i></font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td nowrap><font face="Courier">restore &gt; <b>ls</b></font></td>
+
+<td><font face="Times">Execute a command (<b>ls</b>) at the restore prompt.</font></td></tr>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td nowrap><font face="Courier">.:</font></td>
+
+<td></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">./&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LocalAdmin/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; files/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; me/</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">../&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LocalApps/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fun.eps&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mnta/</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">.NeXT/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LocalDeveloper/&nbsp;&nbsp;&nbsp; bin/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; odmach</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">.cshrc&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LocalLibrary/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cores/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private/</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">.hidden&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Net/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dev/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; savem</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">.login&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NextAdmin/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; etc/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sdmach</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">.profile&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NextApps/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lib/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tmp/</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">.rhosts&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NextDeveloper/&nbsp;&nbsp;&nbsp;&nbsp; lost+found/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; usr/</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">.alias&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NextLibrary/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mach@</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td nowrap><font face="Courier">restore &gt; <b>cd</b> <i>/files</i></font></td>
+
+<td><font face="Times">Change to a particular directory on the tape and</font></td></tr>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td nowrap><font face="Courier">restore &gt; <b>ls</b></font></td>
+
+<td><font face="Times">list its contents.</font></td></tr>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td nowrap><font face="Courier">./files:</font></td>
+
+<td></td></tr>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td nowrap><img src="../images/sp.gif" width=7 height=1><font face="Courier">bin/</font></td>
+
+<td></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">restore &gt; <b>cd</b> <i>/bin</i></font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">restore &gt; <b>ls</b></font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">./files/bin:</font><br>
+<img src="../images/sp.gif" width=150 height=1><font face="Courier">sh</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td nowrap><font face="Courier">restore &gt; <b>add</b> <i>sh</i></font></td>
+
+<td><font face="Times">Add the file <b>sh</b> to the list of files to be restored.</font></td></tr>
+
+<tr valign=top>
+
+<td width=143 height=13></td></tr>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td nowrap><font face="Courier">restore &gt; <b>extract</b></font></td>
+
+<td><font face="Times">Restore all the files on the list from</font><br>
+<font face="Times">the <b>dump</b> tape.</font></td></tr>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td nowrap><font face="Courier">You have not read any tapes yet.</font></td>
+
+<td></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">Unless you know which volume your file(s) are on you should start</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">with the last volume and work towards towards the first.</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td nowrap><font face="Courier">Specify next volume #: <b>1</b></font></td>
+
+<td><font face="Times">Specify the tape volume from which to start the</font><br>
+<font face="Times">restore.</font></td></tr>
+
+<tr valign=top>
+
+<td width=143 height=13></td></tr>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td nowrap><font face="Courier">set owner/mode for '.'? [yn] <b>y</b></font></td>
+
+<td><font face="Times">Set the ownership to the user performing the</font><br>
+<font face="Times">restore and permission to their defaults.</font></td></tr>
+
+<tr valign=top>
+
+<td width=143 height=13></td></tr>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td nowrap><font face="Courier">restore &gt; <b>quit</b></font></td>
+
+<td><font face="Times">Exit the program.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">2.</font></td>
+
+<td><font face="Times" size="+1">This example does a full restore from the backup to a newly initialized disk (useful if you're upgrading to a new disk):</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td nowrap><font face="Courier"><b>disk -i</b> <i>/dev/rsd1a</i></font></td>
+
+<td><font face="Times">Initialize the new disk.</font></td></tr>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td nowrap><font face="Courier"><b>mount</b> <i>/dev/sd1a /mnt</i></font></td>
+
+<td><font face="Times">Mount a file system on the disk.</font></td></tr>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td nowrap><font face="Courier"><b>cd</b> <i>/mnt</i></font></td>
+
+<td><font face="Times">Change to the mounted directory.</font></td></tr>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td nowrap><font face="Courier"><b>restore rf</b> <i>/dev/rst0</i></font></td>
+
+<td><font face="Times">Restore the entire contents of the dump file.</font></td></tr>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td nowrap><font face="Courier"><b>rm</b> <i>restoresymtab</i></font></td>
+
+<td><font face="Times">Delete a temporary file left behind by <b>restore</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">3.</font></td>
+
+<td><font face="Times" size="+1">The following command does an interactive restore of a compressed backup:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>zcat</b> <i>/Dumps/SD0a-9.dump.Z</i> <b>| restore if -</b></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">For more information on <b>restore</b> and its many arguments, see the UNIX manual page for <b>restore</b>.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>The rdump and rrestore Programs</b></font>
+
+<p><font face="Times" size="+1">The <b>rdump</b> and <b>rrestore</b> programs work much like <b>dump</b> and <b>restore</b>, except that they're used to back up a file system over the network to a remote device (such as a shared tape drive).</font>
+
+<p><font face="Times" size="+1"><b>Advantages of rdump and rrestore:</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Can be more convenient than <b>dump</b>, since you can use a single tape drive to back up and restore all the computers on a network</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Same as <b>dump</b> and <b>restore</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1"><b>Disadvantages of rdump and rrestore:</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Same as <b>dump</b> and <b>restore</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">To use <b>rdump</b> to do a backup of a disk attached to a remote system, you must have permission to execute the <b>rsh</b> command as <b>root</b> on the computer that has the target output device attached to it. This permission is given by making an entry for your remote computer in the <b>/.rhosts</b> file. For example, if you're making a backup of a disk attached to the computer <b>bilbo</b> and will be sending the output file to a disk attached to the computer <b>gandalf</b>, you need an entry for <b>bilbo</b> in the <b>/.rhosts</b> file on <b>gandalf</b>. For more information, see the UNIX manual page for <b>.rhosts</b>.</font>
+
+<p><font face="Times" size="+1">You use <b>rdump</b> just as you would <b>dump</b>, except that you must always use the <b>f</b> option to specify the remote device. The <b>f</b> option is followed by an argument in the form <i>host</i>:<i>device</i>.</font>
+
+<p><font face="Times" size="+1">To restore data across a network that has been copied using <b>rdump</b>, use <b>rrestore</b>. The <b>rrestore</b> program operates almost identically to <b>restore</b>, except that you must always specify the remote device from which you are restoring the data. To do this, use the <b>f</b> key followed by an argument in the form <i>host</i>:<i>device</i>. You are then restoring data from the drive <i>device</i> on the computer <i>host</i>. (Again, make sure you have an appropriate entry in the <b>/.rhosts</b> file on the remote computer.)</font>
+
+<p><font face="Times" size="+1">Like <b>restore</b>, <b>rrestore</b> always restores data to the current directory. Consequently, before running <b>rrestore</b>, you need to log into the computer to which you're restoring data and change to the appropriate directory. If you're not sitting at the computer that will receive the data, you can log in using <b>rlogin</b> or <b>telnet</b>. For more information, see the UNIX manual pages for <b>rlogin</b> and <b>telnet</b>.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Examples Using rdump and rrestore</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">1.</font></td>
+
+<td><font face="Times" size="+1">Here's an example of a command that writes an incremental backup of <b>/dev/rsd2a</b> to the tape drive <b>/dev/nrst0</b> on the host <b>tserver</b>:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>rdump</b> <i>9</i><b>uf</b> <i>tserver:/dev/nrst0 /dev/rsd2a</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">2.</font></td>
+
+<td><font face="Times" size="+1">This example interactively restores from the tape in drive <b>/dev/rst0</b> on <b>tserver</b>:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>rrestore if</b> <i>tserver:/dev/rst0</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">For more information on <b>rdump</b> and <b>rrestore</b>, see the UNIX manual pages for <b>rdump</b>, <b>dump</b>, <b>rrestore</b>, and <b>restore</b>.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>The tar Program</b></font>
+
+<p><font face="Times" size="+1">The <b>tar</b> program takes multiple files and directories and stores them as a single large archive file. Its actions are controlled by a key argument. You can also specify file or directory names indicating which files to copy or restore.</font>
+
+<p><font face="Times" size="+1"><b>Advantages of tar:</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Can make copies of individual files and directories</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Fast</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Compatible with non-UNIX file systems (for example, you can use <b>tar</b> to copy from a DOS diskette, and then restore the data onto another DOS diskette)</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1"><b>Disadvantages of tar:</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Cannot perform more complex operations such as incremental backups</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Restricts file pathnames to 100 characters</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=34></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Warning:</b></font></td>
+
+<td><font face="Times" size="+1">Since <b>tar</b> can't handle multiple volumes, it should not be used if the material you're backing up doesn't fit on a single storage volume. Also, <b>tar</b> doesn't copy files with names longer than 100 characters. This is of particular note on NeXT computers because the names of some files can be very long.</font></td></tr>
+
+<tr valign=top>
+
+<td width=34 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=34></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">The <b>tar</b> command can be used with a variety of keys to control its operation. Here are some of the most frequently used:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>c</b> <i>filename</i>--Creates a new <b>tar</b> file and starts writing from its beginning. (By default, <b>tar</b> will read and write an external tape drive, <b>/dev/rxt0</b>.) If you specify a directory to copy, <b>tar</b> copies the entire directory structure, not just the top level.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>x</b> <i>filename</i>--Extracts the named file from the <b>tar</b> file. If you omit the <i>filename</i> argument, <b>tar</b> will restore the entire contents of the <b>tar</b> file. Be careful not to overwrite existing data with this key.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>p</b>--Preserves the permissions of extracted files.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>t</b>--Lists the contents of the <b>tar</b> file without actually extracting the files.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>h</b>--Causes <b>tar</b> to follow symbolic links (it will copy the file being pointed to, not just the link file).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>v</b>--Prints the name of each file as <b>tar</b> copies it. You can combine this with the <b>t</b> option to see even more information about the files.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">When making an archive using <b>tar c</b>, you can use either a <i>relative</i> or <i>absolute</i> pathname to specify the file or directory to be copied. If you use a relative pathname (that is, any path that doesn't begin with a &quot;/&quot;), you can later restore the files into any directory. If you use an absolute pathname (that is, a fully qualified pathname beginning with &quot;/&quot;), <b>tar</b> will <i>only</i> restore the copied files into the directory from which you originally copied them. In fact, <b>tar</b> restores all the directories in the path leading to the file (even if it has to create them) before restoring the actual file.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">To provide maximum flexibility when you restore files, it's highly recommended that you use relative pathnames when creating <b>tar</b> files.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Examples Using tar</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">1.</font></td>
+
+<td><font face="Times" size="+1">The following example illustrates how <b>tar</b> is used. Note that you can specify more than one file or directory on the command line. Start by changing to the directory from which you're going to copy the file or directory:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>cd</b> /</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>tar c</b> <i>./etc ./adm</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">This command copies the directories <b>./etc</b> and <b>./adm</b> onto the default device <b>/dev/rxt0</b>. Note that relative pathnames (beginning with &quot;./&quot;) are used to identify the directories to be copied.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">2.</font></td>
+
+<td><font face="Times" size="+1">To restore the entire contents of the archive, change to the directory where you want to restore them and enter the following:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>tar xp</b></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">Since you used a relative pathname when you made the backup copy, <b>tar</b> restores the backup into your current working directory. The <b>p</b> option preserves file permissions. Note that though <b>tar</b> attempts to restore the correct file permissions, it can't guarantee this.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">For more information, see the UNIX manual page for <b>tar</b>.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>The cpio Program</b></font>
+
+<p><font face="Times" size="+1">The name <b>cpio</b> stands for copy input to output. This command copies files into and out of a <b>cpio</b> archive. It uses the standard input as its source of file names and the standard output as the archive output. This means that you can combine <b>cpio</b> with standard UNIX commands (such as <b>find</b> or <b>ls</b>) to create a wide variety of specialized backups. For example, you can combine <b>find</b> and <b>cpio</b> to create a backup containing all the files owned by a particular user that were last modified over six weeks ago.</font>
+
+<p><font face="Times" size="+1"><b>Advantages of cpio:</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Can be used to copy and restore single files</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Can perform incremental backups</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Can be used to copy files meeting any condition (age, ownership, size, and so forth)</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1"><b>Disadvantages of cpio:</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Has a cryptic command syntax</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Doesn't make effective use of storage space</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Restricts pathnames to 128 characters</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Can't be used for backing up directories or files with symbolic links</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The <b>cpio</b> program uses two options for backups:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>-o</b> copies out an archive (to create a backup).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>-i</b> copies in an archive (to restore from a backup).</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Each of these primary options can be combined with additional options to further modify what <b>cpio</b> does. For a complete description of these options, see the UNIX manual page for <b>cpio</b>.</font>
+
+<p><font face="Times" size="+1">Unlike <b>dump</b> or <b>tar</b>, the <b>cpio</b> command isn't used by itself to create a backup copy. Instead, it gets a list of which files are to be copied from another UNIX command (typically <b>find</b> or <b>ls</b>). The arguments used with these UNIX commands determine which files and directories <b>cpio</b> will copy.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Examples Using cpio</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">1.</font></td>
+
+<td><font face="Times" size="+1">In the following example, <b>cpio -o</b> copies all files in the current directory into an archive. Notice how the output of the <b>ls</b> command becomes the input to <b>cpio</b>:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>ls | cpio -oB &gt;</b> <i>/dev/rxt0</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Helvetica" size="+1"><b>Important:</b></font>&nbsp; <font face="Times" size="+1">When sending output to tape devices (such as <b>/dev/rxt0</b>), be sure to use the <b>B</b> option, which causes <b>cpio</b> to use 5120 byte records. You must also use this option to restore the archive.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">2.</font></td>
+
+<td><font face="Times" size="+1">Here's a command that finds every file in <b>/NeXTLibrary/Documentation</b> that is not NFS-mounted, and then archives it:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>cd</b> /NeXTLibrary/Documentation</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>find . -depth -fstype 4.3 -prune -print | cpio -oB &gt;</b> <i>/dev/rxt0</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">For information about the <b>find</b> command, see the UNIX manual page.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">3.</font></td>
+
+<td><font face="Times" size="+1">To restore an entire archive, enter a command such as:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>cpio -idB &lt;</b> <i>/dev/rxt0</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">The <b>-d</b> option instructs <b>cpio</b> to create directories as needed during the restore.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">4.</font></td>
+
+<td><font face="Times" size="+1">The following command lists the contents of an archive in the long format listing.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>cpio -ivt &lt;</b> <i>/myfile</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">This command combines <b>cpio -i</b> with the <b>-t</b> option, which lists the table of contents of the input archive, and the <b>-v </b>option (for a verbose listing of file names, similar to the output of <b>ls -l</b>).</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">For more information about <b>cpio</b> and its use, see the UNIX manual pages for <b>cpio</b>, <b>find</b>, and <b>ls</b>.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>General Tips</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The biggest cause of concern when doing backups is the potential for human error. It's easy to overwrite valuable data if you're not paying attention. It's also easy to overlook making a backup, and live to regret it later. Here are some ways to avoid trouble:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Be sure to have a systematic backup routine and stick to it.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Check before performing a restore to make sure you're not going to overwrite important files as you read data back onto the disk. The riskiest commands to use in this regard are <b>restore r</b> (remember that <b>restore</b> always copies into the current directory), <b>rrestore r</b>, <b>tar x</b>, and <b>cpio -i</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Be especially aware of the hazards of typing errors when using backup programs such as <b>dump</b> and <b>restore</b>, since you can overwrite your disk. Try to avoid doing backups while logged in as <b>root</b>, if possible.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">If you're making a complete backup and know that you'll definitely be restoring from the backup later (for example, if you're making a backup as a preliminary to replacing a disk), it's best to do the backup twice. This protects against data corruption on one of the copies. It's also a good idea to verify that the backup was successful by reading the contents of the backup tape or disk.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Always label your backup copies carefully to avoid confusing them, and store them in a safe place.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">If users store valuable data on local disks not available to the usual server backup procedures, be sure to set up a backup routine for this data, or encourage the users to do so.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Be sure media write protection is turned off before attempting a backup.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Troubleshooting</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">What follows is a list of the error messages you're most likely to encounter with each of the backup programs.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Messages from dump and rdump</b></font>
+
+<p><font face="Times" size="+1">The following message appears if there's no tape drive on the computer you've specified to receive the data, or if there's an error in the way you specified the tape drive:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">DUMP:NEEDS ATTENTION: Cannot open tape. Do you want to retry the open?</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">If the computer you're using lacks an <b>/etc/fstab</b> file, you see the following message:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">DUMP: Can't open /etc/fstab for dump table information.</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Messages from rdump and rrestore</b></font>
+
+<p><font face="Times" size="+1">If you don't have remote access permission on either the system you're backing up or the tape drive server, you'll get a message such as the following:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">Permission denied.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">If you receive such a message, make appropriate entries for your system in the <b>/.rhosts</b> files on the systems denying access.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Messages from tar</b></font>
+
+<p><font face="Times" size="+1">A message such as the following appears if there is no tape drive on the computer you've specified to receive the data (using <b>tar c</b>), or if there's an error in the way you specified the tape drive:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">/dev/rxt0: No such tape or address.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">If you don't have <b>root</b> permission or don't belong to the <b>operator</b> group, you'll see a message such as the following:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">Cannot open /dev/rsd0a</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Messages from cpio</b></font>
+
+<p><font face="Times" size="+1">The <b>cpio</b> program has trouble with pathnames longer than 128 characters. If you exceed this length in a directory or file you are copying, <b>cpio</b> responds with a message such as:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">&lt;<i>toolongpathname</i>&gt;?</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">2936 blocks</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The <b>find</b> command is frequently paired with <b>cpio</b>. The <b>-ncpio</b> option can't be used with <b>find</b>. If you do, you'll get a message such as the following:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">find: bad option &lt;-ncpio&gt;</font>
+
+
+
+<p>
+
+</body>
+</html>

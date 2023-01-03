@@ -1,0 +1,1137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/EnterpriseObjects/Guide/Part3_Programming/11_ExploringModels.rtfd -->
+<!-- Date: Sun Jan  1 17:05:34 2023 -->
+<head>
+<title>11_ExploringModels</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+4" color="#FF00FF"><b>11</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<p><font face="Times" size="+4"><i>Exploring and Constructing Models</i></font>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">A model defines the mapping between the schema of the database and the enterprise objects that make up your application. Models are typically created with EOModeler; most applications don't need to know anything about the contents of a model beyond what is covered there. Some applications, however, need to do more with models. This chapter shows you how to write code that can explore and construct model objects.</font>
+
+<p><font face="Times" size="+1">You need to work with models programmatically if you're writing applications:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Whose operation varies depending on the structure of the database.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">That need to verify that the model is accurate with respect to the structure of the database.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">That need to be able to construct their own models.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">That work with database schemas or model files.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This chapter is organized into the following sections:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">&quot;The Contents of a Model.&quot; discusses the basic structure of a model.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">&quot;Exploring a Model.&quot; presents a sample program that displays the elements that make up a model.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">&quot;Building a Model from a Database Server's Data Dictionary.&quot; shows you how to extract model information from a data dictionary and build a model from that information (the techniques presented in this section can also be used when writing applications that verify the contents of a model file).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">&quot;Constructing a Model Programmatically.&quot; explains how to construct a model from scratch.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This chapter assumes that you've read Chapter 5, &quot;Using EOModeler.&quot; It doesn't assume that you know anything about connecting to the database, or how to fetch or update data.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>The Contents of a Model</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Models are made up of entities, attributes, relationships, and joins. Entity objects consist of attribute and relationship objects. Relationship objects, in turn, contain join objects that identify the entities and attributes that are linked by the relationship. These classes, and the connections between them, are illustrated in Figure 54. Note that although a double-headed arrow is used in Figure 54 to show the connection between EOJoin and EOAttribute objects, each EOJoin is linked to exactly two EOAttributes.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F0.gif" width=423 height=116></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 54</b></font><font face="Times" size="+1">.&nbsp; The Modeling Classes</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">The following table describes the database-to-object mapping provided in a model:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Database Element</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Class</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">Data Dictionary</font></td>
+
+<td><font face="Times" size="+1">EOModel</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">Table</font></td>
+
+<td><font face="Times" size="+1">EOEntity</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">Column</font></td>
+
+<td><font face="Times" size="+1">EOAttribute</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">Row</font></td>
+
+<td><font face="Times" size="+1">Enterprise object class (or EOGenericRecord,</font><br>
+<font face="Times" size="+1">if a custom enterprise object class isn't specified)</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">While the modeling classes correspond to elements in the physical database, a model represents a level of abstraction above the database. Consequently, the mapping between modeling classes and database components doesn't have to be one-to-one. So, for example, while an EOEntity object described in a model file corresponds to a database table, in reality it can contain references to multiple tables (using flattened properties). In that sense, it's actually more analogous to a database view. Similarly, an EOAttribute can either correspond directly to a column in the root entity, or it can be derived or flattened. A derived attribute typically has no corresponding database column, while a flattened attribute is added to one entity from another entity.</font>
+
+<p><font face="Times" size="+1">For more information on EOModel, EOEntity, EOAttribute, EORelationship, and EOJoin objects, see their respective class specifications in the <i>Enterprise Objects Framework Reference</i>.</td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Exploring a Model</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">You can programmatically extract information from a model about its contents. This is useful, for instance, if your code needs to dynamically construct SQL queries based on the structure of the data in the database (for more information on sending SQL directly to the database, see Chapter 10, &quot;Working Across Levels&quot;). Or, if you're writing tools that work with the model itself, or tools that work with the database using the model as a guide, you need to be able to programmatically explore the contents of the model.</font>
+
+<p><font face="Times" size="+1">To illustrate how to explore a model programmatically, the following program walks through a model file and lists the model's entities, along with each entity's attributes and relationships:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOModel *model;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSArray *modelEntities;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOEntity *anEntity;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSArray *entityAttributes;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAttribute *anAttribute;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSArray *entityRelationships;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EORelationship *aRelationship;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSArray *relationshipJoins;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOJoin *aJoin;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSDictionary *myConnectionInfo;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSEnumerator *entityEnum;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSEnumerator *attributeEnum;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSEnumerator *relationshipEnum;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSEnumerator *joinEnum;</font>
+
+<p><br><br>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">model = [[EOModel alloc] initWithContentsOfFile:</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">[EOModel findPathForModelNamed:@&#34;People&#34;]];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Display the name of the database. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">myConnectionInfo = [model connectionDictionary];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSLog(@&#34;Database: %@\n&#34;,</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">[myConnectionInfo objectForKey:@&#34;databaseName&#34;]);</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Walk through the model's entities, processing each one. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">modelEntities = [model entities];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">entityEnum = [modelEntities objectEnumerator];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">while (anEntity = [entityEnum nextObject]) {</font>
+
+<p><img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Display the name of the entity. */</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">NSLog(@&#34;%@\n&#34;, [anEntity name]);</font>
+
+<p><img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Walk through the entity's attributes, displaying the name of */</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* each attribute. */</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">NSLog(@&#34;&nbsp;&nbsp;&nbsp; Attributes:\n&#34;);</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">entityAttributes = [anEntity attributes];</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">attributeEnum = [entityAttributes objectEnumerator];</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">while (anAttribute = [attributeEnum nextObject]) {</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">NSLog(@&#34;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; %@\n&#34;, [anAttribute name]);</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Walk through the entity's relationships, and process them. */</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">NSLog(@&#34;&nbsp;&nbsp;&nbsp; Relationships:\n&#34;);</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">entityRelationships = [anEntity relationships];</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">relationshipEnum = [entityRelationships objectEnumerator];</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">while (aRelationship = [relationshipEnum nextObject]) {</font>
+
+<p><img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">/* Display the name of the relationship. */</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">NSLog(@&#34;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; %@\n&#34;, [aRelationship name]);</font>
+
+<p><img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">/* For each relationship, display the joins that make */</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">/* up the relationship. */</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">relationshipJoins = [aRelationship joins];</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">joinEnum = [relationshipJoins objectEnumerator];</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">while (aJoin = [joinEnum nextObject]) {</font>
+
+<p><img src="../../../../Images/sp.gif" width=208 height=1><font face="Courier">/* Display the name of the join's source attribute. */</font><br>
+<img src="../../../../Images/sp.gif" width=208 height=1><font face="Courier">NSLog(@&#34;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Key: %@\n&#34;,</font><br>
+<img src="../../../../Images/sp.gif" width=236 height=1><font face="Courier">[[aJoin sourceAttribute] name]);</font>
+
+<p><img src="../../../../Images/sp.gif" width=208 height=1><font face="Courier">/* Display the name of the destination entity for the */</font><br>
+<img src="../../../../Images/sp.gif" width=208 height=1><font face="Courier">/* relationship. */</font><br>
+<img src="../../../../Images/sp.gif" width=208 height=1><font face="Courier">NSLog(@&#34;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; To Entity: %@\n&#34;,</font><br>
+<img src="../../../../Images/sp.gif" width=236 height=1><font face="Courier">[[[aJoin destinationAttribute] entity] name]);</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">}</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">}</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The above code begins by creating a model object and initializing it from a model file. It then displays the name of the database to which the model applies (using Foundation's <b>NSLog()</b> function, to keep things simple). Note that this particular example only works for a Sybase database; the <b>databaseName</b> connection dictionary key isn't supported by the Oracle adaptors (for a list of the dictionary keys used to store connection information for the various adaptors, see &quot;The Connection Dictionary&quot; in Chapter 7, &quot;Connecting to the Database.&quot;</font>
+
+<p><font face="Times" size="+1">Once the model object is created and filled, the code runs through the model's list of entities. For each entity, it displays the name of the entity, and then enumerates the entity's attributes and its relationships, displaying their names. For each relationship, it also lists the relationship's joins, displaying the name of the attribute that represents the source key for the join and the name of the destination entity of the relationship.</font>
+
+<p><font face="Times" size="+1">The following is a portion of the output generated by the above program (after removing the time stamps and process IDs generated by <b>NSLog()</b>):</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">Database: PEOPLE</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">Department</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">Attributes:</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">departmentName</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">deptID</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">locationID</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">Relationships:</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">toFacility</font><br>
+<img src="../../../../Images/sp.gif" width=208 height=1><font face="Courier">Key: locationID</font><br>
+<img src="../../../../Images/sp.gif" width=208 height=1><font face="Courier">To Entity: Facility</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">Employee</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">Attributes:</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">address</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">city</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">deptID</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">empID</font>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Building a Model from a Database Server's Data Dictionary</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">EOAdaptorChannel provides a number of methods you can use to read the contents of a database server's data dictionary. The information thus obtained can then be used either to construct a model or to verify that an existing model is synchronized with the contents of the database server's data dictionary.</font>
+
+<p><font face="Times" size="+1">The methods you use to read this information for either of these purposes are:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=125></td>
+
+<td><font face="Times" size="+1">describeEntities</font><br>
+<font face="Times" size="+1">describeAttributesForEntity:</font><br>
+<font face="Times" size="+1">describeRelationshipsForEntity:</font><br>
+<font face="Times" size="+1">readTypesForEntity:</font><br>
+<font face="Times" size="+1">readTypeForAttribute:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The Sybase and Oracle adaptors don't provide methods for extracting primary key information from the database. Thus, unless your code supplies it, your model won't have any primary key information set for its entities. Without primary key information, your application can't read from or write to the database.</font>
+
+<p><font face="Times" size="+1">To programmatically construct a model based on information found in a database server's data dictionary, follow these basic steps:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Construct a minimal model, consisting of the database connection information and the name of the adaptor that is to be used to connect to your database. For information on connection dictionaries, see &quot;The Connection Dictionary&quot; in Chapter 7, &quot;Connecting to the Database.&quot;</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Open a channel (see Chapter 7, &quot;Connecting to the Database&quot; for more information).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Use <b>describeEntities</b> to obtain a list of entities available from the channel.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Enumerate through the list of entities, adding those entities to the model that are relevant to your application. As they are added, extract each entity's attributes and relationships from the data dictionary.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Set each entity's primary key.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The following code excerpt shows how to implement the first two steps for a Sybase database, given a connection dictionary:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSDictionary *myConnectionInfo;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOModel *myModel;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAdaptor *myAdaptor;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAdaptorContext *myAdaptorContext;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAdaptorChannel *myChannel;</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Build a minimal model for a Sybase database. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">myModel = [[EOModel alloc] initWithName:@&#34;MyModel&#34;];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[myModel setConnectionDictionary:myConnectionInfo];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[myModel setAdaptorName:@&#34;Sybase&#34;];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Open a channel to the database. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">myAdaptor = [EOAdaptor adaptorWithModel:myModel];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">myAdaptorContext = [myAdaptor createAdaptorContext];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">myChannel = [[myAdaptorContext createAdaptorChannel] retain];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[myChannel openChannel];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The following code shows the implementation of steps 3 and 4, filling in the model and fleshing out each entity:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSArray *allEntities;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOEntity *anEntity;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSArray *properties;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAttribute *anAttribute;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EORelationship *aRelationship;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSEnumerator *entityEnum;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSEnumerator *propEnum;</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Get a list of all of the available entities in the database. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">allEntities = [myChannel describeEntities];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Add each entity to the database. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">entityEnum = [allEntities objectEnumerator];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">while (anEntity = [entityEnum nextObject]) {</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">[myModel addEntity:anEntity];</font>
+
+<p><img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Add the entity's attributes to the entity. */</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">properties = [myChannel describeAttributesForEntity:anEntity];</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">propEnum = [properties objectEnumerator];</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">while (anAttribute = [propEnum nextObject]) {</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">[anEntity addAttribute:anAttribute];</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Add the entity's relationships to the entity. */</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">properties = [myChannel describeRelationshipsForEntity:anEntity];</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">propEnum = [properties objectEnumerator];</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">while (aRelationship = [propEnum nextObject]) {</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">[anEntity addRelationship:aRelationship];</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">}</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The above code loads the entire set of entities into memory by sending <b>describeEntities</b> to the channel. It then enumerates over those entities, adding each one to the model. While adding each entity to the model, it adds to each entity its attributes and relationships, obtained from the adaptor channel through the use of <b>describeAttributesForEntity:</b> and <b>describeRelationshipsForEntity:</b>, respectively (for more information on the use of these methods, see the EOAdaptorChannel class specification in the <i>Enterprise Objects Framework Reference</i>).</font>
+
+<p><font face="Times" size="+1">Note that this example doesn't set primary keys for each entity. How your code determines which attributes make up each entity's primary key is specific to your application (but the entity's primary key must match the one set in the database). Once these attributes have been identified, your code should add them to the array that identifies the entity's primary key.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Constructing a Model Programmatically</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Extracting a model from the database's data dictionary, as shown in the previous section, is one way to construct a model programmatically. Your applications can also construct their own models by creating entity, attribute, and relationship objects and putting them into a newly-created model.</font>
+
+<p><font face="Times" size="+1">The basic steps in creating your own model from scratch are:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Instantiate a model and fill in its connection dictionary (for information on connection dictionaries, see &quot;The Connection Dictionary&quot; on page 120).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Construct entity objects for the entities that are to make up your model, and add them to the model.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The following code excerpt shows step 1, the construction of a basic model:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSDictionary *myConnectionInfo;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOModel *myModel;</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">myModel = [[EOModel alloc] initWithName:@&#34;TestModel&#34;];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[myModel setConnectionDictionary:myConnectionInfo];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[myModel setAdaptorName:@&#34;Sybase&#34;];</font>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+2"><b>Constructing and Adding Entities</b></font>
+
+<p><font face="Times" size="+1">As shown in the previous section, the creation of the basic model is fairly simple. Constructing the entities that go into that model, however, is a little more involved. The basic procedure for constructing an entity is:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Instantiate the entity and give it a name.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Set the entity's external name, class name, and read-only status.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Set the entity's external query (optional).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Construct arrays for the entity's primary keys, class properties, and attributes used for locking. Add them to the entity.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Create attribute objects, and add them to the entity.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Create relationship objects (and any needed join objects), and add them to the entity.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The following example illustrates steps 1 through 4, above. For instructions on creating and adding attributes to the entity, see &quot;Constructing and Adding Attributes.&quot; Similarly, see &quot;Constructing and Adding Relationships&quot; for a discussion of creating and adding relationships to the entity.</font>
+
+<p><font face="Times" size="+1">This code excerpt illustrates the construction of an</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entity, corresponding to the &quot;EMPLOYEE&quot; database table. Data fetched from this table is stored in EOGenericRecords, as opposed to custom enterprise objects. Because the entity is declared read-only, the retrieved data cannot be changed and written back to the table.</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSMutableArray *empPrimaryKeys;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSMutableArray *empClassProps;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSMutableArray *empLockAttribs;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOEntity *empEntity;</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Construct the Employee entity. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">empEntity = [[[EOEntity alloc] initWithName:@&#34;Employee&#34;] autorelease];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[empEntity setExternalName:@&#34;EMPLOYEE&#34;];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[empEntity setClassName:&#34;EOGenericRecord&#34;];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[empEntity setReadOnly:YES];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Construct the various arrays and add them to the entity. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">empPrimaryKeys = [NSMutableArray array];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[empEntity setPrimaryKeyAttributes:empPrimaryKeys];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">empClassProps = [NSMutableArray array];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[empEntity setClassProperties:empClassProps];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">empLockAttribs = [NSMutableArray array];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[empEntity setAttributesUsedForLocking:empLockAttribs];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Set up the basic query here, if needed. */</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Add the Employee entity to the model. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[myModel addEntity:empEntity];</font>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Setting an Entity's External Query</b></font>
+
+<p><font face="Times" size="+1">When an external query is sent to the database, the data that's returned gets matched up with the attributes specified in the class properties array, in alphabetical order by internal name. Thus, you need to ensure that the order in which the data is requested by the query is the same order in which you add the corresponding attributes to the array of class properties, and that the query lists each attribute in the class properties array. If the attributes aren't added to the class properties array in the order specified in the external query, or if you omit attributes from the query that are present in the array, the received data will be incorrectly translated and stored within your enterprise object.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+1"><b>The Primary Key, Attributes Used for Locking, and Class Property Arrays</b></font>
+
+<p><font face="Times" size="+1">Each entity contains three arrays, used to identify the following:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The attributes that make up the primary key. At least one attribute should be added to this array, to guarantee that database rows can be uniquely identified and fetched. These attributes must be the same as those that make up the corresponding table's primary key.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The attributes that are used for locking when an update is performed (when optimistic locking is used). Typically, all attributes in an entity are used for locking. Note that performance will suffer, however, if you add a BLOB-type (binary large object) attribute to this array.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The properties that are class properties, and thus are fetched when you select objects that map to the entity. Relationships that are added to this array have fault objects created for them when an object is fetched for the entity (see the EOFault class specification in the <i>Enterprise Objects Framework Reference</i> for more information on fault objects).</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">As you construct each attribute for your entity, add the attribute to these arrays as appropriate.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Constructing and Adding Attributes</b></font>
+
+<p><font face="Times" size="+1">The following code excerpt shows how to construct and add a simple attribute to the</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entity:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAttribute *anAttribute;</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">anAttribute = [[[EOAttribute alloc] initWithName:@&#34;empID&#34;]&nbsp;&nbsp;&nbsp;&nbsp; autorelease];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[anAttribute setColumnName:@&#34;EMP_ID&#34;];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[anAttribute setExternalType:@&#34;int&#34;];&nbsp;&nbsp;&nbsp; /* Database specific. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[anAttribute setReadOnly:YES];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[anAttribute setValueClassName:&#34;NSNumber&#34;];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[anAttribute setValueType:@&#34;i&#34;];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[empEntity addAttribute:anAttribute];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[empPrimaryKeys addObject:anAttribute];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[empLockAttribs addObject:anAttribute];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[empClassProps addObject:anAttribute];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The attribute in the above example is part of the entity's primary key, as illustrated by the fact that it is added to the primary key array. It's also used for locking, and is one of the class properties.</font>
+
+<p><font face="Times" size="+1">Note the use of <b>setValueClassName:</b> to specify that the column's data is to be coerced to an NSNumber. Because an NSNumber could be a <b>float</b>, an <b>int</b>, and so on, <b>setValueType:</b> is used to specify that integer values are expected.</font>
+
+<p><font face="Times" size="+1">It isn't always necessary to send a <b>setValueType:</b> message to an attribute. The value type is only used in those situations where it isn't clear from the value class name how to interpret the value received from the database (such as with NSNumber, and with some custom value classes). If the value class is NSString, for example, there is no question of how to interpret the returned value, so you don't need to invoke <b>setValueType:</b>.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Constructing Date Attributes</b></font>
+
+<p><font face="Times" size="+1">When specifying a date attribute, set the value class name to NSCalendarDate and specify the format of the date as it comes from the database using <b>setCalendarFormat:</b>.</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[anAttribute setCalendarFormat:@&#34;%b %d %Y %H:%M&#34;];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">A date format is also used for parsing edited dates. Be sure to design your application so that users know the correct format for date entry.</font>
+
+<p><font face="Times" size="+1">Use EOAttribute's <b>setClientTimeZone:</b> and <b>setServerTimeZone:</b> methods to specify the relevant time zones for your date attribute.</font>
+
+<p><font face="Times" size="+1">For more information on constructing date attributes, see the EOAttribute class specification in the <i>Enterprise Objects Framework Reference</i> and the NSCalendarDate class specification in the <i>Foundation Kit Reference</i>.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Constructing Flattened Attributes</b></font>
+
+<p><font face="Times" size="+1">A flattened attribute is an attribute that you effectively add from one entity to another by traversing a relationship (see the Appendix, &quot;Entity-Relationship Modeling,&quot; for more information on flattened attributes). Constructing a flattened attribute isn't very different from constructing a simple attribute. The same steps apply, but keep the following in mind:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Flattened attributes don't correspond to a column in the current entity. Thus, you shouldn't specify a column name.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Flattened attributes can't be part of the entity's primary key, nor can they be used for locking.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Use EOAttribute's <b>setDefinition:</b> method to specify the definition for the attribute's value (for example, toJobTitle.title).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The relationship that has to be traversed in order to resolve the flattened attribute must exist in the completed entity. If the definition of the flattened attribute is</font> <font face="Helvetica" size="+1">toJobTitle.title</font><font face="Times" size="+1">, for instance, the current entity must contain a relationship named toJobTitle.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Flattened attributes are always read-only.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The following code shows how to construct and add a flattened attribute to the</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entity:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">anAttribute = [[[EOAttribute alloc] initWithName:@&#34;title&#34;]&nbsp;&nbsp;&nbsp;&nbsp; autorelease];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[anAttribute setExternalType:@&#34;varchar&#34;];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[anAttribute setValueClassName:&#34;NSString&#34;];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[anAttribute setDefinition:@&#34;toJobTitle.title&#34;];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[empEntity addAttribute:anAttribute];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[empClassProps addObject:anAttribute];</font>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+2"><b>Constructing and Adding Relationships</b></font>
+
+<p><font face="Times" size="+1">Relationships allow you to access data in a destination table that relates to data in the source table. For example, the name of the department in which an employee works can be located by traversing a relationship between an</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entity and a </font><font face="Helvetica" size="+1">Department</font> <font face="Times" size="+1">entity and then looking at the</font> <font face="Helvetica" size="+1">departmentName</font> <font face="Times" size="+1">attribute in the</font> <font face="Helvetica" size="+1">Department</font> <font face="Times" size="+1">entity.</font>
+
+<p><font face="Times" size="+1">Relationships can't be constructed arbitrarily; relationship objects must reflect an actual relationship defined between the corresponding tables in the database. In addition, both the source and destination entities must have primary keys defined.</font>
+
+<p><font face="Times" size="+1">Use the following procedure to construct a simple relationship:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Create the EOJoins that link the relationship's source and destination attributes.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Create a relationship object, and add the join objects created in step 1.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Specify whether the relationship is to-many or to-one.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Add the relationship to your entity.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Because the construction of a join requires that the two attributes it connects already exist, you typically construct all of the entities and their attributes for your model before you begin adding relationships.</font>
+
+<p><font face="Times" size="+1">Assuming that the two attributes needed by the join already exist, the following code sample shows how to construct a relationship and add it to your model, following the procedure outlined above:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAttribute *empAttribute;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAttribute *deptAttribute;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EORelationship *aRelationship;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOJoin *aJoin;</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">aJoin = [[[EOJoin alloc] initWithSourceAttribute:empAttribute</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">destinationAttribute:deptAttribute joinOperator:EOJoinEqualTo</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">joinSemantic:EOInnerJoin] autorelease];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">aRelationship = [[[EORelationship alloc] initWithName:@&#34;toDepartment&#34;]</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">autorelease];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[aRelationship addJoin:aJoin];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[aRelationship setToMany:NO];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[empEntity addRelationship:aRelationship];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[empClassProps addObject:aRelationship];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">For more information, see the EORelationship and EOJoin class specifications in the <i>Enterprise Objects Framework Reference</i>.</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

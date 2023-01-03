@@ -1,0 +1,838 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/EnterpriseObjects/Reference/1_AccessLayer/Classes/EODatabase.rtf -->
+<!-- Date: Sun Jan  1 17:05:18 2023 -->
+<head>
+<title>EODatabase</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>EODatabase</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Inherits From:</b></font></td>
+
+<td><font face="Times" size="+1">NSObject</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">eoaccess/EODatabase.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">An EODatabase represents a database, and consequently encapsulates all of the characteristics of that database, including its name, model, and connection (login) information. An EODatabase also uniques and makes snapshots of enterprise objects fetched from the server. Uniquing of fetched objects reduces memory consumption and allows all objects in a client application to immediately see changes when the uniqued enterprise object is updated or refetched. Snapshots are used by EODatabaseContext objects during updates; see the EODatabaseContext class specification for details on updating with snapshots. General information on uniquing is presented below.</font>
+
+<p><font face="Times" size="+1">An EODatabase uses one or more EODatabaseContext objects to manage transactions in the server. Each such object forms a separate transaction scope, and is in effect a separate logical user to the server. An EODatabaseContext uses one or more EODatabaseChannel objects to manage data operations (insert, update, delete, and fetch). Adaptors may support a limited number of contexts per database or channels per context, but an application is guaranteed at least one of each.</font>
+
+<p><font face="Times" size="+1">The EODatabase, EODatabaseContext, and EODatabaseChannel classes form the <i>database level</i> of the Enterprise Objects Framework, which operates in terms of enterprise objects. The database level is a client of the <i>adaptor level</i>, which operates in terms of dictionary objects and which is defined by the adaptor classes: EOAdaptor, EOAdaptorContext, and EOAdaptorChannel. The objects of the database level create their own corresponding adaptor objects, so you needn't ever use adaptor API when you're working at the database level. You do have access to the adaptor objects, however, should you need a feature available only in the adaptor level.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Connecting to the Server</b></font>
+
+<p><font face="Times" size="+1">An EODatabase doesn't keep a connection dictionary of its own as an EOAdaptor does. You normally create an EODatabase with an existing EOModel object, which in turn is usually defined with the EOModeler application (see the EOModel class specification for information on loading a model file). The EOModel contains information on which adaptor bundle it needs and also contains a connection dictionary. The following code excerpt shows one way you might set up a suite of database objects, given a model that's already been loaded:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOModel *myModel;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EODatabase *myDatabase;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EODatabaseContext *myContext;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EODatabaseChannel *myChannel;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAdaptor *myAdaptor;</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">myDatabase = [[EODatabase alloc] initWithModel:myModel];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">myContext =&nbsp; [[EODatabaseContext alloc] initWithDatabase:myDatabase];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">myChannel =&nbsp; [[EODatabaseChannel alloc]</font><br>
+<img src="../../../../../Images/sp.gif" width=159 height=1><font face="Courier">initWithDatabaseContext:myContext];</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">myAdaptor = [myDatabase adaptor];</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">if ([myAdaptor hasValidConnectionDictionary] == NO &amp;&amp;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">[myAdaptor runLoginPanelAndValidateConnectionDictionary] == NO) {</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Handle user canceling the panel... */</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">if ([myChannel openChannel] == NO) {</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Handle error... */</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The section beginning with the invocation of <b>hasValidConnectionDictionary</b> makes sure that the EODatabase's adaptor has the proper information needed to log in to the server. If the connection dictionary doesn't have valid information (for example, it's common to leave the user name and password unspecified in the model file), <b>runLoginPanelAndValidateConnectionDictionary</b> is invoked to allow the user to enter the necessary connection information. The invocation of <b>openChannel</b> at the end of the excerpt causes the application to form a connection to the database.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Uniquing</b></font>
+
+<p><font face="Times" size="+1">EODatabase can unique each object fetched by its channels, so that for any primary key value and entity there's only one enterprise object in memory (if any). Whenever a database channel fetches the data for a row, it checks with its database object to see if an enterprise object for that row's primary key has already been recorded. If so, it hands the row data to the enterprise object and returns the object; if not, it creates a new enterprise object for the fetched row, has the database object unique it, and then returns the unique enterprise object.</font>
+
+<p><font face="Times" size="+1">The enterprise objects uniqued by an EODatabase, along with cached snapshots of their values, form the global view of data for nearly every other part of the application. Uniqued enterprise objects suffer from no synchronization problems with regard to any other objects that may be examining them. This global view is only overridden locally by EODatabaseContexts, which form their own snapshots as they make changes during a transaction--the changes they make to uniqued enterprise objects are still immediately visible to the entire application. When a database context commits its top-level transaction, it reconciles all changed snapshots with the global view of the database object, so that other database contexts (except those with open transactions) immediately use the new snapshots as well.</font>
+
+<p><font face="Times" size="+1">Your application can explicitly handle the uniquing and snapshotting of enterprise objects, causing them to be uniqued before they would automatically be uniqued, or even removing them from the set of uniqued objects. To unique an enterprise object, you send the EODatabase a <b>recordObject:primaryKey:snapshot:</b> message. To remove it from the uniquing tables it you send <b>forgetObject:</b> or <b>forgetAllObjects</b>. To get the unique enterprise object for a given primary key, you use <b>objectForPrimaryKey:entity:</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Variables</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">None declared in this class.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Initializing new instances</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">initWithAdaptor:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">initWithModel:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Getting the adaptor</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">adaptor</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Getting the database contexts</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">contexts</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Checking connection status</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">hasOpenChannels</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Uniquing/snapshotting</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setUniquesObjects:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">uniquesObjects</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setKeepsSnapshots:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">keepsSnapshots</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">forgetAllObjects:</font><br>
+<font face="Times" size="+1">+ forgetObject:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">forgetObject:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">objectForPrimaryKey:entity:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">recordObject:primaryKey:snapshot:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">snapshotForObject:</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>forgetObject:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ (void)<b>forgetObject:</b><i>anEO</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sends <b>forgetObject:</b> to every EODatabase instance in the application with <i>anEO</i> as the argument. This causes each EODatabase to remove <i>anEO</i> from its uniquing tables and to destroy any snapshot associated with it.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>uniquesObjects</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>keepsSnapshots</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>adaptor</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(EOAdaptor *)<b>adaptor</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the EOAdaptor used by the EODatabase for communication with the database server. Your application can interact directly with the EOAdaptor, but should avoid altering its state (for example, by starting a transaction with one of its adaptor contexts).</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>contexts</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSArray *)<b>contexts</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the EODatabaseContexts managing transaction scopes for the EODatabase.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>forgetAllObjects</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>forgetAllObjects</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">If the EODatabase uniques objects, removes all objects from the receiver's uniquing tables. If the EODatabase keeps snapshots, also destroys all snapshots.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>uniquesObjects</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>keepsSnapshots</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>forgetObject:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>forgetObject:</b><i>anEO</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">If the EODatabase uniques objects, removes <i>anEO</i> from the receiver's uniquing tables, and if the EODatabase keeps snapshots also destroys the snapshot recorded under <i>anEO</i>'s primary key. An EODatabase invokes this method whenever an enterprise object uniqued by it is deallocated.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>uniquesObjects</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>keepsSnapshots</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>hasOpenChannels</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>hasOpenChannels</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if the database's adaptor has any open EOAdaptorChannels, NO otherwise.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>hasOpenChannels</b> (EOAdaptor),</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>openChannel</b> (EODatabaseChannel)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>initWithAdaptor:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>initWithAdaptor:</b>(EOAdaptor *)<i>anAdaptor</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Initializes a newly allocated EODatabase with <i>anAdaptor</i> as its adaptor and returns <b>self</b>. You should never associate more than one EODatabase with a given adaptor. In general, use <b>initWithModel:</b>, which automatically selects the adaptor. This is the designated initializer for the EODatabase class.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>initWithModel:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>initWithModel:</b>(EOModel *)<i>aModel</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Initializes a newly allocated EODatabase by creating an instance of EOAdaptor named in <i>aModel</i> and invoking <b>initWithAdaptor:</b>. Returns <b>self</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1">+ <b>adaptorWithModel:</b> (EOAdaptor),</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>adaptorName</b> (EOModel)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>keepsSnapshots</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>keepsSnapshots</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if the EODatabase keeps snapshots for all enterprise objects fetched by its database channels, NO if not. The default behavior is to keep snapshots.</font>
+
+<p><font face="Times" size="+1">If an EODatabase doesn't keep snapshots then none of the uniquing-snapshotting methods affect snapshots at all; for example, <b>recordObject:primaryKey:snapshot:</b> won't record a snapshot (though it may record the object). See the EODatabaseContext class specification for information on how snapshots are used.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>objectForPrimaryKey:entity:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>objectForPrimaryKey:</b>(NSDictionary *)<i>aKey</i> <b>entity:</b>(EOEntity *)<i>anEntity</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the unique enterprise object for <i>aKey</i> and <i>anEntity</i>, or <b>nil</b> if one can't be found.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>primaryKeyForRow:</b> (EOEntity),</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>uniquesObjects</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>recordObject:primaryKey:snapshot:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>recordObject:</b><i>anEO</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>primaryKey:</b>(NSDictionary *)<i>aKey</i></font><br>
+<font face="Times" size="+1"><b>snapshot:</b>(NSDictionary *)<i>aSnapshot</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">If the EODatabase uniques objects, records <i>anEO</i> under <i>aKey</i> so that it becomes the sole instance related to that key. If a record with the same key is fetched later, its data is applied to the unique instance, which is then returned to the requestor. Raises <b>NSInvalidArgumentException</b> when uniquing if <i>anEO</i> or <i>aKey</i> is <b>nil</b>.</font>
+
+<p><font face="Times" size="+1">If the EODatabase keeps snapshots, also records <i>aSnapshot</i> under <i>aKey</i>. Raises <b>NSInvalidArgumentException</b> when making a snapshot if <i>aSnapshot</i> is <b>nil</b> and <i>anEO</i> isn't a fault (see the EOFault class specification for information on faults).</font>
+
+<p><font face="Times" size="+1">There may already be a unique instance recorded for <i>anEO</i>'s key, so you shouldn't expect that the object you pass in to this method can be shared. To get the unique enterprise object created for <i>anEO</i>, use <b>objectForPrimaryKey:entity:</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>primaryKeyForRow:</b> (EOEntity),</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>uniquesObjects</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>keepsSnapshots</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setKeepsSnapshots:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setKeepsSnapshots:</b>(BOOL)<i>flag</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets according to <i>flag</i> whether the EODatabase keeps snapshots for fetched enterprise objects. If <i>flag</i> is NO, also deletes any existing snapshots. Raises <b>NSInvalidArgumentException</b> if the EODatabase has any open channels.</font>
+
+<p><font face="Times" size="+1">An EODatabase must be set to keep snapshots to allow updates across transactions. See the EODatabaseContext class specification for information on snapshots and updating.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>hasOpenChannels</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setUniquesObjects:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setUniquesObjects:</b>(BOOL)<i>flag</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets according to <i>flag</i> whether the EODatabase uniques fetched enterprise objects. If <i>flag</i> is NO, also forgets any uniqued enterprise objects. Raises <b>NSInvalidArgumentException</b> if the EODatabase has any open channels.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>hasOpenChannels</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>forgetObject:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>snapshotForObject:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSDictionary *)<b>snapshotForObject:</b><i>anEO</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the snapshot associated with <i>anEO</i>'s <b>id</b>, if there is one; otherwise returns <b>nil</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>keepsSnapshots</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>uniquesObjects</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>uniquesObjects</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if the EODatabase uniques fetched enterprise objects, NO if not. The default behavior is to unique objects.</font>
+
+<p><font face="Times" size="+1">If an EODatabase doesn't unique objects then none of the uniquing-snapshotting methods affect the uniquing tables at all; for example, <b>recordObject:primaryKey:snapshot:</b> won't record the object (though it may record a snapshot).</font></td></tr>
+
+</table>
+
+
+
+<p><br>
+
+</body>
+</html>

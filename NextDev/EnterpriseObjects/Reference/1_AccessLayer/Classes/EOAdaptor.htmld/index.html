@@ -1,0 +1,1257 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/EnterpriseObjects/Reference/1_AccessLayer/Classes/EOAdaptor.rtf -->
+<!-- Date: Sun Jan  1 17:05:16 2023 -->
+<head>
+<title>EOAdaptor</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>EOAdaptor</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Inherits From:</b></font></td>
+
+<td><font face="Times" size="+1">NSObject</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">eoaccess/EOAdaptor.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">An EOAdaptor represents a single connection to a database server, and is responsible for keeping login and model information, performing server-specific formatting of SQL expressions, and reporting errors. The EOAdaptor class also defines the methods that find and load adaptor bundles.</font>
+
+<p><font face="Times" size="+1">An EOAdaptor can manage several EOAdaptorContexts, each of which represents a transaction scope on the database server. An EOAdaptorContext can in turn manage several EOAdaptorChannels, each of which handles actual access to the data on the server. A newly created adaptor has no adaptor contexts; to create a new context send your adaptor a <b>createAdaptorContext </b>message. An adaptor for a particular database may support a limited number of contexts per adaptor object or channels per context, but an application is guaranteed at least one of each.</font>
+
+<p><font face="Times" size="+1">An EOAdaptorContext retains its adaptor when created and an EOAdaptorChannel retains its context, so when you create a set of these objects, you need only retain the channel for all objects to remain valid.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Creating an Adaptor and Connecting To The Server</b></font>
+
+<p><font face="Times" size="+1">You normally create an adaptor with an existing EOModel object, which in turn is usually defined with the EOModeler application (see the EOModel class specification for information on loading a model file). The EOModel contains the name of the adaptor bundle it needs, and also contains connection information so that an application can connect immediately without requiring the user to type a password.</font>
+
+<p><font face="Times" size="+1">This connection information is a dictionary containing items needed to connect to the database server, such as user name and password. The keys of this dictionary identify the information the server expects, and the values of those keys are the values that the adaptor will try when connecting. Different adaptors may use different keys; see your adaptor's documentation for keys it uses.</font>
+
+<p><font face="Times" size="+1">You can create a connection dictionary and assign it to your adaptor with the <b>setConnectionDictionary:</b> method, or you can have the adaptor run a login panel to get the information from the user. When you ask an adaptor to validate its connection dictionary with the <b>runLoginPanelAndValidateConnectionDictionary</b> message, it briefly forms a connection to confirm that the server will accept the values entered by the user. An adaptor doesn't form a lasting connection to the database server until it receives an <b>openChannel</b> message.</font>
+
+<p><font face="Times" size="+1">The following code excerpt shows one way to set up a suite of adaptor objects, given a model that's already loaded:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOModel *myModel;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAdaptor *myAdaptor;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAdaptorContext *myContext;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAdaptorChannel *myChannel;</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">myAdaptor = [EOAdaptor adaptorWithModel:myModel];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">myContext = [myAdaptor createAdaptorContext];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">myChannel = [[myContext createAdaptorChannel] retain];</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">if ([myAdaptor hasValidConnectionDictionary] == NO &amp;&amp;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">[myAdaptor runLoginPanelAndValidateConnectionDictionary] == NO) {</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Handle user canceling login panel... */</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">if ([myChannel openChannel] == NO) {</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Handle error... */</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The section beginning with the invocation of <b>hasValidConnectionDictionary</b> makes sure that the adaptor has the information needed to log in to the server. If the connection dictionary doesn't have valid information (for example, it's common to leave the user name and password unspecified in the model file), <b>runLoginPanelAndValidateConnectionDictionary</b> is invoked to allow the user to enter the necessary connection information. The invocation of <b>openChannel</b> at the end of the excerpt causes the application to form a connection to the database.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Formatting of SQL Expressions</b></font>
+
+<p><font face="Times" size="+1">An adaptor plays a role in the formatting of SQL for its database server. The <b>formatAttribute:</b> and <b>formatValue:forAttribute: </b>methods are automatically invoked in the generation of SQL to guarantee that references to attributes and their values are in proper form for the database server SQL interpreter. For example, a string value must be quoted before being sent to the server, so <b>formatValue:forAttribute:</b> adds the proper quotation and escape characters:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Unformatted</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Formatted</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">Tom's Diner</font></td>
+
+<td><font face="Times" size="+1">'Tom''s Diner'</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Similarly, an adaptor is responsible for knowing the formatting requirements of special database types, such as <b>money</b>, adding whatever characters or modifications are needed for proper representation of the value in SQL:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Unformatted</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Formatted</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">3000.00</font></td>
+
+<td><font face="Times" size="+1">$3000.00</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">You never normally invoke these formatting methods, but if you're creating your own adaptor you need to override them.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Notifying the Adaptor's Delegate</b></font>
+
+<p><font face="Times" size="+1">EOAdaptor offers a single delegate message: <b>adaptor:willReportError:</b>. This message allows an adaptor's delegate to handle error reporting on its own. All a delegate need do to receive this message is implement it; if the delegate doesn't respond to this message it's never sent. Server-specific adaptors may declare their own error-reporting delegate messages; an adaptor's documentation will include descriptions of any such messages.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Variables</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">None declared in this class.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types</b></font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Creating an EOAdaptor</font></td>
+
+<td><font face="Times" size="+1">+ adaptorWithModel:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font face="Times" size="+1">+ adaptorWithName:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">initWithName:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Getting an adaptor's name</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">name</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Setting connection information</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setConnectionDictionary:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">connectionDictionary</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">hasValidConnectionDictionary</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">runLoginPanel</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">runLoginPanelAndValidateConnectionDictionary</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Setting the model</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setModel:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">model</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Creating an adaptor context</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">createAdaptorContext</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Checking connection status</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">hasOpenChannels</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Getting adaptor-specific information</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=308></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">expressionClass</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">isValidQualifierType:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Formatting SQL</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">formatAttribute:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">formatValue:forAttribute:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Reporting errors</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">reportError:</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Setting the delegate</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setDelegate:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">delegate</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>adaptorWithModel:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ <b>adaptorWithModel:</b>(EOModel *)<i>aModel</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Creates and returns a new adaptor by extracting the adaptor name from <i>aModel</i>, sending <b>adaptorWithName:</b> to <b>self</b>, and assigning <i>aModel</i> and <i>aModel</i>'s connection dictionary to the new adaptor. A subclass of EOAdaptor shouldn't override this method.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>adaptorName:</b> (EOModel),</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setModel:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setConnectionDictionary:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>adaptorWithName:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ <b>adaptorWithName:</b>(NSString *)<i>name</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Creates and returns a new adaptor, sending it an <b>initWithName:</b> message and loading it from the bundle named <i>name</i>. Searches the application's main bundle, <b>~/Library/Adaptors</b>, <b>/LocalLibrary/Adaptors</b>, and <b>/NextLibrary/Adaptors</b>, in that order, for the first adaptor bundle whose base filename (that is, the filename without the <b>.dbadaptor</b> extension) matches <i>name</i>. For example, this code excerpt creates an adaptor from a bundle named <b>Acme.dbadaptor</b>:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAdaptor *myAdaptor = [EOAdaptor adaptorWithName:@&#34;Acme&#34;];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">A subclass of EOAdaptor shouldn't override this method.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>connectionDictionary</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSDictionary *)<b>connectionDictionary</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the adaptor's connection dictionary, or <b>nil</b> if the adaptor doesn't have one. The connection dictionary is also a property list (that is, it contains only NSString, NSData, NSDictionary, or NSArray objects). See the class description for information on connection dictionaries. A subclass of EOAdaptor doesn't need to override this method.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>createAdaptorContext</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(EOAdaptorContext *)<b>createAdaptorContext</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns a new EOAdaptorContext, or <b>nil</b> if a new context can't be created. A newly created EOAdaptor has no contexts. The new context retains the adaptor.</font>
+
+<p><font face="Times" size="+1">A subclass of EOAdaptor must properly override this method without invoking EOAdaptor's implementation.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>delegate</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>delegate</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the adaptor's delegate. A subclass of EOAdaptor doesn't need to override this method.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>expressionClass</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(Class)<b>expressionClass</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the subclass of EOSQLExpression used by the adaptor for query language expressions. You never directly invoke this method, but an adaptor subclass must override it without invoking EOAdaptor's implementation.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>formatAttribute:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>formatAttribute:</b>(EOAttribute *)<i>anAttribute</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns an expression object that formats <i>anAttribute</i> for SQL SELECT statements sent to the adaptor's database server. You never directly invoke this method, but an adaptor subclass must override it without invoking EOAdaptor's implementation.</font>
+
+<p><font face="Times" size="+1">Expression objects are described in the EOExpression informal protocol specification.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>expressionValueForContext:</b> (EOExpression informal protocol)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>formatValue:forAttribute:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>formatValue:</b><i>aValue</i> <b>forAttribute:</b>(EOAttribute *)<i>anAttribute</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns an expression object for <i>anAttribute</i> that can provide a <i>aValue</i> properly formatted for a SQL SELECT, INSERT, or UPDATE statement. The formatted value will contain properly quoted and escaped strings, dates in the server's expected form, and so on. You never directly invoke this method, but an adaptor subclass must override it without invoking EOAdaptor's implementation.</font>
+
+<p><font face="Times" size="+1">Expression objects are described in the EOExpression informal protocol specification.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>expressionValueForContext:</b> (EOExpression informal protocol)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>hasOpenChannels</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>hasOpenChannels</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if the adaptor has any open channels, NO otherwise. An adaptor subclass must override this method without invoking EOAdaptor's implementation.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>openChannel</b> (EOAdaptorChannel class)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>hasValidConnectionDictionary</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>hasValidConnectionDictionary</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if the adaptor can connect with its connection dictionary, NO otherwise. This method briefly forms a connection to the server and then closes it. A full connection is made when the first adaptor channel is sent an <b>openChannel</b> message.</font>
+
+<p><font face="Times" size="+1">An adaptor subclass must override this method without invoking EOAdaptor's implementation.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>initWithName:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>initWithName:</b>(NSString *)<i>name</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Initializes a newly allocated EOAdaptor subclass with <i>name</i>, which is usually the base filename (that is, the filename without the <b>.dbadaptor</b> extension) of the bundle that the adaptor is loaded from. Returns <b>self</b>.</font>
+
+<p><font face="Times" size="+1">This is the designated initializer for the EOAdaptor class. You can use this method to initialize an adaptor you've allocated yourself; however, you must use the <b>adaptorWithName:</b> or <b>adaptorWithModel:</b> class methods to create a new adaptor from a bundle.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>isValidQualifierType:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>isValidQualifierType:</b>(NSString *)<i>typeName</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if an attribute of type <i>typeName</i> can be used in a qualifier (a SQL WHERE clause) sent to the database server, otherwise returns NO. <i>typeName</i> is the name of a type as required by the database server, such as a Sybase &quot;varchar&quot; or an Oracle &quot;NUMBER&quot;.</font>
+
+<p><font face="Times" size="+1">An adaptor subclass must override this method without invoking EOAdaptor's implementation.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>model</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(EOModel *)<b>model</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the model that describes the adaptor's database schema. A suite of adaptor objects must have a model to fetch or manipulate rows; unless you'll be building a model programmatically, you should create your adaptor with a model using the <b>adaptorWithModel:</b> class method.</font>
+
+<p><font face="Times" size="+1">A subclass of EOAdaptor doesn't need to override this method.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>name</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSString *)<b>name</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the adaptor's name; this is usually the base filename of the bundle the adaptor was loaded from. For example, if an adaptor was loaded from a bundle named <b>Acme.dbadaptor</b>, this method returns &quot;Acme&quot;.</font>
+
+<p><font face="Times" size="+1">A subclass of EOAdaptor doesn't need to override this method.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1">+ <b>adaptorWithName:</b>, + <b>initWithName:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>reportError:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>reportError:</b>(NSString *)<i>error</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Adaptor-level objects send this message to their EOAdaptor to have errors reported to the user. The EOAdaptor first checks its delegate (if it has one) with <b>adaptor:willReportError:</b> to see if it will handle the error. If there is a delegate and it returns NO, the adaptor takes no further action.</font>
+
+<p><font face="Times" size="+1">If the delegate returns YES or doesn't respond to <b>adaptor:willReportError:</b>, the EOAdaptor tries to open an attention panel (this is only possible in a NEXTSTEP application). If there's no Application instance, it logs the error to the console or standard output.</font>
+
+<p><font face="Times" size="+1">A subclass of EOAdaptor doesn't need to override this method, but may provide a server-specific method that provides more information about errors.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>runLoginPanel</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSDictionary *)<b>runLoginPanel</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Runs the adaptor's login panel, allowing the user to enter new connection information, and returns that information without affecting the adaptor's connection dictionary. Returns <b>nil</b> if the user clicks Cancel on the login panel. The connection dictionary returned isn't validated by this method.</font>
+
+<p><font face="Times" size="+1">A subclass of EOAdaptor doesn't need to override this method.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>runLoginPanelAndValidateConnectionDictionary</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setConnectionDictionary:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4> </font><font face="Times" size="+1"><b>hasValidConnectionDictionary</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>runLoginPanelAndValidateConnectionDictionary</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>runLoginPanelAndValidateConnectionDictionary</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Runs the adaptor's login panel until the user enters valid connection information or clicks Cancel. Valid login information entered in the panel is stored in the adaptor's connection dictionary. This method briefly forms a connection with the server to verify the connection information. Returns YES if the connection dictionary is validated, NO if the user clicks Cancel in the login panel.</font>
+
+<p><font face="Times" size="+1">A subclass of EOAdaptor doesn't need to override this method.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>runLoginPanel</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setConnectionDictionary:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>hasValidConnectionDictionary</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setConnectionDictionary:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setConnectionDictionary:</b>(NSDictionary *)<i>aDictionary</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the adaptor's connection dictionary to <i>aDictionary</i>, which must be a property list (containing only NSString, NSData, NSDictionary, or NSArray objects). See the class description for information on connection dictionaries. Raises <b>NSInvalidArgumentException</b> if there are any open channels--you can't change connection information while the adaptor is connected.</font>
+
+<p><font face="Times" size="+1">A subclass of EOAdaptor doesn't need to override this method.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>hasOpenChannels</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>runLoginPanelAndValidateConnectionDictionary</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>hasValidConnectionDictionary</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setDelegate:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setDelegate:</b><i>anObject</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the adaptor's delegate to <i>anObject</i> and retains it. A subclass of EOAdaptor doesn't need to override this method.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setModel:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setModel:</b>(EOModel *)<i>aModel</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the model used by the adaptor to <i>aModel</i>. Doesn't set the connection dictionary, even if <i>aModel</i> has one; this prevents the adaptor's own connection dictionary from being unintentionally overwritten.</font>
+
+<p><font face="Times" size="+1">A subclass of EOAdaptor doesn't need to override this method.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setConnectionDictionary:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>connectionDictionary</b> (EOModel)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Methods Implemented by the Delegate</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>adaptor:willReportError:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>adaptor:</b>(EOAdaptor *)<i>adaptor</i> <b>willReportError:</b>(NSString *)<i>error</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">An adaptor sends this message to its delegate when an error has occurred. If the delegate returns YES or doesn't respond to this message, the adaptor opens an attention panel (or logs the error to the console if it isn't in a NEXTSTEP application). If the delegate returns NO the adaptor takes no further action. <i>error</i> is the string that will appear in the attention panel or console.</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

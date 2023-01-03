@@ -1,0 +1,689 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/EnterpriseObjects/Reference/_ApB_SybaseAdaptor/Classes/SybaseChannel.rtf -->
+<!-- Date: Sun Jan  1 17:05:29 2023 -->
+<head>
+<title>SybaseChannel</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>SybaseChannel</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Inherits From:</b></font></td>
+
+<td><font face="Times" size="+1">EOAdaptorChannel : NSObject</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">eoadaptors/Sybase/SybaseChannel.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">A SybaseChannel represents an independent communication channel to the database server its SybaseAdaptor is connected to. All of a SybaseChannel's operations take place within the context of transactions controlled or tracked by its SybaseContext. A Sybase adaptor context manages one channel, and a channel is associated with only one context.</font>
+
+<p><font face="Times" size="+1">The features SybaseChannel adds to EOAdaptorChannel are as follows:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Sybase-specific message and error handling</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Processing for compute rows and stored procedures</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Notifying the Sybase Channel's Delegate</b></font>
+
+<p><font face="Times" size="+1">All of the row-manipulation methods notify the adaptor channel's delegate before and after performing their operations. The SybaseChannel provides delegate methods for handling messages and errors, and for processing compute rows and stored procedures. These methods are described in the following sections.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Handling Messages and Errors</b></font>
+
+<p><font face="Times" size="+1">The delegate methods provided for handling messages and errors are, respectively, <b>sybaseChannel:willReportMessageWithNumber:msgState:severity:msgText:</b></font><br>
+<font face="Times" size="+1"><b>srvname:procname:lineno:</b> and <b>sybaseChannel:willReportErrorWithNumber:severity:osErr:dbErrText:</b></font><br>
+<font face="Times" size="+1"><b>osErrText:</b>. Note that the arguments for these methods reflect those defined for the call-back functions used by Sybase.</font>
+
+<p><font face="Times" size="+1">When the server returns a message or error, the adaptor checks the delegate of the affected channel to see if it implements the appropriate delegate method. If the delegate doesn't implement the method or if it returns a value of YES, the general reporting methods are called. If the delegate responds with NO, the message or error is suppressed. You can use the delegate methods to filter out messages and errors you don't want.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Processing Compute Rows and Stored Procedures</b></font>
+
+<p><font face="Times" size="+1">The delegate methods used for processing compute rows and stored procedures give you access to the three types of non-regular rows supported by Sybase: compute rows, return parameters (from a stored procedure), and status from a stored procedure. Because the access layer can only handle regular table rows, the Sybase adaptor channel normally skips non-regular rows. However, you can use the delegate methods to intercept non-regular rows before they are skipped. These delegate methods are <b>sybaseChannel:willFetchAttributes:forRowOfType:</b></font><br>
+<font face="Times" size="+1"><b>withComputeRowId: and sybaseChannel:willReturnRow:ofType:withComputeRowId:</b> The method <b>sybaseChannel:willFetchAttributes:...</b> is invoked when a row is fetched, while <b>sybaseChannel:willReturnRow:...</b> is invoked when a row is about to be returned. Based on the type of the row, the delegate can specify the appropriate behavior. This enables you to use data in one of the three non-regular row types and either extract the data from them or use the method <b>describeResults</b> to return an array of attributes that describe the properties available in the current result set. Using <b>describeResults</b> is appropriate if you're not concerned with format--for example, if you're just writing raw data to a report.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">The regular rows in the results from a stored procedure must map to the attributes in the corresponding entity, and must be in alphabetical order.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Variables</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">None declared in this class.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Logging messages and errors</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setLogsErrors:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">logsErrors</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setLogsMessages:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">logsMessages</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setSeverityLevelToIgnore:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">severityLevelToIgnore</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>logsErrors</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>logsErrors</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if the channel logs errors, NO if not. Errors are logged to the console. The default is YES.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>logsMessages</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ (BOOL)<b>logsMessages</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if the channel logs messages, NO if not. Messages are logged to the console. The default is YES.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setLogsErrors:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setLogsErrors:</b>(BOOL)<i>flag</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets according to <i>flag</i> whether the channel logs errors with severity greater than the specified severity level to ignore. Errors are logged to the console.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setLogsMessages:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setLogsMessages:</b>(BOOL)<i>flag</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets according to <i>flag</i> whether the channel logs messages with severity greater than the specified severity level to ignore. Messages are logged to the console.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setSeverityLevelToIgnore:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setSeverityLevelToIgnore:</b>(int)<i>severityLevel</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets according to <i>severityLevel</i> the severity level of messages and errors Sybase channels will ignore.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>severityLevelToIgnore</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(int)<b>severityLevelToIgnore</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the severity level of messages and errors that will be ignored by the default error and message handling routines. The default value for the severity level to ignore is 0.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Methods Implemented by the Delegate</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>sybaseChannel:willFetchAttributes:forRowOfType:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=125></td>
+
+<td><font face="Helvetica" size="+1"><b>withComputeRowId:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSArray *)<b>sybaseChannel:</b>(SybaseChannel *)<i>channel</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>willFetchAttributes:</b>(NSArray *)<i>attributes</i></font><br>
+<font face="Times" size="+1"><b>forRowOfType:</b>(SybaseRowType)<i>rowType</i></font><br>
+<font face="Times" size="+1"><b>withComputeRowId:</b>(int)<i>computeRowId</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked whenever a row is fetched. The delegate can return nil, which causes the row to be skipped, or can return a substitute set of attributes that is appropriate for the type of row being fetched. Delegates can have the channel fabricate a set of attributes for the current non-regular row by calling <b>describeResults</b>.</font>
+
+<p><font face="Times" size="+1">For example, the following implementation checks the row type; if it's a regular row, it simply returns the attributes. If it's not a regular row type, <b>describeResults</b> is used to return an array of attributes that describe the properties available in the current result set. Note that <b>describeResults</b> always describes the current row type.</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">- (NSArray *)sybaseChannel:(SybaseChannel *)channel</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">willFetchAttributes:(NSArray *)attributes</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">forRowOfType:(SybaseRowType)rowType</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">withComputeRowId:(int)computeRowId</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">{</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">if (rowType == SybaseRegularRow)</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">return attributes;</font>
+
+<p><img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">attributes = [(EOAdaptorChannel *) channel describeResults];</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">return attributes;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>sybaseChannel:willReturnRow:ofType:withComputeRowId:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>sybaseChannel:</b>(SybaseChannel *)<i>channel</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>willReturnRow:</b>(NSDictionary *)<i>row</i></font><br>
+<font face="Times" size="+1"><b>ofType:</b>(SybaseRowType)<i>rowType</i></font><br>
+<font face="Times" size="+1"><b>withComputeRowId:</b>(int)<i>computeRowId</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked once a row has been read from the database and packaged into the dictionary. Delegates can return YES to cause the row to be returned from <b>fetchAttributes:WithZone:</b>, or they can return NO to cause the row to be skipped.</font>
+
+<p><font face="Times" size="+1">For example, the following implementation checks each row type and uses <b>NSLog()</b> to output a message describing the row's type. In this example all rows are returned, but you could use this template to selectively return or not return rows based on type.</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">- (BOOL)sybaseChannel:(SybaseChannel *)channel</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">willReturnRow:(NSDictionary *)row ofType:(SybaseRowType)rowType</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">withComputeRowId:(int)computeRowId</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">{</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">switch (rowType) {</font><br>
+<img src="../../../../../Images/sp.gif" width=156 height=1><font face="Courier">case SybaseRegularRow:</font><br>
+<img src="../../../../../Images/sp.gif" width=184 height=1><font face="Courier">break;</font><br>
+<img src="../../../../../Images/sp.gif" width=156 height=1><font face="Courier">case SybaseComputeRow:</font><br>
+<img src="../../../../../Images/sp.gif" width=184 height=1><font face="Courier">NSLog(@&#34;Returning compute row&#34;);</font><br>
+<img src="../../../../../Images/sp.gif" width=184 height=1><font face="Courier">break;</font><br>
+<img src="../../../../../Images/sp.gif" width=156 height=1><font face="Courier">case SybaseReturnParameterRow:</font><br>
+<img src="../../../../../Images/sp.gif" width=184 height=1><font face="Courier">NSLog(@&#34;Returning return parameter row&#34;);</font><br>
+<img src="../../../../../Images/sp.gif" width=184 height=1><font face="Courier">break;</font><br>
+<img src="../../../../../Images/sp.gif" width=156 height=1><font face="Courier">case SybaseReturnStatusRow:</font><br>
+<img src="../../../../../Images/sp.gif" width=184 height=1><font face="Courier">NSLog(@&#34;Returning return status row&#34;);</font><br>
+<img src="../../../../../Images/sp.gif" width=184 height=1><font face="Courier">break;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">return YES;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>sybaseChannel:willReportErrorWithNumber:severity:osErr:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=125></td>
+
+<td><font face="Helvetica" size="+1"><b>dbErrText:osErrText:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>sybaseChannel:</b>(SybaseChannel *)<i>channel</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>willReportErrorWithNumber:</b>(int)<i>dbErr</i></font><br>
+<font face="Times" size="+1"><b>severity:</b>(int)<i>severity</i></font><br>
+<font face="Times" size="+1"><b>osErr:</b>(int)<i>osErr</i></font><br>
+<font face="Times" size="+1"><b>dbErrText:</b>(char *)<i>dbErrText</i></font><br>
+<font face="Times" size="+1"><b>osErrText:</b>(char *)<i>osErrText</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked when the server returns an error. If the delegate returns YES or doesn't respond to this message, the adaptor opens an attention panel (or logs the error to the console if it isn't in a NEXTSTEP application). If the delegate returns NO the adaptor takes no further action.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>sybaseChannel:willReportMessageWithNumber:msgState:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=125></td>
+
+<td><font face="Helvetica" size="+1"><b>severity:msgText:srvname:procname:lineno:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>sybaseChannel:</b>(SybaseChannel *)<i>channel</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>willReportMessageWithNumber:</b>(int)<i>msgNo</i></font><br>
+<font face="Times" size="+1"><b>msgState:</b>(int)<i>msgState</i></font><br>
+<font face="Times" size="+1"><b>severity:</b>(int)<i>severity</i></font><br>
+<font face="Times" size="+1"><b>msgText:</b>(char *)<i>msgText</i></font><br>
+<font face="Times" size="+1"><b>srvname:</b>(char *)<i>srvname</i></font><br>
+<font face="Times" size="+1"><b>procname:</b>(char *)<i>procname</i></font><br>
+<font face="Times" size="+1"><b>lineno:</b>(int)<i>lineno</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked when the server returns a message. If the delegate returns YES or doesn't respond to this message, the adaptor opens an attention panel (or logs the error to the console if it isn't in a NEXTSTEP application). If the delegate returns NO the adaptor takes no further action. <i>msgText</i> is the string that appears in the attention panel or console.</font></td></tr>
+
+</table>
+
+
+
+<p><br>
+
+</body>
+</html>

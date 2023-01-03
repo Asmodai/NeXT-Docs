@@ -1,0 +1,3197 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextAdmin/10_Large.rtfd -->
+<!-- Date: Sun Jan  1 13:56:33 2023 -->
+<head>
+<title>10_Large</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Release 3.3 Copyright</font> &copy;<font face="Times">1994 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap><font face="Helvetica" size="+4"><b>10</b></font></td>
+
+<td><font face="Times" size="+4"><i>Configuring a Large Network</i></font></td></tr>
+
+<tr valign=top>
+
+<td width=36 height=80></td></tr>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">If you have a large network, the basic configuration supplied by SimpleNetworkStarter probably won't be sufficient to meet your needs. Two features of large networks call for additional configuration. First, with a large number of computers (more than about 20 or 30), you may want to organize administrative information into multiple NetInfo domain levels to keep things more manageable. Second, large networks are frequently made up of several smaller physical networks distributed among different locations. This chapter describes how to set up a multilevel NetInfo domain hierarchy and how to configure a NetInfo network distributed among different locations.</font></td></tr>
+
+<tr valign=top>
+
+<td width=36 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1"><b>Important:</b>&nbsp; A small mistake made during the initial configuration of a large network can result in many hours of corrective work. Before beginning your work, read this chapter thoroughly, along with Chapter 1, &quot;Using This Manual to Plan Your Network;&quot; Chapter 2, &quot;Setting Up a NetInfo Network;&quot; and Chapter 3, &quot;NetInfo Networking.&quot; Also see the Summer 1993 issue of In Focus magazine which is dedicated to the underpinnings of NetInfo, on line in the System Administrator's bookshelf.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Background</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">This section discusses how information searches are performed, how domains are identified, and how the NetInfo domain hierarchy is configured.</font>
+
+<p><font face="Times" size="+1">As you've already seen, each NEXTSTEP computer runs <b>netinfod</b> server processes for one or more NetInfo domains. Each domain is implemented by one or more databases that contain data in binary form. Each database has a <i>tag</i> name: the tag <b>local</b> denotes the database in <b>/etc/netinfo/local.nidb</b> and the tag <b>network</b> denotes the database in <b>/etc/netinfo/network.nidb</b>.</font>
+
+<p><font face="Times" size="+1">A <b>netinfod</b> server provides access to the data in a particular database and runs in memory as a process with the database tag: thus <b>netinfod local</b> is the server providing access to the <b>/etc/netinfo/local.nidb</b> database and the <b>netinfod network</b> server provides access to the <b>/etc/netinfo/network.nidb</b> database.</font>
+
+<p><font face="Times" size="+1">The data structure for any NetInfo database is that of a directory tree. Each directory may have properties (made up of <b>keys</b> and <b>values</b>), and each directory may have subdirectories.</font>
+
+<p><font face="Times" size="+1">If a domain has multiple databases, only one is the <i>master</i> database, all others are <i>clone</i> databases which are copies of the master. The <i>master</i> database is specified by the <b>master</b> property in the root directory, which has as its <i>key</i> the word &quot;master&quot; and as its <i>value</i> the name of the computer and the tag of the database for the domain that is the master. In other words, the <i>master</i> property specifies the computer and database <i>tag</i> of the <i>master</i> database for a domain. The <i>master</i> database is the database to which changes are made. The <i>clone</i> databases are copies of the master, and the <i>master database server</i> for a domain updates the clones to match the current state of the <i>master</i> database.</font>
+
+<p><font face="Times" size="+1">The domain name is almost always different from the tag names of the databases. Thus, because all databases of a domain are identical, it is simplest to think of the domain as having the directory and property structure.</font>
+
+<p><font face="Times" size="+1">The local domain is served by the <b>netinfod</b> whose tag is <b>local</b>. The tag <b>local</b> is reserved for this use. Data searches in the NetInfo domain hierarchy begin with the domain tagged <b>local</b>.</font>
+
+<p><font face="Times" size="+1">The domains are organized into a <i>parent-child hierarchy</i> of two or more levels. A <i>two-level hierarchy</i> has a root domain and one or more local domains. A <i>three-level hierarchy</i> has a root domain that has as its children one or more mid-level domains that have as their children one or more local domains at the bottom level.</font>
+
+<p><font face="Times" size="+1">Client processes request information about network resources from domains. A particular <b>netinfod</b> server for that domain searches its database and responds if it can. Searches for information begin at the local domain and then pass up the hierarchy, stopping when the root domain has been searched.</font>
+
+<p><font face="Times" size="+1">The secret to the relationship between domain parents and children is found in the subdirectories of the <b>/machines </b>directories, and the means of this relationship is <i>binding</i>.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Binding</b></font>
+
+<p><font face="Times" size="+1">When a NEXTSTEP system boots, it starts up <b>netinfod</b> server processes for each database that is stored on that computer. Each <b>netinfod</b> server process links itself into the hierarchy of NetInfo domains. This process is called <i>binding</i> and is controlled by the <b>serves</b> property of host entries in the NetInfo <b>/machines</b> directory.</font>
+
+<p><font face="Times" size="+1">As part of the boot procedure, the <b>nibindd</b> process starts up a <b>netinfod</b> process for each database in the <b>/etc/netinfo </b>directory.</font>
+
+<p><font face="Times" size="+1">Then <b>nibindd</b> listens for requests from <b>netinfod</b> processes asking for parents. A request for a parent includes the Internet address of the computer running the requesting <b>netinfod</b> process as well as the tag of the requesting <b>netinfod </b>process and the tag of the parent. When <b>nibindd</b> gets such a request, it checks for a running <b>netinfod</b> with the specified parent tag. If there is no match, <b>nibindd</b> ignores the request. If it finds one, <b>nibindd</b> passes the request to the <b>netinfod </b>process with that tag.</font>
+
+<p><font face="Times" size="+1">To see if it is indeed the requester's parent, the <b>netinfod</b> process checks the <b>/machines</b> directory of its domain for a subdirectory which has an Internet address and tag matching the requester. If there is no match, <b>netinfod</b> ignores the request. If it finds a match, it sends an acknowledging response to the computer running the requesting <b>netinfod </b>process.</font>
+
+<p><font face="Times" size="+1">Note that binding is automatic for all local domains. The <b>netinfod</b> process for a local domain issues a request for a parent during its startup procedures. This is not true for upper-level domains. A <b>netinfod</b> process for a mid-level domain will issue a request to bind to a parent only in response to a request that it find its parent. Generally, such a request comes from the <b>lookupd</b> process as it handles searches up the domain hierarchy.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>The serves Property</b></font>
+
+<p><font face="Times" size="+1">In the subdirectories of the <b>/machines</b> directory the <b>serves</b> property contains information that <b>netinfod</b> processes use to contact other <b>netinfod</b> processes. The values of a <b>serves</b> property can record three types of relationships between servers: parents, children, and other servers for the same domain.</font>
+
+<p><font face="Times" size="+1">Follow these steps to examine the various <b>serves</b> properties (if you don't yet have a network configured, just examine the local domain):</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Start up NetInfoManager.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">In the local domain window, click <b>/machines</b>, then <b>broadcasthost</b>. Double-click <b>broadcasthost</b> to open the Directory window.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>serves</b>.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F10.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">Notice the value <b>../network</b>. This means that the server for this domain can contact a server for the parent domain (<b>..</b>) by sending a message to whichever computer is described by this directory, looking for a <b>netinfod network </b>process. The requesting process will bind to the first server that replies to the request.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>ip_address</b>.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F11.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">The value <b>255.255.255.255</b> is the broadcast address. Any messages sent to this address will be sent to all computers on the local network, including the computer that sends the message. See Appendix C, &quot;Internet Addressing,&quot; for more information.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Close the Directory window and double-click <b>localhost</b> in the local domain window. Click <b>serves</b> in the Directory window.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F12.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">Notice the value <b>./local</b>. This indicates that the host <b>localhost</b> runs a server process for the current domain (<b>.</b>) with a database tagged <b>local</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>ip_address</b>.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F13.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">The value <b>127.0.0.1</b> is the loopback address. Any messages sent to this address will be handled by the local computer without being sent to the network.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Open from the Domain menu and open the root domain. Click <b>machines</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>8.</b></font></td>
+
+<td><font face="Times" size="+1">Click the host name of the root domain server under the <b>/machines</b> directory, then double-click it to open the Directory window.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>9.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>serves</b>.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F14.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">The value <b>./network</b> indicates that this computer runs a server process for the current domain (<b>.</b>) from a database tagged <b>network</b>. The value <b>earth/local</b> means that this host also runs a server process for the child domain <b>earth </b>from a database tagged <b>local</b>. Note that this child's domain name, <b>earth</b>, is relative to the name of the current domain. Because this domain is the root domain, the child domain here will be named <b>/earth</b>.</font>
+
+<p><font face="Times" size="+1">Note that the syntax of the values for the <b>master</b> property and the <b>serves</b> property appears identical, but the fields have different meanings. The syntax for the <b>master</b> property is <i>hostname/databasetag</i>, and the syntax for the <b>serves </b>property is <i>domain/databasetag</i>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1"><b>Important:</b>&nbsp; The name of a domain is determined by the <b>serves</b> property of the host entry in the <i>parent</i> domain. By convention, local domains are given the same name as the computer serving the domain. For example, the name of the local domain for the computer named <b>mars</b> in the example network is called <b>/mars</b>.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Example master and serves Properties</b></font>
+
+<p><font face="Times" size="+1">In an example two-level domain hierarchy, a computer named <b>earth</b> runs the <i>master server</i> for the root domain, and a computer named <b>pluto</b> runs a <i>clone server</i> for the root domain (a <i>clone server</i> provides read-only access to a domain). In this case, <b>pluto</b> stores and serves an exact copy of the root domain from a database tagged <b>network</b>. The master server of a domain is identified by the property <b>master</b> in the root (<b>/</b>) NetInfo directory of that domain.</font>
+
+<p><font face="Times" size="+1">Here, the <b>master</b> property has the value <b>earth/network</b> (notice the tagged domain notation), indicating that the master is the NetInfo server with the database tagged <b>network</b> running on the computer named <b>earth</b>. The server with the tag <b>network</b> running on <b>pluto</b> can tell from this property that it is a clone server and that the server process with the tag <b>network</b> running on <b>earth</b> is the master.</font>
+
+<p><font face="Times" size="+1">The values of the various <b>serves</b> properties identify the parent and children of the domains. The entries for <b>broadcasthost</b> and for <b>localhost</b> are identical in each local domain. The <b>serves</b> property for <b>localhost</b> indicates that it runs a server process for the current domain (<b>.</b>) with a database tagged <b>local</b>. The <b>serves</b> property for <b>broadcasthost </b>indicates that it runs a server process for the current domain's parent domain (<b>..</b>) with a database tagged <b>network</b>.</font>
+
+<p><font face="Times" size="+1">The root domain contains host entries for each of the three computers. From these entries, you can see that <b>mars</b> runs a server process for the domain <b>/mars</b> with a database tagged <b>local</b>. The <b>serves</b> property for <b>pluto</b> indicates that it runs a server process for the domain <b>/pluto</b> with a database tagged <b>local</b> as well as running a server process for the current domain (<b>.</b>) from a database tagged <b>network</b>. The <b>serves</b> property for <b>earth</b> shows that it also runs a server process for the current domain with a database tagged <b>network</b>, as well as the domain <b>/earth</b> with the database tagged <b>local</b>. The <b>master</b> property indicates <b>earth</b> runs the master server of the current (root) domain, which means <b>pluto</b> must run a clone server.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>netinfod Startup and Binding</b></font>
+
+<p><font face="Times" size="+1">The following steps walk through the process of how NetInfo starts up and a server of a domain binds to a server of its parent domain.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">1.</font></td>
+
+<td><font face="Times" size="+1">As the computer boots, a line in <b>/etc/rc</b> starts the NetInfo binding daemon, <b>nibindd</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">2.</font></td>
+
+<td><font face="Times" size="+1">The <b>nibindd</b> process looks in <b>/etc/netinfo</b> for directories with names in the form <i>tag</i><b>.nidb</b>. For each directory <b>nibindd</b> finds, it starts a <b>netinfod</b> process to serve data from the database. Each <b>netinfod</b> runs with an argument matching the tag for the NetInfo database it's serving.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td><font face="Times" size="+1">For example, <b>mars</b> has a directory named <b>/etc/netinfo/local.nidb</b>, so a <b>netinfod</b> process is started with the tag <b>local</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">3.</font></td>
+
+<td><font face="Times" size="+1">Each <b>netinfod</b> examines its <b>/machines</b> NetInfo directory for subdirectories that include a <b>serves</b> property with a value in the form <b>../</b><i>tag</i>. This value indicates that the host represented by this directory runs a server for the parent NetInfo domain (<b>..</b>) from a database named <i>tag</i>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td><font face="Times" size="+1">To continue the example, on the host <b>mars</b>, the entry <b>/machines/broadcasthost</b> has a <b>serves</b> property with the value <b>../network</b>. It's the only entry with a value of the <b>serves</b> property in the form <b>../</b><i>tag</i>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">4.</font></td>
+
+<td><font face="Times" size="+1">A special message called a <i>bind request</i> is sent to the Internet address associated with each <b>/machines</b> entry with an appropriate <b>serves</b> value (<b>../</b><i>tag</i>). The bind request includes the sender's Internet address, the tag of the <b>netinfod </b>looking for its parent, and the tag of the parent domain server.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td><font face="Times" size="+1">The value of the <b>ip_address</b> property for <b>broadcasthost</b> is <b>255.255.255.255</b> (the generic local broadcast address), so the bind request is broadcast to all the hosts on the local area network.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">5.</font></td>
+
+<td><font face="Times" size="+1">Each computer that receives the bind request passes it to <b>nibindd</b>, which checks to see if there is a <b>netinfod </b>running for the requested parent domain. If there is, the request is forwarded to the appropriate <b>netinfod</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td><font face="Times" size="+1">The <b>nibindd</b> processes on <b>earth</b> and <b>pluto</b> each find that there is, indeed, a <b>netinfod</b> process running for the tag <b>network</b>. The bind request is passed on to the <b>netinfod network</b> on each computer.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">6.</font></td>
+
+<td><font face="Times" size="+1">The receiving <b>netinfod</b> checks the <b>/machines</b> NetInfo directory for entries that have an <b>ip_address</b> property with a value that matches the sender's Internet address as well as a <b>serves</b> property with a value of the form <i>domain/tag</i>, where <i>tag</i> matches the tag of the <b>netinfod</b> looking for its parent.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td><font face="Times" size="+1">The <b>netinfod</b> processes on both <b>earth</b> and <b>pluto</b> find the entry <b>/machines/mars</b> with an <b>ip_address</b> property that has a value matching the Internet address of <b>mars</b>. The host entry in each case also includes a <b>serves </b>property with the value <b>mars/local</b>; <b>local</b> matches the tag of the requestor (<b>netinfod local</b>).</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">7.</font></td>
+
+<td><font face="Times" size="+1">If the receiving <b>netinfod</b> finds a host entry with appropriate values, a response is sent to the sender's Internet address indicating that the receiving computer can serve the parent domain.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td><font face="Times" size="+1">The <b>netinfod network</b> processes on <b>earth</b> and <b>pluto</b> each send a response to <b>netinfod local</b> on <b>mars</b> indicating that they can serve the parent domain.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">8.</font></td>
+
+<td><font face="Times" size="+1">The <b>netinfod</b> looking for its parent binds to the first server to respond.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td><font face="Times" size="+1">Assuming that the <b>netinfod network</b> process on <b>earth</b> was busy responding to other NetInfo requests, the <b>netinfod network</b> process on <b>pluto</b> might have responded first. In that case, the <b>netinfod local</b> on <b>mars</b> binds to the <b>netinfod network</b> on <b>pluto</b> as its parent domain server.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Times" size="+1">9.</font></td>
+
+<td><font face="Times" size="+1">If the <b>netinfod</b> for a child domain later checks in with its parent domain server and the parent server doesn't respond within a specific period of time, the child once again sends a bind request. This is called &quot;rebinding.&quot;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td><font face="Times" size="+1">If the <b>netinfod network</b> on <b>pluto</b> doesn't respond quickly enough, the <b>netinfod local</b> on <b>mars</b> sends a new bind request, starting at step 3.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Planning</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">As with any endeavor, it's important to plan your network before beginning configuration. Chapters 1 and 2 of this manual present a broader list of considerations. Here are some things to consider when planning for a large network:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Equipment--If your network is made up of multiple physical networks (each called a <i>subnet</i>), you'll need additional equipment. Specifically, you'll need routers (or gateways) to route messages from one network to the next, and some kind of connection between routers. These connections might be, among other things, cables strung through the walls, buried fiber-optic cables between buildings, or dedicated phone lines leased from your phone company. See Chapter 1 for more information.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Addresses--Make sure you have an appropriate network address. It's highly recommended that you register your address and Internet Domain name with the Network Information Center. If you'll be using subnets, decide on a subnet mask and assign a network address to each subnet. For more information on obtaining a network address and subnetting, see Appendix C, &quot;Internet Addressing.&quot;</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">NetInfo Domains--Decide if you need a three-level domain hierarchy, or if you need one with even more levels (more than three levels is rarely necessary). Choose a name for each midlevel domain, then decide on which computers to put master and clone servers for each domain. Decide in which domain user accounts, aliases, NFS mounts, and other administrative information should be stored. If you'll be using subnets, you'll probably want a domain for each subnet.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Considerations for Subnets</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">If your network is configured using subnets, several points to consider are:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Broadcast messages aren't passed on by routers. Because NEXTSTEP systems get their host name and Internet address at boot time by sending a broadcast message, make sure that each subnet has a configuration server. See &quot;Creating New Midlevel Domains&quot; later in this chapter.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Information requests to the root domain can be frequent, and traffic over the router is slower than local traffic. It's a good idea to have a clone server for the root domain in each subnet. See &quot;Creating Clone Servers&quot; later in this chapter.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">If you have configured network time service (and you should), consider having a clone time server in each subnet. You can have the midlevel domain server be the clone time server as well. For details, see Chapter 3.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Previewing the Result</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">When you set up a multilevel domain hierarchy, the most critical aspect is the location and values of host entries and <b>serves</b> properties in the immediate subdirectories of the <b>/machines</b> directory for each domain. Five critical rules that you must follow when you create your new hierarchy are:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Each domain must, in its /machines directory, have host entries for the computers that run NetInfo server processes for each of its children. Each host entry must have a <b>serves</b> property with the value <i>domain</i>/<i>tag</i>, where <i>domain</i> is the name of the child domain and <i>tag</i> is the tag of the child server process' database.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Each domain must have a host entry for the computers that run NetInfo servers for its parent domain. These host entries must have a <b>serves</b> property with the value <b>../</b><i>tag</i>, where <i>tag</i> is the tag of the parent server's database. If there are any clone servers for the parent domain, there must be an entry for each clone server as well as for the master (unless <b>broadcasthost</b> is used to identify the parent domain servers).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Each domain must have a host entry for each server (master or clone) of the domain. These host entries must have a <b>serves</b> property with the value <b>./</b><i>tag</i>, where <i>tag</i> is the tag of the current domain database.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">If a domain has host entries for computers that don't run NetInfo servers for the parent domain, for a child domain, or for this domain, then the host entries must <i>not</i> include the <b>serves</b> property. Inappropriate <b>serves</b> properties can cause a server to bind to the wrong parent or not bind at all.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">In order for your hosts to communicate with each other, they must each have access to host entries for the other computers. The root domain should have a host entry for each computer on the network. Except for midlevel and root domain servers, these host entries must not have a <b>serves</b> property.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Another way to state these rules is: in the host entries of the <b>/machines</b> directory of any given domain, there should only be <b>serves</b> properties for the parent domain (<b>../</b><i>tag</i>), the current domain (<b>./</b><i>tag</i>), and the children of the current domain (<i>domain/tag</i>). The root domain doesn't have a parent, and local domains don't have children.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Information Access</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Each domain has exactly one parent (except the root domain) and zero or more children.</font>
+
+<p><font face="Times" size="+1">Any given computer has access to the information stored in its local domain (the lowest level), the root domain (the highest level), and all intervening domains between the local domain and the root domain.</font>
+
+<p><font face="Times" size="+1">When a process requests information from NetInfo, the search begins in the local domain, then continues up the domain hierarchy until the information is found or the root domain is reached. If no information is in any domain, the search ends. Note that the search does not extend down from the root into parallel branches.</font>
+
+<p><font face="Times" size="+1">For example, when a user attempts to log into a computer, the <b>loginwindow</b> process makes a request, searching for the account information for the user. The local domain is searched first. If the account isn't found there, the search continues in the domain that is the parent, one level above the local domain. If the account isn't found there, the search continues in the next higher domain, and so on up to the highest level domain (the root domain). If the user's account information is found in any domain, the NetInfo search ends.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>From Two to Three Domain Levels</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">This section discusses the task of combining two small two-level networks into a single three-level network. The diagrams show domain relationships. The tables detail the relevant properties in the root directory and <b>/machines </b>subdirectories.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Two Two-Level Networks</b></font>
+
+<p><font face="Times" size="+1">The following diagram shows two (very small) two-domain level networks of three computers each. Names in the boxes are domain names.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F4.gif" width=600 height=141></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The following table shows the <b>master</b> properties for the root directories and shows the <b>name</b>, <b>serves</b>, and <b>ip_address </b>properties for the <b>/machines</b> directories for each root domain in the figure.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F7.gif" width=294 height=265></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The network of <b>mercury</b>, <b>venus</b>, and <b>earth</b> is composed of the three local domains for each computer (<b>/mercury</b>, <b>/venus</b>, and <b>/earth</b>) with its top-level domain tagged <b>network</b> on <b>earth</b> (i.e., the root domain is instantiated by the <b>/etc/netinfo/network.nidb</b> database on <b>earth</b>). Similarly, the network of <b>mars</b>, <b>jupiter</b>, and <b>saturn</b> is composed of local domains for each computer (<b>/mars</b>, <b>/jupiter</b>, and <b>/saturn</b>) with its top-level domain tagged <b>network</b> on <b>mars</b> (i.e., the root domain is instantiated by the <b>/etc/netinfo/network.nidb</b> database on <b>mars</b>).</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>One Three-Level Network</b></font>
+
+<p><font face="Times" size="+1">The following diagram shows the same computers as in the previous diagram. However, they have now been merged into a single three-level domain hierarchy.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F0.gif" width=737 height=199></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The new network retains the local domains on all computers, retains the databases tagged <b>network</b> on <b>earth</b> and <b>mars </b>(renaming those domains as <b>/admin</b> and <b>/sales</b>, respectively), and adds a new top-level domain tagged <b>solar</b> (running the master on <b>earth</b> and a clone on <b>mars</b>). Thus all computers store <b>/etc/netinfo/local.nidb</b> databases, and <b>mars</b> and <b>earth</b> additionally store <b>/etc/netinfo/network.nidb</b> as well as <b>/etc/netinfo/solar.nidb</b> databases.</font>
+
+<p><font face="Times" size="+1">To accomplish the transformation, as system administrator you can ignore all the local domains, but you have to modify some of the subdirectories of the <b>/machines</b> directory (the <b>serves</b> properties) of the mid-level domains. (In addition, you should move all users to the root domain and consider specifying other resources such as printers and fax modems in the root domain as well.) The following sections explore these aspects in more detail.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Directories of the New Root Domain</b></font>
+
+<p><font face="Times" size="+1">The following table presents the salient directories and their properties for the root domain for the new network configuration.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F1.gif" width=344 height=402></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The <b>master</b> property shows that the <b>netinfod solar</b> process on <b>earth</b> is the <i>master NetInfo server</i> for the root domain.</font>
+
+<p><font face="Times" size="+1">The <b>/machines</b> directory of the root domain contains subdirectories for all computers comprising the network. Each subdirectory of the <b>/machines</b> directory contains properties that are used to structure the network: the <b>name</b>, the <b>ip_address</b>, and the <b>serves</b> properties.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>The name and ip_address Properties</b></font>
+
+<p><font face="Times" size="+1">Each subdirectory of the <b>/machines</b> directory specifies the computer name as the value of its <b>name</b> property as well as the computer's Internet address as the value of its <b>ip_address</b> property. Entering appropriate values for these properties is how you, the system administrator, bestow a name and Internet address on a computer.</font>
+
+<p><font face="Times" size="+1">A <b>netinfod</b> process requesting access to a computer looks in the <b>/machines</b> directory for a subdirectory with a matching name. The <b>name</b> property of that subdirectory provides that value (the <b>name</b> property value <b>jupiter</b> specifies the <b>/machines/jupiter</b> subdirectory). Within the subdirectory for a computer, the <b>ip_addres</b>s property value provides the Internet address for the computer, which the <b>netinfod</b> process uses for its communication (thus <b>netinfod</b> associates the <b>name</b> value <b>jupiter</b> with the <b>ip_address</b> value 192.42.172.66).</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>The serves Property of the /machines Subdirectories</b></font>
+
+<p><font face="Times" size="+1">The <b>serves</b> property in a subdirectory of the <b>/machines</b> directory provides domain relationship information.</font>
+
+<p><font face="Times" size="+1">The general form for the value of the <b>serves</b> property is <i>domain_name/database_tag</i>. This syntax associates the domain name with a particular database. The fact that a particular <b>serves</b> property is in a particular subdirectory of the <b>/machines</b> directory associates the domain (and its database instance) with a particular computer.</font>
+
+<p><font face="Times" size="+1">Using the relative directory naming conventions of UNIX, the <b>.</b> domain specifies the current domain and the <b>..</b> domain specifies the parent of the current domain. Thus the <b>serves</b> property value <b>./solar</b> associates the <b>/etc/netinfo/solar.nidb</b> database with the current domain.</font>
+
+<p><font face="Times" size="+1">If a text string other than <b>.</b> or <b>..</b> is specified for the domain name, the syntax identifies that string as the domain name for a child of the current domain. Thus the <b>serves</b> property value <b>admin/network</b> specifies that a <b>netinfod</b> server with a tag <b>network</b> runs on the associated computer, providing information for the child domain <b>admin</b>.</font>
+
+<p><font face="Times" size="+1">That the <b>/machines/earth</b> subdirectory has a <b>serves</b> property with two values, <b>./solar</b> and <b>admin/network</b>, specifies that there are two <b>netinfod</b> processes running on the computer <b>earth</b>: <b>netinfod solar</b> for the current (root) domain and <b>netinfod network</b> for the <b>admin</b> domain (a child of the root domain, specified absolutely as the <b>/admin</b> domain).</font>
+
+<p><font face="Times" size="+1">Note that there is no mechanism for specifying a grandchild or a grandparent domain (nor is there a need to).</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Summary and Review</b></font>
+
+<p><font face="Times" size="+1">Putting things together, the <b>master</b> property of the root directory specifies a computer name and database tag for the <i>master NetInfo server</i> of that domain. This distinguishes the one, true master from any <i>clone servers</i> for the same domain running on other computers. The subdirectories of the <b>/machines</b> directory associate a computer name and a particular Internet address and any information about <b>netinfod</b> servers running for parent, current, or child domains.</font>
+
+<p><font face="Times" size="+1">For this example, in the root directory of the root domain, the <b>master</b> property with the value <b>earth/super</b> specifies that for this domain the <i>master NetInfo server</i> is <b>netinfod super</b> running on the computer named <b>earth</b>.</font>
+
+<p><font face="Times" size="+1">The <b>/machines/earth</b> subdirectory associates the <b>name</b> property value <b>earth</b> with the <b>ip_address</b> property value 192.42.172.2. The <b>serves</b> values <b>./super</b> and <b>admin/network</b> specify that on <b>earth</b> the <b>netinfod super</b> process serves the current domain and the <b>netinfod network</b> process serves the <b>admin</b> domain.</font>
+
+<p><font face="Times" size="+1">The <b>/machines/mars</b> subdirectory associates the <b>name</b> property value <b>mars</b> with the <b>ip_address</b> property value 192.42.172.65. The <b>serves</b> values <b>./super</b> and <b>sales/network</b> specify that on <b>mars</b> the <b>netinfod super</b> process serves the current domain and the <b>netinfod network</b> process serves the <b>sales</b> domain.</font>
+
+<p><font face="Times" size="+1">The <b>serves</b> properties show that <b>earth</b> and <b>mars</b> both run servers of the root domain. <b>mars</b> runs a <i>clone server</i> for the root domain (the <b>/etc/netinfo/solar.nidb</b> database on <b>earth</b> is read/write and the <b>/etc/netinfo/solar.nidb</b> database on <b>mars</b> is read only). <b>earth</b> and <b>mars</b> also both run servers for the children of the root domain, <b>/admin</b> and <b>/sales</b>, respectively; the processes are <b>netinfod network</b> in both cases.</font>
+
+<p><font face="Times" size="+1">The fact that the other subdirectories of the <b>/machines</b> directory don't have <b>serves</b> properties simply means that any <b>netinfod</b> processes running on those computers do not have a parent, current, or child relationship to this domain. You cannot infer any other domain information (though in fact, you can be reasonably sure the those computers are running <b>netinfod local</b> processes). Again, the syntax for the <b>serves</b> property allows you to specify a parent, current, or child domain only. As this domain is the root domain, it has no parent, and any local domains exist below the child level of this (current) domain, so they cannot be specified in this domain.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>The /admin and /sales Domains</b></font>
+
+<p><font face="Times" size="+1">Now that a new root domain has merged the <b>/admin</b> and <b>/sales</b> domains into a single network, what has changed in these domains? The following tables show salient directories and properties for the <b>/admin</b> and the <b>/sales</b> domains for the new network. Remember that the <b>/admin</b> domain governs the computers <b>earth</b>, <b>mercury</b>, and <b>venus</b> and that the <b>/sales</b> domain governs the computers <b>mars</b>, <b>jupiter</b>, and <b>saturn</b>.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F3.gif" width=296 height=339></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>The master Property of the /admin Domain</b></font>
+
+<p><font face="Times" size="+1">The root directory for the <b>/admin</b> domain has a <b>master</b> property showing that the <i>master NetInfo server</i> for the <b>/admin </b>domain is the <b>netinfod networ</b>k process running on <b>earth</b>, which is the same NetInfo server that had formerly served one of the root domains before the merger.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>The /machines Subdirectories</b></font>
+
+<p><font face="Times" size="+1">Each subdirectory of the <b>/machines</b> directory has a <b>name</b> and <b>ip_address</b> property to specify a particular computer as well as <b>serves</b> properties with at least one value. Examining the differences in the <b>serves</b> property values reveals the <b>local</b> domains as well as the hierarchical relationships for all domains of the network.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>The serves Properties</b></font>
+
+<p><font face="Times" size="+1">The <b>/machines/earth</b> subdirectory shows that the computer <b>earth</b> runs three <b>netinfod</b> processes. The <b>../solar</b> value means that a <b>netinfod solar</b> process serves the parent of the current domain. The <b>./network</b> value means that a <b>netinfod network</b> process serves the current domain, i.e., the <b>/admin</b> domain. The <b>earth/local</b> value means that a <b>netinfod local</b> process serves the child domain, i.e., the <b>earth</b> domain (specified absolutely as the <b>/admin/earth </b>domain).</font>
+
+<p><font face="Times" size="+1"><b>Note:</b>&nbsp; Again, the syntax of the <b>serves</b> property's value is <i>domain_name/database_tag</i> where the <i>domain_name</i> is expressed relative to the current domain: the parent domain is the <b>..</b> domain, the current domain is the <b>.</b> domain, and a child domain is expressed by a text string, in this case &quot;earth&quot;. Specifying a name for the <i>domain_name</i> is the way you name the domain.</font>
+
+<p><font face="Times" size="+1"><b>Note:</b>&nbsp; Generally the name for a computer matches the domain name for the <b>netinfod local</b> for that computer. Although we strongly discourage this practice to avoid confusion, you can mismatch the names. An example would be setting a <b>name</b> property value of <b>neptune</b> and a <b>serves</b> property value of <b>uranus/local</b> to create a <b>/machines/neptune </b>subdirectory for a computer running a <b>netinfod local</b> process serving the <b>uranus</b> domain.</font>
+
+<p><font face="Times" size="+1">The <b>/machines/mars</b> subdirectory shows only the <b>../solar</b> value for its <b>serves</b> property. Remember that the computer named <b>mars</b> is not a member of the <b>/admin</b> domain. The reason for including it here is to ensure that computers in the <b>/admin</b> domain can find either parent (the <b>netinfod solar</b> process running either on <b>earth</b> or on <b>mars</b>).</font>
+
+<p><font face="Times" size="+1">The <b>/machines/venus</b> subdirectory has for its <b>name</b> property the value of <b>venus</b>. Its <b>serves</b> property has the value of <b>venus/local</b>. Thus the computer named <b>venus</b> runs a <b>netinfod local</b> process for the <b>/admin/venus</b> domain.</font>
+
+<p><font face="Times" size="+1">Similarly the <b>name</b> property of <b>mercury</b> names the <b>/machines/mercury</b> subdirectory for a computer with an Internet address of <b>192.42.172.3</b> that runs a <b>netinfod local</b> process for the <b>/admin/mercury</b> domain.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Comparing the /admin and /sales Domains</b></font>
+
+<p><font face="Times" size="+1">You can examine the <b>/sales</b> domain to see the same relationships that exist in the <b>/admin</b> domain, with some interesting observations.</font>
+
+<p><font face="Times" size="+1">The <b>master</b> property of the root directory of the <b>/sales</b> domain has as its value <b>mars/network</b> which specifies a computer named <b>mars</b> running a <b>netinfod network</b> process as the <i>master NetInfo server</i> for the <b>/sales</b> domain.</font>
+
+<p><font face="Times" size="+1">The <b>/machines/mars</b> subdirectory names <b>mars</b> at <b>192.42.172.65</b> as running a <b>netinfod solar</b> process for the parent domain.</font>
+
+<p><font face="Times" size="+1"><b>Note:</b>&nbsp; There is no way to tell at this level whether <b>earth</b> or <b>mars</b> runs the <i>master NetInfo server</i> for the root domain -- you'll have to inspect the root directory of the root domain to see the value of its <b>master</b> property.</font>
+
+<p><font face="Times" size="+1">The <b>/machines/earth</b> subdirectory names <b>earth</b> at 192.42.172.3 as running a <b>netinfod solar</b> process for the parent domain. While <b>earth</b> is not a member of the <b>/sales</b> domain, it runs a server for the parent domain (which we know to be the root domain of the network), and its entry ensures that processes requesting information from the parent domain may find what they need either from the <b>netinfod solar</b> process running on <b>mars</b> or from the <b>netinfod solar</b> process running on <b>earth</b>.</font>
+
+<p><font face="Times" size="+1">The <b>/machines/jupiter</b> and the <b>/machines/saturn</b> subdirectories show that a computer named <b>jupiter</b> at 192.42.172.66 runs a <b>netinfod local</b> process for the <b>/sales/jupiter</b> domain and that a computer named <b>saturn</b> at 192.42.172.67 runs a <b>netinfod local</b> process for the <b>/sales/saturn</b> domain.</font>
+
+<p><font face="Times" size="+1">To illustrate the search pattern, a search originating with a process on <b>jupiter</b> first looks at the <b>/sales/jupiter</b> domain. Failing there it looks in the <b>/sales</b> domain. Failing there it looks in the <b>/</b> domain. Failing there, the search fails. Never does the search extend to the <b>/admin</b> domain or the child domains of the <b>/admin</b> domain. Thus the children of the two domains are isolated from each other, the benefit being security and appropriate resource allocation.</font>
+
+<p><font face="Times" size="+1"><b>Note:</b>&nbsp; Nowhere in the <b>/admin</b> or in the <b>/sales</b> domains do the strings &quot;admin&quot; or &quot;sales&quot; exist. Each domain gets its name from its parent domain, in this case the root domain. If you check the root domain, you'll find the source in the <b>/machines/earth</b> and the <b>/machines/mars</b> subdirectories with <b>serves</b> property values for <b>admin/network</b> and <b>sales/network</b>.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Migrating Resources to the New Root Domain</b></font>
+
+<p><font face="Times" size="+1">This example network is pretty small. Originally it had been two separate networks, each with three computers (and probably three or four users each). The new network merges the two networks, with the benefits of shared resources such as email, file sharing, printer sharing, and so on. A NetInfo network provides an important additional benefit -- uniformity.</font>
+
+<p><font face="Times" size="+1">If you leave all other aspects of the domains alone, you won't make use of the new possibilities. Consider moving the users' account information from their original domains to the root domain. This entails moving user account information (with UserManager) from the <b>/admin</b> and the <b>/sales</b> domains (the <b>/etc/netinfo/network.nidb</b> databases) to the root domain (the <b>/etc/netinfo/solar.nidb</b> database).</font>
+
+<p><font face="Times" size="+1">Remember, when a user logs in, the login verification (loginwindow) process searches the local domain, then the mid-level domain, then the root domain. If some users have account information in the <b>/admin</b> domain, they won't be able to log into a computer in the <b>/sales</b> domain, for the search will move up from the local domain to the <b>/sales</b> domain to the root domain but will not search down the <b>/admin</b> branch.</font>
+
+<p><font face="Times" size="+1">Users with account information in the root domain will be able to log in to any computer and access their home directories on the home directory server. This uniform network feature can be extremely useful on a network scattered over several sites (some NetInfo networks include several thousand seats in domains all over the world).</font>
+
+<p><font face="Times" size="+1">You may also want to specify printers, fax-modems, and other resources in the root domain rather than in the <b>/admin</b> or <b>/sales</b> domains. Users, printers, and other resources specified in the root domain are accessible throughout the network and have the benefit of the clone backup on <b>mars</b> (in case <b>earth</b> experiences a power failure or is otherwise unaccessible).</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Overview of Procedures</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">How you set up your network depends on what you're starting with. You might be starting from scratch and setting up the entire network at once. You might already have several small networks and now want to connect them together into a large network. Or, you might have a single network that you want to organize into several NetInfo domains. This section provides a general description of the procedures to follow in each situation. References are made to complete instructions, which are all in the section &quot;Building the Hierarchy&quot; later in this chapter.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=34></td>
+
+<td nowrap><font face="Times" size="+1"><b>Warning:</b></font></td>
+
+<td><font face="Times" size="+1">Do <i>not</i> reboot any computer except when the procedures say to do so. Rebooting at the wrong time will make domains bind to the wrong parent or not bind at all.</font></td></tr>
+
+<tr valign=top>
+
+<td width=34 height=30></td></tr>
+
+<tr valign=top>
+
+<td width=34></td>
+
+<td nowrap></td>
+
+<td><font face="Helvetica" size="+2"><b>Starting from Scratch</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=34 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=34></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">If you don't have any existing networks, the easiest procedure is set up several small networks and then combine them into one domain hierarchy. Even if your network won't be made up of physically separate networks, configure each midlevel domain and its clients as a separate network, then connect them and create the top-level domain.</font></td></tr>
+
+<tr valign=top>
+
+<td width=34 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=34></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">These are the procedures to use if you're starting from scratch:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Use SimpleNetworkStarter to configure several small networks, following the instructions in Chapter 2, &quot;Setting Up a NetInfo Network.&quot; The master server for the second level domain of each small network will eventually be a midlevel domain server. Configure each small network to include the computers that you want to be children of that midlevel domain. If each smaller network will be a subnet, configure routing and set a netmask as you build each network. Follow the instructions in &quot;Configuring Routing and Setting a Netmask.&quot;</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Create a new top-level domain and rename the former root domain of the current small network, following the procedures in &quot;Creating a New Root Domain.&quot;</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Incorporate the root domain of each of the other smaller networks into the new hierarchy as midlevel domains. Follow the instructions in &quot;Incorporating Midlevel Domains.&quot;</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Copy host entries from the midlevel domains to the new root domain and delete various <b>serves</b> properties. See the section &quot;Transferring Host Entries to the Root Domain.&quot;</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Reboot the computers.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Create appropriate clone servers, following the procedures in &quot;Creating Clone Servers.&quot;</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Multiple Existing Networks</b></font>
+
+<p><font face="Times" size="+1">If you already have existing networks, simply connect them together and create a new root domain. These are the procedures to follow if you're starting with multiple networks:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">If each existing network will be a subnet, use HostManager to configure routing and set a netmask. Follow the instructions in &quot;Configuring Routing and Setting a Netmask.&quot;</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Create a new top-level domain and rename the former root domain of the current small network, following the procedures in &quot;Creating a New Root Domain.&quot;</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Incorporate the root domain of each of the other existing networks into the new hierarchy as midlevel domains. Follow the instructions in &quot;Incorporating Midlevel Domains.&quot;</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Copy host entries from the midlevel domains to the new root domain and delete various <b>serves</b> properties. See the section &quot;Transferring Host Entries to the Root Domain.&quot;</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Reboot the computers.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Create appropriate clone servers, following the procedures in &quot;Creating Clone Servers.&quot;</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Single Existing Network</b></font>
+
+<p><font face="Times" size="+1">If you already have a single network that you want to reconfigure into a multilevel domain hierarchy, you can create a new root domain and then create new midlevel domains. These are the procedures to follow in this situation:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Create a new top-level domain and rename the former root domain, following the procedures in &quot;Creating a New Root Domain.&quot;</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Create new midlevel domains, rename them, then make each midlevel domain server a configuration server. Copy host entries from the former root domain to each of the new midlevel domains. Follow the procedures in &quot;Creating New Midlevel Domains.&quot;</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Copy host entries from the former root domain to the new root domain and delete various <b>serves</b> properties. See the section &quot;Transferring Host Entries to the Root Domain.&quot;</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Remove duplicate host entries from the former root domain. Follow the procedures in &quot;Deleting Host Entries.&quot;</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Reboot the computers.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Create appropriate clone servers, following the procedures in &quot;Creating Clone Servers.&quot;</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Building the Hierarchy</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">This section includes detailed instructions for building a network with a multilevel NetInfo domain hierarchy. You don't need to perform all the procedures described here--only some will apply, depending on your starting point. Be sure to read the previous section carefully and only follow those procedures appropriate to your situation.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Configuring Routing and Setting a Netmask</b></font>
+
+<p><font face="Times" size="+1">If you're using subnets, you need to configure routing, assign a network address to each subnet, and configure each subnet to use a subnet mask. See Appendix C for information on routing, choosing subnet addresses, and choosing netmasks. If you're not using subnets, skip this section.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Using SimpleNetworkStarter</b></font>
+
+<p><font face="Times" size="+1">The procedures in this section are appropriate if you're starting from scratch. To assign a netmask and set up routing as you build the network, follow these steps:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Log into the host that will run the master server for the mid-level domain on this subnet.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Start up SimpleNetworkStarter.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Click the button labeled &quot;Provide the services specified below&quot;. Enter the host name and Internet address into the fields in section 2 of the window.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Click the Networking Options button. The Other Network Information panel appears.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F15.gif" width=364 height=311></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">In the Router section, click the button labeled Dynamic.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1"><b>Note:</b>&nbsp; If the subnet uses a single router, you can eliminate unnecessary network traffic by clicking the button next to the text field in the Router section and entering the Internet address for the router.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">In the Netmask section, click the button next to the text field and enter your netmask. The netmask must be entered in the same format as an Internet address.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F16.gif" width=364 height=311></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">In this example, the value <b>255.255.255.0</b> assigns the last 8 bits of the Internet address to the host portion.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Click OK.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>8.</b></font></td>
+
+<td><font face="Times" size="+1">Complete the configuration of the server following the instructions in Chapter 2.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>9.</b></font></td>
+
+<td><font face="Times" size="+1">Start up HostManager and choose Automatic Host Configuration from the Network menu.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Times" size="+1"><b>10.</b></font></td>
+
+<td><font face="Times" size="+1">Modify the address fields to make sure hosts are assigned addresses that conform to your subnet address.</font></td></tr>
+
+<tr valign=top>
+
+<td width=96 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Times" size="+1"><b>11.</b></font></td>
+
+<td><font face="Times" size="+1">Add the remaining hosts to this subnet following the instructions in Chapter 2.</font></td></tr>
+
+<tr valign=top>
+
+<td width=96 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Times" size="+1"><b>12.</b></font></td>
+
+<td><font face="Times" size="+1">Set up clone servers following the instructions in Chapter 2. As you configure each clone with SimpleNetworkStarter, use the Other Options button to set Routing to Dynamic and Netmask to Automatic.</font></td></tr>
+
+<tr valign=top>
+
+<td width=96 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Times" size="+1"><b>13.</b></font></td>
+
+<td><font face="Times" size="+1">Log into each remaining host in turn. Start up SimpleNetworkStarter and click &quot;Access shared network resources as a client&quot;. Click Networking Options and, in the panel that appears, set the Netmask to Automatic and the Router to Dynamic. Again, if the subnet uses a single router, enter the Internet address of the router in the text field instead of setting Router to Dynamic. Click Configure.</font></td></tr>
+
+<tr valign=top>
+
+<td width=96 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1"><b>Note:</b>&nbsp; If you prefer, you can use the Local Configuration window in HostManager to set routing and the netmask for each client.</font></td></tr>
+
+<tr valign=top>
+
+<td width=96 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Times" size="+1"><b>14.</b></font></td>
+
+<td><font face="Times" size="+1">Repeat these steps for each subnet.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Using HostManager</b></font>
+
+<p><font face="Times" size="+1">You can use HostManager to assign a netmask and configure routing on an existing server. (As of NEXTSTEP version 3.3 you can also use SimpleNetworkStarter to assign a netmask and configure routing, too.) These procedures are appropriate if you're starting with multiple existing networks.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Log into the computer running the master NetInfo server for the second-level domain on the existing subnet.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Start up HostManager and choose Local from the main menu.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">In the Router section, click the button labeled Dynamic.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1"><b>Note:</b>&nbsp; If the subnet uses a single router, you can eliminate unnecessary network traffic by clicking the button next to the text field in the Router section and entering the Internet address for the router.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">In the Netmask section, click the button next to the text field and enter your netmask. The netmask must be entered in the same format as an Internet address.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F17.gif" width=554 height=311></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">In this example, the value <b>255.255.255.0</b> assigns the last 8 bits of the Internet address to the host portion.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Click Set.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Log into each client in turn. Start up SimpleNetworkStarter and click &quot;Access shared network resources as a client&quot;. Click Networking Options and, in the panel that appears, set the Netmask to Automatic and the Router to Dynamic. Again, if the subnet uses a single router, enter the Internet address of the router in the text field instead. Click Configure this Client.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1"><b>Note:</b>&nbsp; If you prefer, you can use the Local Configuration window in HostManager to set routing and the netmask for each client</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Make sure each hosts's Internet address conforms to the network address assigned to the subnet and is unique from addresses used in any other subnet. Use HostManager to change any duplicates, following the instructions in Chapter 3.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Creating a New Root Domain</b></font>
+
+<p><font face="Times" size="+1">This section describes how to create a new top-level domain. These procedures apply in all situations.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Creating the Top-level Domain</b></font>
+
+<p><font face="Times" size="+1">Your first step is to create the new domain.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Log into the new root domain server as <b>root</b> (this must be one of the existing root domain servers). You <i>must</i> log in as <b>root</b> to use NetInfoManager to create a domain. In our example, you would log into <b>earth</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Start up NetInfoManager.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Manage Hierarchy from the Domain menu. The New Domain Creation panel appears.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F18.gif" width=346 height=332></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Click the button labeled &quot;Create a new top-level in the domain hierarchy.&quot;</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F19.gif" width=346 height=332></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Enter the tag for the new domain in the Domain Tag text field. The tag can be anything you want, except <b>local</b> or <b>network</b>. In the example, the tag is <b>super</b>.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F20.gif" width=346 height=332></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Enter a new name for the existing root domain (the current root domain will become a child of the new top-level. You need to give it a name.)</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Click Create. After a few seconds, a new domain window appears.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F21.gif" width=529 height=263></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">Notice that the new domain is created with standard directories.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Incorporating Midlevel Domains</b></font>
+
+<p><font face="Times" size="+1">This section describes how to incorporate former root domains into the new domain hierarchy as midlevel domains. These procedures are appropriate if you either started from scratch or began with multiple networks. If you began with a single network, skip this section.</font>
+
+<p><font face="Times" size="+1">You now have a three-level hierarchy with a single midlevel domain (one of the former root domains). The next step is to incorporate the other root domain servers as new midlevel domain servers.</font>
+
+<p><font face="Times" size="+1">Log into the new root domain server and start up NetInfoManager.</font>
+
+<p><font face="Times" size="+1">Click &quot;Add an existing child...&quot;</font>
+
+<p><font face="Times" size="+1">Parent domain = `/' and fill in the rest.</font>
+
+<p><font face="Times" size="+1">Click &quot;create&quot;</font>
+
+<p><font face="Times" size="+1">Repeat for each mid-level domain.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Creating New Midlevel Domains</b></font>
+
+<p><font face="Times" size="+1">If you began your work with a single network, follow the procedures in this section. If you started from scratch or began with multiple existing networks, skip this section.</font>
+
+<p><font face="Times" size="+1">You now have a three-level hierarchy with a single mid-level domain (the former root domain). The next step is to create the other midlevel domains.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Creating a Midlevel Domain</b></font>
+
+<p><font face="Times" size="+1">The first step is to create the new domain.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Log into the new midlevel domain server as <b>root</b>. You <i>must</i> log in as <b>root</b> to use NetInfoManager to create a domain.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Start up NetInfoManager. Choose Manage Hierarchies from the Domain menu. The New Domain Creation panel appears.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F18.gif" width=346 height=332></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Click the button labeled &quot;Create a new child of an existing domain.&quot;</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F23.gif" width=346 height=332></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Click Select Parent. Select the root domain in the Select Netinfo Domain panel that appears, then click OK.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F24.gif" width=346 height=332></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Give the child a name by filling in &quot;child domain name.&quot;</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Enter <b>network</b> into the Domain Tag field.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Click Create. After a few seconds, a new domain window appears.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F5.gif" width=529 height=263></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Transferring Host Entries to Midlevel Domains</b></font>
+
+<p><font face="Times" size="+1">Now transfer host entries from the former root domain to the new midlevel domain. These host entries are for the clients (children) of the new midlevel domain server.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>/machines</b> in the new midlevel domain window (in the example, <b>sales</b>).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Open from the Domain menu and open the former root domain (now a midlevel domain--in the example, <b>design</b>).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>/machines</b> in the former root domain window that appears.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Drag the former root domain window (<b>design</b>) aside so you can see both it and the new midlevel domain window (<b>sales</b>).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">In the former root domain window, click the name of the host entry for one of the computers that will be a client of the new midlevel domain.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Drag the folder icon from the well in the former root domain window to the well in the new midlevel domain window. This makes a copy of the host entry in the midlevel domain.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Repeat, copying the host entries for each of the clients from the root domain to the midlevel domain.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Making the Midlevel Domain Server a Configuration Server</b></font>
+
+<p><font face="Times" size="+1">Since you're creating a new domain on a computer that wasn't configured as a server with SimpleNetworkStarter, it won't automatically be set up as a configuration server. To set up a computer as a configuration server, follow these steps:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Start up HostManager on the midlevel domain server.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Local from the main menu. The Local Configuration window appears.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F25.gif" width=554 height=311></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Click the button next to the text field under Hostname, then click the button next to the text field under Internet Address. The host name and Internet address are automatically entered into the text fields.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F26.gif" width=554 height=311></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Click Set. In the panel that appears, click Skip Reboot.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Open the file <b>/etc/hostconfig</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Edit the value of the variable NETMASTER to be equal to -YES-.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Reboot the computer.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">This computer will now get its host name and Internet address from <b>/etc/hostconfig</b> instead of broadcasting to a configuration server. It will also now respond to configuration requests from other computers.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Repeat these procedures for each midlevel domain server, beginning with &quot;Creating a New Midlevel Domain.&quot;</font>
+
+<p><font face="Times" size="+1"><b>Important:</b>&nbsp; The new midlevel domains don't contain a <b>root</b> user account. Without this account, you can only make modifications to a new midlvel domain while logged in as <b>root</b> on the server. Use UserManager to add a <b>root</b> account to the new midlevel domains.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Transferring Host Entries to the Root Domain</b></font>
+
+<p><font face="Times" size="+1">This section describes procedures that are appropriate in all situations.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Transferring the Host Entries</b></font>
+
+<p><font face="Times" size="+1">In order for the computers on your network to communicate with each other, they need access to a host entry for each of the other computers. By creating host entries in the root domain, you make them available to the entire network.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Start up NetInfoManager and open the new root domain.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>/machines</b>.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F27.gif" width=529 height=263></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Open one of the former root domains (now a midlevel domain). There's only one if you began with a single network (<b>earth</b>).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>/machines</b> in the midlevel domain window.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Click the name of a host that's <i>not</i> a midlevel domain server or the root domain server.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Drag the midlevel domain window away, so you can see both this window and the root domain window.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Drag the folder icon from the well in the midlevel domain window to the well in the root domain window. This makes a copy of the host entry in the root domain.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F28.gif" width=529 height=263></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>8.</b></font></td>
+
+<td><font face="Times" size="+1">Make a copy in the root domain of all other host entries in the midlevel (former root) domain that aren't midlevel or root domain servers.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>9.</b></font></td>
+
+<td><font face="Times" size="+1">If you started from scratch or began with multiple networks, repeat these procedures from step 3 for each of the other former root domains.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Deleting serves Properties</b></font>
+
+<p><font face="Times" size="+1">The root domain now has a host entry for every computer on the network. Only host entries for midlevel or root domain servers should have a <b>serves</b> property. Now delete the <b>serves</b> property for all other host entries in the root domain.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Open the root domain, if it's not already open.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>/machines</b>, then the name of a host that is neither a midlevel nor root domain server.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Double-click the name to open a Directory window. Click <b>serves</b>.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F29.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Delete from the Edit menu. Having a <b>serves</b> property here may cause the local domain to bind to the root domain instead of a midlevel domain.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F30.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Delete all other properties <i>except</i> <b>name</b> and <b>ip_address</b>. The other properties aren't necessary in the root domain.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Save from the Directory menu.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Delete all properties except <b>name</b> and <b>ip_address</b> from all other host entries that are neither the root domain server nor a midlevel domain server.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>8.</b></font></td>
+
+<td><font face="Times" size="+1">If you started from scratch or began with multiple networks, reboot the computers. Begin with the root domain server, then the midlevel domain servers, then the clients.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Deleting Host Entries</b></font>
+
+<p><font face="Times" size="+1">If you started with a single network, you need to eliminate duplicate host entries in the former root domain. Skip this section if you began with any other situation. The former root domain still contains host entries for computers that are now clients of other midlevel domains. It's important to delete these entries to prevent clients from binding to the wrong parent.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Open the former root domain (now a midlevel domain).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>/machines</b>, then the name of a host that is now a client of one of the other midlevel domains.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Delete from the Edit menu. Click Delete Anyway in the panel that appears.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F31.gif" width=391 height=185></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Delete all other host entries for computers that are now clients of another midlevel domain server.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Reboot all the computers, beginning with the servers.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Creating Clone Servers</b></font>
+
+<p><font face="Times" size="+1">Now that you have a three-level domain hierarchy, it's a good idea to create at least one clone for the root domain, and at least one for each midlevel domain. If you're using subnets, you should have a clone of the root domain in each subnet.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Log into the computer that will be the clone server as <b>root</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Start up NetInfoManager, then choose Manage Hierarchies from the Domain menu.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Click &quot;Create a clone domain.&quot;</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Click Select Domain. The Select NetInfo Domain panel appears.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F32.gif" width=298 height=338></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Select the appropriate domain in the browser, then click OK.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F33.gif" width=346 height=332></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Click Create.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1"><b>Tip:</b>&nbsp; If you're cloning the root domain, it's a good idea to make sure that each midlevel server recognizes the clone server. You do this by making sure the midlevel domain has a host entry in <b>/machines</b> for the clone server. This entry should include a <b>serves</b> property in the form <b>../</b><i>tag</i>, where <i>tag</i> is the tag of the root domain. Without this host entry, the midlevel domains will only bind to the master root domain server when they boot (although they might bind to a clone server later). If the master domain server isn't available when the midlevel domain servers boot, they won't bind at all.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Transferring NetInfo Data</b></font>
+
+<p><font face="Times" size="+1">If you're working with one or more existing networks, you might have user accounts, aliases, user groups, NFS directory mounts, or other information in one or more of the existing domains. With your new three-level domain hierarchy, you should move this data to the appropriate domain. Remember that a given computer has access to data in the local domain and successive parent domains up to the root domain.</font>
+
+<p><font face="Times" size="+1">For example, a user account stored in the root domain allows that user to log into any computer on the network. That same account stored in a midlevel domain restricts the user to the computers served by that midlevel domain. Make sure that a user's home directory is available (with NFS) on every computer that has access to the account information. Be very careful about conflicts with user IDs, group IDs, names, mounting information, and so on. A thorough planning session can prevent a lot of confusion.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Troubleshooting</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">This section contains troubleshooting hints for some of the problems that might arise after configuring a large network.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Binding Problems</b></font>
+
+<p><font face="Times" size="+1">When you boot a computer, you might see the following message:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">Still searching for parent network administration (NetInfo) server.</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">Please wait, or press `c' to continue without network user accounts.</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">See your system administrator if you need help.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">This message is displayed when your computer is looking for the parent of its local domain, and the NetInfo server for the parent domain doesn't respond. If you type <b>c</b> at this point, your local domain isn't bound to its parent domain, and all configuration information residing in that domain (including users, aliases, and machines) is not available.</font>
+
+<p><font face="Times" size="+1">This message can occur for various reasons:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">All servers for the parent NetInfo domain are unavailable.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Your computer's Internet address is not recognized by a server for its parent NetInfo domain.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The local domain is referencing a computer as a server for its parent domain which is not, in fact, such a server.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The local domain is referencing a nonexistent computer as the one to serve its parent NetInfo domain.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Although servers for the parent NetInfo domain are running, no servers responded to the request.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">A server for a domain might not respond to a request for one of two reasons:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The server or the network is overloaded.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The server is ignoring all NetInfo requests.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">When a NetInfo server is started, it checks the consistency of its database; during this operation, it doesn't respond to NetInfo requests. If the system crashed, and if you have a large NetInfo database or large NetInfo network, it can take a long time (several minutes) to complete these consistency checks. When the checks are completed, the server for the parent domain responds to your computer's request, and your computer will bind correctly to its parent NetInfo server.</font>
+
+<p><font face="Times" size="+1">If nothing is really wrong, the boot should eventually continue without intervention (within no more than a few minutes). If you press <b>c</b>, you continue the boot process as if you were not connected to a network, ignoring any domains above your local domain.</font>
+
+<p><font face="Times" size="+1">If the boot process doesn't continue, press <b>c</b>, then check the host entries and <b>serves</b> properties for all the relevant hosts in all the relevant domains. Make sure the parent domain has a host entry with the proper <b>serves</b> property for the child domain server. Make sure the child domain has a host entry with an appropriate <b>serves</b> property for the parent domain. Make sure that the host entries for computers that aren't parent domain servers don't have <b>serves</b> properties for the parent domain. Make sure other domains don't have a host entry with a <b>serves</b> property for the child domain server.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Routing Messages</b></font>
+
+<p><font face="Times" size="+1">If your domain is on a subnet and your router is unavailable, you might see a message similar to the following:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">Cannot send many-cast packet to <i>Internet_address</i>, retrying</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">This is a result of the normal binding process, and when your router becomes available again, the binding process will continue.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Communication Problems</b></font>
+
+<p><font face="Times" size="+1">If your computers boot successfully, but some can't seem to communicate with others, you may have host entry problems. Use <b>ping</b> to see if one host can communicate with another. If you get a message such as &quot;unknown host,&quot; check the host entries in the root domain. There should be a host entry for every computer on the network. Make sure the host entry includes any host name aliases for that host.</font>
+
+<p><font face="Times" size="+1">If all the host entries seem to be in order, but some hosts still can't communicate, you might have a netmask problem.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Netmask Problems</b></font>
+
+<p><font face="Times" size="+1">The netmask determines which bits of an Internet address are used to identify the network and which bits identify the host. If one or more computers are using different subnet masks, the hosts won't be able to communicate with each other. Use HostManager to check that each server has the correct netmask value set, and that each client has Netmask set to Automatic. Correct any inconsistencies. See Appendix C for more details about subnet masks.</font></td></tr>
+
+</table>
+
+
+
+<p><br>
+
+</body>
+</html>

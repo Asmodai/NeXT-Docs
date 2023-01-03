@@ -1,0 +1,1984 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/EnterpriseObjects/Reference/1_AccessLayer/Classes/EODatabaseChannel.rtf -->
+<!-- Date: Sun Jan  1 17:05:18 2023 -->
+<head>
+<title>EODatabaseChannel</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>EODatabaseChannel</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Inherits From:</b></font></td>
+
+<td><font face="Times" size="+1">NSObject</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">eoaccess/EODatabaseChannel.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">An EODatabaseChannel represents an independent communication channel to the database server its EODatabase object is connected to, and manipulates records as instances of enterprise object classes specified in its EODatabase's EOModel. It supports the standard select, fetch, insert, delete, and update operations, and can lock individual records.</font>
+
+<p><font face="Times" size="+1">An EODatabaseChannel works with an EODatabaseContext object, which manages transactions. All of a database channel's operations take place within the context of transactions controlled or tracked by the database context. A database context may work with several channels (if the adaptor permits it), but a channel is associated with only one context.</font>
+
+<p><font face="Times" size="+1">A database channel creates a EOAdaptorChannel when initialized, and uses this object to communicate with the database server.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Accessing the Database</b></font>
+
+<p><font face="Times" size="+1">An EODatabaseChannel operates on database rows in the form of enterprise objects. The database channel uses its adaptor channel to fetch rows in the form of dictionary objects, whose keys are attribute names and whose values are the values for those attributes. The database channel uses these dictionaries to create enterprise objects with the <b>takeValuesFromDictionary:</b> method of the EOKeyValueCoding protocol.</font>
+
+<p><font face="Times" size="+1">Once you've set up a suite of database objects and begun a transaction, you can have the database channel operate on the data in the server. To insert a new row for a particular entity, for example, you create an enterprise object containing all the values for the entity's attributes, and send the channel an <b>insertObject:</b> message. Similarly, you can delete a given enterprise object with the <b>deleteObject:</b> method, update it with <b>updateObject:</b>, and lock it with <b>lockObject:</b>. Locking an object prevents anyone else from updating it until the transaction it was locked in ends.</font>
+
+<p><font face="Times" size="+1">The remaining operation--select--requires an EOQualifier object to specify which objects to select. An EOQualifier describes enterprise objects based on the values of attributes; for example, objects whose</font> <font face="Helvetica" size="+1">salary</font> <font face="Times" size="+1">attribute is greater than 40,000. See the EOQualifier class specification for more information on creating qualifiers.</font>
+
+<p><font face="Times" size="+1">Fetching rows with a database channel is a two-stage process. First, you select the rows with a <b>selectObjectsDescribedByQualifier:fetchOrder:</b> message. If this succeeds, you then send <b>fetchWithZone:</b> messages to retrieve individual enterprise objects until there are no more. This code template displays the highlights of the process, using an unrestricted qualifier to fetch all objects for <b>employeeEntity</b>:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EODatabaseChannel *myChannel;&nbsp; /* Assume this exists and is open. */</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOEntity *employeeEntity;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOQualifier *myQualifier;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">id theEmployee;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">BOOL ok;</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">myQualifier = [employeeEntity qualifier];</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[[myChannel databaseContext] beginTransaction];</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">ok = [myChannel selectObjectsDescribedByQualifier:myQualifier</font><br>
+<img src="../../../../../Images/sp.gif" width=236 height=1><font face="Courier">fetchOrder:nil];</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">if (ok) {</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">while (theEmployee = [myChannel fetchWithZone:NULL]) {</font><br>
+<img src="../../../../../Images/sp.gif" width=173 height=1><font face="Courier">/* Process theEmployee. */</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">}</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[[myChannel databaseContext] commitTransaction];</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Notifying the Database Channel's Delegate</b></font>
+
+<p><font face="Times" size="+1">All of the object-manipulation methods notify the database channel's delegate before and after performing their operations. The delegate need only implement a message to receive it. The delegate may respond to the &quot;before&quot; messages in such a way as to allow or disallow the operation, or to alter its result. The specific action available to the delegate depends on the message received.</font>
+
+<p><font face="Times" size="+1">One important delegate message is <b>databaseChannel:failedToLookupClassNamed:</b>. Since an EOEntity can be associated with an enterprise object class that isn't linked into the application, it's possible that the database channel won't find the class when it fetches the first object for that entity. In this case, it notifies its delegate, which is then responsible for finding and loading that class (typically from a bundle).</font>
+
+<p><font face="Times" size="+1">Another failure notification is <b>databaseChannel:willRefetchConflictingObject:withSnapshot:</b>. This is sent if you refetch an object after it's been updated, but before the transaction it was updated in has been committed. Suppose one channel updates an object and another then tries to fetch it. When the second channel fetches that object it gets the values the object had the last time it was fetched, because the update hasn't yet been committed. These values differ from the now-updated values of the enterprise object. A database channel won't make a decision about which of these two states is valid, so it leaves it to the delegate.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Working with the Adaptor Channel</b></font>
+
+<p><font face="Times" size="+1">EODatabaseChannel offers a great deal of power in operating on the objects whose data is stored in a database, using a high-level interface that doesn't assume much about that database. Sometimes you need to work at a lower level, though--to access a server-specific feature, or to perform an operation that EODatabaseChannel's interface doesn't support well. In this case, you can get the database channel's adaptor channel and communicate more directly with the server, even to the extent of sending raw SQL.</font>
+
+<p><font face="Times" size="+1">You do this at the cost of database-dependence, and with the risk of altering the state of the database without the EODatabaseChannel (or other database-level objects) being notified. This isn't a problem if you finish your work with the adaptor channel and return things to an expected state, but when you mix operations across levels you have to explicitly synchronize the different objects with regard to changes in state. You can manage transaction state at the database level when working with the adaptor channel, but for other changes, you may have to do your work with the adaptor channel and then notify the database-level objects about any changes. Specifically, if your application sends raw SQL to the server with EOAdaptorChannel's <b>evaluateExpression:</b>, it must note all changes that take effect on the server and send the appropriate messages to the database level objects to keep them synchronized with those changes (they notify their adaptor level objects as needed).</font>
+
+<p><font face="Times" size="+1">Performing a select operation, in particular, requires special handling if you then intend to have the EODatabaseChannel do the fetching. If you use EOAdaptorChannel's <b>selectAttributes:describedByQualifier:fetchOrder:lock:</b> or <b>evaluateExpression: </b>messages to perform a select operation, the database channel doesn't know what kind of enterprise objects it should fetch. You must use the <b>setCurrentEntity:</b> method to tell it what entity it should fetch objects for; it can determine the rest of what it needs based on the adaptor channel's state. From the current entity the database channel can determine what enterprise object class to instantiate upon the next <b>fetchWithZone:</b> message.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Variables</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">None declared in this class.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Initializing a new instance</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font>&nbsp; <font face="Times" size="+1">initWithDatabaseContext:</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Opening and closing a channel</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">openChannel</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">isOpen</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">closeChannel</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Modifying objects</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">insertObject:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">deleteObject:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">lockObject:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">updateObject:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Fetching objects</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">selectObjectsDescribedByQualifier:fetchOrder:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">fetchWithZone:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">isFetchInProgress</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">refetchObject:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">cancelFetch</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setCurrentEntity:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Getting the adaptor channel</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">adaptorChannel</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Getting the database context</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">databaseContext</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Setting the delegate</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setDelegate:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">delegate</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>adaptorChannel</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(EOAdaptorChannel *)<b>adaptorChannel</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the EOAdaptorChannel used by the EODatabaseChannel for communication with the database server. See &quot;Working with the Adaptor Channel&quot; in the class description for information on safely using an EODatabaseChannel's adaptor channel.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>cancelFetch</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>cancelFetch</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Cancels any fetch in progress.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>isFetchInProgress</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>selectObjectsDescribedByQualifier:fetchOrder:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>fetchWithZone:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>closeChannel</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>closeChannel</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Closes the EODatabaseChannel so that it can't perform operations with the server. Any fetch in progress is canceled. If the channel's database context has outstanding transactions, however, the result depends on the server; some database servers immediately roll back all outstanding transactions while others wait until the user logs out from the database.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>openChannel</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>nestedTransactions</b> (EODatabaseContext)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>databaseContext</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(EODatabaseContext *)<b>databaseContext</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the EODatabaseContext that controls transactions for the EODatabaseChannel.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>delegate</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>delegate</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the EODatabaseChannel's delegate.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>deleteObject:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>deleteObject:</b><i>anEO</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Deletes the row in the database server corresponding to <i>anEO</i>. Returns YES if successful, NO if not. Some of the reasons deletion may fail are:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><i>anEO</i> is <b>nil</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">A primary key can't be determined for <i>anEO</i> (because no snapshot was recorded)<i>.</i></font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">No record corresponding to <i>anEO</i>'s primary key exists in the database.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The receiver's EODatabaseContext has no transaction in progress.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The database doesn't allow the deletion.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The receiver's delegate disallows deletion.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This method invokes the delegate methods <b>databaseChannel:willDeleteObject:</b> and <b>databaseChannel:didDeleteObject:</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>isReadOnly</b> (EOEntity)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>fetchWithZone:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>fetchWithZone:</b>(NSZone *)<i>zone</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Fetches and returns the next object in the result set produced by a <b>selectObjectsDescribedByQualifier:fetchOrder:</b> message; returns <b>nil</b> if there are no more objects in the current result set or if an error occurs. If the database channel's EODatabase performs uniquing and the object fetched already exists, it's simply sent the new values; otherwise the channel creates a new enterprise object.</font>
+
+<p><font face="Times" size="+1">To create a new enterprise object, the database channel allocates an instance of the enterprise object class for the entity being fetched. The channel then initializes the object with <b>initWithPrimaryKey:entity:</b> if it implements that message, otherwise simply with an <b>init</b> message. To set the object's values the channel sends it a <b>takeValuesFromDictionary:</b> message with the fetched row as the argument, and finishes off with an <b>awakeForDatabaseChannel:</b> message (described in the EODatabaseChannelNotification informal protocol specification).</font>
+
+<p><font face="Times" size="+1">If an enterprise object matching the next selected object has already been uniqued by the EODatabaseChannel's EODatabase, that object is sent <b>takeValuesFromDictionary:</b> and <b>awakeForDatabaseChannel:</b> messages to overwrite its values with those just fetched. If the uniqued object's values differ from those fetched, an ambiguity results; see the description of the <b>databaseChannel:willRefetchConflictingObject:withSnapshot:</b> delegate message for information on how such a situation is handled.</font>
+
+<p><font face="Times" size="+1">This method invokes the delegate methods <b>databaseChannel:willFetchObjectOfClass:withZone:</b> and <b>databaseChannel:didFetchObject:</b>, and may invoke either <b>databaseChannel:willRefetchObject:fromSnapshot:</b> or <b>databaseChannel:willRefetchConflictingObject:withSnapshot:</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>objectForPrimaryKey:entity:</b> (EODatabase and EODatabaseContext),</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>takeValuesFromDictionary: </b>(EOKeyValueCoding informal protocol)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>initWithDatabaseContext:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>initWithDatabaseContext:</b>(EODatabaseContext *)<i>aDatabaseContext</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Initializes a newly allocated EODatabaseChannel with <i>aDatabaseContext</i> as the EODatabaseContext it works in. Doesn't automatically open the channel. The new EODatabaseChannel retains <i>aDatabaseContext</i>. This is the designated initializer for the EODatabaseChannel class. Returns <b>self</b>, or <b>nil</b> if no more channels can be associated with <i>aDatabaseContext</i>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>openChannel</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>insertObject:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>insertObject:</b><i>anEO</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Attempts to insert <i>anEO</i>'s simple (nonflattened, nonderived) attribute values as a row into the database server, returning YES if successful and NO if not. If <i>anEO</i> is successfully inserted, the receiver's database context uniques it and records a snapshot with <b>recordObject:primaryKey:snapshot:</b>. Raises <b>NSInvalidArgumentException</b> if <i>anEO</i> is a fault (see the EOFault class specification for information on faults).</font>
+
+<p><font face="Times" size="+1">Some of the reasons insertion may fail are:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><i>anEO</i> is <b>nil</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The receiver's EODatabaseContext has no transaction in progress.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><i>anEO</i>'s EOEntity has a read-only attribute that the server requires be set.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">A primary key can't be determined for <i>anEO.</i></font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The database doesn't allow insertion.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The receiver's delegate disallows insertion.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Note that read-only attributes are silently unmodified, but if the server requires such an attribute to be non-NULL an error will occur.</font>
+
+<p><font face="Times" size="+1">This method invokes the delegate methods <b>databaseChannel:willInsertObject:</b> and <b>databaseChannel:didInsertObject:</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>isReadOnly</b> (EOEntity)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>isFetchInProgress</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>isFetchInProgress</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if the EODatabaseChannel is fetching, NO otherwise. A database channel is fetching if it's been sent a successful <b>selectObjectsDescribedByQualifier:fetchOrder:</b> message. A database channel stops fetching when there are no more objects to fetch or when it's sent a <b>cancelFetch</b> message.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>isOpen</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>isOpen</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if the channel has been successfully opened with <b>openChannel</b>, NO if not.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>lockObject:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>lockObject:</b><i>anEO</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Locks <i>anEO</i> for update. Fetches the properties composing <i>anEO</i>'s snapshot and compares the fetched values with the values stored in the snapshot. Returns YES if all values are the same; fails and returns NO if any of the values differ. Also returns NO under the following conditions:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><i>anEO</i>'s entity is read-only.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The channel's database context has no transaction in progress.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The database server or its adaptor doesn't support locking.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This method invokes the delegate methods <b>databaseChannel:willLockObject:</b> and <b>databaseChannel:didLockObject:</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>isReadOnly</b> (EOEntity)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>openChannel</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>openChannel</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Puts the channel and both its context and database into a state where they are ready to perform operations. Returns YES on success and NO on failure. You shouldn't attempt to open an already open channel.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>closeChannel</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>refetchObject:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>refetchObject:</b><i>anEO</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Refetches the object for <i>anEO</i>'s primary key from the database server. <i>anEO</i> is modified by this method. Returns YES on success, NO on failure for any reason (specifically, if there's a fetch in progress). May also raise <b>NSInternalInconsistencyException</b> under the conditions described for the delegate method <b>databaseChannel:willRefetchConflictingObject:withSnapshot:</b>.</font>
+
+<p><font face="Times" size="+1">Some possible reasons for failure are:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><i>anEO</i> is <b>nil</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">No snapshot for <i>anEO</i> exists.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The receiver's EODatabaseContext has no transaction in progress.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The database channel has a fetch in progress.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This method invokes the delegate methods <b>databaseChannel:willRefetchObject:</b> and <b>databaseChannel:didRefetchObject:</b>, and may invoke <b>databaseChannel:willRefetchConflictingObject:withSnapshot:</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>isFetchInProgress</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>takeValuesFromDictionary:</b> (EOKeyValueCoding informal protocol)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>selectObjectsDescribedByQualifier:fetchOrder:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>selectObjectsDescribedByQualifier:</b>(EOQualifier *)<i>aQualifier</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>fetchOrder:</b>(NSArray *)<i>fetchOrder</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Selects objects that match <i>aQualifier</i>. The selected objects compose one or more result sets, each object of which will be returned by subsequent <b>fetchWithZone:</b> messages in the order prescribed by <i>fetchOrder</i> (an array of EOAttributeOrdering objects). <i>fetchOrder</i> can be <b>nil</b>, indicating no sorting of records. Returns YES on success, NO on failure for any reason. Some possible reasons for failure are:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><i>aQualifier</i> is <b>nil</b> or invalid.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The receiver's EODatabaseContext has no transaction in progress.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The receiver's delegate disallows the select.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The receiver's EOAdaptorChannel fails to perform the select operation.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This method invokes the delegate methods <b>databaseChannel:willSelectObjectsDescribedByQualifier:fetchOrder:</b> and <b>databaseChannel:didSelectObjectsDescribedByQualifier:fetchOrder:</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>fetchWithZone:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setCurrentEntity:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setCurrentEntity:</b>(EOEntity *)<i>anEntity</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the entity used when fetching enterprise objects. Subsequent <b>fetchWithZone:</b> messages during a fetch operation create an object of the class associated with <i>anEntity</i>. If you perform a select operation in the database server with the database channel's adaptor channel, you should set the proper entity before having the EODatabaseChannel fetch any of the selected rows. See &quot;Working with the Adaptor Channel&quot; in the class description for an example.</font>
+
+<p><font face="Times" size="+1">This method is invoked automatically when you use <b>selectObjectsDescribedByQualifier:fetchOrder:</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setDelegate:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setDelegate:</b><i>anObject</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the EODatabaseChannel's delegate to <i>anObject</i>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>updateObject:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>updateObject:</b><i>anEO</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Updates the row in the database corresponding to <i>anEO</i>. Returns YES if successful, NO if not. Some possible reasons for failure are:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><i>anEO</i> is <b>nil</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The receiver's EODatabaseContext has no transaction in progress.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">A primary key can't be determined for <i>anEO</i> (because no snapshot was recorded).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">No record for <i>anEO</i>'s primary key exists in the database.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><i>anEO</i>'s EOEntity is read-only.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><i>anEO</i>'s EOEntity has a read-only attribute that the server requires be set.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The update strategy of the receiver's EODatabaseContext doesn't permit the update.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The receiver's delegate disallows the update.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Note that read-only attributes are silently unmodified, but if the server requires such an attribute to be non-NULL an error will occur.</font>
+
+<p><font face="Times" size="+1">This method invokes the delegate methods <b>databaseChannel:willUpdateObject:</b> and <b>databaseChannel:didUpdateObject:</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>isReadOnly</b> (EOEntity)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Methods Implemented by the Delegate</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>databaseChannel:didDeleteObject:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>databaseChannel:</b><i>channel</i> <b>didDeleteObject:</b><i>anEO</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked after <i>channel</i> has deleted <i>anEO</i> from the database<i>.</i></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>databaseChannel:didFetchObject:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>databaseChannel:</b><i>channel</i> <b>didFetchObject:</b><i>anEO</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked after <i>channel</i> has fetched <i>anEO</i> from the database<i>.</i></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>databaseChannel:didInsertObject:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>databaseChannel:</b><i>channel</i> <b>didInsertObject:</b><i>anEO</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked after <i>channel</i> has inserted <i>anEO</i> into the database<i>.</i></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>databaseChannel:didLockObject:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>databaseChannel:</b><i>channel</i> <b>didLockObject:</b><i>anEO</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked after <i>channel</i> has locked <i>anEO.</i></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>databaseChannel:didSelectObjectsDescribedByQualifier:fetchOrder:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>databaseChannel:</b><i>channel</i> <b>didSelectObjectsDescribedByQualifier:</b>(EOQualifier *)<i>aQualifier </i><b>fetchOrder:</b>(NSArray *)<i>fetchOrder</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked after <i>channel</i> has selected objects described by <i>aQualifier</i> with <i>fetchOrder.</i></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>databaseChannel:didUpdateObject:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>databaseChannel:</b><i>channel</i> <b>didUpdateObject:</b><i>anEO</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked after <i>channel</i> has updated <i>anEO</i> in the database<i>.</i></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>databaseChannel:failedToLookupClassNamed:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(Class)<b>databaseChannel:</b><i>channel</i> <b>failedToLookupClassNamed:</b>(const char *)<i>name</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked when <i>channel</i> has failed to find a class with the given <i>name</i> in the run-time system<i>.</i> The delegate should load an external module if needed and return the named class. If the delegate returns <b>nil</b> or doesn't implement this method, then EOGenericRecord is used.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>className</b> (EOEntity)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>databaseChannel:relationshipForRow:relationship:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(EORelationship *)<b>databaseChannel:</b><i>channel</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>relationshipForRow:</b>(NSDictionary *)<i>aRow</i></font><br>
+<font face="Times" size="+1"><b>relationship:</b>(EORelationship *)<i>aRelationship</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked when a relationship is instantiated on a newly fetched object. <i>aRow</i> contains the values for the object just fetched, and <i>aRelationship</i> is the relationship about to be set up. The delegate can use the information in <i>aRow</i> to determine which entity the destination of the relationship should be associated with, and return a substitute for <i>aRelationship</i> as needed.</font>
+
+<p><font face="Times" size="+1">This method allows you to reuse the same column in a table for different kinds of relationships based on other values for the object. For example, suppose you have one table containing two kinds of</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entities, full- and part-time, each with their own kind of time card. You can use an</font> <font face="Helvetica" size="+1">isPartTime</font> <font face="Times" size="+1">attribute to determine whether the relationship to a time card associates each employee object with the table for full-time cards or the table for part-time cards.</font>
+
+<p><font face="Times" size="+1">To set this up properly in your model, you define all the relationships you need, but mark only one of them in the Class Properties column of EOModeler's Entity Inspector. This causes a database to resolve only that relationship when it fetches objects, making it the default relationship from the set you define. You then use <b>databaseChannel:relationshipForRow:relationship: </b>at run time to substitute one of the other relationships. In this example, <b>toFullTimeCard</b> and <b>toPartTimeCard</b> are defined in the model, and <b>toFullTimeCard</b> is the default relationship:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">- (EORelationship *)databaseChannel:channel</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">relationshipForRow:(NSDictionary *)aRow</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">relationship:(EORelationship *)aRelationship</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">{</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">EORelationship *toFullTimeCard;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">EORelationship *toPartTimeCard;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">NSNumber *isPartTime;</font>
+
+<p><img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">if (aRelationship == toFullTimeCard) {</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">isPartTime = [aRow objectForKey:@&#34;isPartTime&#34;];</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">if ([isPartTime intValue] != 0) {</font><br>
+<img src="../../../../../Images/sp.gif" width=208 height=1><font face="Courier">return toPartTimeCard;</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">}</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">return toFullTimeCard;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">return aRelationship;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This method first checks that the relationship being resolved is <b>toFullTimeCard</b>, and if so, examines the value for the &quot;isPartTime&quot; key in the fetched row to determine which relationship to substitute. If the value is nonzero, then <b>toPartTimeCard </b>is used instead of <b>toFullTimeCard</b>, giving the employee object a part-time card object. Similarly, if the value for the </font><font face="Helvetica" size="+1">isPartTime</font> <font face="Times" size="+1">attribute is 0, <b>toFullTimeCard</b> is used, so that the employee object gets a a full-time card object.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>databaseChannel:willDeleteObject:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>databaseChannel:</b><i>channel</i> <b>willDeleteObject:</b><i>anEO</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked before <i>channel</i> deletes <i>anEO</i>. The delegate may return <i>anEO</i>, a substitute object to delete, or <b>nil</b> to prevent the deletion.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>databaseChannel:willFetchObjectOfClass:withZone:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>databaseChannel:</b><i>channel</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>willFetchObjectOfClass:</b>(Class)<i>class</i></font><br>
+<font face="Times" size="+1"><b>withZone:</b>(NSZone *)<i>zone</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked before <i>channel</i> fetches an object.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>databaseChannel:willInsertObject:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>databaseChannel:</b><i>channel</i> <b>willInsertObject:</b><i>anEO</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked before <i>channel</i> inserts <i>anEO</i>. The delegate may return a substitute object to insert or <b>nil</b> to disallow the insertion.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>databaseChannel:willLockObject:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>databaseChannel:</b><i>channel</i> <b>willLockObject:</b><i>anEO</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked before <i>channel</i> locks <i>anEO</i>. The delegate may return YES to allow <i>anEO</i> to be locked or NO to disallow it.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>databaseChannel:willRefetchConflictingObject:withShapshot:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSDictionary *)<b>databaseChannel:</b><i>channel</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>willRefetchConflictingObject:</b><i>anEO</i></font><br>
+<font face="Times" size="+1"><b>withShapshot:</b>(NSDictionary *)<i>snapshot</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked when <i>channel</i> has fetched new values for <i>anEO</i>, but <i>anEO</i>'s current values differ from its existing snapshot. This happens when <i>anEO</i> is updated during a transaction that hasn't been committed. In such a situation the object has two potential states, and the database channel can't determine which is valid; this usually indicates a programming error which requires intervention by the delegate. See &quot;Notifying the Database Channel's Delegate&quot; in the class description for more information.</font>
+
+<p><font face="Times" size="+1">If the delegate doesn't implement this method the database channel raises <b>NSInternalInconsistencyException</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>databaseChannel:willRefetchObject:fromSnapshot:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSDictionary *)<b>databaseChannel:</b><i>channel</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>willRefetchObject:</b><i>anEO</i></font><br>
+<font face="Times" size="+1"><b>fromSnapshot:</b>(NSDictionary *)<i>aSnapshot</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked before <i>channel</i> refreshes <i>anEO</i> with the values in <i>aSnapshot</i> just fetched from the database. The delegate may return <i>aSnapshot</i>, a substitute snapshot, or <b>nil</b> to disallow the operation.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>databaseChannel:willSelectObjectsDescribedByQualifier:fetchOrder:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>databaseChannel:</b><i>channel</i> <b>willSelectObjectsDescribedByQualifier:</b>(EOQualifier *)<i>aQualifier </i><b>fetchOrder:</b>(NSArray *)<i>fetchOrder</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked before <i>channel</i> performs a select operation. The delegate shouldn't modify <i>aQualifier</i> or <i>fetchOrder</i>. If the delegate returns YES the select proceeds; if the delegate returns NO the select operation is aborted.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>databaseChannel:willUpdateObject:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>databaseChannel:</b><i>channel</i> <b>willUpdateObject:</b><i>anEO</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked before <i>channel</i> updates <i>anEO</i>. The delegate may return <i>anEO</i>, a substitute object to update, or <b>nil</b> to disallow the update.</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

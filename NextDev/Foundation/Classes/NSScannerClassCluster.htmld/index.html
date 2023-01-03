@@ -1,0 +1,988 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/Foundation/Classes/NSScannerClassCluster.rtf -->
+<!-- Date: Sun Jan  1 17:05:11 2023 -->
+<head>
+<title>NSScannerClassCluster</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>NSScanner</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Inherits From:</b></font></td>
+
+<td><font face="Times" size="+1">NSObject</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Conforms To:</b></font></td>
+
+<td><font face="Times" size="+1">NSCopying</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">foundation/NSScanner.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">An NSScanner interprets and converts text in an NSString into number and string values.&nbsp; You assign a string object to a scanner on creation, and the scanner progresses through the characters of that string from beginning to end as you request items. An NSScanner can be configured to note or ignore case distinctions and to skip certain characters while scanning.&nbsp; Its scan location can also be set, so that you can re-scan a portion of the string, or skip forward a certain amount of characters.</font>
+
+<p><font face="Times" size="+1">NSScanner is implemented as a class cluster, although it has only one public class.&nbsp; See &quot;Class Clusters&quot; in the introduction to the Foundation Kit for a description of how to subclass a member of a class cluster.</font>
+
+<p><font face="Times" size="+1">As an example of using an NSScanner, suppose you have a string object containing lines of the form:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=125></td>
+
+<td><font face="Times" size="+1">Product: <i>product name</i>; Cost: <i>cost in dollars</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">You could scan each line like this:</font></td></tr>
+
+</table>
+
+<p><img src="../../../Images/sp.gif" width=124 height=1><font face="Courier">- (BOOL)scanProductString:(NSString *)aString</font><br>
+<img src="../../../Images/sp.gif" width=124 height=1><font face="Courier">{</font><br>
+<img src="../../../Images/sp.gif" width=152 height=1><font face="Courier">NSCharacterSet *semicolonSet;</font><br>
+<img src="../../../Images/sp.gif" width=152 height=1><font face="Courier">NSScanner *theScanner;</font>
+
+<p><img src="../../../Images/sp.gif" width=152 height=1><font face="Courier">semicolonSet = [NSCharacterSet</font><br>
+<img src="../../../Images/sp.gif" width=180 height=1><font face="Courier">characterSetWithCharactersInString:@&#34;;&#34;];</font>
+
+<p><img src="../../../Images/sp.gif" width=152 height=1><font face="Courier">theScanner = [NSScanner scannerWithString:aString];</font>
+
+<p><img src="../../../Images/sp.gif" width=152 height=1><font face="Courier">while ([theScanner isAtEnd] == NO) {</font><br>
+<img src="../../../Images/sp.gif" width=180 height=1><font face="Courier">NSString *PRODUCT = @&#34;Product: &#34;;</font><br>
+<img src="../../../Images/sp.gif" width=180 height=1><font face="Courier">NSString *COST = @&#34;Cost: &#34;;</font><br>
+<img src="../../../Images/sp.gif" width=180 height=1><font face="Courier">NSString *prodName;</font><br>
+<img src="../../../Images/sp.gif" width=180 height=1><font face="Courier">int prodCost;</font><br>
+<img src="../../../Images/sp.gif" width=180 height=1><font face="Courier">BOOL scanResult;</font>
+
+<p><img src="../../../Images/sp.gif" width=180 height=1><font face="Courier">/* Skip the &#34;Product: &#34; part. */</font><br>
+<img src="../../../Images/sp.gif" width=180 height=1><font face="Courier">scanResult = [theScanner scanString:PRODUCT intoString:NULL];</font><br>
+<img src="../../../Images/sp.gif" width=180 height=1><font face="Courier">if (scanResult == NO) return NO;</font>
+
+<p><img src="../../../Images/sp.gif" width=180 height=1><font face="Courier">/* Read in the product name, up to a semicolon. */</font><br>
+<img src="../../../Images/sp.gif" width=180 height=1><font face="Courier">scanResult = [theScanner</font><br>
+<img src="../../../Images/sp.gif" width=208 height=1><font face="Courier">scanUpToCharactersFromSet:semicolonSet</font><br>
+<img src="../../../Images/sp.gif" width=208 height=1><font face="Courier">intoString:&amp;prodName];</font><br>
+<img src="../../../Images/sp.gif" width=180 height=1><font face="Courier">if (scanResult == NO) return NO;</font>
+
+<p><img src="../../../Images/sp.gif" width=180 height=1><font face="Courier">/* Now go past the semicolon we scanned up to. */</font><br>
+<img src="../../../Images/sp.gif" width=180 height=1><font face="Courier">scanResult = [theScanner scanString:@&#34;;&#34; intoString:NULL];</font><br>
+<img src="../../../Images/sp.gif" width=180 height=1><font face="Courier">if (scanResult == NO) return NO;</font>
+
+<p><img src="../../../Images/sp.gif" width=180 height=1><font face="Courier">/* Skip the &#34;Cost: &#34; part. Because a scanner by default</font><br>
+<img src="../../../Images/sp.gif" width=187 height=1><font face="Courier">* ignores whitespace we don't have to worry about the</font><br>
+<img src="../../../Images/sp.gif" width=187 height=1><font face="Courier">* space between the previous entry and &#34;Cost: &#34;.</font><br>
+<img src="../../../Images/sp.gif" width=187 height=1><font face="Courier">*/</font><br>
+<img src="../../../Images/sp.gif" width=180 height=1><font face="Courier">scanResult = [theScanner scanString:COST intoString:NULL];</font><br>
+<img src="../../../Images/sp.gif" width=180 height=1><font face="Courier">if (scanResult == NO) return NO;</font>
+
+<p><img src="../../../Images/sp.gif" width=180 height=1><font face="Courier">/* Read in the product cost. */</font><br>
+<img src="../../../Images/sp.gif" width=180 height=1><font face="Courier">scanResult = [theScanner scanInt:&amp;prodCost];</font><br>
+<img src="../../../Images/sp.gif" width=180 height=1><font face="Courier">if (scanResult == NO) return NO;</font>
+
+<p><img src="../../../Images/sp.gif" width=180 height=1><font face="Courier">/* Do something with prodName and prodCost. */</font>
+
+<p><img src="../../../Images/sp.gif" width=180 height=1><font face="Courier">/* Because a scanner by default ignores whitespace we</font><br>
+<img src="../../../Images/sp.gif" width=187 height=1><font face="Courier">* don't have to worry about the newline.</font><br>
+<img src="../../../Images/sp.gif" width=187 height=1><font face="Courier">*/</font><br>
+<img src="../../../Images/sp.gif" width=159 height=1><font face="Courier">}</font>
+
+<p><img src="../../../Images/sp.gif" width=152 height=1><font face="Courier">return YES;</font><br>
+<img src="../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Adopted Protocols</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">NSCopying</font></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">copyWithZone:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">copy</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Creating an NSScanner</font></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">initWithString:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font face="Times" size="+1">+ scannerWithString:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Getting an NSScanner's String</font></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">string</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Configuring an NSScanner</font></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setScanLocation:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">scanLocation</font><br>
+<font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setCaseSensitive:</font><br>
+<font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">caseSensitive</font><br>
+<font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setCharactersToBeSkipped:</font><br>
+<font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">charactersToBeSkipped</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Scanning a String</font></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">scanInt:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">scanLongLong:</font><br>
+<font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">scanFloat:</font><br>
+<font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">scanDouble:</font><br>
+<font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">scanString:intoString:</font><br>
+<font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">scanCharactersFromSet:intoString:</font><br>
+<font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">scanUpToString:intoString:</font><br>
+<font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">scanUpToCharactersFromSet:intoString:</font><br>
+<font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">isAtEnd</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>scannerWithString:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ <b>scannerWithString:</b>(NSString *)<i>aString</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Creates and returns an NSScanner that scans <i>aString</i>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>initWithString:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>caseSensitive</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>caseSensitive</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if the scanner distinguishes case, NO otherwise. NSScanners are by default <i>not</i> case sensitive.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setCaseSensitive:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>charactersToBeSkipped</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSCharacterSet *)<b>charactersToBeSkipped</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns a character set containing those characters that the scanner ignores when looking for a scannable element.&nbsp; For example, if a scanner ignores spaces and you ask it to <b>scanInt:</b>, it will skip spaces until it finds a decimal digit or other character.&nbsp; While an element is being scanned, however, no characters are skipped.&nbsp; If you scan for something made of characters in the set to be skipped (for example, using <b>scanInt:</b> when the set of characters to be skipped is the decimal digits), the result is undefined.</font>
+
+<p><font face="Times" size="+1">The default set is the whitespace and newline character set.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setCharactersToBeSkipped:</b>, + <b>whitespaceAndNewlineCharacterSet</b> (NSCharacterSet)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>initWithString:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>initWithString:</b>(NSString *)<i>aString</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Initializes the receiver, a newly allocated NSScanner, to scan <i>aString</i>. Returns <b>self</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1">+ <b>scannerWithString:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>isAtEnd</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>isAtEnd</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if the scanner has exhausted all characters in its string, NO if there are characters left to scan.&nbsp; Characters the scanner would skip are ignored; if only skipped characters remain, this method returns YES.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>charactersToBeSkipped</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>scanCharactersFromSet:intoString:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>scanCharactersFromSet:</b>(NSCharacterSet *)<i>aSet</i> <b>intoString:</b>(NSString **)<i>value</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Scans the string as long as characters from <i>aSet</i> are encountered, accumulating characters into a string that's returned by reference in <i>value</i>. If any characters are scanned, returns YES; otherwise returns NO.</font>
+
+<p><font face="Times" size="+1">This method may be invoked with <b>nil</b> as <i>value</i> to simply scan past a given set of characters.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>scanUpToCharactersFromSet:intoString:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>scanDouble:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>scanDouble:</b>(double *)<i>value</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Scans a <b>double</b> into <i>value</i> if possible.&nbsp; Returns YES if a valid floating-point expression was scanned, NO otherwise. HUGE_VAL or</font> <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font><font face="Times" size="+1">HUGE_VAL is put in <i>value</i> on overflow, 0.0 on underflow.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>scanFloat:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>scanFloat:</b>(float *)<i>value</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Scans a <b>float</b> into <i>value</i> if possible.&nbsp; Returns YES if a valid floating-point expression was scanned, NO otherwise.&nbsp; HUGE_VAL or</font> <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font><font face="Times" size="+1">HUGE_VAL is put in <i>value</i> on overflow, 0.0 on underflow.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>scanInt:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>scanInt:</b>(int *)<i>value</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Scans an <b>int</b> into <i>value</i> if possible.&nbsp; Returns YES if a valid integer expression was scanned, NO otherwise.&nbsp; INT_MAX or INT_MIN is put in <i>value</i> on overflow.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>scanLocation</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(unsigned)<b>scanLocation</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the character index at which the scanner will begin its next scanning operation.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setScanLocation:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>scanLongLong:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>scanLongLong:</b>(long long *)<i>value</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Scans a <b>long long int</b> into <i>value</i> if possible. Returns YES if a valid integer expression was scanned, NO otherwise. LONG_LONG_MAX or LONG_LONG_MIN is put in <i>value</i> on overflow.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>scanString:intoString:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>scanString:</b>(NSString *)<i>aString</i> <b>intoString:</b>(NSString **)<i>value</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Scans for <i>aString</i>, and if a match is found returns (by reference) in <i>value</i> a string object equal to it. If <i>aString</i> matches the characters at the scan location, returns YES; otherwise returns NO.</font>
+
+<p><font face="Times" size="+1">This method may be invoked with <b>nil</b> as <i>value</i> to simply scan past a given string.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>scanUpToString:intoString:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>scanUpToCharactersFromSet:intoString:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>scanUpToCharactersFromSet:</b>(NSCharacterSet *)<i>aSet</i> <b>intoString:</b>(NSString **)<i>value</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Scans the string until a character from <i>aSet</i> is encountered, accumulating characters encountered into a string that's returned by reference in <i>value</i>.&nbsp; If any characters are scanned, returns YES; otherwise returns NO.</font>
+
+<p><font face="Times" size="+1">This method may be invoked with <b>NULL</b> as <i>value</i> to simply scan up to a given set of characters.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>scanCharactersFromSet:intoString:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>scanUpToString:intoString:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>scanUpToString:</b>(NSString *)<i>aString</i> <b>intoString:</b>(NSString **)<i>value</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Scans the string until <i>aString</i> is encountered, accumulating characters encountered into a string that's returned by reference in <i>value</i>.&nbsp; The receiver's scan location will then be at the beginning of <i>aString</i> (or at the end of the string being scanned if <i>aString </i>isn't found).&nbsp; If any characters are scanned, returns YES; otherwise returns NO.</font>
+
+<p><font face="Times" size="+1">This method may be invoked with <b>NULL</b> as <i>value</i> to simply scan up to a given string.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>scanString:intoString:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setCaseSensitive:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setCaseSensitive:</b>(BOOL)<i>flag</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">If <i>flag</i> is YES, the scanner will distinguish case when scanning characters.&nbsp; If <i>flag</i> is NO, it will ignore case distinctions. NSScanners are by default <i>not</i> case sensitive.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>caseSensitive</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setCharactersToBeSkipped:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setCharactersToBeSkipped:</b>(NSCharacterSet *)<i>aSet</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the scanner to ignore characters from <i>aSet</i> when scanning its string. Such characters are simply passed by during scanning. For example, if a scanner ignores spaces and you ask it to <b>scanInt:</b>, it will skip spaces until it finds a decimal digit or other character. While an element is being scanned, however, no characters are skipped. If you scan for something made of characters in the set to be skipped (for example, using <b>scanInt:</b> when the set of characters to be skipped is the decimal digits), the result is undefined.</font>
+
+<p><font face="Times" size="+1">The default set is the whitespace and newline character set.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>charactersToBeSkipped</b>, + <b>whitespaceAndNewlineCharacterSet</b> (NSCharacterSet)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setScanLocation:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setScanLocation:</b>(unsigned)<i>index</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the location at which the next scan will begin to <i>index</i>. This method is useful for backing up to re-scan after an error. You should use <b>scanString:intoString:</b> or <b>scanCharactersFromSet:intoString:</b> to skip ahead past known sequences of characters, as this allows you to check for errors in a way that setting the scan location ahead doesn't.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>scanLocation</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>string</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSString *)<b>string</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the string object that the scanner was created with.</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

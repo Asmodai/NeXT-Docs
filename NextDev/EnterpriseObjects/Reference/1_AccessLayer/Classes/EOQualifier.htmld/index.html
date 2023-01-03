@@ -1,0 +1,898 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/EnterpriseObjects/Reference/1_AccessLayer/Classes/EOQualifier.rtf -->
+<!-- Date: Sun Jan  1 17:05:21 2023 -->
+<head>
+<title>EOQualifier</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>EOQualifier</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Inherits From:</b></font></td>
+
+<td><font face="Times" size="+1">NSObject</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Conforms To:</b></font></td>
+
+<td><font face="Times" size="+1">NSCopying</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">eoaccess/EOQualifier.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">An EOQualifier holds information used to restrict a select operation to enterprise objects or rows whose attributes have certain values. A qualifier is always created for a specific entity and has a definition based on attributes of that entity. The qualifying information is expressed in the database server's query language (nearly always SQL). You can build a qualifier directly from an existing enterprise object or row fetched from the database or with a <b>printf()</b>-style format string.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Creating a Qualifier For a Primary Key or Relationship</b></font>
+
+<p><font face="Times" size="+1">EOQualifier defines two class methods for quickly creating simple qualifiers. You can create an EOQualifier that selects only one record, based on a primary key value for an entity, with the <b>qualifierForPrimaryKey:entity:</b> class method. Such a qualifier merely requires the value for the primary key to be equal to the value you provide to this method. Similarly, you can create an EOQualifier to fetch the destination record(s) of a relationship with <b>qualifierForRow:relationship:</b>. In this case the qualifier requires the foreign keys of the row provided to match the join attributes in the destination entity of the relationship.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Creating a Qualifier From A Format String</b></font>
+
+<p><font face="Times" size="+1">You can also create a qualifier with a general string definition. This definition can be any valid SQL search condition using the internal names of properties belonging to the qualifier's entity (they're converted to database column names before being sent to the server). It may contain generic SQL, or include server-specific operators or references to features such as stored procedures. You're responsible for ensuring that the SQL used is valid for your database server.</font>
+
+<p><font face="Times" size="+1">For example, if you have an</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entity with the properties</font> <font face="Helvetica" size="+1">empID</font><font face="Times" size="+1">,</font> <font face="Helvetica" size="+1">firstName</font><font face="Times" size="+1">,</font> <font face="Helvetica" size="+1">lastName</font><font face="Times" size="+1">,</font> <font face="Helvetica" size="+1">salary</font><font face="Times" size="+1">, and</font> <font face="Helvetica" size="+1">toDepartment</font><font face="Times" size="+1">, and a</font> <font face="Helvetica" size="+1">Department</font> <font face="Times" size="+1">entity with properties</font> <font face="Helvetica" size="+1">deptID</font><font face="Times" size="+1">, and</font> <font face="Helvetica" size="+1">name</font><font face="Times" size="+1">, the following are valid qualifier strings:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=125></td>
+
+<td><font face="Times" size="+1">lastName = 'Smith'</font><br>
+<font face="Times" size="+1">salary &gt; 2500</font><br>
+<font face="Times" size="+1">toDepartment.name = 'Personnel'</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">You create a qualifier from a string by using <b>initWithEntity:qualifierFormat:</b>. This method takes as arguments the root entity for the qualifier and a format string somewhat like that used with the standard C <b>printf()</b> function. The format string can embed strings, numbers, and objects using the conversion specifications listed below. This allows qualifiers to be built dynamically.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Format Symbol</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Expected Value or Result</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">%s</font></td>
+
+<td><font face="Times" size="+1">A constant C string (<b>const char *</b>).</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">%A</font></td>
+
+<td><font face="Times" size="+1">An NSString, which is resolved as a property name.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">%d</font></td>
+
+<td><font face="Times" size="+1">An <b>int</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">%f</font></td>
+
+<td><font face="Times" size="+1">A <b>float</b> or <b>double</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">%@</font></td>
+
+<td><font face="Times" size="+1">An <b>id</b> argument--valid objects are EOAttribute, NSString, or anything that responds to <b>expressionValueForContext:</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">%%</font></td>
+
+<td><font face="Times" size="+1">Results in a literal <b>%</b> character.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">%</font></td>
+
+<td><font face="Times" size="+1">Followed by any other character results in that character appearing in the string.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The following examples build qualifiers similar to the qualifier strings described above, but take the specific values from an already-fetched enterprise object:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">myQualifier = [[EOQualifier alloc] initWithEntity:employeeEntity</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">qualifierFormat:@&#34;%A = '%@'&#34;, @&#34;lastName&#34;, [anEmployee lastName]];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">myQualifier = [[EOQualifier alloc] initWithEntity:employeeEntity</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">qualifierFormat:@&#34;%A &gt; %f&#34;, @&#34;salary&#34;, [anEmployee salary]];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">myQualifier = [[EOQualifier alloc] initWithEntity:employeeEntity</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">qualifierFormat:@&#34;%A = '%@'&#34;, @&#34;toDepartment.name&#34;, [aDept name]];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The enterprise objects here implement convenience methods for directly accessing the given attributes: <b>lastName</b> and <b>salary </b>for Employee objects, and <b>name</b> for Department objects.</font>
+
+<p><font face="Times" size="+1">These first examples assume that the string values in the qualifier must be enclosed in single quotation marks. This may not always be a valid assumption, so if you want to be sure your qualifiers are using the proper formats for your database you can ask the adaptor to format both your attribute names and values for inclusion in a qualifier. The next example uses EOAdaptor's <b>formatAttribute:</b> and <b>formatValue:forAttribute:</b> methods to be sure that the qualifier string is well-formed for the database. In this case, since the attribute is a string type, <b>formatValue:forAttribute:</b> returns a quoted copy of the string with any embedded quotes suitably escaped.</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAdaptor *myAdaptor;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAttribute *lastNameAttribute;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOEntity *employeeEntity;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">id formattedAttribute;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">id formattedValue;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOQualifier *aQualifier;</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">formattedAttribute = [myAdaptor formatAttribute:lastNameAttribute];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">formattedValue = [myAdaptor formatValue:[anEmployee lastName]</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">forAttribute:lastNameAttribute];</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">aQualifier = [[EOQualifier alloc] initWithEntity:employeeEntity</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">qualifierFormat:@&#34;%@ = %@&#34;, formattedAttribute, formattedValue];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Though you can usually include an attribute reference directly as a string without any problems, it's a good idea to use <b>formatValue:forAttribute:</b> for values whenever you build a query.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Variables</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">None declared in this class.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Adopted Protocols</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">NSCopying</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">copy</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">copyWithZone:</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types</b></font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Creating instances</font></td>
+
+<td><font face="Times" size="+1">+ qualifierForPrimaryKey:entity:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font face="Times" size="+1">+ qualifierForRow:relationship:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">initWithEntity:qualifierFormat:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Combining qualifiers</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">conjoinWithQualifier:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">disjoinWithQualifier:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">negate</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Getting the entity</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">entity</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Checking the definition</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">isEmpty</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Setting distinct selection</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setUsesDistinct:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">usesDistinct</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>qualifierForPrimaryKey:entity:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ (EOQualifier *)<b>qualifierForPrimaryKey:</b>(NSDictionary *)<i>aKey</i> <b>entity:</b>(EOEntity *)<i>anEntity</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns a qualifier that selects only the object in <i>anEntity</i>'s table that has <i>aKey</i> as its primary key.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>qualifierForObject:relationship:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ (EOQualifier *)<b>qualifierForObject:</b>(id)<i>anObject</i> <b>relationship:</b>(EORelationship *)<i>aRelationship</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns a qualifier that selects only the row for <i>aRelationship</i>'s destination entity whose primary key matches <i>anObject</i>'s foreign key for <i>aRelationship</i>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1"><b>+qualifierForRow:relationship:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>destinationEntity</b> (EORelationship)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>qualifierForRow:relationship:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ (EOQualifier *)<b>qualifierForRow:</b>(NSDictionary *)<i>aRow</i> <b>relationship:</b>(EORelationship *)<i>aRelationship</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns a qualifier that selects only the row for <i>aRelationship</i>'s destination entity whose primary key matches <i>aRow</i>'s foreign key for <i>aRelationship</i>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1"><b>+qualifierForObject:relationship:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>destinationEntity</b> (EORelationship)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>conjoinWithQualifier:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>conjoinWithQualifier:</b>(EOQualifier *)<i>aQualifier</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Replaces the contents of the receiver with the conjunction (logical AND) of the existing contents and the <i>aQualifier</i>. For example, this code excerpt creates a qualifier that selects employees whose salaries are between 4000 and 5000, inclusive:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOEntity *employeeEntity;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAttribute *salaryAttribute;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOQualifier *lowQualifier;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOQualifier *combinedQualifier;</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">lowQualifier = [[EOQualifier alloc] initWithEntity:employeeEntity</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">formatString:@&#34;%@ &gt;= 4000&#34;, salaryAttribute];</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">combinedQualifier = [[EOQualifier alloc] initWithEntity:employeeEntity</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">formatString:@&#34;%@ &lt;= 5000&#34;, salaryAttribute];</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[combinedQualifier conjoinWithQualifier:lowQualifier];</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>disjoinWithQualifier:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>disjoinWithQualifier:</b>(EOQualifier *)<i>aQualifier</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Replaces the contents of the receiver with the disjunction (logical OR) of the existing contents and the <i>aQualifier</i>. For example, this code excerpt creates a qualifier that selects all employees in both the Personnel and Administration departments:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAdaptor *myAdaptor;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOEntity *employeeEntity;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAttribute *deptNameAttribute;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">id tempValue;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOQualifier *persQualifier;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOQualifier *combinedQualifier;</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">tempValue = [myAdaptor formatValue:@&#34;Personnel&#34;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">forAttribute:deptNameAttribute];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">persQualifier = [[EOQualifier alloc] initWithEntity:employeeEntity</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">formatString:@&#34;%@ = %@&#34;, deptNameAttribute, tempValue];</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">tempValue = [myAdaptor formatValue:@&#34;Administration&#34;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">forAttribute:deptNameAttribute];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">combinedQualifier = [[EOQualifier alloc] initWithEntity:employeeEntity</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">formatString:@&#34;%@ = %@&#34;, deptNameAttribute, tempValue];</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[combinedQualifier conjoinWithQualifier:persQualifier];</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>entity</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(EOEntity *)<b>entity</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the entity that defines the context for attributes and relationships. Any attribute named in the qualifier must belong to this entity, and data paths must begin with a relationship defined in this entity.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>initWithEntity:qualifierFormat:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>initWithEntity:</b>(EOEntity *)<i>anEntity</i> <b>qualifierFormat:</b>(NSString *)<i>format, ...</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Initializes a newly allocated EOQualifier to be rooted in <i>anEntity</i> and to build itself from a format string. The string is a <b>printf()</b>-style format string as presented in the class description. This is the designated initializer for the EOQualifier class. Returns <b>self</b> if <i>format</i> is successfully parsed, <b>nil</b> otherwise.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>isEmpty</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>isEmpty</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if the receiver selects all rows for its entity (that is, if it has no qualifying information beyond the entity). Returns NO otherwise.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>negate</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>negate</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Negates the receiver's qualifying information.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setUsesDistinct:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setUsesDistinct:</b>(BOOL)<i>flag</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets according to <i>flag</i> whether the receiver eliminates duplicates from the results of a select operation. If a select operation would yield the same row many times, a qualifier that uses distinct results eliminates all duplicates so that only one is retrieved.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">If you send <b>setUsesDistinct:</b>YES to an EOQualifier and then conjoin that qualifier with another that doesn't use distinct results, the resulting qualifier won't use distinct results.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1"><b>conjoinWithQualifier</b>:, <b>usesDistinct</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>usesDistinct</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>usesDistinct</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if the receiver eliminates duplicates from the results of a select operation, NO if it doesn't. If a select operation would yield the same row many times, a qualifier that uses distinct results eliminates all duplicates so that only one is retrieved.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1"><b>setUsesDistinct:</b></font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

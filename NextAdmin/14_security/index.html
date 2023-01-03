@@ -1,0 +1,2125 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextAdmin/14_Security.rtfd -->
+<!-- Date: Sun Jan  1 13:56:47 2023 -->
+<head>
+<title>14_Security</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Release 3.3 Copyright</font> &copy;<font face="Times">1994 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap><font face="Helvetica" size="+4"><b>14</b></font></td>
+
+<td><font face="Times" size="+4"><i>Security</i></font></td></tr>
+
+<tr valign=top>
+
+<td width=36 height=80></td></tr>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">Security is a consideration whether you have a single computer or a huge network. A lack of security controls can result in equipment or data being lost, sensitive information being disclosed, or important files being modified.</font></td></tr>
+
+<tr valign=top>
+
+<td width=36 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">Some say that the most secure computer is still in its box, but it's not very useful. Keep in mind that when you tighten security, users may require your assistance to perform tasks which they could previously do for themselves. If you discover that a particular security precaution is costing you too much support time, consider reinstating a more open system and allowing users to do things for themselves.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Implementing Security</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Security precautions can include physically securing your equipment, controlling access to particular directories, or preventing users from performing specific tasks. Some precautions apply whether your computer is standalone or on a network, while others apply only when you're maintaining a network.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">Some of the procedures in this chapter involve executing commands in a shell window, while others require that you modify a NetInfo database. You must have <b>root</b> privileges to execute the shell commands, either by using the <b>su</b> command or, if you must, logging in as <b>root</b>. When you use NetInfoManager to make modifications to a NetInfo domain, you'll need to know the <b>root</b> password for that domain.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Security and the Standalone Computer</b></font>
+
+<p><font face="Times" size="+1">The precautions in this section are important whether your computer is standalone or attached to a network. The procedures listed in &quot;Physical Data Security&quot; and &quot;Protection from Viruses&quot; are precautions that should be taken by all users of the system, not just the system administrator.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Physical Data Security</b></font>
+
+<p><font face="Times" size="+1">Balanced security starts with physical security. Computers are most secure when only authorized users can reach them. If your computer is not physically secure, someone could carry it away and have access to all of the data on it.</font>
+
+<p><font face="Times" size="+1">Physical security can also be applied to the data on the computer. One of the best ways to make your data physically secure is to remove it from the computer when you're not using it. Keep your documents on a removable disk that you eject when you finish using it. Remember to keep your disks in a place where they're not accessible to unauthorized users.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Protection from Viruses</b></font>
+
+<p><font face="Times" size="+1">The easiest way to get a virus or other destructive program onto your computer is through a removable disk. Another way is through multimedia electronic mail. Most viruses result from running software from a dubious source. If you aren't sure of the source of an application, don't start it up.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Protecting Directories</b></font>
+
+<p><font face="Times" size="+1">Several directories on your NeXT computer are protected in a special way--<b>/NextDeveloper/Demos</b>, <b>/usr/lib/NextStep/Displays</b>, and &quot;/&quot; (root), among others. Any user can place files or directories into these locations, but only the creator (or <b>root</b>) can remove or overwrite them.</font>
+
+<p><font face="Times" size="+1">While this protection scheme is convenient for users, you may decide that you don't want users able to write to these directories. If you do remove write access, you'll need to create any files or directories in these locations as <b>root</b>. In the case of <b>/usr/lib/NextStep/Displays</b>, removing write access means that users won't be able to add additional displays to their computer themselves.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Removing Write Access</b></font>
+
+<p><font face="Times" size="+1">To remove write access from a directory, follow these steps.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Enter the following command in a shell window, replacing <i>/directory</i> with the name of the directory you're protecting:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>chmod 755</b> <i>/directory</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">To verify that the protection is correct, enter:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>ls -ldg</b> <i>/directory</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">The output should be something like this:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">drwxr-xr-x 16 root&nbsp;&nbsp;&nbsp;&nbsp; wheel&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1024 Oct&nbsp; 3 16:02 <i>/directory</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">The first string of characters in this output indicates the permissions on the directory, and should match your output. The owner and group should also match, but the rest varies.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>Restoring Write Access</b></font>
+
+<p><font face="Times" size="+1">To restore special write access to a directory, follow these steps.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Enter the following command in a shell window:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>chmod 1777</b> <i>/directory</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Verify the new permissions by entering</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>ls -ldg</b> <i>/directory</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">The output should be something like this:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">drwxrwxrwt 16 root&nbsp;&nbsp;&nbsp;&nbsp; wheel&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1024 Oct&nbsp; 3 16:02 <i>/directory</i></font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Setting a Hardware Password</b></font>
+
+<p><font face="Times" size="+1">A simple way to increase the security of your computer is to set a hardware password. Once set, users need to know the password in order to perform certain functions. For example, the password is required to boot in single-user mode, which gives the user <b>root</b> access, or to boot from a disk other than the default, which might give the user <b>root</b> access. As with any other password, consider changing the hardware password on a regular basis. See Chapter 9, &quot;System Startup and Shutdown,&quot; for details.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Removing root Privileges for Preferences</b></font>
+
+<p><font face="Times" size="+1">The Preferences application allows users to modify many features of their system. Some of these modifications require <b>root</b> privileges to be executed successfully. For example, for a user to be able to change the time, they must change the value stored on the clock chip, which requires <b>root</b> access. All activities requiring <b>root</b> privileges have a corresponding program file in <b>/usr/lib/Preferences</b>. In this directory you'll find <b>boot_cmd</b>, used to change the startup device; <b>check_ntpd</b>, used to synchronize time with network time service; and <b>clock_chip</b>, <b>date</b>, and <b>set_time_zone</b>, used to change the time, date, and time zone.</font>
+
+<p><font face="Times" size="+1">If you want to disable one of these features, you can change the permissions on the corresponding file in <b>/usr/lib/Preferences</b>. For example, if you don't want users to be able to change the startup device, you should change the permissions on <b>boot_cmd</b>.</font>
+
+<p><font face="Times" size="+1">If your computers are connected together in a network, you should always enable network time service, so that time is set centrally. With network time service enabled, users can't change the date and time of their local computer except to synchronize it with the network. This is important when you're sharing remote files, and will avoid causing problems with any programs that rely on the creation and modification times of files.</font>
+
+<p><font face="Times" size="+1">If you're not using network time, you can change the permissions on the files <b>clock_chip</b>, <b>date</b>, and <b>set_time_zone</b>. By removing <b>root</b> privileges, users can't change time.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Removing root Privileges</b></font>
+
+<p><font face="Times" size="+1">To prevent Preferences from running a feature as <b>root</b>, follow these steps.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Enter the following commands, replacing <i>file</i> with the appropriate file name:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>cd</b> /usr/lib/Preferences</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>chmod 755</b> <i>file</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">To check that the protection is correct, enter the following, again replacing <i>file</i> with the appropriate file name:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>ls -lg</b> <i>file</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">You should see something similar to the following:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">-rwxr-xr-x&nbsp; 1 root&nbsp;&nbsp; wheel&nbsp;&nbsp; 16384 Sep 19 21:08 <i>date*</i></font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>Restoring root Privileges</b></font>
+
+<p><font face="Times" size="+1">To restore <b>root</b> privileges to a Preferences feature, follow these steps.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Enter the following commands, replacing <i>file</i> with the appropriate file name:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>cd</b> /usr/lib/Preferences</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>chmod 6755</b> <i>file</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">To check that the protection is correct, enter the following:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>ls -lg</b> <i>file</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">You should see something similar to the following:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">-rwsr-sr-x&nbsp; 1 root&nbsp;&nbsp; wheel&nbsp;&nbsp; 16384 Sep 19 21:08 <i>date*</i></font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Removing root Privileges from PrintManager</b></font>
+
+<p><font face="Times" size="+1">PrintManager also acts with <b>root</b> privileges in certain instances. This allows any user to add printers, remove printers, and stop printing queues. If you don't want a computer you're using as a shared printing resource to be modified, you can change the protections on PrintManager to disable its ability to act as <b>root</b>.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Removing root Privileges</b></font>
+
+<p><font face="Times" size="+1">To restrict PrintManager, use the following procedure.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Enter the following commands in a shell window:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>cd</b> /NextApps/PrintManager.app</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>chmod 755</b> PrintManager</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">To check that the protection is correct, enter the following command:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>ls -lg</b> PrintManager</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">You should see something that looks like this:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">-rwxr-xr-x&nbsp; 1 root&nbsp;&nbsp; wheel&nbsp; 163840 Sep 19 21:08 PrintManager</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>Restoring root Privileges</b></font>
+
+<p><font face="Times" size="+1">To restore <b>root</b> privileges, follow these steps.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Enter the following commands:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>cd</b> /NextApps/PrintManager.app</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>chmod 6755</b> PrintManager</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">To check that the protection is correct, enter the following command:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>ls -lg</b> PrintManager</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">You should see something that looks like this:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">-rwsr-sr-x&nbsp; 1 root&nbsp;&nbsp; wheel&nbsp; 163840 Sep 19 21:08 PrintManager</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Setting Security Options in NetInfo</b></font>
+
+<p><font face="Times" size="+1">Four options are available to help make your computer more secure. You enable these options by modifying the NetInfo database. The four options are:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>login_accounting</b>--With this option set, a <b>syslog</b> message is generated for all failed login attempts. Such messages are recorded in <b>/usr/adm/messages</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>secure_passwords</b>--With this option, user passwords must be 8 characters long and contain at least one character other than a letter.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>lockout</b>--With this option, each failed login attempt creates a delay before another login attempt can be made. The initial delay is 1 second; each failed attempt doubles the delay to a maximum of 10 minutes.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>discourage_public_servers</b>--With this option set, users can't set either Public Window Server or Public Sound Server. The checkboxes for these options aren't displayed in the Experts panel of the Preferences application.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Follow these procedures to set a security option:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Start up NetInfoManager.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Double-click &quot;/&quot; to open the Directory window.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Append Property from the Directory menu to add a new property.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Enter <b>security_options</b> into the text field and press Return.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F26.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Choose New Value from the Directory menu.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Enter the name of the security option you want to set (as described earlier) and press Return.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F27.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">If you're setting additional options, choose Append Value from the Directory menu, enter the appropriate name, and press Return.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>8.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Save from the Directory menu.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">If you want to protect more than a single computer, you can set these options in the root domain or a midlevel domain. All computers served by the domain will use the security options set there.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Security and the Local Area Network</b></font>
+
+<p><font face="Times" size="+1">Additional precautions may be necessary if you're connected to a local area network (LAN). The precautions listed here may be useful on even a small network of NeXT computers.</font>
+
+<p><font face="Times" size="+1">The security of a network is like the strength of a chain: the chain is only as strong as its weakest link. In making a network more secure, it's important to secure <i>all</i> of the computers. Failing to secure one computer is like having a rusted link in the chain--that's where security will break down.</font>
+
+<p><font face="Times" size="+1">If you decide to leave security more open on your network, be careful when you allow external access to it. Most network security problems don't come from inside; they come through modems or connections to other networks. Securing modems and network connections will prevent these kinds of problems.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>General Precautions</b></font>
+
+<p><font face="Times" size="+1">One area of concern when working on a network is the use of shared file systems. Be particularly careful about which computers are granted <b>root</b> access to a shared directory, and about how unknown users are treated. For more details, see Chapter 4, &quot;Setting Up the Network File System.&quot;</font>
+
+<p><font face="Times" size="+1">Another general security precaution involves the Public Window Server and Public Sound Server options in the Expert Preferences section of the Preferences application. Both switches are turned off by default, which is the secure option. If they're turned on, remote users can play sounds on your computer, listen to your microphone, draw on your screen, read the picture displayed on your screen, or make use of your digital signal processor (DSP).</font>
+
+<p><font face="Times" size="+1">The last general security precautions on a network are fundamental UNIX security issues. As shipped, the operating system shells (like <b>/bin/csh</b>) on your NeXT computer don't trust information provided by other computers on your network. You may decide it's desirable to allow the computers to trust each other so that users can move freely about the network. Carefully read the UNIX manual pages on <b>.rhosts</b> and <b>hosts.equiv</b> before using these capabilities. When you trust another computer, it should implement the same procedures for protection that you do for your own system. If it doesn't, it's an open back door.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Securing Printer and Fax Addition</b></font>
+
+<p><font face="Times" size="+1">You can prevent regular users from adding or removing printers or fax modems by disabling modifications to the <b>printers</b> and <b>fax_modems</b> NetInfo directories. The disadvantage of tightening this security is that users won't be able to share their printers with the rest of the network without your help.</font>
+
+<p><font face="Times" size="+1">The procedures in this section must be performed in every domain you wish to protect.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Disabling Modification</b></font>
+
+<p><font face="Times" size="+1">Follow these procedures to prevent users from adding or deleting printers or fax modems.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Start up NetInfoManager and open the domain you wish to protect.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>/printers</b> in the domain window.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F0.gif" width=529 height=263></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Double-click <b>printers</b> to open a Directory window, then click <b>_writers</b>.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F1.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">The values associated with the <b>_writers</b> property list the names of the users that are allowed to modify the contents of this NetInfo directory--add, delete, or modify properties and add or delete subdirectories. In this case, &quot;*&quot; indicates that any user can make modifications.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Delete from the Edit menu to destroy this property.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Save from the Directory menu to save your changes. Click Change in the confirmation panel if it appears.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="../images/F7.gif" width=364 height=185></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Enter the <b>root</b> password for this domain, if you're prompted for it.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Now only <b>root</b> will be able to create, destroy, or modify this directory. Repeat this procedure with the <b>/fax_modems </b>directory, if you want.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Enabling Modification</b></font>
+
+<p><font face="Times" size="+1">To reinstate the original behavior, recreate the <b>_writers</b> property.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Start up NetInfoManager</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Double-click <b>/printers</b> to open the Directory window.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F2.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Append Property from the Directory menu.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F3.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Change <b>new_property</b> to <b>_writers</b> in the text field, then press Return to record the change.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F4.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Choose New Value from the Directory menu.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F5.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Type &quot;*&quot; in the text field and press Return.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F6.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Save the directory by choosing Save from the Directory menu. Click Change in the confirmation panel, if it appears.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>8.</b></font></td>
+
+<td><font face="Times" size="+1">If prompted, enter the <b>root</b> password for the domain.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Now anyone can make modifications to this directory. You can use the same procedure for the <b>/fax_modems</b> directory.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Securing Print Jobs</b></font>
+
+<p><font face="Times" size="+1">You can make print jobs execute as the unprivileged user <b>nobody</b> (the same account used for unknown users accessing an NFS directory) if you add the property <b>RemoteAsNobody</b> to the NetInfo entry for the printer. The property doesn't need a value, it just needs to exist.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Running Print Jobs as nobody</b></font>
+
+<p><font face="Times" size="+1">Follow these steps to run print jobs as <b>nobody</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Start up NetInfoManager and open the domain you want to protect.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>/printers</b>, then the name of a specific printer. Double-click the name to open the Directory window.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>name</b>, then choose Append Property from the Directory menu. A new property will appear with the name <b>new_property</b>.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F7.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Enter <b>RemoteAsNobody</b> in the text field, then press Return.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F8.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Save from the Directory menu to save your changes. Click Change in the confirmation panel if it appears.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">If prompted, enter the <b>root</b> password for the domain.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">To keep someone from removing the <b>RemoteAsNobody</b> property, you must also remove the <b>_writers</b> property.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Running Print Jobs as the User</b></font>
+
+<p><font face="Times" size="+1">To reverse this procedure, simply delete the <b>RemoteAsNobody</b> property. You may also want to add the <b>_writers </b>property following the instructions in the earlier section &quot;Securing Printer and Fax Addition.&quot;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Start up NetInfoManager and open the appropriate domain.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>/printers</b>, then the name of a specific printer. Double-click the name to open the Directory window.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>RemoteAsNobody</b>.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F9.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Delete from the Edit Menu.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F10.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Save from the Directory menu, click Change in the confirmation panel if it appears, and enter the <b>root </b>password, if prompted.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Checking for Passwords</b></font>
+
+<p><font face="Times" size="+1">The easiest way to check the passwords on a given computer is with NetInfoManager.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Log into the computer storing the accounts you want to check.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Start up NetInfoManager and open the domain you want to check.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>/users</b>, then click one of its subdirectories.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F11.gif" width=529 height=263></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Choose View from the Domain menu, then choose View Directories By. Click <b>passwd</b> in the panel that appears.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F12.gif" width=193 height=218></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Click Set View.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">The directories are listed in the Domain window by the value of their <b>passwd</b> property rather than the value of their <b>name</b> property.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Look for accounts that have no password, indicated by a blank value or by <b>dir:</b><i>#</i>, where <i>#</i> is replaced by some number.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F13.gif" width=529 height=263></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Click any subdirectory that doesn't have a password, then double-click it to open the Directory window.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F14.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>8.</b></font></td>
+
+<td><font face="Times" size="+1">Select the <b>name</b> property. The name of the user will appear in the second column.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>9.</b></font></td>
+
+<td><font face="Times" size="+1">Ask the user to add a password with Preferences, or add one yourself with UserManager and ask the user to change it later.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Repeat these steps for each domain.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Locating Setuid and Setgid Programs</b></font>
+
+<p><font face="Times" size="+1">Programs, including shell scripts, can be configured to run as the owner of the program file, rather than the user that executes it. Such program files are called <i>setuid files</i> because they set the user ID. Programs can also be configured to run with the privileges of the group associated with the file, rather than the user's default group. These are called <i>setgid files</i>.</font>
+
+<p><font face="Times" size="+1">Many programs can act as <b>root</b> or <b>wheel</b> in this way. Most of these are well-tested and safe. However, if you install a program or application with this ability, you should be careful. For example, any shell script that's configured to act as <b>root</b> might be used to breach the security of your computer.</font>
+
+<p><font face="Times" size="+1">To locate all setuid files, enter the following command from a shell window:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier"><b>find / -perm -4000 -print</b></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">If you want to restrict the output to just those files that set the user ID to <b>root</b>, use this command:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier"><b>find / -perm -4000 -user root -print</b></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">You can use similar commands to locate all setgid files, or files that set the group ID to a particular group. For more information, see the UNIX manual page for <b>find</b>.</font>
+
+<p><font face="Times" size="+1">When you locate such files, you can either remove them, or use the <b>chmod</b> command to remove the setuid and setgid bits from the file. The command used earlier in this chapter to secure permissions is an example of this. For more information, see the UNIX manual page for <b>chmod</b>.</font>
+
+<p><font face="Times" size="+1">Another related security precaution is to ignore the setuid bit when you mount (import) remote directories. See Chapter 4, &quot;Setting Up the Network File System,&quot; for details.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Security and Remote Access</b></font>
+
+<p><font face="Times" size="+1">Computers that are used to grant external access require special attention. External access may be as sophisticated as high-speed data connections to a TCP/IP wide-area network called the Internet, or as simple as a modem which lets you use your computer remotely. While securing a complex network installation can be deeply involved, here are some basic steps to take if you are allowing remote access to your local network:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Request that users on the computer attached to the modem or external network, including network-wide users, change their passwords on a regular basis. All accounts must have passwords.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Carefully monitor the use of the computer attached to the modem or external network to help spot intruders.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Set up the <b>.rhosts</b> and <b>hosts.equiv</b> files so that the computer attached to an external network or modem isn't trusted by the other computers on your network. See the UNIX manual pages for specific information.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Decide which services to provide to an external network, such as mail, remote file access, or remote login. Any services you won't be providing should be disabled so you won't need to be concerned with their security.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">If you set up UUCP connections, consult Chapter 12, &quot;Using UUCP,&quot; for security precautions.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Restrict access to NetInfo domains following the procedures in the following section.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Setting Access Control to a NetInfo Domain</b></font>
+
+<p><font face="Times" size="+1">If your NeXT computer (or network) grants external access to another TCP/IP network, you should restrict access to the administrative information stored in NetInfo. Information about hosts and users stored in NetInfo can be used to compromise the security of your network. Passwords, for example, are vulnerable to password-guessing programs. Each domain that stores user passwords should be protected against outside access by creating a property listing the Internet addresses of those networks that are allowed access to the NetInfo domain.</font>
+
+<p><font face="Times" size="+1">SimpleNetworkStarter creates this property in the root domain when you build your network, assuming you've checked the switch labeled &quot;Limit access to network administrative data to the local network.&quot; You can also use SimpleNetworkStarter to secure a local domain by clicking the &quot;Configure this Host&quot; button. The default for SimpleNetworkStarter is to secure the domain. If you didn't use SimpleNetworkStarter to configure your network, or you want to change the list of networks which are trusted, follow these procedures.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Securing a Domain</b></font>
+
+<p><font face="Times" size="+1">To limit access to a domain, follow these steps:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Start up NetInfoManager and open the domain you want to protect.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Click &quot;/&quot;.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F15.gif" width=529 height=263></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Double-click &quot;/&quot; to open a Directory window.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F16.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>master</b> in the Properties column, then choose Append Property from the Directory menu.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F17.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Enter <b>trusted_networks</b> into the text field and press Return to record the change.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F18.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Choose New Value from the Directory menu.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F19.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>new_value</b> in the Values column. Enter your network address into the text field. The network address is the portion of the Internet address that specifies your network. See Appendix C, &quot;Internet Addressing,&quot; for details.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=53></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Warning:</b></font></td>
+
+<td><font face="Times" size="+1">Be very careful as you enter the number, since a mistake here can disable your network. Don't include a trailing period in the network number (<b>192.42.172</b> not <b>192.42.172.</b>).</font></td></tr>
+
+<tr valign=top>
+
+<td width=53 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=53></td>
+
+<td nowrap><img src="../images/sp.gif" width=52 height=1><font face="Helvetica" size="+1"><b>8.</b></font></td>
+
+<td><font face="Times" size="+1">Press Return to record the change.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F20.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>9.</b></font></td>
+
+<td><font face="Times" size="+1">Save the directory by choosing Save from the Directory menu. Click Change in the confirmation panel if it appears, and enter the <b>root</b> password, if prompted.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Only computers that are part of the indicated network can now access this domain.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Unrestricting Access to a Domain</b></font>
+
+<p><font face="Times" size="+1">If you should ever need to grant access to additional networks, simply add the network address to the <b>trusted_networks</b> property. If you want to make access to the domain unrestricted, follow these steps.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Start up NetInfoManager and open the appropriate domain.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Click &quot;/&quot;.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F15.gif" width=529 height=263></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Double-click &quot;/&quot; to open the Directory window, then click <b>trusted_networks</b> in the Properties column.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F23.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Delete from the Edit menu.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F16.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=53></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Warning:</b></font></td>
+
+<td><font face="Times" size="+1">If you accidentally delete the <b>master</b> property, close the directory window without saving the changes. Without a <b>master</b> property, the domain will not work.</font></td></tr>
+
+<tr valign=top>
+
+<td width=53 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=53></td>
+
+<td nowrap><img src="../images/sp.gif" width=52 height=1><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Save your changes by choosing Save from the Directory menu. Click Change in the confirmation panel if it appears, then enter the <b>root</b> password, if prompted.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Monitoring User Activity</b></font>
+
+<p><font face="Times" size="+1">The easiest way to get information about which users have been logged into your computer and for how long is to use the command <b>ac</b>. To see a list of users and the amount of time they have logged into the system, enter the following command:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier"><b>/usr/etc/ac -p</b></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The output is a list of users (in no particular order) and the amount of time they've been logged in since accounting was last reset. To reset accounting, enter the command:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier"><b>cat /dev/null &gt;</b> /private/adm/wtmp</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">This clears all accounting information and resets the counter.</font>
+
+<p><font face="Times" size="+1">Look for two things when you monitor user activity:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Unrecognized accounts</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">More activity than usual for a specific account</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">You can examine the last 20 or so logins with the command:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier"><b>last | head -20</b></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Among other things, the output includes the name of the user, when the user logged in, and how long the user remained on the system. Look for people who have logged in at unusual hours or from unusual places. If you wish to see all of the logins since the system was last reset, use the command:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier"><b>last</b></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">You can also use this command to look at all of the times a particular user logged in.</font>
+
+<p><font face="Times" size="+1">For more information, see the UNIX manual pages for <b>ac</b> and <b>last</b>.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Maintaining Security</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">In every computer operating system, design flaws can be exploited to bypass security. You can maintain the security of your computer and your network by keeping track of new problems and avoiding them.</font>
+
+<p><font face="Times" size="+1">Various organizations inform computer owners of potential security problems. Joining a NeXT user group, for example, is one way to get the latest word on security issues, and it's also a good way to learn about new developments. To get a list of NeXT user groups, call 1-800-848-NeXT.</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

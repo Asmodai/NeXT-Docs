@@ -1,0 +1,3065 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextAdmin/09_StartShut.rtfd -->
+<!-- Date: Sun Jan  1 13:56:43 2023 -->
+<head>
+<title>09_StartShut</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Release 3.3 Copyright</font> &copy;<font face="Times">1994 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap><font face="Helvetica" size="+4"><b>9</b></font></td>
+
+<td><font face="Times" size="+4"><i>System Startup and Shutdown</i></font></td></tr>
+
+<tr valign=top>
+
+<td width=36 height=80></td></tr>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">Ordinarily, you won't be aware of the complex system startup and shutdown processes, because they happen behind the scenes. Once you enter a startup or shutdown command (usually just by turning the computer on or off), the system functions automatically, and you see only the animated icons and the standard prompts. Nonetheless, it's useful to understand these underlying processes so you can identify and correct problems.</font></td></tr>
+
+<tr valign=top>
+
+<td width=36 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">This chapter describes what happens when you start up and shut down a NEXTSTEP computer. It also discusses the system monitor programs, which you can use to get information about the system, to start up and shut down the computer, and to set system parameters.</font></td></tr>
+
+<tr valign=top>
+
+<td width=36 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">While there are differences in the implementations of NEXTSTEP for Intel and NeXT computers, the startup process on all NEXTSTEP computers goes through four phases:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Bootstrap--The computer loads the Mach kernel into memory, either from a local disk or from the network. If you're starting up a NeXT computer from the network, the ROM first broadcasts a request to the network to locate a server, and the first server to respond provides the kernel. This phase is described in &quot;Starting Up an Intel-based Computer&quot; and &quot;Starting Up a NeXT Computer&quot; in this chapter.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Startup--Internal initialization of the Mach kernel takes place. The system hardware is reset, the kernel data structures are initialized, device drivers are started, the kernel threads are started, and the root file system is mounted. Finally, the kernel executes <b>init</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>init</b>--The <b>init</b> program brings up the system in multi-user mode by running initialization (or <b>rc</b>) scripts, which start the various system processes and server processes (sometimes referred to as &quot;daemon&quot; processes, an archaic term that has little meaning) and mount the file systems. This phase is described in &quot;Running <b>init</b> and the <b>rc</b> Scripts&quot; in this chapter.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Login--Once the operating system has started up, the <b>loginwindow</b> program is run. The login window is the front end for the console of the NEXTSTEP environment. This phase is described in &quot;Customizing Login and Logout&quot; in this chapter.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Shutting down NEXTSTEP is also similar on both NeXT and Intel-based computers. This process is described in &quot;Shutting Down the System.&quot;</font>
+
+<p><font face="Times" size="+1">Finally, there are a number of diagnostic tools for when you have trouble starting up or shutting down your computer. These are described in &quot;Troubleshooting&quot; at the end of this chapter.</font>
+
+<p><font face="Times" size="+1">For more information about configuring device drivers for Intel-based computers, see <i>Installing and Configuring NEXTSTEP</i>.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Starting Up an Intel-based Computer</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">When you turn on a typical Intel-based computer, its ROM (usually referred to as the &quot;BIOS&quot;) performs system diagnostics and then runs a bootstrap loader. (Refer to the documentation for your computer and devices for information about BIOS-based startup and configuration utilities. For example, some computers provide BIOS-based or other ROM-based routines you can use to alter the search order for the startup disk.)</font>
+
+<p><font face="Times" size="+1">The bootstrap loader first looks for a floppy disk. If there isn't one in the floppy disk drive, it then looks for an IDE hard disk. If IDE is disabled, it looks for a SCSI disk in order of SCSI ID: 0, 1, 2, through 6 (7 is reserved for the SCSI adapter). (If the first disk the computer finds doesn't contain a boot sector and appropriate startup software, the startup process fails.) When the bootstrap loader finds a disk with a boot sector, it loads the boot program it finds into memory and transfers control to it.</font>
+
+<p><font face="Times" size="+1">On a hard disk, the boot program (or &quot;booter&quot;) is made up of three separate executable files, <b>boot0</b>, <b>boot1</b>, and <b>boot2</b>. The <b>boot0</b> program is 512 bytes long. If you have more than one partition on your disk, <b>boot0</b> asks you which partition to boot and then loads <b>boot1</b> from that partition. The <b>boot1</b> program is also 512 bytes long. It looks in the label on the current partition and loads <b>boot2</b>. The <b>boot2</b> program is the main booter. It does the real work of loading the configuration files, loading the kernel, and so on. On a floppy disk, the boot program is composed of the <b>boot1f</b> and <b>boot2</b> programs.</font>
+
+<p><font face="Times" size="+1">When the <b>boot2</b> program starts, it pauses for 10 seconds at the boot prompt (<b>boot:</b>) before continuing to start up the computer. This is your chance to send commands to the booter. For example, you can select a different startup disk than the computer normally uses or load special device drivers.</font>
+
+<p><font face="Times" size="+1">If you type a command at the <b>boot:</b> prompt, NEXTSTEP starts up in a character-based display, rather than switching to a graphical display.</font>
+
+<p><font face="Times" size="+1">The booter syntax for NEXTSTEP for Intel Processors is:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">xx[(d[,p])]kernel [-v] [-s] [-a] [options]</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Items in square brackets are optional. There must be no spaces in the command, except within options. (For a quick summary of the options while you're at the <b>boot:</b> prompt, type <b>?</b> and press Return.)</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>xx</b> is either <b>hd</b> for an IDE disk or <b>sd</b> for a SCSI disk.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>d</b> is the drive number, like <b>0</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>p</b> is the partition letter, like <b>a</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>kernel</b> is the name of the kernel you want to load; usually you'll use <b>mach_kernel</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>-v</b> causes NEXTSTEP to display additional diagnostic messages as it starts up.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>-a</b> causes NEXTSTEP to ask you for a root and a <b>/private</b> folder.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>-s</b> starts up NEXTSTEP in single-user mode.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">At the end of the command, you can specify additional options of the form, <b>keyword=value</b>. Keywords that are made up of more than one word must be enclosed in quotation marks, and there can be no spaces between the keyword, the equals sign, and the value. The keywords are:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>config</b> Specifies the configuration data to use to start up the computer. <b>Instance0</b> selects the current configuration you created with Configure; <b>Default</b> selects the configuration you used to install NEXTSTEP.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>maxmem</b> Indicates the amount of memory in your computer in kilobytes. For example, for a computer with 20 megabytes of memory, use <b>maxmem=20480</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>rootdev</b> Specifies the device containing the root file system. For example, if the root device is on partition a of SCSI disk number 1, use <b>rootdev=sd1a</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>&quot;Boot Drivers&quot;</b> Specifies the drivers the computer should load when starting up. Enclose the list in quotation marks, with no space between the <b>=</b> and the quotation mark. For example:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=131 height=1><font face="Courier">&quot;Boot Drivers&quot;=&quot;Adaptec1542B PS2Keyboard PS2Mouse&quot;</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>&quot;Active Drivers&quot;</b> Specifies the drivers to load during system initialization. These drivers can't operate a boot device, such as the hard disk containing the computer's root file system. The list must be in quotation marks, just like <b>&quot;Boot Drivers&quot;</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>&quot;Ask For Drivers&quot;</b> Indicates whether the booter should ask, while it's starting up, which additional device drivers it should load. The default is <b>No</b>. For example:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=131 height=1><font face="Courier">&quot;Ask For Drivers&quot;=Yes</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">When the <b>boot2</b> program is done loading drivers, it starts up the NEXTSTEP Mach kernel and commences the <b>init </b>phase of the startup process, which is described in &quot;Running <b>init</b> and the <b>rc</b> Scripts&quot; in this chapter.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Starting Up a NeXT Computer</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">When you turn on or restart a NeXT computer, programs in the computer's ROM chips perform self-test diagnostics and initiate the bootstrap procedures, which load the system files from the startup device. You can observe and control these processes with the ROM monitor during startup.</font>
+
+<p><font face="Times" size="+1">Each NeXT computer has two system monitors--the ROM monitor and the NMI (nonmaskable interrupt) mini-monitor. Each monitor has a set of commands you can use to access the system on a basic level. The ROM monitor controls the system directly, while the NMI mini-monitor is used while the operating system is running. This section describes how to use the ROM monitor. For information about the NMI mini-monitor, see &quot;Using the NMI Mini-Monitor,&quot; in this chapter.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Using the ROM Monitor</b></font>
+
+<p><font face="Times" size="+1">Normally you don't see the ROM monitor when you turn on a NeXT computer. Instead, you see a small graphical window that displays a few messages about the progress of starting up the computer. However, you may want to use the ROM monitor interactively to perform certain specialized functions, such as setting the hardware password or booting from a nondefault device.</font>
+
+<p><font face="Times" size="+1"><b>Note:</b>&nbsp; Older NeXT computers might have an earlier version of the EPROM chip, which means that the ROM monitor commands may not exactly match the ones discussed here.</font>
+
+<p><font face="Times" size="+1">You can access the ROM monitor in several ways:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">When you first turn on your NeXT computer, hold down the right Command key and press the ~ key (without pressing Shift) on the numeric keypad <i>immediately</i> after the &quot;Testing system&quot; message is replaced by the &quot;Loading from disk&quot; message. (If you have a NeXT computer with an ADB keyboard, press the Command bar and the ~ key.) The ROM monitor window opens and displays the <b>NeXT&gt;</b> prompt.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1"><b>Note:</b>&nbsp; If you're late interrupting the boot process and the Restart/Power-Off panel appears instead of the ROM monitor, press the Power key and try again.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">When the system is running, you can access the ROM monitor through the NMI mini-monitor (described later in this chapter). Open the NMI mini-monitor by holding down both Command keys while you press the ~ key (without pressing Shift) on the numeric keypad (if you have a NeXT computer with an ADB keyboard, hold down the Command bar and press ~ ). The NMI Mini-Monitor window opens and displays the <b>nmi&gt;</b> prompt. Type <b>halt</b> at the prompt and press Return. The <b>halt</b> command attempts to shut the system down gracefully, saving all files to disk.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=53></td>
+
+<td nowrap><font face="Times" size="+1"><b>Warning:</b></font></td>
+
+<td><font face="Times" size="+1">Although the <b>monitor</b> (or <b>mon</b> or <b>m</b>) command also takes you to the ROM monitor, it does <i>not</i> perform a graceful shutdown. If you turn off the computer or reboot after using <b>m</b> to reach the ROM monitor, you can cause file system corruption.</font></td></tr>
+
+<tr valign=top>
+
+<td width=53 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=53></td>
+
+<td nowrap><img src="../images/sp.gif" width=52 height=1><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">If no default boot device is set, you'll see the ROM monitor prompt when the computer is turned on. From here, you need to enter one of the boot commands (see &quot;Booting from a Device,&quot; later in this chapter).</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">A set of special commands allows you to interact with the ROM monitor. To see the list of monitor commands, type <b>? </b>(question mark) at the <b>NeXT&gt;</b> prompt and press Return.</font>
+
+<p><font face="Times" size="+1">Many of the ROM monitor commands control system test diagnostics and are not discussed in this book. The following sections describe the ROM monitor commands most commonly used for system administration purposes.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Inspecting or Modifying Configuration Parameters</b></font>
+
+<p><font face="Times" size="+1">You can inspect or change several system parameters with the <b>p</b> command. Execute this command at the <b>NeXT&gt; </b>prompt by typing <b>p</b> (in lowercase) and pressing Return. All parameters are stored in nonvolatile RAM and will survive if the power is turned off.</font>
+
+<p><font face="Times" size="+1">When you type <b>p</b>, the ROM monitor begins an interactive session that prompts you for a value for each parameter. If you respond to a prompt by pressing Return, the parameter remains at the current value.</font>
+
+<p><font face="Times" size="+1"><b>Note:</b>&nbsp; If the hardware password is set, you cannot change the values of any parameters without that password. (See &quot;Setting the Hardware Password&quot; later in this chapter.)</font>
+
+<p><font face="Times" size="+1">Example:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier"><b>p</b></font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Courier">boot command: od? <b>sd</b></font></td>
+
+<td><font face="Times">(Make the SCSI drive the default boot device.)</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Courier">DRAM tests: yes?</font></td>
+
+<td></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Courier">perform power-on system test: yes?</font></td>
+
+<td></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><img src="../images/sp.gif" width=28 height=1><font face="Courier">sound out tests: no? <b>yes</b></font></td>
+
+<td><font face="Times">(Enable sound tests: system beeps after power-on.)</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><img src="../images/sp.gif" width=28 height=1><font face="Courier">SCSI tests: no?</font></td>
+
+<td></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><img src="../images/sp.gif" width=28 height=1><font face="Courier">loop until keypress: no?</font></td>
+
+<td></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><img src="../images/sp.gif" width=28 height=1><font face="Courier">verbose test mode: no?</font></td>
+
+<td></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Courier">boot extended diagnostics: no?</font></td>
+
+<td></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">serial port A is alternate console: no?</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">allow any ROM command even if password protected: no?</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">allow boot from any device even if password protected: no?</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">allow optical drive #0 eject even if password protected: no?</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">enable parity checking if parity memory is present: no?</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The following sections reference the parameters in this example.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Boot Command</b></font>
+
+<p><font face="Times" size="+1">This parameter sets the default boot device. Possible values are:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">en</font></td>
+
+<td><font face="Times" size="+1">Ethernet (either thin-wire or twisted-pair)</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">fd</font></td>
+
+<td><font face="Times" size="+1">Floppy disk (internal only)</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">od</font></td>
+
+<td><font face="Times" size="+1">Optical disk (internal only)</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">sd</font></td>
+
+<td><font face="Times" size="+1">SCSI disk</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">tp</font></td>
+
+<td><font face="Times" size="+1">Twisted-pair Ethernet</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1"><b>Note:</b>&nbsp; The value <b>en</b> automatically switches the boot attempt between the thin and twisted-pair Ethernet connectors until the system finds a connection to a functioning network. The thin connector is checked first. If you want to boot from the twisted-pair connector <i>without</i> checking the thin connector (for example, for testing purposes), use the value <b>tp</b>. Otherwise, use <b>en</b>.</font>
+
+<p><font face="Times" size="+1">Optional flags and device selectors can be appended to the boot command in the format:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1"><i>device</i> [[(<i>ctrl</i>,<i>unit</i>,<i>part</i>)] [<i>file</i>] [<i>flags</i>] [<i>kvars</i>]]</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">For information on these arguments, see &quot;Booting from a Device&quot; later in this chapter. The boot command parameter may be up to 12 characters long.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>DRAM Tests</b></font>
+
+<p><font face="Times" size="+1">Because these tests check main memory and take the longest amount of time, they can be enabled separately from the other system test options. A <b>yes</b> or <b>y</b> response enables them; a <b>no</b> or <b>n</b> response disables them.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Power-on System Test</b></font>
+
+<p><font face="Times" size="+1">If this parameter is set to <b>no</b>, none of the other diagnostic tests are run. If it's set to <b>yes</b>, the four additional parameters determine which tests are performed:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Courier">sound out tests</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">This parameter causes the sound tests to be performed.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Courier">SCSI tests</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">This parameter enables more comprehensive testing of the SCSI interface (but only if a SCSI device is installed either internally or externally).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Courier">loop until keypress</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">This parameter runs the diagnostics repeatedly until interrupted.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Courier">verbose test mode</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">This parameter causes the name of each test to be displayed as it runs. Note that this parameter not only displays the test names but also the system messages that are printed at each step of the boot process. Verbose mode can be extremely useful in diagnosing system problems because these messages can help you pinpoint just where a problem occurs.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>Boot Extended Diagnostics</b></font>
+
+<p><font face="Times" size="+1">This parameter allows secondary diagnostics to be booted from the default boot device. When set to <b>yes</b> or <b>y</b>, a reboot attempts to load the file <b>diagnostics</b> from the root directory of the default boot device. This program is not shipped with the system and is for use by NeXT Authorized Service Providers.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Alternate Console</b></font>
+
+<p><font face="Times" size="+1">If the ROM monitor detects that the display monitor or keyboard is disconnected when the computer is turned on, the ROM monitor attempts to communicate with a terminal connected to serial port A if this parameter is set to <b>yes</b>.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Password-protected Commands</b></font>
+
+<p><font face="Times" size="+1">The next three parameters determine which ROM monitor commands can be used if the hardware password is set (see the section &quot;Setting the Hardware Password&quot; later in this chapter):</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Courier">allow any ROM command even if password protected</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">If set to <b>yes</b>, any ROM monitor command can be executed without entering the hardware password (the one exception is the <b>P</b> command). This is useful if you want to set the hardware password without disabling any other ROM commands. Booting in single-user mode always requires the hardware password, if set.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Courier">allow boot from any device even if password protected</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">If set to <b>yes</b>, any boot device can be specified with the <b>b</b> command without entering the hardware password. This can be used to allow booting from any device while disabling other ROM commands.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Courier">allow optical drive #0 eject even if password protected</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">If set to <b>yes</b>, the disk in optical drive 0 (assuming you have one) can be ejected without entering the hardware password. If the computer is installed in a public access area, it may be important to prevent the optical disk from being ejected. In this case, you should leave this parameter set to <b>no</b>.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>Parity Checking</b></font>
+
+<p><font face="Times" size="+1">The last parameter is used to turn on error checking. If you have installed parity memory, set this parameter to <b>yes</b>.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Booting from a Device</b></font>
+
+<p><font face="Times" size="+1">The ROM monitor lets you boot the system according to parameters that you specify. To do this, use the following command at the <b>NeXT&gt;</b> prompt and press Return:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1"><b>b</b>[<i>device</i> [(<i>ctrl</i>, <i>unit</i>, <i>part</i>)] [<i>file</i>] [<i>flags</i>] [<i>kvars</i>]]</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">If you execute <b>b</b> with no arguments, the system boots the default kernel file from the default device. If you include the <i>device</i> argument, the system boots from that specified device. You can also boot from an alternate partition on that device with <i>ctrl</i>, <i>unit</i>, and <i>part</i>. If you include the <i>file</i> argument, the system boots from the kernel specified by <i>file</i>. The <i>flags</i> and <i>kvars</i> (kernel variables) provide additional boot options.</font>
+
+<p><font face="Times" size="+1">For information on setting the default boot device, see the preceding section, &quot;Inspecting or Modifying Configuration Parameters.&quot;</font>
+
+<p><font face="Times" size="+1">Possible values for <i>device</i> are:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">en</font></td>
+
+<td><font face="Times" size="+1">Ethernet (either thin wire or twisted-pair)</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">fd</font></td>
+
+<td><font face="Times" size="+1">Floppy disk (internal only)</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">od</font></td>
+
+<td><font face="Times" size="+1">Optical disk (internal only)</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">sd</font></td>
+
+<td><font face="Times" size="+1">SCSI disk</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">tp</font></td>
+
+<td><font face="Times" size="+1">Twisted-pair Ethernet</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The optional device selectors are:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><i>ctrl</i></font></td>
+
+<td><font face="Times" size="+1">Controller number (default 0).</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><i>unit</i></font></td>
+
+<td><font face="Times" size="+1">SCSI logical unit number (default 0). Almost always set to 0.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><i>part</i></font></td>
+
+<td><font face="Times" size="+1">Partition number (default 0). These are 0</font><font size="+1"><img src="../images/c2D.gif" width=8 height=4></font><font face="Times" size="+1">7, corresponding to partitions a</font><font size="+1"><img src="../images/c2D.gif" width=8 height=4></font><font face="Times" size="+1">h.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">For SCSI drives, the controller number is the logical device number, not the actual target number of the drive. For example, if the first drive is set to target 0 and the second drive target 5, then controller number 1 refers to the second drive.</font>
+
+<p><font face="Times" size="+1">Possible values for <i>flags</i> are:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">-a</font></td>
+
+<td><font face="Times" size="+1">Ask for the name of the root device.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">-b</font></td>
+
+<td><font face="Times" size="+1">Boot without running <b>/etc/rc.boot</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">-s</font></td>
+
+<td><font face="Times" size="+1">Boot in single-user mode instead of multiuser mode.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">-i</font></td>
+
+<td><font face="Times" size="+1">Ask for the name of the <b>init</b> program (the default is <b>/etc/init</b>).</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">-p</font></td>
+
+<td><font face="Times" size="+1">Don't automatically reboot after a system panic.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The kernel variables (<i>kvars</i>) useful for system administration are:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=123></td>
+
+<td nowrap><font face="Times" size="+1">rootdev=<i>xxx</i></font></td>
+
+<td><font face="Times" size="+1">Use the device specified by <i>xxx</i> (such as <b>sd1</b>, <b>en0</b>, <b>fd0</b>, <b>od0</b>) as the root device when obtaining the kernel from a different boot device.</font></td></tr>
+
+<tr valign=top>
+
+<td width=123 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=123></td>
+
+<td nowrap><font face="Times" size="+1">rootrw=1</font></td>
+
+<td><font face="Times" size="+1">Initially mount the root file system as read/write. Normally, the root file system is initially mounted as read-only. Then, if <b>fsck</b> indicates the file system is clean, it's remounted as read/write.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">You can press any key to stop booting from the Ethernet. To stop booting from any other device, hold down the right Command key and press the ~ key (without pressing Shift) on the numeric keypad. (If you have a NeXT computer with an ADB keyboard, hold down the Command bar and press ~ .)</font>
+
+<p><font face="Times" size="+1">Here are some example boot commands:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">b</font></td>
+
+<td><font face="Times" size="+1">Boot from the default boot device.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">bsd</font></td>
+
+<td><font face="Times" size="+1">Boot from the SCSI disk.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">ben</font></td>
+
+<td><font face="Times" size="+1">Boot from the Ethernet.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">bod test</font></td>
+
+<td><font face="Times" size="+1">Boot <b>test</b> from the optical disk.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">bfd -s</font></td>
+
+<td><font face="Times" size="+1">Boot in single-user mode from the internal floppy disk.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">ben mach -as</font></td>
+
+<td><font face="Times" size="+1">Boot <b>mach</b> in single-user mode from the network, and prompt for the root device.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">bsd(1,0,0)</font></td>
+
+<td><font face="Times" size="+1">Boot from the second SCSI disk.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">bod - rootdev=sd0</font></td>
+
+<td><font face="Times" size="+1">Boot, taking the kernel from the optical disk, then use <b>sd0</b> as the source for the root device. The &quot;-&quot; is required if the kernel name is not given.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Setting the Hardware Password</b></font>
+
+<p><font face="Times" size="+1">You can set a hardware password, which allows you to limit the ROM monitor commands that can be used without first supplying the password. If the hardware password is set, the three parameters described in the earlier section, &quot;Inspecting or Modifying Configuration Parameters,&quot; determine how the ROM commands will be limited.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=34></td>
+
+<td nowrap><font face="Times" size="+1"><b>Warning:</b></font></td>
+
+<td><font face="Times" size="+1">If you set the hardware password, protect it carefully. If it should be lost, recovery is a complex procedure.</font></td></tr>
+
+<tr valign=top>
+
+<td width=34 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=34></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">To set the password, type <b>P</b> (in uppercase) at the <b>NeXT&gt;</b> prompt and press Return. Enter the new password (no more than 6 characters) at the prompt &quot;New password.&quot; You're then prompted to confirm the new password by retyping it.</font></td></tr>
+
+<tr valign=top>
+
+<td width=34 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=34></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">Once the hardware password is set, you're prompted for the password in these circumstances:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">When booting the system in single-user mode</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">When issuing a ROM monitor command that is password protected</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">When changing the hardware password</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">You are only required to enter the hardware password once per session. Once you have successfully entered the hardware password, you can execute any protected command without having to supply the hardware password again.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Displaying Memory Configuration</b></font>
+
+<p><font face="Times" size="+1">You can display information about system memory configuration by entering the command <b>m</b>. This command displays information about the memory installed in memory sockets 0 through 15.</font>
+
+<p><font face="Times" size="+1">The output from the <b>m</b> command will be something like this:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">Memory sockets 0 and 1 (front) have 8MB of page mode SIMMs installed</font><br>
+<img src="../images/sp.gif" width=131 height=1><font face="Courier">(0x4000000-0x47fe000)</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">Memory sockets 0 and 1 (back) have no SIMMs installed (0x0-0x0)</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">Memory sockets 2 and 3 (front) have no SIMMs installed (0x0-0x0)</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">Memory sockets 2 and 1 (back) have no SIMMs installed (0x0-0x0)</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The ROM monitor reserves some space in the last SIMM to store its internal information.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Displaying Error Codes</b></font>
+
+<p><font face="Times" size="+1">For debugging purposes, you can display the last two system test error codes recorded in nonvolatile memory. These error codes can be produced during the power-on self test routines. This command can be helpful in tracking down intermittent errors that can't be produced on demand.</font>
+
+<p><font face="Times" size="+1">To display these error codes, type the following at the <b>NeXT&gt;</b> prompt and press Return:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier"><b>ec</b></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">For a list of possible error codes, see Appendix E, &quot;System Test Error Codes.&quot;</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Ejecting Optical Disks</b></font>
+
+<p><font face="Times" size="+1">You can eject the disk from the internal optical disk drive by typing the following command at the <b>NeXT</b>&gt; prompt and pressing Return:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier"><b>ej</b></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The command <b>eo</b> has the same effect.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Ejecting Floppy Disks</b></font>
+
+<p><font face="Times" size="+1">You can eject a floppy disk from the internal floppy disk drive by typing the following command at the <b>NeXT</b>&gt; prompt and pressing Return:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier"><b>ef</b></font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Resuming Execution</b></font>
+
+<p><font face="Times" size="+1">The <b>continue</b> (or <b>c</b>) command resumes execution at the point where it left off, if you reached the ROM monitor by entering <b>m</b> in the NMI mini-monitor. The screen display is not restored when you resume execution, which means that most of the objects on the screen will be invisible until they are redrawn. One way to do this is to drag the (invisible) main menu back and forth across the entire screen, causing all the objects to be redrawn. In general, avoid using <b>c</b> from the ROM monitor.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Using the NMI Mini-Monitor</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">While a NEXTSTEP computer is running, you can produce a nonmaskable interrupt (NMI) that opens the NMI mini-monitor, giving you access to the set of NMI commands. Although the NMI mini-monitor is not part of the ROM monitor on a NeXT computer, it's similar. The NMI mini-monitor allows low-level inspection and debugging of the operating system, while the ROM monitor allows low-level inspection of the system hardware.</font>
+
+<p><font face="Times" size="+1">The NEXTSTEP mini-monitor on Intel-based computers provides a similar monitor program, different in a few of its commands, and relying on a high priority interrupt rather than a nonmaskable interrupt. In this chapter, &quot;NMI mini-monitor&quot; refers to the monitor available on both NeXT and Intel-based computers.</font>
+
+<p><font face="Times" size="+1">Open the NMI mini-monitor by holding down both the left and right Command keys while pressing the ~ key (without pressing Shift) on the numeric keypad. (If you have a NeXT computer with an ADB keyboard, hold down the Alternate key and the Command bar while pressing the ~ key). If you're using an Intel-based computer, you can only open the NMI mini-monitor if you're using one of the &quot;NeXT&quot; keyboard arrangements, such as NeXTUSA.</font>
+
+<p><font face="Times" size="+1">You can type this key sequence while in any application; you don't have to open a special window. This opens a window that contains the NMI mini-monitor prompt:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td nowrap><font face="Courier"><b>&gt;</b></font></td>
+
+<td><font face="Times">(If you're using an Intel-based computer)</font></td></tr>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td nowrap><font face="Courier"><i>or</i></font></td>
+
+<td></td></tr>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td nowrap><font face="Courier"><b>nmi&gt;</b></font></td>
+
+<td><font face="Times">(If you're using a NeXT computer)</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">You can also arrive in the NMI mini-monitor window through a system failure. If this happens, you'll see the <b>panic&gt; </b>prompt. The available commands are the same, although the <b>continue</b> command will continue a panic (which is only useful in rare circumstances).</font>
+
+<p><font face="Times" size="+1">You can display the list of available NMI commands by typing <b>?</b> (question mark) and pressing Return at the <b>&gt;</b>, <b>nmi&gt;</b>, or <b>panic&gt;</b> prompts. These commands are described in the following sections and work for both Intel-based and NeXT computers unless otherwise noted.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Resuming Execution</b></font>
+
+<p><font face="Times" size="+1">The <b>continue</b> (or <b>c</b>) command resumes execution at the point where it left off (that is, the point at which you produced the nonmaskable interrupt). It's not a great idea to use this command after a system failure, for the system will be returned to exactly the point at which it failed. This will undoubtedly result in a repeat failure.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Exiting to the Debugger</b></font>
+
+<p><font face="Times" size="+1">The <b>gdb</b> command allows you to exit to the GNU debugger. For more information, see the <i>NEXTSTEP Developer's Library</i>.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Displaying the Kernel Message Buffer</b></font>
+
+<p><font face="Times" size="+1">If you're using a NeXT computer, you can use the <b>msg</b> command to display the kernel message buffer that contains messages from the system. This is useful because system messages aren't normally displayed on the screen. (If you want such messages to be displayed, choose the Console command from the Tools menu in the Workspace Manager.) This command allows you to examine those messages even if they haven't been displayed. If you enter <b>msg=</b><i>n</i>, only the last <i>n</i> messages will be displayed.</font>
+
+<p><font face="Times" size="+1"><b>Important:</b>&nbsp; This command is especially useful after a system panic, since you can use it to check the kernel messages that occurred during this event. When diagnosing the cause of a system panic, it's important to record what these messages are.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Exiting to the ROM Monitor</b></font>
+
+<p><font face="Times" size="+1">If you're using a NeXT computer, the <b>monitor</b> (or <b>mon</b> or <b>m</b>) command takes you to the ROM monitor. The ROM monitor commands are described earlier in this chapter. Remember that the <b>monitor</b> command does not shut down the system gracefully and does not save files to disk before it exits to the ROM monitor. To halt the system, use the <b>halt </b>command (see &quot;Halting the System&quot; later in this section).</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Rebooting the System</b></font>
+
+<p><font face="Times" size="+1">The <b>reboot</b> (or <b>r</b>) command saves all files to the disk and restarts the system with the last command used to boot the system.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Halting the System</b></font>
+
+<p><font face="Times" size="+1">The <b>halt</b> (or <b>ha</b>) command saves all files to the disk and halts the system. Unlike the <b>mon</b> command, which simply stops the system, <b>halt</b> attempts a clean shutdown. In almost all circumstances, it's better to use <b>halt</b> rather than <b>mon </b>(use <b>mon</b> only if <b>halt</b> doesn't work).</font>
+
+<p><font face="Times" size="+1">For more information about shutting down NEXTSTEP, see &quot;Shutting Down the System,&quot; in this chapter.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Retaining the NMI Window</b></font>
+
+<p><font face="Times" size="+1">When you use the NMI <b>continue</b> (or <b>c</b>) command to resume execution, the NMI window disappears from the screen. If you're using a NeXT computer, you use the <b>stay</b> (or <b>s</b>) command before giving the <b>continue</b> command, the NMI window will remain on the screen instead.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=34></td>
+
+<td nowrap><font face="Times" size="+1"><b>Warning:</b></font></td>
+
+<td><font face="Times" size="+1">The display of other windows may conflict with the display of the NMI window through use of the <b>stay</b> command. Also, although <b>stay</b> does retain a display of the NMI window and any messages that may appear in it, you may have trouble entering commands into the window.</font></td></tr>
+
+<tr valign=top>
+
+<td width=34 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=34></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">To remove the NMI window once you've given the <b>stay</b> command, you must restart the computer.</font></td></tr>
+
+<tr valign=top>
+
+<td width=34 height=30></td></tr>
+
+<tr valign=top>
+
+<td width=34></td>
+
+<td nowrap></td>
+
+<td><font face="Helvetica" size="+2"><b>Enlarging the NMI Window</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=34 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=34></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">If you're using a NeXT computer, you can enlarge the NMI window using the <b>big</b> command. When you enter this command, you're automatically returned to the interrupted process, as if you had entered <b>continue</b>. Subsequently, when you return to the NMI mini-monitor, the window will be bigger.</font></td></tr>
+
+<tr valign=top>
+
+<td width=34 height=30></td></tr>
+
+<tr valign=top>
+
+<td width=34></td>
+
+<td nowrap></td>
+
+<td><font face="Helvetica" size="+2"><b>Resetting the State of the Kernel Debugger</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=34 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=34></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">If you're using an Intel-based computer, you can use the <b>reset</b> command to reset the internal kernel debugger state on the target computer to allow a new connection to the computer running the inspection process.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Running init and the rc Scripts</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Once the startup phase is complete, the kernel executes <b>init</b>. One of the design goals of the booting sequence is to provide autonomy among the three phases. Thus, the kernel needs no information about the device it was loaded from to become fully functional. The <b>rc</b> scripts need no information from the kernel to bring the system up in multiuser mode.</font>
+
+<p><font face="Times" size="+1">Here's a brief description of how the <b>rc</b> scripts are used during startup:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">1.</font></td>
+
+<td><font face="Times" size="+1">When the <b>init</b> program executes during startup, it first runs the shell script <b>/etc/rc.boot</b>. This script performs the most basic system initialization, such as checking the file systems for consistency (if needed) and initializing the network interface. On Intel-based computers, it also runs the <b>driverLoader</b> program which loads and configures the device drivers listed in the &quot;Active Drivers&quot; line in <b>instance0.table</b> file.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">2.</font></td>
+
+<td><font face="Times" size="+1">If the system is being brought up in single-user mode (with the <b>-s</b> flag), <b>init</b> will run an interactive shell (<b>/bin/sh</b>) on the console. When this shell exits (or if you're not starting up in single-user mode), <b>init</b> will run the shell script <b>/etc/rc</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">3.</font></td>
+
+<td><font face="Times" size="+1">The <b>/etc/rc</b> script performs some general system startup operations, calls <b>/etc/rc.net</b> and <b>/etc/rc.swap</b>, mounts the local file systems, and starts the system daemons.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">4.</font></td>
+
+<td><font face="Times" size="+1">During the mount process, local file systems are mounted according to entries found in <b>/etc/fstab</b>. Later, <b>/etc/rc </b>starts NetInfo. Once it starts, NetInfo is used as the database for file system mounting, and <b>/etc/fstab</b> is not used again for mounting. To complete the mount process, <b>/etc/rc</b> performs a second mount for NFS directories imported using NFS, using the NetInfo database.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">5.</font></td>
+
+<td><font face="Times" size="+1">The <b>/etc/rc</b> script also calls <b>/etc/rc.local</b>. Use this script to specify local startup procedures.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The <b>rc</b> scripts have been designed to work on all system configurations. They operate in conjunction with the file <b>/etc/hostconfig</b>, which is modified by SimpleNetworkStarter and HostManager. Typically the only startup files you will modify are <b>/etc/hostconfig</b> and <b>/etc/rc.local</b>.</font>
+
+<p><font face="Times" size="+1">The system processes started by the <b>rc</b> scripts operate in the background to perform routine system tasks. There are numerous processes controlling many system functions, and starting them is one of the most significant tasks the <b>rc </b>scripts perform. For more information, see &quot;The <b>rc</b> Scripts&quot; later in this chapter.</font>
+
+<p><font face="Times" size="+1">The following table lists the system processes.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>Process</b></font></td>
+
+<td><font face="Times" size="+1"><b>Function</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">mach-task</font></td>
+
+<td><font face="Times" size="+1">Kernel threads</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">kernel idle</font></td>
+
+<td><font face="Times" size="+1">Idle loop (runs when nothing else needs to be run)</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">init</font></td>
+
+<td><font face="Times" size="+1">Starts the system initialization procedures</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">mach_init</font></td>
+
+<td><font face="Times" size="+1">Controls system service port inheritance</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">kern_loader</font></td>
+
+<td><font face="Times" size="+1">Loadable device driver server</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">syslogd</font></td>
+
+<td><font face="Times" size="+1">Logs system error and status messages</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">nmserver</font></td>
+
+<td><font face="Times" size="+1">Supports networking of Mach interprocess communication and acts as name server for Mach IPC ports</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">portmap</font></td>
+
+<td><font face="Times" size="+1">Converts SunRPC program numbers into Internet port numbers</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">nibindd</font></td>
+
+<td><font face="Times" size="+1">Starts NetInfo service; spawns <b>netinfod</b> processes</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">netinfod</font></td>
+
+<td><font face="Times" size="+1">NetInfo server (one for each domain served)</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">ypserv</font></td>
+
+<td><font face="Times" size="+1">NIS server process</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">ypbind</font></td>
+
+<td><font face="Times" size="+1">NIS client-to-server bind process</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">lookupd</font></td>
+
+<td><font face="Times" size="+1">Communicates with network information services, such as NetInfo, NIS, and DNS</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">routed</font></td>
+
+<td><font face="Times" size="+1">Network process for maintaining routes to other networks</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">biod</font></td>
+
+<td><font face="Times" size="+1">Asynchronous block I/O process for network file system operation</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">ntpd</font></td>
+
+<td><font face="Times" size="+1">Network time protocol process</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">inetd</font></td>
+
+<td><font face="Times" size="+1">Initial Internet process</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">sendmail</font></td>
+
+<td><font face="Times" size="+1">Mail process</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">lpd</font></td>
+
+<td><font face="Times" size="+1">Line printer process</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">pbs</font></td>
+
+<td><font face="Times" size="+1">NEXTSTEP pasteboard server</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">npd</font></td>
+
+<td><font face="Times" size="+1">NeXT printer process that intercedes between applications and <b>lpd</b>, determining whether to send PostScript directly to the NeXT printer or to be spooled</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">FaxDaemon</font></td>
+
+<td><font face="Times" size="+1">Supports sending and receiving faxes</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">autonfsmount</font></td>
+
+<td><font face="Times" size="+1">Automatic mounting process for NFS directories</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">nfsd</font></td>
+
+<td><font face="Times" size="+1">Server processes that handle client file system requests if this host is running an NFS server</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">rpc.mountd</font></td>
+
+<td><font face="Times" size="+1">NFS mount request server</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">bootpd</font></td>
+
+<td><font face="Times" size="+1">Configuration server (BOOTP protocol) process</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">rpc.bootparamd</font></td>
+
+<td><font face="Times" size="+1">Boot parameters server</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">snmpd</font></td>
+
+<td><font face="Times" size="+1">Simple Network Management Protocol process</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">nucmessaged</font></td>
+
+<td><font face="Times" size="+1">NetWare message process</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">autoNetWaremount</font></td>
+
+<td><font face="Times" size="+1">Automatic mounting process for NetWare servers</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">named</font></td>
+
+<td><font face="Times" size="+1">Domain Name Service (DNS) server process</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">update</font></td>
+
+<td><font face="Times" size="+1">Updates disks by running <b>sync</b> every 30 seconds</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">cron</font></td>
+
+<td><font face="Times" size="+1">Executes automated system processes at specified times</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>The rc Scripts</b></font>
+
+<p><font face="Times" size="+1">What follows is an explanation of each <b>rc</b> script (including <b>rc.boot</b>, <b>rc</b>, <b>rc.net</b>, <b>rc.swap</b>, <b>rc.local</b>, <b>rc.cdrom</b>, and <b>rc.uucp</b>).</font>
+
+<p><font face="Times" size="+1"><b>Note:</b>&nbsp; The <b>rc</b> scripts have been thoroughly annotated. For further information about the initialization process, read the files themselves.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>/etc/rc.boot</b></font>
+
+<p><font face="Times" size="+1">This script is run by <b>init</b> before the system enters single-user mode, and before <b>rc</b> is run during a normal multi-user boot. It runs <b>fsck</b> to check all file systems specified in the <b>fstab</b> file, creates a <b>swapfile</b> if one doesn't already exist, creates <b>mtab</b> entries for all file systems mounted by the kernel, and initializes the Ethernet network interface with <b>ifconfig</b>.</font>
+
+<p><font face="Times" size="+1"><b>Note:</b>&nbsp; An exact copy of this file is provided in <b>/etc/rc.boot.standard</b>. If you ever need to return to the release version of <b>rc.boot</b> after it has been modified, make a copy of <b>rc.boot.standard</b>.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>/etc/rc</b></font>
+
+<p><font face="Times" size="+1">This script is run by <b>init</b> when the system enters multi-user mode. It performs general startup functions such as mounting file systems, starting the system log &quot;daemon&quot; process, running <b>rc.local</b>, starting <b>cron</b> and <b>update</b>, and turning on accounting.</font>
+
+<p><font face="Times" size="+1"><b>Note:</b>&nbsp; An exact copy of this file is provided in <b>/etc/rc.standard</b>. If you ever need to return to the release version of <b>rc </b>after it has been modified, make a copy of <b>rc.standard</b>.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>/etc/rc.net</b></font>
+
+<p><font face="Times" size="+1">This script is run by <b>/etc/rc</b> to configure your computer's network interface and to start up basic communication services. Network configuration settings are read from the files <b>/etc/hostconfig</b> and <b>/etc/iftab</b>.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>/etc/rc.swap</b></font>
+
+<p><font face="Times" size="+1">The script <b>/etc/rc.swap</b> is run by <b>/etc/rc</b>. If a swap disk is present and properly configured, it will be mounted on <b>/private/swapdisk</b> and used for paging and temporary file space.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>/etc/rc.local</b></font>
+
+<p><font face="Times" size="+1">This script is run by <b>/etc/rc</b>. It's used to start locally installed software (that is, software that is not provided by NeXT or not supported by NeXT). If you have local &quot;daemon&quot; processes of your own to start, place them in this script. For example, you might add a command to run <b>rc.uucp</b>.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>/etc/rc.cdrom</b></font>
+
+<p><font face="Times" size="+1">This script is run by <b>/etc/rc</b> if the system is being booted from a CD-ROM. Booting from CD-ROM is used to install system software on the hard disk.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>/etc/rc.uucp</b></font>
+
+<p><font face="Times" size="+1">This script is provided as a convenience for those who want to run UUCP. This script should be executed by <b>rc.local</b>. Note that UUCP is not supported in this release (it's provided with no guarantees). However, you can refer to Chapter 12, &quot;Using UUCP,&quot; for more information on UUCP.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Customizing Login and Logout</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Once the operating system has started up, <b>loginwindow</b> is run. The <b>loginwindow</b> program is the login front end for the console of the NEXTSTEP environment. It allows the user to log in by entering a user name and password. Before executing the Workspace Manager program, <b>loginwindow</b> reads the user parameters (including those specified with the Preferences application) from various sources. These parameters are put into effect for the duration of the user's login session. It then executes the Workspace Manager as that user.</font>
+
+<p><font face="Times" size="+1">If there's an account for the default user, <b>me</b>, and that account has no password, then the <b>loginwindow</b> program doesn't go through the login procedure; it immediately executes the Workspace Manager for <b>me</b>. You can change the name of the default user by typing the following in a shell as the superuser (<b>root</b>):</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">dwrite loginwindow DefaultName <i>name</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Replace <i>name</i> with the name you want for the default user.</font>
+
+<p><font face="Times" size="+1">You can use the Preferences application to set a number of security options for logging in and out and for turning off the computer. The Login Window Preferences are only available when you're logged in as the <b>root</b>.</font>
+
+<p><font face="Times" size="+1">All the Login Window Preferences take effect after you restart the <b>loginwindow</b> program, which happens when you restart the Window Server (by typing <b>exit</b> in the login window's Name field and pressing Return twice) or when you restart the computer.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F0.gif" width=394 height=319></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">You can drag the Automatic Screen Saver slider to set the delay (in minutes) before the login window is replaced by a moving NeXT icon. Drag the slider all the way to the right to turn off the screen saver.</font>
+
+<p><font face="Times" size="+1">When you check Disable Power Off, the Restart and Power buttons are disabled in the login window, clicking Power Off in the Log Out panel logs you out instead, and the power key is disabled (for keyboard layouts that have one).</font>
+
+<p><font face="Times" size="+1">You can use the Set buttons in the Login Window Preferences to replace standard NEXTSTEP software with your own software for the following purposes:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>Login Hook</b> A script or application that runs when anyone logs in.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>Logout Hook</b> A script or application that runs when anyone logs out.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>Custom Screen Saver</b> A program that runs in place of the NEXTSTEP screen saver after the delay you set in this window.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>Custom Authenticator</b> A program that verifies who can log into the computer.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>Custom Login UI</b> A program that replaces the NEXTSTEP login window<b>.</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">For more information about <b>loginwindow</b> and its arguments, see the UNIX manual page for <b>loginwindow</b>.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Shutting Down the System</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">You can shut down your system in several ways. The preferred way to shut down is to click the Power button in the login window or to press the Power key. On Intel-based computers, the power key is available only if you're using a &quot;NeXT&quot; keyboard arrangement (such as NeXTUSA), which maps the Power key to the key labeled &quot;Home&quot; on most PC keyboards. (For more information about keyboard arrangements, see the <i>NEXTSTEP User's Guide</i>.) However, you can also shut down using a UNIX command or the NMI mini-monitor. If possible, any shutdown procedure you select should be &quot;clean,&quot; with system processes halted in an orderly fashion and all files saved to disk.</font>
+
+<p><font face="Times" size="+1">After a clean shutdown, the file system is in a consistent state--it can account for all of its data blocks. By contrast, after a &quot;dirty&quot; shutdown the file system may be in an inconsistent state and (rarely) data can be lost. Most of the time, the file system can recover from a dirty shutdown without loss of data. You can use the <b>fsck</b> program to check for file system inconsistencies and repair them if they are minor (for details, see &quot;Troubleshooting,&quot; later in this chapter, and the UNIX manual page for <b>fsck</b>).</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Shutting Down with the Power Button or Power Key</b></font>
+
+<p><font face="Times" size="+1">To shut down your computer using normal procedures, first quit any applications to make sure any open files are saved. Then choose Log Out from the Workspace Manager's main menu. When the login window opens, click the Power button (or press the Power key) and then click Turn It Off in the panel that asks you to confirm that you really want to turn off the computer.</font>
+
+<p><font face="Times" size="+1">If you're using an Intel-based computer, a message asks you to wait until it's safe to turn off the computer. When the &quot;clean&quot; shutdown process is complete, a message tells you it's safe to turn off the computer. You usually do this by pressing a physical power switch on the computer.</font>
+
+<p><font face="Times" size="+1">If you're using a NeXT computer, the computer shuts itself down cleanly and then turns itself off.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Shutting Down with a UNIX Command</b></font>
+
+<p><font face="Times" size="+1">To shut down the system using a UNIX command:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Open a shell window and use <b>su</b> to gain <b>root</b> access.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Type either of the following commands and press Return:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>shutdown now</b></font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier"><i>or</i></font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>halt</b></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">The <b>shutdown</b> command takes you to single-user mode. If you're using an Intel-based computer, the <b>halt</b> command prepares the computer so your can turn it off. If you're using a NeXT computer, the <b>halt</b> command takes you to the ROM Monitor.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">If you used the <b>shutdown</b> command, press the Power key and then type <b>y</b> when you're asked if you really want to turn off the computer. If you're using an Intel-based computer and you used the <b>halt</b> command, press the power switch on your computer when you see the message that it's safe to turn it off. If you're using a NeXT computer and you used the <b>halt</b> command, press the Power key and then type <b>y</b> when you're asked if you really want to turn it off.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">This is a clean shutdown.</font>
+
+<p><font face="Times" size="+1">For more information, see the UNIX manual pages for <b>shutdown</b> and <b>halt</b>.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Shutting Down with the NMI Mini-Monitor</b></font>
+
+<p><font face="Times" size="+1">If none of the earlier shutdown procedures work, you can shut down by using the NMI mini-monitor. If you're using an Intel-based computer, you can only open the NMI mini-monitor if you're using one of the &quot;NeXT&quot; keyboard arrangements, such as NeXTUSA.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Open the NMI mini-monitor by holding down both the left and right Command keys while pressing the ~ key (without pressing Shift) on the numeric keypad. (If you have a NeXT computer with an ADB keyboard, hold down the Alternate key and the Command bar while pressing the ~ key).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Type <b>halt</b> and press Return. The monitor saves all files to disk. If you're using an Intel-based computer, the <b>halt </b>command prepares the computer so your can turn it off. If you're using a NeXT computer, the <b>halt</b> command takes you to the ROM Monitor.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">If you're using an Intel-based computer, press the power switch on your computer when you see the message that it's safe to turn it off. If you're using a NeXT computer, press the Power key and then type <b>y</b> when you're asked if you really want to turn it off.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">This is a clean shutdown.</font>
+
+<p><font face="Times" size="+1"><b>Important:</b>&nbsp; If you're using a NeXT computer and entering <b>halt</b> doesn't work, you can type <b>mon</b> (or <b>monitor</b>) and press Return. This takes you directly to the ROM monitor, where you can use the Power key to power off. This is <i>not</i> a clean shutdown.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Shutting Down with the Restart/Power-Off Panel</b></font>
+
+<p><font face="Times" size="+1">Another shutdown method is the Restart/Power-Off panel.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Hold down the right Command key and press the ~ key (without pressing shift) on the numeric keypad. (If you're using a NeXT computer with an ADB keyboard, hold down the Command bar and press the ~ key). The Restart/Power-Off panel opens.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">If you're using an Intel-based computer, type h and when a message tells you it's safe to turn off your computer, press its power switch. If you're using NeXT computer, press the Power key.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">This is a clean shutdown.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Emergency Shutdown</b></font>
+
+<p><font face="Times" size="+1">If none of these procedures is successful, you can do an emergency shutdown.</font>
+
+<p><font face="Times" size="+1">The two procedures described here do <i>not</i> result in a clean shutdown. They are also potentially damaging to an optical disk if the drive is in the middle of a write operation. Be aware that after such a shutdown, your computer will take a long time to reboot because it must check for file system damage.</font>
+
+<p><font face="Times" size="+1">In an emergency, you can shut down your computer with either of the following:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Press your Intel-based computer's power or reset switch. If you're using a NeXT computer, simply unplug it.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">If you're using a NeXT computer, hold down the left Alternate and left Command keys while typing the asterisk (*) key on the numeric keypad. (If you're using a NeXT computer with an ADB keyboard, hold down the left Alternate key and the Command bar while you type *.) This will not power off the computer, but will do a hard reset of the CPU, restarting the computer at the beginning of the power-on system test procedure.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Troubleshooting</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">You can receive several types of error messages during system startup. This section covers <b>fsck</b> error messages, which are produced if file system corruption is found, and boot error messages, which might be caused by damage to the root file system or by an incorrect network configuration</font>
+
+<p><font face="Times" size="+1">If you're using an Intel-based computer and you encounter startup problems, use the <b>-v</b> option at the boot prompt to start up the computer in verbose mode.</font>
+
+<p><font face="Times" size="+1">If you're using a NeXT computer and problems arise that are unrelated to these types of diagnostic checks, you can look for additional messages by placing the system in verbose test mode, which displays startup messages on the screen (see &quot;Inspecting or Modifying Configuration Parameters,&quot; earlier in this chapter). You can also use the NMI mini-monitor <b>msg</b> command to view the kernel messages (see &quot;Displaying the Kernel Message Buffer&quot; earlier in this chapter). For more information, see Chapter 15, &quot;General Troubleshooting.&quot;</font>
+
+<p><font face="Times" size="+1"><b>Tip:</b>&nbsp; If you're experiencing boot problems, be sure to boot in verbose mode. This will let you see all the system messages as the computer is booting, including any error messages.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Error Messages from fsck</b></font>
+
+<p><font face="Times" size="+1">During the boot process, <b>init</b> calls <b>/etc/rc.boot</b>, which runs the <b>fsck</b> program to check the disks. If file system corruption is found during this process, you'll receive <b>fsck</b> error messages.</font>
+
+<p><font face="Times" size="+1">The <b>fsck</b> program checks the file system and repairs any easily fixed inconsistencies it finds. If it finds other types of inconsistencies, it exits with an error condition, and the reboot fails.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Running fsck</b></font>
+
+<p><font face="Times" size="+1">If the boot fails because the root file system is corrupted, or you need to repair some other file system, you can run <b>fsck </b>&quot;by hand.&quot;</font>
+
+<p><font face="Times" size="+1"><b>Note:</b>&nbsp; If an expert UNIX system administrator is available, you may want to ask the expert to assist you with this procedure.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Boot the system in single-user mode. (If you're repairing a file system other than the root file system, you needn't be in single-user mode, but you must make sure the file system isn't mounted.) For information on starting up your computer in single-user mode, see &quot;Starting Up an Intel-based Computer&quot; or &quot;Starting Up a NeXT Computer,&quot; earlier in this chapter.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">At the single-user mode prompt ( <b>#</b> ), type the following and press Return:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td nowrap><font face="Courier"><b>fsck -y</b> <i>/dev/rsd0a</i></font></td>
+
+<td><font face="Times">(If your startup disk is a SCSI disk)</font></td></tr>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td nowrap><font face="Courier"><i>or</i></font></td>
+
+<td></td></tr>
+
+<tr valign=top>
+
+<td width=143></td>
+
+<td nowrap><font face="Courier"><b>fsck -y</b> <i>/dev/rhd0a</i></font></td>
+
+<td><font face="Times">(If your startup disk is an IDE disk)</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">If you're correcting a disk other than the boot disk, replace <b>/</b><i>dev</i><b>/</b><i>rsd0a</i> or <i>/dev/rhd0a</i> with the appropriate device name. The <b>y</b> option tells <b>fsck</b> to repair any inconsistencies it finds without waiting for a response from the user.</font>
+
+<p><font face="Times" size="+1">As each inconsistency is found and corrected, one or more lines are printed identifying the file system on which the correction takes place and the nature of the correction. After <b>fsck</b> successfully corrects a file system, it prints the number of files on that file system, the number of used and free blocks, and the percentage of fragmentation.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Repeat the <b>fsck</b> command until it finds no inconsistencies. If you're prompted to reboot the system, do so before running <b>fsck</b> again.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Reboot the system.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">For further information, see the UNIX manual page for <b>fsck</b>.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>System Boot and Network Startup Errors</b></font>
+
+<p><font face="Times" size="+1">A few messages which appear to be errors are really just status messages. Some of these are described in this section, along with messages which, in fact, indicate errors during booting.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>NetInfo Errors</b></font>
+
+<p><font face="Times" size="+1">If your network is configured incorrectly, you might see the message:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">No response from network configuration server.</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">Type CTRL-C to start up computer without a network connection.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">This message occurs when no server responds with configuration information. Possible causes include:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The network servers are down, or otherwise unreachable.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The physical network has hardware problems (for example, an incorrectly terminated Ethernet cable).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">A <b>bootpd</b> process is not running on the configuration server. A computer obtains its Internet address and host name at boot time from the <b>bootpd</b> and <b>rpc.bootparamd</b> daemons running on the configuration server. This information is stored in the NetInfo database when the host is initially added to the network.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The configuration server does not have information about your computer (specifically, the Ethernet address).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">An error occurred during automatic host addition, if it's enabled (for example, another computer was being added at the same time you were adding yours), resulting in incorrect or incomplete information in the NetInfo database.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Before typing Control-c and starting without a network connection, try to determine the cause of the message. For example, the configuration server might be in the process of rebooting. If this is the case, it responds to the request from your computer after it finishes.</font>
+
+<p><font face="Times" size="+1">If you see a message similar to:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">lookupd[90]: netinfo sleeping: RPC: Unable to receive;</font><br>
+<img src="../images/sp.gif" width=159 height=1><font face="Courier">errno = Connection reset by peer</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">A NetInfo server had denied access to your computer because your computer is on a network that is not in the server's list of trusted networks. For more information, see Chapter 14, &quot;Security.&quot;</font>
+
+<p><font face="Times" size="+1">The following message might indicate NetInfo problems:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">Still searching for parent network administration (NetInfo) server.</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">Please wait, or press `c' to continue without network user accounts.</font><br>
+<img src="../images/sp.gif" width=124 height=1><font face="Courier">See your system administrator if you need help.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">This message is displayed when your computer is looking for the parent of its local domain, and the NetInfo server for the parent domain doesn't respond. If you type <b>c</b> at this point, your local domain is not bound to its parent domain, and all configuration information residing in that domain (including users, aliases, and machines) is not available. For more information, see Chapter 10, &quot;Configuring a Large Network.&quot;</font>
+
+<p><font face="Times" size="+1">This message can occur for various reasons:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">All servers for the parent NetInfo domain are unavailable.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Your computer's Internet address is not recognized by a server for its parent NetInfo domain.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The local domain is referencing a computer as a server for its parent domain which is not, in fact, such a server.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The local domain is referencing a nonexistent computer as the one to serve its parent NetInfo domain.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Although servers for the parent NetInfo domain are running, no servers responded to the request.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">A server for a domain might not respond to a request for one of two reasons:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The server or the network is overloaded.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The server is ignoring all NetInfo requests.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">When a NetInfo server is started, it checks the consistency of its database; during this operation, it does not respond to NetInfo requests. If the system crashed, and if you have a large NetInfo database or large NetInfo network, it can take a long time (several minutes) to complete these consistency checks. When the checks are completed, the server for the parent domain responds to your computer's request, and your computer will bind correctly to its parent NetInfo server.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>System Boot Errors</b></font>
+
+<p><font face="Times" size="+1">If various system components are missing, the system will not be able to boot. Lack of some of these components produces, at best, a very cryptic error message; sometimes, the system will simply freeze during booting. Some of these messages are:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>Message</b></font></td>
+
+<td><font face="Times" size="+1"><b>Meaning</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Courier">unknown binary format</font></td>
+
+<td><font face="Times" size="+1">The kernel (<b>mach_kernel, mach</b>, <b>sdmach</b>, <b>odmach</b>, <b>fdmach</b>) is not a proper executable file.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Courier"><i>filename</i> not found</font></td>
+
+<td><font face="Times" size="+1">The kernel file could not be found.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Courier">Load of <i>filename</i> failed, errno <i>n</i></font></td>
+
+<td><font face="Times" size="+1">The indicated file could not be loaded. Typically, this file will be <b>/etc/mach_init</b> or <b>/etc/init</b>. The error number, <i>n</i>, corresponds to the system call error numbers listed in <b>/usr/include/bsd/sys/errno.h</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Courier">init exited with 1</font></td>
+
+<td><font face="Times" size="+1"><b>/etc/init</b> is missing, or is not executable (check the file permissions).</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">If you unexpectedly find yourself in single-user mode, verify that <b>/etc/rc.boot</b> and <b>/etc/rc</b> are present.</font>
+
+<p><font face="Times" size="+1">If the boot process otherwise appears normal, but none of the expected messages from any of the <b>rc</b> files are being displayed, <b>/dev/console</b> might be missing, or might be an ordinary file rather than a device file. (If it's an ordinary file or is missing, you can use <b>/usr/etc/MAKEDEV</b> to create an appropriate device file.)</font>
+
+<p><font face="Times" size="+1">If your computer is part of an NIS domain, it will be unable to boot if it can't contact an NIS server for the domain. If this happens, messages indicating that <b>lookupd</b> is timing out will appear. These errors occur if all NIS servers for the domain are down, if there are network problems, if you've configured your computer as part of a non-existent NIS domain, or if you remove your computer from the network. In the latter case, if you want to run your computer, you'll have to edit <b>/etc/hostconfig</b> in single-user mode to set the YPDOMAIN parameter to -NO-.</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

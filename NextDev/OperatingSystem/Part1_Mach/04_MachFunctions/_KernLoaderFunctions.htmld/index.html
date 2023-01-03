@@ -1,0 +1,2519 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/OperatingSystem/Part1_Mach/04_MachFunctions/_KernLoaderFunctions.rtf -->
+<!-- Date: Sun Jan  1 17:00:59 2023 -->
+<head>
+<title>_KernLoaderFunctions</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Kernel-Server Loader Functions</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">To use these functions, you must compile with the kernload library.&nbsp; For example:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier"><b>cc myprog.c -lkernload</b></font>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>kern_loader_abort()</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SUMMARY </b></font><font face="Times" size="+1">Shut down or reconfigure <b>kern_loader</b></font>
+
+<p><font face="Helvetica" size="-1"><b>SYNOPSIS </b></font><font face="Times" size="+1"><b>#import &lt;mach/mach.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><b>#import &lt;kernserv/kern_loader.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">kern_return_t <b>kern_loader_abort(</b>port_t <i>loader_port</i>, port_t <i>priv_port</i>, boolean_t <i>restart</i><b>)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>ARGUMENTS </b></font><font face="Times" size="+1"><i>loader_port</i>:&nbsp; <b>kern_loader</b> port, obtained from <b>kern_loader_look_up()</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><i>priv_port</i>:&nbsp; The privileged port for this host, returned by <b>host_priv_self()</b>.</font>
+
+<p><font face="Times" size="+1"><i>restart</i>:&nbsp; If true, reconfigure <b>kern_loader</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>DESCRIPTION </b></font><font face="Times" size="+1">This function unloads and deallocates all loadable kernel servers and then, depending on the value of <i>restart</i>, kills or reconfigures the kernel-server loader.&nbsp; If <i>restart</i> is true, then <b>kern_loader</b> rereads its configuration file (<b>etc/kern_loader.conf</b>) to determine which servers it should allocate and load.</font>
+
+<p><font face="Helvetica" size="-1"><b>EXAMPLE </b></font><font face="Courier">/* Get kern_loader's port. */</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">error=kern_loader_look_up(&amp;loader_port);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">if (error != KERN_SUCCESS) {</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">kern_loader_error(&#34;Couldn't find kern_loader's port&#34;, error);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">exit(1);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">/* Reconfigure kern_loader. */</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">error=kern_loader_abort(loader_port, host_priv_self(), TRUE);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">if (error != KERN_SUCCESS)</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">kern_loader_error(&#34;Couldn't stop kern_loader&#34;, error);</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>RETURN </b></font><font face="Times" size="+1">KERN_SUCCESS:&nbsp; The call was successful.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">KERN_LOADER_NO_PERMISSION:&nbsp; <i>priv_port</i> isn't the host's privileged port.&nbsp; (Make sure <b>host_priv_self()</b> is called by a process with superuser permission.)</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SEE ALSO </b></font><font face="Times" size="+1"><b>kern_loader_delete_server()</b>, <b>kern_loader_look_up()</b>, <b>kern_loader_unload_server()</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>kern_loader_add_server()</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SUMMARY </b></font><font face="Times" size="+1">Allocate a loadable kernel server</font>
+
+<p><font face="Helvetica" size="-1"><b>SYNOPSIS </b></font><font face="Times" size="+1"><b>#import &lt;mach/mach.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><b>#import &lt;kernserv/kern_loader.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">kern_return_t <b>kern_loader_add_server(</b>port_t <i>loader_port</i>, port_t <i>task_port</i>, server_reloc_t <i>server_reloc</i><b>)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>ARGUMENTS </b></font><font face="Times" size="+1"><i>loader_port</i>:&nbsp; <b>kern_loader</b> port, obtained from calling <b>kern_loader_look_up()</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><i>task_port</i>:&nbsp; The kernel's task port, obtained using <b>task_by_unix_pid()</b>.</font>
+
+<p><font face="Times" size="+1"><i>server_reloc</i>:&nbsp; The server's relocatable object file.&nbsp; For example, the relocatable object file of the MIDI driver is &quot;/usr/lib/kern_loader/Midi/mididriver_reloc&quot;.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>DESCRIPTION </b></font><font face="Times" size="+1">This function prepares the loadable kernel server to be loaded into the kernel.&nbsp; The server isn't loaded unless it automatically loads when allocated.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">If the server is already loaded or allocated, then the server is unloaded (if necessary) and allocated again from scratch.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>EXAMPLE </b></font><font face="Courier">/* Get kern_loader's port. */</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">r = kern_loader_look_up(&amp;loader_port);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">if (r != KERN_SUCCESS) {</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">kern_loader_error(&#34;Couldn't get loader_port&#34;, r);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">exit(1);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">/* Get the kernel's task port. */</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">r = task_by_unix_pid(task_self(), 0, &amp;kernel_task);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">if (r != KERN_SUCCESS) {</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">kern_loader_error(&#34;Couldn't get kernel_task&#34;, r);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">exit(2);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">/* Add the server. */</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">r = kern_loader_add_server(loader_port, kernel_task,</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">&#34;/usr/lib/kern_loader/Midi/midi_reloc&#34;);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">if (r != KERN_SUCCESS) {</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">kern_loader_error(&#34;Call to kern_loader_abort failed&#34;, r);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">exit(3);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>RETURN </b></font><font face="Times" size="+1">KERN_SUCCESS:&nbsp; The server has been successfully allocated.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">KERN_LOADER_NO_PERMISSION:&nbsp; <i>task_port</i> wasn't the kernel's task port.&nbsp; (Make sure <b>task_by_unix_pid()</b> is called by a process with superuser permission.)</font>
+
+<p><font face="Times" size="+1">KERN_LOADER_SERVER_WONT_LOAD:&nbsp; The kernel-server loader couldn't use <i>server_reloc</i> to build an loadable object file, or it couldn't understand the load or unload commands, or it couldn't link the loadable object file against <b>/mach</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SEE ALSO </b></font><font face="Times" size="+1"><b>kern_loader_delete_server()</b>, <b>kern_loader_look_up()</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>kern_loader_delete_server()</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SUMMARY </b></font><font face="Times" size="+1">Delete a loadable kernel server</font>
+
+<p><font face="Helvetica" size="-1"><b>SYNOPSIS </b></font><font face="Times" size="+1"><b>#import &lt;mach/mach.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><b>#import &lt;kernserv/kern_loader.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">kern_return_t <b>kern_loader_delete_server(</b>port_t <i>loader_port</i>, port_t <i>task_port</i>, server_name_t <i>server_name</i><b>)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>ARGUMENTS </b></font><font face="Times" size="+1"><i>loader_port</i>:&nbsp; <b>kern_loader</b> port, obtained from calling <b>kern_loader_look_up()</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><i>task_port</i>:&nbsp; The kernel's task port, obtained using <b>task_by_unix_pid()</b>.</font>
+
+<p><font face="Times" size="+1"><i>server_name</i>:&nbsp; The string associated with the server.&nbsp; For example, the name of the MIDI driver is &quot;mididriver&quot;.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>DESCRIPTION </b></font><font face="Times" size="+1">This function removes the loadable kernel server from <b>kern_loader</b> control.&nbsp; If the server is currently loaded, then it's unloaded.</font>
+
+<p><font face="Helvetica" size="-1"><b>EXAMPLE </b></font><font face="Courier">/* Get kern_loader's port. */</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">error=kern_loader_look_up(&amp;loader_port);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">if (error != KERN_SUCCESS) {</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">kern_loader_error(&#34;Couldn't find kern_loader's port&#34;, error);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">exit(1);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">/* Get the kernel's task port. */</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">error=task_by_unix_pid(task_self(), 0, &amp;kern_port);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">if (error != KERN_SUCCESS) {</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">mach_error(&#34;Error looking up kernel port&#34;, error);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">exit(2);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">/* Delete the server. */</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">error=kern_loader_delete_server(loader_port, kern_port, &#34;mididriver&#34;);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">if (error != KERN_SUCCESS) {</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">kern_loader_error(&#34;Couldn't delete mididriver&#34;, error);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">exit(3);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>RETURN </b></font><font face="Times" size="+1">KERN_SUCCESS:&nbsp; The call succeeded.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">KERN_LOADER_NO_PERMISSION:&nbsp; <i>task_port</i> wasn't the kernel's task port.&nbsp; (Make sure <b>task_by_unix_pid()</b> is called by a process with superuser permission.)</font>
+
+<p><font face="Times" size="+1">KERN_LOADER_UNKNOWN_SERVER:&nbsp; <i>server_name</i> wasn't recognized.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SEE ALSO </b></font><font face="Times" size="+1"><b>kern_loader_add_server()</b>, <b>kern_loader_look_up()</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>kern_loader_error(), kern_loader_error_string()</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SUMMARY </b></font><font face="Times" size="+1">Display or return an error message</font>
+
+<p><font face="Helvetica" size="-1"><b>SYNOPSIS </b></font><font face="Times" size="+1"><b>#import &lt;mach/mach.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><b>#import &lt;kernserv/kern_loader_error.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">void <b>kern_loader_error(</b>const char *<i>string</i>, kern_return_t <i>error</i><b>)</b></font><br>
+<font face="Times" size="+1">const char *<b>kern_loader_error_string(</b>kern_return_t <i>error</i><b>)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>ARGUMENTS </b></font><font face="Times" size="+1"><i>string</i>:&nbsp; The string to be printed along with the error message.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><i>error</i>:&nbsp; The value returned by a Mach function.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>DESCRIPTION </b></font><font face="Times" size="+1">These functions act like <b>mach_error()</b> and <b>mach_error_string()</b>, except that they also understand errors from the kernel-server loader functions.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The <b>kern_loader_error()</b> function prints to <b>stderr</b> the <i>string</i>, followed by the string corresponding to <i>error</i>, followed by <i>error</i> in parentheses.&nbsp; The <b>kern_loader_error_string()</b> function returns the string that corresponds to <i>error</i>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>EXAMPLE </b></font><font face="Courier">error=kern_loader_delete_server(loader_port, kern_port, &#34;mididriver&#34;);</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">if (error != KERN_SUCCESS) {</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">kern_loader_error(&#34;Couldn't delete mididriver&#34;, error);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">exit(3);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SEE ALSO </b></font><font face="Times" size="+1"><b>mach_error()</b>, <b>mach_error_string()</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>kern_loader_get_log()</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SUMMARY </b></font><font face="Times" size="+1">Request a message containing kernel log data</font>
+
+<p><font face="Helvetica" size="-1"><b>SYNOPSIS </b></font><font face="Times" size="+1"><b>#import &lt;mach/mach.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><b>#import &lt;kernserv/kern_loader_types.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">kern_return_t <b>kern_loader_get_log(</b>port_t <i>loader_port</i>, port_t <i>server_com_port</i>, port_t <i>reply_port</i><b>)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>ARGUMENTS </b></font><font face="Times" size="+1"><i>loader_port</i>:&nbsp; <b>kern_loader</b> port, obtained from <b>kern_loader_look_up()</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><i>server_com_port</i>:&nbsp; The loadable kernel server's communication port, obtained from <b>kern_loader_server_com_port()</b>.</font>
+
+<p><font face="Times" size="+1"><i>reply_port</i>:&nbsp; The port to which <b>kern_loader</b> should send the reply message.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>DESCRIPTION </b></font><font face="Times" size="+1">This function requests a reply message containing data logged by a loadable kernel server.&nbsp; Before calling this function for the first time on a server, you should turn the server's logging on by calling <b>kern_loader_log_level()</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">You must supply the implementation of the reply message, as described in Chapter 3, &quot;Using Loadable Kernel Servers.&quot;</font>
+
+<p><font face="Times" size="+1">Each item of logged data is preceded by a time stamp.&nbsp; The time stamp is a relative indicator of when the data was logged by the loadable kernel server.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>EXAMPLE &nbsp;&nbsp;&nbsp; </b></font><font face="Courier">r = kern_loader_look_up(&amp;kl_port);</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">if (r != KERN_SUCCESS) {</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">mach_error(&#34;Can't find kernel loader&#34;, r);</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">exit(1);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">r = port_allocate(task_self(), &amp;reply_port);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">if (r != KERN_SUCCESS) {</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">mach_error(&#34;Can't allocate reply port&#34;, r);</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">exit(1);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">/* Get the server's communication port. */</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">r = task_by_unix_pid(task_self(), 0, &amp;kern_port);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">if (r != KERN_SUCCESS) {</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">mach_error(&#34;Error looking up kernel's port&#34;, r);</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">exit(1);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">}</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">r = kern_loader_server_com_port(kl_port, kern_port, MYDRIVER_NAME,</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">&amp;server_com_port);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">if (r != KERN_SUCCESS) {</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">kern_loader_error(&#34;Error looking up server com port&#34;, r);</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">exit(1);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">/* Set the log level so we'll get log messages. */</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">r = kern_loader_log_level(kl_port, server_com_port, LOG_NOTICE);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">if (r != KERN_SUCCESS) {</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">kern_loader_error(&#34;Can't change log level&#34;, r);</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">exit(1);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">/* Get the first log message. */</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">r = kern_loader_get_log(kl_port, server_com_port, reply_port);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">if (r != KERN_SUCCESS) {</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">kern_loader_error(&#34;Error calling kern_loader_get_log&#34;, r);</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">exit(1);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">/* Listen for the asynchronous reply message. */</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">listen(reply_port);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">kern_loader_reply_t kern_loader_reply = {</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">0,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* argument to pass to function */</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">0,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* timeout for rpc return msg_send */</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">0,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* string function */</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">0,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* ping function */</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">log_data&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* log_data function */</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">};</font>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">void listen(port_name_t port)</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">{</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">char&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; msg_buf[kern_loader_replyMaxRequestSize];</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">msg_header_t *msg = (msg_header_t *)msg_buf;</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">kern_return_t r;</font>
+
+<p><img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">while (1) {</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">/* Receive the next message in the queue. */</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">msg-&gt;msg_size = kern_loader_replyMaxRequestSize;</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">msg-&gt;msg_local_port = port;</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">r = msg_receive(msg, MSG_OPTION_NONE, 0);</font>
+
+<p><img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">if (r != KERN_SUCCESS) {</font><br>
+<img src="../../../../Images/sp.gif" width=189 height=1><font face="Courier">mach_error(&#34;listen msg_receive&#34;, r);</font><br>
+<img src="../../../../Images/sp.gif" width=189 height=1><font face="Courier">exit(1);</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">/* Handle the message we just received. */</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">kern_loader_reply_handler(msg, &amp;kern_loader_reply);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">}</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">kern_return_t log_data(void *arg, printf_data_t log_data, unsigned int log_data_count)</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">{</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">kern_return_t r;</font>
+
+<p><img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">/* Print the string we were passed, with our prefix. */</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">printf(&#34;log_data: %s&#34;, log_data);</font>
+
+<p><img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">/* Deallocate the memory used for the string. */</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">vm_deallocate(task_self(), (vm_address_t)log_data,</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">log_data_count*sizeof(*log_data));</font>
+
+<p><img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">/* Get another log message. */</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">r = kern_loader_get_log(kl_port, server_com_port, reply_port);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">if (r != KERN_SUCCESS) {</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">kern_loader_error(&#34;Error calling kern_loader_get_log&#34;, r);</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">exit(1);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">}</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">return KERN_SUCCESS;</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>RETURN </b></font><font face="Times" size="+1">KERN_SUCCESS:&nbsp; The call succeeded.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">KERN_LOADER_UNKNOWN_SERVER:&nbsp; The server is either unknown or has been deallocated.</font>
+
+<p><font face="Times" size="+1">KERN_LOADER_SERVER_UNLOADED:&nbsp; The server is only allocated, not loaded.</font>
+
+<p><font face="Times" size="+1">KERN_LOADER_PORT_EXISTS:&nbsp; Someone is already receiving log messages for this server.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SEE ALSO </b></font><font face="Times" size="+1"><b>kern_loader_log_level()</b>, <b>kern_loader_look_up()</b>, <b>kern_loader_reply_handler()</b>, <b>kern_loader_server_com_port()</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>kern_loader_load_server()</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SUMMARY </b></font><font face="Times" size="+1">Load a loadable kernel server</font>
+
+<p><font face="Helvetica" size="-1"><b>SYNOPSIS </b></font><font face="Times" size="+1"><b>#import &lt;mach/mach.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><b>#import &lt;kernserv/kern_loader.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">kern_return_t <b>kern_loader_load_server(</b>port_t <i>loader_port</i>, server_name_t <i>server_name</i><b>)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>ARGUMENTS </b></font><font face="Times" size="+1"><i>loader_port</i>:&nbsp; <b>kern_loader</b> port, obtained from <b>kern_loader_look_up()</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><i>server_name</i>:&nbsp; The string associated with the server.&nbsp; For example, the MIDI driver's name is &quot;mididriver&quot;.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>DESCRIPTION </b></font><font face="Times" size="+1">This function loads a loadable kernel server that has already been allocated.&nbsp; If the server's relocatable object file has changed since allocation, then the server is allocated again from scratch.&nbsp; This function has no effect on servers that are already loaded; it simply returns KERN_SUCCESS.</font>
+
+<p><font face="Helvetica" size="-1"><b>EXAMPLE </b></font><font face="Courier">/* Get kern_loader's port. */</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">error=kern_loader_look_up(&amp;loader_port);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">if (error != KERN_SUCCESS) {</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">kern_loader_error(&#34;Couldn't find kern_loader's port&#34;, error);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">exit(1);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">/* Load the server. */</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">error=kern_loader_load_server(loader_port, &#34;mididriver&#34;);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">if (error != KERN_SUCCESS) {</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">kern_loader_error(&#34;Couldn't load the server&#34;, error);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">exit(2);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>RETURN </b></font><font face="Times" size="+1">KERN_SUCCESS:&nbsp; The server was successfully loaded.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">KERN_LOADER_UNKNOWN_SERVER:&nbsp; <i>server_name</i> wasn't recognized.</font>
+
+<p><font face="Times" size="+1">KERN_LOADER_SERVER_WONT_LOAD:&nbsp; The server couldn't be loaded.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SEE ALSO </b></font><font face="Times" size="+1"><b>kern_loader_look_up()</b>, <b>kern_loader_unload_server()</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>kern_loader_log_level()</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SUMMARY </b></font><font face="Times" size="+1">Set the level of data being logged by a loadable kernel server</font>
+
+<p><font face="Helvetica" size="-1"><b>SYNOPSIS </b></font><font face="Times" size="+1"><b>#import &lt;mach/mach.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><b>#import &lt;kernserv/kern_loader.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">kern_return_t <b>kern_loader_log_level(</b>port_t <i>loader_port</i>, port_t <i>server_com_port</i>, int <i>log_level</i><b>)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>ARGUMENTS </b></font><font face="Times" size="+1"><i>loader_port</i>:&nbsp; <b>kern_loader</b> port, obtained from <b>kern_loader_look_up()</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><i>server_com_port</i>:&nbsp; The loadable kernel server's communication port, obtained from <b>kern_loader_server_com_port()</b>.</font>
+
+<p><font face="Times" size="+1"><i>log_level</i>:&nbsp; An integer indicating the minimum priority of data to be logged.&nbsp; A value of zero turns logging off.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>DESCRIPTION </b></font><font face="Times" size="+1">This function determines which data logged by a loadable kernel server gets kept.&nbsp; When the server is first loaded, none of its log messages are kept since its log level is initialized to zero.&nbsp; If you set <i>log_level</i> to a value greater than zero, then messages logged at a priority equal to or higher than <i>log_level</i> are kept.&nbsp; If you reset the log level to zero, no more log messages are kept until the log level is once again set to a positive value.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Each server can have its own conventions for log priorities.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>EXAMPLE </b></font><font face="Courier">r = kern_loader_look_up(&amp;kl_port);</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">if (r != KERN_SUCCESS) {</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">mach_error(&#34;Can't find kernel loader&#34;, r);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">exit(1);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">/* Get the server's communication port. */</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">r = task_by_unix_pid(task_self(), 0, &amp;kern_port);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">if (r != KERN_SUCCESS) {</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">mach_error(&#34;Error looking up kernel's port&#34;, r);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">exit(1);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">}</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">r = kern_loader_server_com_port(kl_port, kern_port, MYDRIVER_NAME,</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">&amp;server_com_port);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">if (r != KERN_SUCCESS) {</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">kern_loader_error(&#34;Error looking up server com port&#34;, r);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">exit(1);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">/* Set the log level so we'll get log messages. */</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">r = kern_loader_log_level(kl_port, server_com_port, LOG_NOTICE);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">if (r != KERN_SUCCESS) {</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">kern_loader_error(&#34;Can't change log level&#34;, r);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">exit(1);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>RETURN </b></font><font face="Times" size="+1">KERN_SUCCESS:&nbsp; The log level was successfully set.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">KERN_LOADER_UNKNOWN_SERVER:&nbsp; <i>server_com_port</i> wasn't valid.</font>
+
+<p><font face="Times" size="+1">KERN_LOADER_SERVER_UNLOADED:&nbsp; The server isn't currently loaded.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SEE ALSO </b></font><font face="Times" size="+1"><b>kern_loader_look_up()</b>, <b>kern_loader_server_com_port()</b>, <b>kern_loader_log_level()</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>kern_loader_look_up()</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SUMMARY </b></font><font face="Times" size="+1">Get the <b>kern_loader</b> port</font>
+
+<p><font face="Helvetica" size="-1"><b>SYNOPSIS </b></font><font face="Times" size="+1"><b>#import &lt;mach/mach.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><b>#import &lt;kernserv/kern_loader_types.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">kern_return_t <b>kern_loader_look_up(</b>port_t *<i>loader_port</i><b>)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>ARGUMENTS </b></font><font face="Times" size="+1"><i>loader_port</i>:&nbsp; Returns the port on which <b>kern_loader</b> receives messages.</font>
+
+<p><font face="Helvetica" size="-1"><b>DESCRIPTION </b></font><font face="Times" size="+1">This function returns the service port for the kernel-server loader.</font>
+
+<p><font face="Helvetica" size="-1"><b>EXAMPLE </b></font><font face="Courier">/* Get kern_loader's port. */</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">error=kern_loader_look_up(&amp;loader_port);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">if (error != KERN_SUCCESS) {</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">kern_loader_error(&#34;Couldn't find kern_loader's port&#34;, error);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">exit(1);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>RETURN </b></font><font face="Times" size="+1">KERN_SUCCESS:&nbsp; The call succeeded.</font>
+
+<p><font face="Helvetica" size="-1"><b>SEE ALSO </b></font><font face="Times" size="+1"><b>kern_loader_server_com_port()</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>kern_loader_ping()</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SUMMARY </b></font><font face="Times" size="+1">Request a synchronization message</font>
+
+<p><font face="Helvetica" size="-1"><b>SYNOPSIS </b></font><font face="Times" size="+1"><b>#import &lt;mach/mach.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><b>#import &lt;kernserv/kern_loader_types.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">kern_return_t <b>kern_loader_ping(</b>port_t <i>loader_port</i>, port_t <i>ping_port</i>, int <i>id</i><b>)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>ARGUMENTS </b></font><font face="Times" size="+1"><i>loader_port</i>:&nbsp; <b>kern_loader</b> port, obtained from calling <b>kern_loader_look_up()</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><i>ping_port</i>:&nbsp; The port to which the ping message should be sent.</font>
+
+<p><font face="Times" size="+1"><i>id</i>:&nbsp; A value to be sent in the message.&nbsp; You can use this as you wish.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>DESCRIPTION </b></font><font face="Times" size="+1">You can use this function to make sure that all outstanding status messages have been sent to your program.&nbsp; For example, if you call <b>kern_loader_status_port()</b>, you might want to call <b>kern_loader_ping()</b> at some point afterward.&nbsp; When you receive the ping message, you'll know that you've received all status messages that were queued before you called <b>kern_loader_ping()</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Another reason to call <b>kern_loader_ping()</b> is to check whether <b>kern_loader</b> has fallen into an unresponsive state.</font>
+
+<p><font face="Times" size="+1">You must implement the ping message yourself, as described in Chapter 3.&nbsp; The <b>kern_loader_ping()</b> function returns a value indicating whether the message was successfully sent to <i>ping_port</i>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>EXAMPLE &nbsp;&nbsp;&nbsp; </b></font><font face="Courier">r = kern_loader_look_up(&amp;kl_port);</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">if (r != KERN_SUCCESS) {</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">mach_error(&#34;kl_util: can't find kernel loader&#34;, r);</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">exit(1);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">r = port_allocate(task_self(), &amp;reply_port);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">if (r != KERN_SUCCESS) {</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">mach_error(&#34;kl_util: can't allocate reply port&#34;, r);</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">exit(1);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">/* Create a thread to listen on reply_port. */</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">cthread_detach(cthread_fork((cthread_fn_t)ping_thread,</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">(any_t)reply_port));</font>
+
+<p><img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">/* . . . */</font>
+
+<p><img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">/* Get a ping message sent to the reply port. */</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">r=kern_loader_ping(kl_port, reply_port, 0);</font>
+
+<p><img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">/* Wait for ping() to kill us.&nbsp; Exit if we receive a signal. */</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">pause();</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">exit(0);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">kern_loader_reply_t kern_loader_reply = {</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">0,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* argument to pass to function */</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">0,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* timeout for rpc return msg_send */</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">0,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* string function */</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">ping,&nbsp;&nbsp;&nbsp; /* ping function */</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* log_data function */</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">};</font>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">void ping_thread(port_name_t port)</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">{</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">char&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; msg_buf[kern_loader_replyMaxRequestSize];</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">msg_header_t *msg = (msg_header_t *)msg_buf;</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">kern_return_t r;</font>
+
+<p><img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">/* message handling loop */</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">while (TRUE) {</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">/* Receive the next message in the queue. */</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">msg-&gt;msg_size = kern_loader_replyMaxRequestSize;</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">msg-&gt;msg_local_port = port;</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">r = msg_receive(msg, MSG_OPTION_NONE, 0);</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">if (r != KERN_SUCCESS)</font><br>
+<img src="../../../../Images/sp.gif" width=189 height=1><font face="Courier">break;</font>
+
+<p><img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">/* Handle the message we just received. */</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">kern_loader_reply_handler(msg, &amp;kern_loader_reply);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">/* We get here only if msg_receive returned an error. */</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">mach_error(&#34;ping_thread receive&#34;, r);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">exit(1);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">/* This function is called after a kern_loader_ping. */</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">kern_return_t ping (void *arg, int id)</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">{</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">exit(0);&nbsp;&nbsp;&nbsp; /* Kill this process. */</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SEE ALSO </b></font><font face="Times" size="+1"><b>kern_loader_reply_handler()</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>kern_loader_reply_handler()</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SUMMARY </b></font><font face="Times" size="+1">Handle a message from the kernel-server loader</font>
+
+<p><font face="Helvetica" size="-1"><b>SYNOPSIS </b></font><font face="Times" size="+1"><b>#import &lt;mach/mach.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><b>#import &lt;kernserv/kern_loader_reply_handler.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">kern_return_t <b>kern_loader_reply_handler(</b>msg_header_t *<i>msg</i>, kern_loader_reply_t *<i>kern_loader_reply</i><b>)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>ARGUMENTS </b></font><font face="Times" size="+1"><i>msg</i>:&nbsp; The message you just received from the kernel-server loader.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><i>kern_loader_reply</i>:&nbsp; A pointer to the structure that specifies which of your functions handle each type of reply from the kernel-server loader.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>DESCRIPTION </b></font><font face="Times" size="+1">You must use this function if you use <b>kern_loader_ping()</b>, <b>kern_loader_get_log()</b>, or <b>kern_loader_status_port()</b>.&nbsp; Those routines cause an asynchronous reply message from the kernel-server loader; this reply message must be passed to <b>kern_loader_reply_handler()</b>, which forwards the message data to your <i>ping_func()</i>, <i>log_func()</i>, or <i>string_func()</i> function.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This function returns the value that is returned by your <i>ping_func()</i>, <i>log_func()</i>, or <i>string_func()</i> function.&nbsp; See Chapter 3 for more information on implementing these functions.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>EXAMPLE </b></font><font face="Courier">kern_loader_reply_t kern_loader_reply = {</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">0,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* argument to pass to function */</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">0,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* timeout for rpc return msg_send */</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">0,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* string function */</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">0,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* ping function */</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">log_data&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* log_data function */</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">};</font>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">void listen(port_name_t port)</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">{</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">char&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; msg_buf[kern_loader_replyMaxRequestSize];</font><br>
+<img src="../../../../Images/sp.gif" width=126 height=1><font face="Courier">msg_header_t *msg = (msg_header_t *)msg_buf;</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">kern_return_t r;</font>
+
+<p><img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">while (1) {</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">/* Receive the next message in the queue. */</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">msg-&gt;msg_size = kern_loader_replyMaxRequestSize;</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">msg-&gt;msg_local_port = port;</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">r = msg_receive(msg, MSG_OPTION_NONE, 0);</font>
+
+<p><img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">if (r != KERN_SUCCESS) {</font><br>
+<img src="../../../../Images/sp.gif" width=189 height=1><font face="Courier">mach_error(&#34;listen msg_receive&#34;, r);</font><br>
+<img src="../../../../Images/sp.gif" width=189 height=1><font face="Courier">exit(1);</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">/* Handle the message we just received. */</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">kern_loader_reply_handler(msg, &amp;kern_loader_reply);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">}</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SEE ALSO </b></font><font face="Times" size="+1"><b>kern_loader_get_log()</b>, <b>kern_loader_ping()</b>, <b>kern_loader_status_port()</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>kern_loader_server_com_port()</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SUMMARY </b></font><font face="Times" size="+1">Get a loadable kernel server's communication port</font>
+
+<p><font face="Helvetica" size="-1"><b>SYNOPSIS </b></font><font face="Times" size="+1"><b>#import &lt;mach/mach.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><b>#import &lt;kernserv/kern_loader.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">kern_return_t <b>kern_loader_server_com_port(</b>port_t <i>loader_port</i>, port_t <i>task_port</i>, server_name_t <i>server_name</i>, port_t *<i>server_com_port</i><b>)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>ARGUMENTS </b></font><font face="Times" size="+1"><i>loader_port</i>:&nbsp; <b>kern_loader</b> port, obtained from calling <b>kern_loader_look_up()</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><i>task_port</i>:&nbsp; The kernel port for the task in which the loadable kernel server is executing.&nbsp; This is returned by <b>kern_loader_server_task_port()</b>.</font>
+
+<p><font face="Times" size="+1"><i>server_name</i>:&nbsp; The string associated with the server.&nbsp; For example, the name of the MIDI driver is &quot;mididriver&quot;.</font>
+
+<p><font face="Times" size="+1"><i>server_com_port</i>:&nbsp; Returns the server's communication port.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>DESCRIPTION </b></font><font face="Times" size="+1">A loadable kernel server's communication port is used for logging-related functions, such as <b>kern_loader_get_log()</b> and <b>kern_loader_log_level()</b>.</font>
+
+<p><font face="Helvetica" size="-1"><b>EXAMPLE </b></font><font face="Courier">/* Get kern_loader's port. */</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">r = kern_loader_look_up(&amp;kl_port);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">if (r != KERN_SUCCESS) {</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">mach_error(&#34;Can't find kernel loader&#34;, r);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">exit(1);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">/* Get the kernel's task port. */</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">r = task_by_unix_pid(task_self(), 0, &amp;kern_port);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">if (r != KERN_SUCCESS) {</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">mach_error(&#34;Error looking up kernel's port&#34;, r);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">exit(1);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">/* Get the server's com port. */</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">r = kern_loader_server_com_port(kl_port, kern_port, MYDRIVER_NAME,</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">&amp;server_com_port);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">if (r != KERN_SUCCESS) {</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">kern_loader_error(&#34;Error looking up server com port&#34;, r);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">exit(1);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>RETURN </b></font><font face="Times" size="+1">KERN_SUCCESS:&nbsp; The call succeeded.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">KERN_LOADER_NO_PERMISSION:&nbsp; <i>task_port</i> wasn't the server's task port.</font>
+
+<p><font face="Times" size="+1">KERN_LOADER_UNKNOWN_SERVER:&nbsp; <i>server_name</i> wasn't recognized.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SEE ALSO </b></font><font face="Times" size="+1"><b>kern_loader_get_log()</b>, <b>kern_loader_log_level()</b>, <b>kern_loader_look_up()</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>kern_loader_server_info()</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SUMMARY </b></font><font face="Times" size="+1">Get information about a loadable kernel server</font>
+
+<p><font face="Helvetica" size="-1"><b>SYNOPSIS </b></font><font face="Times" size="+1"><b>#import &lt;mach/mach.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><b>#import &lt;kernserv/kern_loader_reply.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">kern_return_t <b>kern_loader_server_info(</b>port_t <i>loader_port</i>, port_t <i>task_port</i>, server_name_t <i>server_name</i>, server_state_t *<i>server_state</i>, vm_address_t *<i>load_address</i>, vm_size_t *<i>load_size</i>, server_reloc_t <i>relocatable</i>, server_reloc_t <i>loadable</i>, port_name_array_t *<i>port_list</i>, unsigned int *<i>port_list_count</i>, port_name_string_array_t *<i>port_names</i>, unsigned int *<i>port_names_count</i>, boolean_array_t *<i>advertised</i>, unsigned int *<i>advertised_count</i><b>)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>ARGUMENTS </b></font><font face="Times" size="+1"><i>loader_port</i>:&nbsp; <b>kern_loader</b> port, obtained from calling <b>kern_loader_look_up()</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><i>task_port</i>:&nbsp; The kernel's task port, obtained using <b>task_by_unix_pid()</b>.&nbsp; Specify PORT_NULL if you don't want to have data returned in <i>port_list</i>.</font>
+
+<p><font face="Times" size="+1"><i>server_name</i>:&nbsp; The string associated with the server.&nbsp; For example, the name of the MIDI driver is &quot;mididriver&quot;.</font>
+
+<p><font face="Times" size="+1"><i>server_state</i>:&nbsp; Returns the state of the loadable kernel server.&nbsp; The value is one of the following:&nbsp; Zombie, Allocating, Allocated, Loading, Loaded, Unloading, Deallocated (as defined in the header file <b>kernserv/kern_loader_types.h</b>).</font>
+
+<p><font face="Times" size="+1"><i>load_address</i>:&nbsp; Returns the address in the kernel address space where the server starts.</font>
+
+<p><font face="Times" size="+1"><i>load_size</i>:&nbsp; Returns the number of bytes used by the server.&nbsp; <i>load_address</i> + <i>load_size</i></font> <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">1 is the last address in the kernel map that's used by the server's text and data.</font>
+
+<p><font face="Times" size="+1"><i>relocatable</i>:&nbsp; Returns the location of the relocatable object file for the server.</font>
+
+<p><font face="Times" size="+1"><i>loadable</i>:&nbsp; Returns the location of the loadable object file (if any) for this server.&nbsp; This is a file created by <b>kern_loader</b> from <i>relocatable</i> and then loaded against <b>/mach</b>.</font>
+
+<p><font face="Times" size="+1"><i>port_list</i>:&nbsp; Returns the ports that the server has made available to <b>kern_loader</b>, using the HMAP or SMAP load command.&nbsp; If you don't pass in the correct <i>task_port</i>, this list will consist of null ports.</font>
+
+<p><font face="Times" size="+1"><i>port_list_count</i>:&nbsp; Returns the number of ports that the server has made available to <b>kern_loader</b>.&nbsp; Even if <i>task_port</i> isn't valid, and nothing is returned in <i>port_list</i>, this argument holds the number of ports that would have been returned.</font>
+
+<p><font face="Times" size="+1"><i>port_names</i>:&nbsp; Returns the strings associated with the ports in <i>port_list</i>.</font>
+
+<p><font face="Times" size="+1"><i>port_names_count</i>:&nbsp; Returns the number of names in <i>port_names</i>.&nbsp; This number is the same as <i>port_list_count</i>.</font>
+
+<p><font face="Times" size="+1"><i>advertised</i>:&nbsp; For each entry in <i>port_list</i>, returns true if the port is advertised with the Network Name Server.</font>
+
+<p><font face="Times" size="+1"><i>advertised_count</i>:&nbsp; Returns the number of entries in <i>advertised</i>.&nbsp; This number is the same as <i>port_list_count</i>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>DESCRIPTION </b></font><font face="Times" size="+1"><b>kern_loader_server_info()</b> returns information about a particular loadable kernel server.</font>
+
+<p><font face="Helvetica" size="-1"><b>EXAMPLE </b></font><font face="Courier">/* Get kern_loader's port. */</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">error=kern_loader_look_up(&amp;loader_port);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">if (error != KERN_SUCCESS) {</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">kern_loader_error(&#34;Couldn't find kern_loader's port&#34;, error);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">exit(1);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">/* Get the information. */</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">error=kern_loader_server_info(loader_port, PORT_NULL, &#34;mididriver&#34;,</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">&amp;server_state, &amp;load_addr, &amp;load_size, relocatable, loadable,</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">(port_name_array_t *)&amp;scratch, &amp;count, &amp;port_names, &amp;count,</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">&amp;advertised, &amp;count);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">if (error != KERN_SUCCESS)</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">kern_loader_error(&#34;Couldn't get info on mididriver&#34;, error);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">else</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">printf(&#34;The relocatable object file is located at:&nbsp; %s\n&#34;,</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">relocatable);</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>RETURN </b></font><font face="Times" size="+1">KERN_SUCCESS:&nbsp; The call succeeded.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">KERN_LOADER_UNKNOWN_SERVER:&nbsp; <i>server_name</i> wasn't recognized.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SEE ALSO </b></font><font face="Times" size="+1"><b>kern_loader_look_up()</b>, <b>kern_loader_server_list()</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>kern_loader_server_list()</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SUMMARY </b></font><font face="Times" size="+1">Get the names of all known loadable kernel servers</font>
+
+<p><font face="Helvetica" size="-1"><b>SYNOPSIS </b></font><font face="Times" size="+1"><b>#import &lt;mach/mach.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><b>#import &lt;kernserv/kern_loader.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">kern_return_t <b>kern_loader_server_list(</b>port_t <i>loader_port</i>, server_name_array_t *<i>server_names</i>, unsigned int *<i>server_names_count</i><b>)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>ARGUMENTS </b></font><font face="Times" size="+1"><i>loader_port</i>:&nbsp; <b>kern_loader</b> port, obtained from calling <b>kern_loader_look_up()</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><i>server_names</i>:&nbsp; Returns an array whose entries are the strings associated with all known servers.</font>
+
+<p><font face="Times" size="+1"><i>server_names_count</i>:&nbsp; Returns the number of entries in <i>server_names</i>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>DESCRIPTION </b></font><font face="Times" size="+1">Use this function to get the string associated with each loadable kernel server that <b>kern_loader</b> is keeping track of.</font>
+
+<p><font face="Helvetica" size="-1"><b>EXAMPLE </b></font><font face="Courier">r = kern_loader_look_up(&amp;loader_port);</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">if (r != KERN_SUCCESS) {</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">kern_loader_error(&#34;Couldn't get loader_port&#34;, r);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">exit(1);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">r = kern_loader_server_list(loader_port, &amp;server_names, &amp;count);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">if (r != KERN_SUCCESS)</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">kern_loader_error(&#34;Couldn't get the list&#34;, r);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">else</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">for (i=0; i&lt;count; i++)</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">printf(&#34;Server %d:&nbsp; %s\n&#34;, i, server_names[i]);</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>RETURN </b></font><font face="Times" size="+1">KERN_SUCCESS:&nbsp; The call succeeded.</font>
+
+<p><font face="Helvetica" size="-1"><b>SEE ALSO </b></font><font face="Times" size="+1"><b>kern_loader_look_up()</b>, <b>kern_loader_server_info()</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>kern_loader_server_task_port()</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SUMMARY </b></font><font face="Times" size="+1">Get the task port of a loadable kernel server</font>
+
+<p><font face="Helvetica" size="-1"><b>SYNOPSIS </b></font><font face="Times" size="+1"><b>#import &lt;mach/mach.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><b>#import &lt;kernserv/kern_loader.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">kern_return_t <b>kern_loader_server_task_port(</b>port_t <i>loader_port</i>, port_t <i>kernel_port</i>, server_name_t <i>server_name</i>, port_t *<i>server_task_port</i><b>)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>ARGUMENTS </b></font><font face="Times" size="+1"><i>loader_port</i>:&nbsp; <b>kern_loader</b> port, obtained from calling <b>kern_loader_look_up()</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><i>kernel_port</i>:&nbsp; The kernel's task port.</font>
+
+<p><font face="Times" size="+1"><i>server_name</i>:&nbsp; The string associated with a loaded server.&nbsp; For example, the name of the MIDI driver is &quot;mididriver&quot;.</font>
+
+<p><font face="Times" size="+1"><i>server_task_port</i>:&nbsp; Returns the kernel port for the task in which the loadable kernel server is executing.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>DESCRIPTION </b></font><font face="Times" size="+1">This function returns the task port of the server.&nbsp; Each loadable kernel server currently executes in its own task, but uses the kernel address space.&nbsp; The port returned by <b>kern_loader_server_task_port()</b> isn't necessary for any other kernel-server loader functions, but might be useful for gathering debugging information.</font>
+
+<p><font face="Helvetica" size="-1"><b>EXAMPLE </b></font><font face="Courier">port_t&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; loader_port, kernel_task, server_port;</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">kern_return_t&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; r;</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">port_name_array_t&nbsp;&nbsp; names;</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">unsigned int&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; i, names_count, types_count;</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">port_type_array_t&nbsp;&nbsp; types;</font>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">r = kern_loader_look_up(&amp;loader_port);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">if (r != KERN_SUCCESS) {</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">kern_loader_error(&#34;Couldn't get loader_port&#34;, r);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">exit(1);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">r = task_by_unix_pid(task_self(), 0, &amp;kernel_task);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">if (r != KERN_SUCCESS) {</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">kern_loader_error(&#34;Couldn't get kernel_task&#34;, r);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">exit(2);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">r = kern_loader_server_task_port(loader_port, kernel_task, &#34;mididriver&#34;,</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">&amp;server_port);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">if (r != KERN_SUCCESS)</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">kern_loader_error(&#34;Couldn't get the server port&#34;, r);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">else</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">printf(&#34;Midi's task port is %d\n&#34;, server_port);</font>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">r = port_names((task_t)server_port, &amp;names, &amp;names_count, &amp;types,</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">&amp;types_count);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">if (r != KERN_SUCCESS)</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">mach_error(&#34;Error calling port_names()&#34;, r);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">else</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">for (i=0; i&lt;names_count; i++)</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">printf(&#34;Port %d has type %d\n&#34;, names[i], types[i]);</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>RETURN </b></font><font face="Times" size="+1">KERN_SUCCESS:&nbsp; The call succeeded.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">KERN_LOADER_NO_PERMISSION:&nbsp; <i>task_port</i> wasn't the server's task port.</font>
+
+<p><font face="Times" size="+1">KERN_LOADER_UNKNOWN_SERVER:&nbsp; <i>server_name</i> wasn't recognized.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SEE ALSO </b></font><font face="Times" size="+1"><b>kern_loader_look_up()</b>, <b>kern_loader_server_com_port()</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>kern_loader_status_port()</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SUMMARY </b></font><font face="Times" size="+1">Specify a port for <b>kern_loader</b> to send status to</font>
+
+<p><font face="Helvetica" size="-1"><b>SYNOPSIS </b></font><font face="Times" size="+1"><b>#import &lt;mach/mach.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><b>#import &lt;kernserv/kern_loader.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">kern_return_t <b>kern_loader_status_port(</b>port_t <i>loader_port</i>, port_t <i>listen_port</i><b>)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>ARGUMENTS </b></font><font face="Times" size="+1"><i>loader_port</i>:&nbsp; <b>kern_loader</b> port, obtained from calling <b>kern_loader_look_up()</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><i>listen_port</i>:&nbsp; The port we want to receive the status messages on.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>DESCRIPTION </b></font><font face="Times" size="+1">Use this function to get general status from <b>kern_loader</b>.&nbsp; You can receive many reply messages as the result of just one call to <b>kern_loader_status_port()</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">You must define the function that handles status reply messages, as described in Chapter 3.&nbsp; This function receives the status string along with its priority, using the priorities defined in the header file <b>sys/syslog.h</b> (LOG_EMERG, LOG_ALERT, and so on).</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>EXAMPLE &nbsp;&nbsp;&nbsp; </b></font><font face="Courier">r = kern_loader_look_up(&amp;kl_port);</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">if (r != KERN_SUCCESS) {</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">mach_error(&#34;kl_util: can't find kernel loader&#34;, r);</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">exit(1);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">r = port_allocate(task_self(), &amp;status_port);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">if (r != KERN_SUCCESS) {</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">mach_error(&#34;kl_util: can't allocate reply port&#34;, r);</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">exit(1);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">/* Get generic status messages on this port. */</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">r = kern_loader_status_port(kl_port, status_port);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">if (r != KERN_SUCCESS) {</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">kern_loader_error(&#34;Couldn't specify status port&#34;, r);</font><br>
+<img src="../../../../Images/sp.gif" width=189 height=1><font face="Courier">exit(1);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">/* Create a thread to listen on status_port. */</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">cthread_detach(cthread_fork((cthread_fn_t)receive_thread,</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">(any_t)status_port));</font>
+
+<p><img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">/*</font><br>
+<img src="../../../../Images/sp.gif" width=140 height=1><font face="Courier">* Sleep for a while so we can enter kl_util commands at a shell</font><br>
+<img src="../../../../Images/sp.gif" width=140 height=1><font face="Courier">* window.&nbsp; The output of all commands (except status lines from</font><br>
+<img src="../../../../Images/sp.gif" width=140 height=1><font face="Courier">* kl_util -s) will show up in both the window that's running this</font><br>
+<img src="../../../../Images/sp.gif" width=140 height=1><font face="Courier">* program and in the window that's running kl_util.&nbsp; (kl_util</font><br>
+<img src="../../../../Images/sp.gif" width=140 height=1><font face="Courier">* also has a status port registered.)</font><br>
+<img src="../../../../Images/sp.gif" width=140 height=1><font face="Courier">*/</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">sleep(30);</font>
+
+<p><img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">exit(0);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">kern_loader_reply_t kern_loader_reply = {</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">0,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* argument to pass to function */</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">0,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* timeout for rpc return msg_send */</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">print_string,&nbsp;&nbsp;&nbsp; /* string function */</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">0,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* reply_ping function */</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* log_data function */</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">};</font>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">void receive_thread(port_name_t port)</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">{</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">char&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; msg_buf[kern_loader_replyMaxRequestSize];</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">msg_header_t *msg = (msg_header_t *)msg_buf;</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">kern_return_t r;</font>
+
+<p><img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">/* message handling loop */</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">while (TRUE) {</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">/* Receive the next message in the queue. */</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">msg-&gt;msg_size = kern_loader_replyMaxRequestSize;</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">msg-&gt;msg_local_port = port;</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">r = msg_receive(msg, MSG_OPTION_NONE, 0);</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">if (r != KERN_SUCCESS)</font><br>
+<img src="../../../../Images/sp.gif" width=189 height=1><font face="Courier">break;</font>
+
+<p><img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">/* Handle the message we just received. */</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">kern_loader_reply_handler(msg, &amp;kern_loader_reply);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">/* We get here only if msg_receive returned an error. */</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">mach_error(&#34;receive_thread receive&#34;, r);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">exit(1);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">/* Called every time kern_loader has status to report. */</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">kern_return_t print_string(void *arg, printf_data_t string,</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">u_int string_count, int level)</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">{</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">/* If the string is empty, return. */</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">if (string_count == 0 || !string)</font><br>
+<img src="../../../../Images/sp.gif" width=161 height=1><font face="Courier">return KERN_SUCCESS;</font>
+
+<p><img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">/* Print the string we were passed, with our prefix. */</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">printf(&#34;print_string: %s&#34;, string);</font>
+
+<p><img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">return KERN_SUCCESS;</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>RETURN </b></font><font face="Times" size="+1">KERN_SUCCESS:&nbsp; The call succeeded.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">SEND_INVALID_PORT:&nbsp; <i>listen_port</i> isn't a valid port.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SEE ALSO </b></font><font face="Times" size="+1"><b>kern_loader_look_up()</b>, <b>kern_loader_reply_handler()</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>kern_loader_unload_server()</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SUMMARY </b></font><font face="Times" size="+1">Unload a loadable kernel server</font>
+
+<p><font face="Helvetica" size="-1"><b>SYNOPSIS </b></font><font face="Times" size="+1"><b>#import &lt;mach/mach.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><b>#import &lt;kernserv/kern_loader.h&gt;</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">kern_return_t <b>kern_loader_unload_server(</b>port_t <i>loader_port</i>, port_t <i>task_port</i>, server_name_t <i>server_name</i><b>)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>ARGUMENTS </b></font><font face="Times" size="+1"><i>loader_port</i>:&nbsp; <b>kern_loader</b> port, obtained from calling <b>kern_loader_look_up()</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><i>task_port</i>:&nbsp; The kernel's task port, obtained using <b>task_by_unix_pid()</b>.</font>
+
+<p><font face="Times" size="+1"><i>server_name</i>:&nbsp; The string associated with the server.&nbsp; For example, the name of the MIDI driver is &quot;mididriver&quot;.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>DESCRIPTION </b></font><font face="Times" size="+1">Use this function to unload a running loadable kernel server, leaving it allocated.</font>
+
+<p><font face="Helvetica" size="-1"><b>EXAMPLE </b></font><font face="Courier">r = kern_loader_look_up(&amp;loader_port);</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">if (r != KERN_SUCCESS) {</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">kern_loader_error(&#34;Couldn't get loader_port&#34;, r);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">exit(1);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">r = task_by_unix_pid(task_self(), 0, &amp;kernel_task);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">if (r != KERN_SUCCESS) {</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">kern_loader_error(&#34;Couldn't get kernel_task&#34;, r);</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">exit(2);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">r = kern_loader_unload_server(loader_port, kernel_task,</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">&#34;NextDimension&#34;);</font><br>
+<img src="../../../../Images/sp.gif" width=105 height=1><font face="Courier">if (r != KERN_SUCCESS)</font><br>
+<img src="../../../../Images/sp.gif" width=133 height=1><font face="Courier">kern_loader_error(&#34;Couldn't unload the server&#34;, r);</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>RETURN </b></font><font face="Times" size="+1">KERN_SUCCESS:&nbsp; The server was successfully unloaded.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">KERN_LOADER_SERVER_UNLOADED:&nbsp; The server was already unloaded.</font>
+
+<p><font face="Times" size="+1">KERN_LOADER_NO_PERMISSION:&nbsp; <i>task_port</i> wasn't the kernel's task port.&nbsp; (Make sure <b>task_by_unix_pid()</b> is called by a process with superuser permission.)</font>
+
+<p><font face="Times" size="+1">KERN_LOADER_UNKNOWN_SERVER:&nbsp; <i>server_name</i> wasn't recognized.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Helvetica" size="-1"><b>SEE ALSO </b></font><font face="Times" size="+1"><b>kern_loader_load_server()</b>, <b>kern_loader_look_up()</b></font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

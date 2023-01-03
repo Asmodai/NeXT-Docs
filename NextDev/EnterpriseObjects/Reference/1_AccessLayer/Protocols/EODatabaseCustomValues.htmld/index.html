@@ -1,0 +1,230 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/EnterpriseObjects/Reference/1_AccessLayer/Protocols/EODatabaseCustomValues.rtf -->
+<!-- Date: Sun Jan  1 17:05:23 2023 -->
+<head>
+<title>EODatabaseCustomValues</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>EODatabaseCustomValues</b></font><br>
+<font face="Helvetica" size="+1"><b>(informal protocol)</b></font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Category Of:</b></font></td>
+
+<td><font face="Times" size="+1">NSObject</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">eoaccess/EOCustomValues.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Category Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The Enterprise Objects Framework uses the methods of the EOCustomValues and EODatabaseCustomValues categories to package text or binary data into custom value objects. A custom value class can be specified for a database column read through the access layer, or for a user interface object accessed through the interface layer. For example, you can map a binary column in a database to an NXImage subclass, or a text entry field in your application to a Currency class.</font>
+
+<p><font face="Times" size="+1">EOCustomValues declares the methods for custom value classes based on text data; EODatabaseCustomValues declares the methods for custom value classes based on binary data. Your custom value class can implement either or both of these categories' methods, depending on how its values will be accessed by the various components of the Framework and your application.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Implementing EODatabaseCustomValues</b></font>
+
+<p><font face="Times" size="+1">Your custom value objects are initialized with <b>initWithData:type:</b>, which offers the binary data and a string identifying the format of that data; for example, &quot;TIFF&quot;. The value object can use this type string to determine how to interpret the data. When your object's data is needed in its raw form, it's sent a <b>dataForType:</b> message specifying the type needed. Your object must produce an NSData object containing bytes in the named format.</font>
+
+<p><font face="Times" size="+1">In addition to implementing the methods declared in this category, your custom value class must meaningfully implement the <b>description</b> method if its value is to be displayed in a text control. <b>description</b> is the standard method for getting a reasonable text representation of an object, described in the NSObject class specification of the <i>Foundation Kit Reference</i>. Your custom class must also implement this method if it's to be used for an enterprise object's primary key.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Initializing instances</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">initWithData:type:</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Getting data as a type</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">dataForType:</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>dataForType:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSData *)<b>dataForType:</b>(NSString *)<i>typeString</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the value of the receiver as a data object in the format indicated by <i>typeString</i>. This method is used to convert a custom type to an NSData object for writing to the database. For example, this code excerpt produces an image in Tagged Image File Format:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSData *imageData = [myCustomValue stringForType:@&#34;TIFF&#34;];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>valueType</b> (EOAttribute class)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>initWithData:type:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>initWithData:</b>(NSData *)<i>data</i> <b>type:</b>(NSString *)<i>typeString</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Initializes the receiver to contain the value in <i>data</i>. <i>typeString</i>, if non-<b>nil</b>, indicates the format of the contents of <i>data</i>; for example, &quot;TIFF&quot;. Returns <b>self</b>.</font>
+
+<p><font face="Times" size="+1">This method is used to create a custom type from an NSData object read from the database.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>valueType</b> (EOAttribute class)</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

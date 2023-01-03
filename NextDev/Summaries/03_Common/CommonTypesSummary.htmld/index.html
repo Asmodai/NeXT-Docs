@@ -1,0 +1,232 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/Summaries/03_Common/CommonTypesSummary.rtf -->
+<!-- Date: Sun Jan  1 17:01:50 2023 -->
+<head>
+<title>CommonTypesSummary</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Types and Constants</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+3"><b>Defined Types</b></font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=125></td>
+
+<td><font face="Helvetica" size="+1"><b>NXAtom</b></font>
+
+<p><font face="Times" size="+1">typedef const char *<b>NXAtom</b>;</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>NXExceptionRaiser</b></font>
+
+<p><font face="Times" size="+1">typedef void <b>NXExceptionRaiser</b>(int <i>code</i>,</font><br>
+<img src="../../../Images/sp.gif" width=37 height=1><font face="Times" size="+1">const void *<i>data1</i>,</font><br>
+<img src="../../../Images/sp.gif" width=37 height=1><font face="Times" size="+1">const void *<i>data2</i>);</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>NXHandler</b></font>
+
+<p><font face="Times" size="+1">typedef struct _NXHandler {</font><br>
+<img src="../../../Images/sp.gif" width=37 height=1><font face="Times" size="+1">jmp_buf <b>jumpState</b>;</font><br>
+<img src="../../../Images/sp.gif" width=37 height=1><font face="Times" size="+1">struct _NXHandler *<b>next</b>;</font><br>
+<img src="../../../Images/sp.gif" width=37 height=1><font face="Times" size="+1">int <b>code</b>;</font><br>
+<img src="../../../Images/sp.gif" width=37 height=1><font face="Times" size="+1">const void *<b>data1</b>, *<b>data2</b>;</font><br>
+<font face="Times" size="+1">} <b>NXHandler</b>;</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>NXHashState</b></font>
+
+<p><font face="Times" size="+1">typedef struct {</font><br>
+<img src="../../../Images/sp.gif" width=37 height=1><font face="Times" size="+1">int i;</font><br>
+<img src="../../../Images/sp.gif" width=37 height=1><font face="Times" size="+1">int j;</font><br>
+<font face="Times" size="+1">} <b>NXHashState</b>;</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>NXHashTable</b></font>
+
+<p><font face="Times" size="+1">typedef struct {</font><br>
+<img src="../../../Images/sp.gif" width=37 height=1><font face="Times" size="+1">const NXHashTablePrototype *prototype;</font><br>
+<img src="../../../Images/sp.gif" width=37 height=1><font face="Times" size="+1">unsigned count;</font><br>
+<img src="../../../Images/sp.gif" width=37 height=1><font face="Times" size="+1">unsigned nbBuckets;</font><br>
+<img src="../../../Images/sp.gif" width=37 height=1><font face="Times" size="+1">void *buckets;</font><br>
+<img src="../../../Images/sp.gif" width=37 height=1><font face="Times" size="+1">const void *info;</font><br>
+<font face="Times" size="+1">} <b>NXHashTable</b>;</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>NXHashTablePrototype</b></font>
+
+<p><font face="Times" size="+1">typedef struct {</font><br>
+<img src="../../../Images/sp.gif" width=37 height=1><font face="Times" size="+1">unsigned (*<b>hash</b>)(const void *<i>info</i>, const void *<i>data</i>);</font><br>
+<img src="../../../Images/sp.gif" width=37 height=1><font face="Times" size="+1">int (*<b>isEqual</b>)(const void *<i>info</i>, const void *<i>data1</i>, const void *<i>data2</i>);</font><br>
+<img src="../../../Images/sp.gif" width=37 height=1><font face="Times" size="+1">void (*<b>free</b>)(const void *<i>info</i>, void *<i>data</i>);</font><br>
+<img src="../../../Images/sp.gif" width=37 height=1><font face="Times" size="+1">int <b>style</b>;</font><br>
+<font face="Times" size="+1">} <b>NXHashTablePrototype</b>;</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>NXUncaughtExceptionHandler</b></font>
+
+<p><font face="Times" size="+1">typedef void <b>NXUncaughtExceptionHandler</b>(int <i>code</i>,</font><br>
+<img src="../../../Images/sp.gif" width=37 height=1><font face="Times" size="+1">const void *<i>data1</i>,</font><br>
+<img src="../../../Images/sp.gif" width=37 height=1><font face="Times" size="+1">const void *<i>data2</i>);</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>NXZone</b></font>
+
+<p><font face="Times" size="+1">typedef struct _NXZone {</font><br>
+<img src="../../../Images/sp.gif" width=37 height=1><font face="Times" size="+1">void *(*realloc)(struct _NXZone *<i>zonep</i>, void *<i>ptr</i>, size_t <i>size</i>);</font><br>
+<img src="../../../Images/sp.gif" width=37 height=1><font face="Times" size="+1">void *(*malloc)(struct _NXZone *<i>zonep</i>, size_t <i>size</i>);</font><br>
+<img src="../../../Images/sp.gif" width=37 height=1><font face="Times" size="+1">void (*free)(struct _NXZone *<i>zonep</i>, void *<i>ptr</i>);</font><br>
+<img src="../../../Images/sp.gif" width=37 height=1><font face="Times" size="+1">void (*destroy)(struct _NXZone *<i>zonep</i>);</font><br>
+<font face="Times" size="+1">} <b>NXZone</b>;</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+3"><b>Symbolic Constants</b></font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=125></td>
+
+<td><font face="Helvetica" size="+1"><b>List Constants</b></font>
+
+<p><font face="Times" size="+1">NX_NOT_IN_LIST</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>NXStringTable Constants</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Value</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">MAX_NXSTRINGTABLE_LENGTH</font></td>
+
+<td><font face="Times" size="+1">1024</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=24></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Zone Constants</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Value</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">NX_NOZONE</font></td>
+
+<td><font face="Times" size="+1">(NXZone *)0</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+3"><b>Global Variables</b></font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=125></td>
+
+<td><font face="Helvetica" size="+1"><b>HashTable Prototypes</b></font>
+
+<p><font face="Times" size="+1">const NXHashTablePrototype <b>NXPtrPrototype</b>;</font><br>
+<font face="Times" size="+1">const NXHashTablePrototype <b>NXStrPrototype</b>;</font><br>
+<font face="Times" size="+1">const NXHashTablePrototype <b>NXPtrStructKeyPrototype</b>;</font><br>
+<font face="Times" size="+1">const NXHashTablePrototype <b>NXStrStructKeyPrototype</b>;</font></td></tr>
+
+</table>
+
+
+
+</body>
+</html>

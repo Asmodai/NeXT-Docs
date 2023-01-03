@@ -1,0 +1,1332 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/Foundation/Classes/NSDateClassCluster.rtf -->
+<!-- Date: Sun Jan  1 17:05:08 2023 -->
+<head>
+<title>NSDateClassCluster</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+4"><b>NSDate Class Cluster</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=68></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Cluster Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Through the NSDate class cluster you can obtain immutable objects that represent a single point in time.&nbsp; NSDate, an abstract class, is the programmatic interface to private concrete classes.&nbsp; Through NSDate you can obtain date objects for specific and relative time values.</font>
+
+<p><font face="Times" size="+1">The objects you create using NSDate are referred to as <i>date objects</i>.&nbsp; Because of the nature of class clusters, date objects returned by the NSDate class are not instances of that abstract class but of one of its private subclasses. Although a date object's class is private, its interface is public, as declared by the abstract superclass, NSDate.&nbsp; (See &quot;Class Clusters&quot; in the introduction to the Foundation Kit for more information on class clusters and creating subclasses within a cluster.)</font>
+
+<p><font face="Times" size="+1">Generally, you instantiate a suitable date object by invoking one of the <b>date...</b> class methods.</font>
+
+<p><font face="Times" size="+1">The date classes adopt the NSCopying and NSCoding protocols.</font>
+
+<p><br><br><br><br>
+
+<p><font face="Helvetica" size="+4"><b>NSDate</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Inherits From:</b></font></td>
+
+<td><font face="Times" size="+1">NSObject</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Conforms To:</b></font></td>
+
+<td><font face="Times" size="+1">NSObject</font><br>
+<font face="Times" size="+1">NSCopying</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">foundation/NSDate.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=68></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">NSDate is an abstract class that provides behavior for creating dates, comparing dates, representing dates, computing intervals, and similar functionality.&nbsp; It presents a programmatic interface through which suitable date objects are requested and returned. Date objects returned from NSDate are lightweight and immutable since they represent a invariant point in time.</font>
+
+<p><font face="Times" size="+1">&quot;Date&quot; as used above implies clock time as well.&nbsp; The standard unit of time for date objects is a value typed as NSTimeInterval (currently a <b>double</b>) and expressed as seconds. The NSTimeInterval type makes possible a wide and fine-grained range of date and time values, giving accuracy within milliseconds for dates 10,000 years apart.</font>
+
+<p><font face="Times" size="+1">NSDate and its subclasses compute time as seconds <i>relative</i> to an absolute reference date. This reference date is the first instant of 1 January, 2001, GMT.&nbsp; NSDate converts all date and time representations to and from NSTimeInterval values that are relative to this absolute reference date.&nbsp; A positive interval relative to a date represents a point in the future, a negative interval represents a time in the past.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">Conventional UNIX systems implement time according to the Network Time Protocol (NTP) standard, which is based on Coordinated Universal Time.&nbsp; The current private implementations of NSDate follow the NTP standard. However, they do not account for leap seconds and therefore are not synchronized with International Atomic Time (the most accurate).</font>
+
+<p><font face="Times" size="+1">Like other Foundation classes, NSDate enables you to obtain operating-system functionality (dates and times) without depending on operating-system internals. It also lays a foundation for the NSRunLoop and NSTimer classes, which use concrete date objects to implement local event loops and timers. Run loop objects manage input from ports (NSPort) and timers; timers send action messages to targets at a specific interval or recurrent intervals.</font>
+
+<p><font face="Times" size="+1">The central methods of NSDate are <b>initWithTimeIntervalSinceReferenceDate</b>, <b>init</b>, and <b>timeIntervalSinceReferenceDate</b> and the NSCopying protocol method <b>copyWithZone:</b>. These methods provide the basis for all the other methods in the NSDate interface. The single primitive method, <b>timeIntervalSinceReferenceDate</b>, returns a constant time value relative to an absolute reference date.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Using NSDate</b></font>
+
+<p><font face="Times" size="+1">The date objects you obtain through NSDate give you a diverse range of date and time functionality.&nbsp;&nbsp; To obtain dates, send one of the <b>date...</b> class methods to NSDate. One of the most useful is <b>date</b> itself, which returns a date object representing the current date and time. You can get new date objects with date-and-time values adjusted from existing date objects by sending <b>addTimeInterval:</b>.</font>
+
+<p><font face="Times" size="+1">You can obtain relative date information by sending the <b>timeInterval...</b> methods to a date object. For instance, <b>timeIntervalSinceNow</b> gives you the time, in seconds, between the current time and the receiving date object. Compare dates with the <b>isEqual:</b>, <b>compare: laterDate:</b> and <b>earlierDate:</b> methods and use the <b>description</b> method to obtain a string object that represents the date in a standard international format.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>NSCalendarDate</b></font>
+
+<p><font face="Times" size="+1">The NSDate class cluster provides, for your convenience, a public concrete subclass of NSDate that will satisfy many requirements for dates and times.&nbsp; This subclass, NSCalendarDate,&nbsp; enables you to represent dates as arbitrary strings, to create new date objects from string representations, to extract date and time elements from date objects, and to do other calendar-related functions.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Subclassing NSDate</b></font>
+
+<p><font face="Times" size="+1">If you want to subclass NSDate to obtain behavior different than that provided by the private subclasses, you must do three things specific to the NSDate class:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Declare a suitable instance variable to hold the date and time value (relative to an absolute reference date).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Override the <b>timeIntervalSinceReferenceDate</b> class and primitive methods to return this value.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Initialize the date-and-time instance variable to an appropriate value by overriding the initialization methods you want for your class.&nbsp; For <b>init</b>, this should be the current date and time.&nbsp; Note that <b>init</b> and <b>initWithTimeIntervalSinceReferenceDate:</b> are designated initializers.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=68></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Variables</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">None declared in this class.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=68></td>
+
+<td><font face="Helvetica" size="+2"><b>Adopted Protocols</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">NSCopying</font></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">copyWithZone:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">copy</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">NSCoding</font></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">encodeUsingCoder:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">decodeUsingCoder:</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=68></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Allocating and initializing an NSDate object</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font face="Times" size="+1">+ allocWithZone:</font><br>
+<font face="Times" size="+1">+ date</font><br>
+<font face="Times" size="+1">+ dateWithTimeIntervalSinceNow:</font><br>
+<font face="Times" size="+1">+ dateWithTimeIntervalSinceReferenceDate:</font><br>
+<font face="Times" size="+1">+ distantFuture</font><br>
+<font face="Times" size="+1">+ distantPast</font><br>
+<font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font><font face="Times" size="+1">&ouml; init</font><br>
+<font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">initWithString:</font><br>
+<font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">initWithTimeInterval:sinceDate:</font><br>
+<font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">initWithTimeIntervalSinceNow:</font><br>
+<font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">initWithTimeIntervalSinceReferenceDate:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Converting to an NSCalendar object</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=307></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">dateWithCalendarFormat:timeZone:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Representing dates</font></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">description</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">descriptionWithCalendarFormat:timeZone:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Adding and getting intervals</font></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">addTimeInterval:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">timeIntervalSinceDate:</font><br>
+<font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">timeIntervalSinceNow</font><br>
+<font face="Times" size="+1">+ timeIntervalSinceReferenceDate</font><br>
+<font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">timeIntervalSinceReferenceDate</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Comparing dates</font></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">compare:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">earlierDate:</font><br>
+<font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">isEqual:</font><br>
+<font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">laterDate:</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=68></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>allocWithZone:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ <b>allocWithZone</b>:(NXZone *)<i>zone</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Allocates an unitialized instance of a concrete date from the specified <i>zone</i>.&nbsp; If allocation fails, <b>nil</b> is returned.</font>
+
+<p><font face="Times" size="+1">Typically, you create dictionary objects using the <b>date...</b>&nbsp; class methods, not the <b>alloc...</b> and <b>init...</b> methods.&nbsp; Note that it's your responsibility to release (with either <b>release</b> or <b>autorelease</b>) those objects created with the <b>alloc...</b> methods.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1"><b>+ date</b>, <b>+ dateWithTimeIntervalSinceNow</b>:, <b>+ dateWithTimeIntervalSinceReferenceDate</b></font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+1"><b>date</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ (NSDate *)<b>date</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Creates and returns an instance of NSDate set to the current date and time. This method uses the default initializer for the class, <b>init</b>.</font>
+
+<p><font face="Times" size="+1">A typical example of using <b>date</b> to get the current date is:</font></td></tr>
+
+</table>
+
+<p><img src="../../../Images/sp.gif" width=124 height=1><font face="Courier">NSDate *today = [NSDate date];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp;&nbsp; <font face="Times" size="+1"><b>+ dateWithTimeIntervalSinceNow</b>:, <b>+ dateWithTimeIntervalSinceReferenceDate</b></font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+1"><b>dateWithTimeIntervalSinceNow:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ (NSDate *)<b>dateWithTimeIntervalSinceNow</b>:(NSTimeInterval)<i>seconds</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Creates and returns an instance of NSDate set to a specified number of seconds before or after the current date and time.</font></td></tr>
+
+</table>
+
+<p><img src="../../../Images/sp.gif" width=124 height=1><font face="Courier">NSDate *overTime = [NSDate dateWithTimeIntervalSinceNow:8*360];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp;&nbsp; <font face="Times" size="+1"><b>+ date</b>, <b>+ dateWithTimeIntervalSinceReferenceDate</b></font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+1"><b>dateWithTimeIntervalSinceReferenceDate:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ (NSDate *)<b>dateWithTimeIntervalSinceReferenceDate</b>:(NSTimeInterval)<i>seconds</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Creates and returns an instance of NSDate set to a specified number of seconds before or after the absolute reference date (the first instant of 1 January, 2001, GMT). Use a negative argument value to specify a date and time before the reference date.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp;&nbsp; <font face="Times" size="+1"><b>+ date</b>, <b>+ dateWithTimeIntervalSinceNow</b></font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+1"><b>distantFuture</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ (NSDate *)<b>distantFuture</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Creates and returns a date object that represents a date in the distant future (in terms of centuries).&nbsp; You can use this object in your code as a control date, a guaranteed outer temporal limit.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1">+ <b>distantPast</b></font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+1"><b>distantPast</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ (NSDate *)<b>distantPast</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Creates and returns a date object that represents a date in the distant past (in terms of centuries).&nbsp; You can use this object in your code as a control date, a guaranteed temporal boundary.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1">+ <b>distantFuture</b></font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+1"><b>timeIntervalSinceReferenceDate</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ (NSTimeInterval)<b>timeIntervalSinceReferenceDate</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Returns the interval between the system's absolute reference date and the current date and time.&nbsp; This value is less than zero until the first instant of 1 January 2001, GMT.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>timeIntervalSinceDate:</b>;</font><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>timeIntervalSinceReferenceDate</b>;</font>&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>timeIntervalSinceNow</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=68></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>addTimeInterval:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font>&nbsp; <font face="Times" size="+1">(NSDate *)<b>addTimeInterval:(</b>NSTimeInterval<b>)</b><i>seconds</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Returns an NSDate object that is set to a specified number of seconds relative to the receiver.&nbsp; The <b>NSTimeInterval </b>argument value can be positive or negative (positive meaning later).&nbsp; The date returned might have a representation different from the receiver's.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>timeIntervalSinceDate:</b></font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+1"><b>compare:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSComparisonResult)<b>compare:</b>(NSDate *)<i>otherDate</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Compares the receiving date to <i>otherDate</i> and returns a value of type NSComparisonResult. If the receiving object in the comparison is more recent than <i>otherDate</i>, the method returns NSOrderedDescending. If it is older, it returns NSOrderedAscending. If they are equal, it returns NSOrderedSame.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>earlierDate:</b>,</font> <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>isEqual</b>:,</font> <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>laterDate:</b></font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+1"><b>dateWithCalendarFormat:timeZone</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSCalendarDate *)<b>dateWithCalendarFormat</b>:(NSString *)<i>formatString</i> <b>timeZone</b>:(NSTimeZone *)<i>timeZone</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Converts the date object to an NSCalendarDate object bound to the format string <i>formatString</i> and the time zone <i>timeZone</i>. If you specify <b>nil</b> after either or both of these arguments, the default format string and time zone are assumed. (The default time zone is the one specific to the current locale; the default format string, which is &quot;%Y-%m-%H:%M:%S %z&quot;, conforms to the international format YYYY-MM-DD HH:MM:SS</font> <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font><font face="Times" size="+1">HHMM.) The date-conversion specifiers cover a range of date conventions. See the description of the class method <b>dateWithString:calendarFormat:</b> in the NSCalendarDate class specification for a listing of these specifiers.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>description</b></font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+1"><b>description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSString *)<b>description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Returns a string representation of the NSDate object that conforms to the international format YYYY-MM-DD HH:MM:SS</font> <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font><font face="Times" size="+1">HHMM, where</font> <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font><font face="Times" size="+1">HHMM represents the time-zone offset in hours and minutes from Greenwich Mean Time (GMT).&nbsp; An example might be &quot;1994-05-23 10:45:32 +0600&quot;.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>descriptionWithCalendarFormat:timeZone:</b></font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+1"><b>descriptionWithCalendarFormat:timeZone</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSString *)<b>descriptionWithCalendarFormat:</b>(NSString *)<i>format</i> <b>timeZone:</b>(NSTimezone *)<i>aTimeZone</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Returns a string representation of the date object that is formatted as specified by the conversion specifiers in the format string <i>format</i>. Specify the time zone for the date in <i>aTimeZone</i>. The conversion specifiers cover a range of date conventions:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">%%</font></td>
+
+<td><font face="Times" size="+1">a '%' character</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">%a</font></td>
+
+<td><font face="Times" size="+1">abbreviated weekday name</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">%A</font></td>
+
+<td><font face="Times" size="+1">full weekday name</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">%b</font></td>
+
+<td><font face="Times" size="+1">abbreviated month name</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">%B</font></td>
+
+<td><font face="Times" size="+1">full month name</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">%c</font></td>
+
+<td><font face="Times" size="+1">shorthand for %X %x, the locale format for date and time</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">%d</font></td>
+
+<td><font face="Times" size="+1">day of the month as a decimal number (01-31)</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">%H</font></td>
+
+<td><font face="Times" size="+1">hour based on a 24-hour clock as a decimal number</font><br>
+<font face="Times" size="+1">(00-23)</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">%I</font></td>
+
+<td><font face="Times" size="+1">hour based on a 12-hour clock as a decimal number</font><br>
+<font face="Times" size="+1">(01-12)</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">%j</font></td>
+
+<td><font face="Times" size="+1">day of the year as a decimal number (001-366)</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">%m</font></td>
+
+<td><font face="Times" size="+1">month as a decimal number (01-12)</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">%M</font></td>
+
+<td><font face="Times" size="+1">minute as a decimal number (00-59)</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">%p</font></td>
+
+<td><font face="Times" size="+1">AM/PM designation associated with a 12-hour clock</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">%S</font></td>
+
+<td><font face="Times" size="+1">second as a decimal number (00-61)</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">%w</font></td>
+
+<td><font face="Times" size="+1">weekday as a decimal number (0-6), where Sunday is 0</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">%x</font></td>
+
+<td><font face="Times" size="+1">date using the date representation for the locale</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">%X</font></td>
+
+<td><font face="Times" size="+1">time using the time representation for the locale</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">%y</font></td>
+
+<td><font face="Times" size="+1">year without century (00-99)</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">%Y</font></td>
+
+<td><font face="Times" size="+1">year with century (e.g. 1990)</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">%Z</font></td>
+
+<td><font face="Times" size="+1">time zone name</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">%z</font></td>
+
+<td><font face="Times" size="+1">timezone offset in hours and minutes from GMT</font><br>
+<font face="Times" size="+1">(HHMM)</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp;&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>description,</b></font> <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>descriptionWithCalendarFormat:timeZone:</b> (NSCalendarDate)</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+1"><b>init</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>init</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">When sent to the object returned by <b>alloc</b> or <b>allocWithZone:</b>, this method returns an initialized date object. This method is the designated initializer for the NSDate class and is declared primarily for the use of subclasses of NSDate. The designated initializer of the subclass should, through a message to <b>super</b>, invoke this method. Returns <b>self</b>.</font>
+
+<p><font face="Times" size="+1">When you subclass NSDate to create a concrete date class, you must override this method. When you override this method, allocate an instance of your class and set its date-and-time instance variable to an appropriate value, such as the current date and time.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+1"><b>initWithString:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font>&nbsp; <font face="Times" size="+1"><b>initWithString:</b>(NSString *)<i>description</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Returns an calendar date object with a date and time value specified by the international string-representation format: YYYY-MM-DD HH:MM:SS</font> <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4><img src="../../../Images/c48.gif" width=11 height=10><img src="../../../Images/c48.gif" width=11 height=10><img src="../../../Images/c4D-1.gif" width=13 height=10><img src="../../../Images/c4D-1.gif" width=13 height=10><img src="../../../Images/c2C.gif" width=3 height=4></font> <font face="Times" size="+1">where</font> <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font><font face="Times" size="+1">HHMM is a time zone offset in hours and minutes from Greenwich Mean Time. (Adding the offset to the specified time yields the equivalent GMT.) An example string might be &quot;1994-03-30 13:12:43 +0900&quot;. You must specify all fields of the format, including the time-zone offset, which must have a plus- or minus-sign prefix.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>description</b></font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+1"><b>initWithTimeInterval:sinceDate:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSDate *)<b>initWithTimeInterval:</b>(NSTimeInterval)<i>secsToBeAdded</i> <b>sinceDate:</b>(NSDate *)<i>anotherDate</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Returns an NSDate object initialized relative to another date object by a specified number of seconds (plus or minus). If you have not overridden NSDate's initWithTimeIntervalSinceReferenceDate: in your subclass, this method generates an exception message and returns nil. Your conversions between two dates using the same representation should be exact.</font></td></tr>
+
+</table>
+
+<p><img src="../../../Images/sp.gif" width=124 height=1><font face="Courier">NSDate *nextquarter = [[NSDate alloc]</font><br>
+<img src="../../../Images/sp.gif" width=282 height=1><font face="Courier">initWithTimeInterval:(86400.0*365.25)/4.0</font><br>
+<img src="../../../Images/sp.gif" width=282 height=1><font face="Courier">sinceDate:[NSDate date]]</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>initWithTimeIntervalSinceNow:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSDate *)<b>initWithTimeIntervalSinceNow:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=162></td>
+
+<td><font face="Times" size="+1">(NSTimeInterval)<i>secsToBeAddedToNow</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Returns an NSDate object initialized relative to the current date and time by a specified number of seconds (plus or minus). If you have not overridden NSDate's <b>initWithTimeIntervalSinceReferenceDate:</b> in your subclass, this method raises an exception.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+1"><b>initWithTimeIntervalSinceReferenceDate:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font>&nbsp; <font face="Times" size="+1"><b>initWithTimeIntervalSinceReferenceDate:</b>(NSTimeInterval)<i>secsToBeAdded</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">When sent to the object returned by <b>alloc</b> or <b>allocWithZone:</b>, this method returns an initialized date object. This method is the designated initializer for the NSDate class and is declared primarily for the use of subclasses of NSDate. The designated initializer of the subclass should, through a message to <b>super</b>, invoke this method.</font>
+
+<p><img src="../../../Images/sp.gif" width=3 height=1><font face="Times" size="+1">When you subclass NSDate to create a concrete date class, you must override this message.&nbsp;&nbsp; In doing so, allocate an instance of your class and set its NSTimeInterval instance variable to an appropriate value, such as the current date and time adjusted by <i>secsToBeAdded</i>.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+1"><b>isEqual:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>isEqual:</b><i>other</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Returns YES if the two objects compared are NSDate objects and are within one second of each other, NO if the objects are both not of the NSDate class or if they differ by more than one second. If you want to detect sub-second differences, send <b>timeIntervalSinceReferenceDate</b> to both objects and subtract the values returned.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>compare:</b>,</font> <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>earlierDate:</b>,</font> <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>laterDate:</b></font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+1"><b>earlierDate:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSDate *)<b>earlierDate:</b>(NSDate *)<i>otherDate</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Compares the receiver date to <i>otherDate</i> and returns the older of the two.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>compare:</b>,</font> <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>isEqual</b>:,</font> <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>laterDate:</b></font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+1"><b>laterDate:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSDate *)<b>laterDate:</b>(NSDate *)<i>otherDate</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Compares the receiver date to <i>otherDate</i> and returns the later of the two.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>compare:</b>,</font> <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>earlierDate:</b>,</font> <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font>&nbsp; <font face="Times" size="+1"><b>isEqual</b>:</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+1"><b>timeIntervalSinceDate:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSTimeInterval)<b>timeIntervalSinceDate:</b>(NSDate *)<i>otherDate</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Returns the interval between the receiver and <i>otherDate</i>.&nbsp; This method uses&nbsp; <b>timeIntervalSinceReferenceDate</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>timeIntervalSinceNow</b>,</font> <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>timeIntervalSinceReferenceDate</b></font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+1"><b>timeIntervalSinceNow</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSTimeInterval)<b>timeIntervalSinceNow</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Returns the interval between the receiver and the current date and time (which is positive for future dates).&nbsp; This method uses <b>timeIntervalSinceReferenceDate</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>timeIntervalSinceDate:</b>,</font> <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>timeIntervalSinceReferenceDate</b></font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+1"><b>timeIntervalSinceReferenceDate</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSTimeInterval)<b>timeIntervalSinceDate</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Returns the interval between the receiver and the system's absolute reference date.&nbsp; This value is less than zero until the first instant of 1 January 2001, GMT.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>timeIntervalSinceDate:</b>,</font> <font size="+1"><img src="../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>timeIntervalSinceNow</b>, + <b>timeIntervalSinceReferenceDate</b></font></td></tr>
+
+</table>
+
+
+
+<p><br><br><br>
+
+</body>
+</html>

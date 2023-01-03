@@ -1,0 +1,1012 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/GeneralRef/04_DatabaseKit/Classes/DBQualifier.rtf -->
+<!-- Date: Sun Jan  1 17:03:40 2023 -->
+<head>
+<title>DBQualifier</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>DBQualifier</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Inherits From:</b></font></td>
+
+<td><font face="Times" size="+1">Object</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Conforms To:</b></font></td>
+
+<td><font face="Times" size="+1">DBExpressionValues</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">dbkit/DBQualifier.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">A DBQualifier object creates a predicate statement, expressed in the database's query language, that's applied as records are fetched from the database.&nbsp; Records that don't pass the predicate, or <i>description</i>, aren't selected for the fetch.&nbsp; The predicate that's created by a description is usually one or more expressions in which the value for a property is compared to that of another property or to a constant value.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Creating a Description</b></font>
+
+<p><font face="Times" size="+1">A DBQualifier's description is created through the <b>initForEntity:fromDescription:</b> or, after initialization, <b>setEntity:andDescription:</b> methods.&nbsp; You can add to an existing description through the <b>addDescription:</b> method.&nbsp; Each of these methods takes a <b>printf()</b> style format-and-values list as its final argument:&nbsp; The first element (the format) is a quoted string that establishes the format of the description, the following elements supply the description with values.&nbsp; Neighboring elements are separated by a comma.</font>
+
+<p><font face="Times" size="+1">Strings, numbers, and objects can be represented in the format string through the following substitution symbols:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Format symbol</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Expected value</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">%s</font></td>
+
+<td><font face="Times" size="+1">A constant string (<b>const char *</b>).</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">%p</font></td>
+
+<td><font face="Times" size="+1">A (<b>const char *</b>) that names a property of the object's entity.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">%d</font></td>
+
+<td><font face="Times" size="+1">An <b>int</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">%f</font></td>
+
+<td><font face="Times" size="+1">A <b>double</b> or <b>float</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">%@</font></td>
+
+<td><font face="Times" size="+1">An object that conforms to the DBExpressionValues protocol, or a property object created by the Database Kit. (The former includes DBQualifier, allowing you to created a nested qualification.)</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">%%</font></td>
+
+<td><font face="Times" size="+1">No value--this passes a single `%' literally.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The rest of the format string should comprise valid query-language operators and symbols, the names of properties, and whitespace.&nbsp; The description is automatically applied as a predicate, so you needn't include the query language's predicate operator yourself.&nbsp; For example, if you're using SQL, a &quot;WHERE&quot; is automatically prepended to your description.</font>
+
+<p><font face="Times" size="+1">By using the substitution symbols, the same description can be created in a number of different ways.&nbsp; As an example, let's say you want to retrieve records from the &quot;Grocers&quot; table, but you only want those grocers that have a hat size greater than 12.5 and an IQ less than 95.&nbsp; You could create a DBQualifier thus:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* The DBDatabase object db is assumed to exist. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">id grocers = [db entityNamed:&#34;Grocers&#34;];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">id hatProp = [grocers propertyNamed:&#34;hatsize&#34;];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">id iqProp = [grocers propertyNamed:&#34;iq&#34;];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">float minHat = 12.5;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">int maxIQ = 95;</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Create the qualifier. */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">DBQualifier *bigButEmpty =</font><br>
+<img src="../../../../Images/sp.gif" width=145 height=1><font face="Courier">[[DBQualifier alloc] initForEntity:grocers</font><br>
+<img src="../../../../Images/sp.gif" width=236 height=1><font face="Courier">fromDescription:&#34;%@ &gt; %f AND %@ &lt; %d&#34;,</font><br>
+<img src="../../../../Images/sp.gif" width=236 height=1><font face="Courier">hatProp, minHat, iqProp, maxIQ];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* Apply it to a fetch (assume that the DBRecordList exists). */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[aRecList fetchUsingQualfier:bigButEmpty];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Using the convenience of the &quot;%p&quot; substitution, the same description could have been created without the use of property objects:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">DBQualifier *bigButEmpty =</font><br>
+<img src="../../../../Images/sp.gif" width=145 height=1><font face="Courier">[[DBQualifier alloc] initForEntity:grocers</font><br>
+<img src="../../../../Images/sp.gif" width=236 height=1><font face="Courier">fromDescription:&#34;%p &gt; %f AND %p &lt; %d&#34;,</font><br>
+<img src="../../../../Images/sp.gif" width=236 height=1><font face="Courier">&#34;hatsize&#34;, minHat, &#34;iq&#34;, maxIQ];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Simpler yet, the property names (and comparison values) can appear directly in the description string:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">DBQualifier *bigButEmpty =</font><br>
+<img src="../../../../Images/sp.gif" width=145 height=1><font face="Courier">[[DBQualifier alloc] initForEntity:grocers</font><br>
+<img src="../../../../Images/sp.gif" width=236 height=1><font face="Courier">fromDescription:&#34;hatsize &gt; 12.5 AND iq &lt; 95&#34;];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Property names, whether specified as arguments (to the %p symbol) or placed directly in the description string, are resolved against the DBQualifier's entity.&nbsp; For example, the two properties used above are resolved as &quot;Grocers.hatsize&quot; and &quot;Grocers.iq&quot;.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Traversing a Relationship</b></font>
+
+<p><font face="Times" size="+1">You can specify a related property in a DBQualifier's description string.&nbsp; To do this, you simply name the property as it's known to the DBQualifier's entity--in other words, you have to include the name of the relationship (which must be to-one).&nbsp; In the following example, each grocer's hat size is compared to that of his janitor:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">DBQualifier *biggerThanMrBroom =</font><br>
+<img src="../../../../Images/sp.gif" width=145 height=1><font face="Courier">[[DBQualifier alloc] initForEntity:grocers</font><br>
+<img src="../../../../Images/sp.gif" width=236 height=1><font face="Courier">fromDescription:&#34;hatsize &gt; toJanitor.hatsize&#34;];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This description can also be constructed using the substitution symbols:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">DBQualifier *biggerThanMrBroom =</font><br>
+<img src="../../../../Images/sp.gif" width=145 height=1><font face="Courier">[[DBQualifier alloc] initForEntity:grocers</font><br>
+<img src="../../../../Images/sp.gif" width=236 height=1><font face="Courier">fromDescription:&#34;%p &gt; %p&#34;,</font><br>
+<img src="../../../../Images/sp.gif" width=236 height=1><font face="Courier">&#34;hatSize&#34;, &#34;toJanitor.hatsize&#34;];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Or:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">id janitorRel = [grocers propertyNamed:&#34;toJanitor&#34;];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">id janHatProp = [[janitorRel propertyValue]</font><br>
+<img src="../../../../Images/sp.gif" width=264 height=1><font face="Courier">propertyNamed:&#34;hatsize&#34;];</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">DBQualifier *biggerThanMrBroom =</font><br>
+<img src="../../../../Images/sp.gif" width=145 height=1><font face="Courier">[[DBQualifier alloc] initForEntity:grocers</font><br>
+<img src="../../../../Images/sp.gif" width=236 height=1><font face="Courier">fromDescription:&#34;%@ &gt; %@.%@&#34;,</font><br>
+<img src="../../../../Images/sp.gif" width=236 height=1><font face="Courier">hatSize, janitorRel, janHatProp];</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Applying a DBQualifier</b></font>
+
+<p><font face="Times" size="+1">Once you've created a DBQualifier, there are two ways to apply it:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">If you're using a DBRecordStream or DBRecordList, you can qualify a fetch by passing a DBQualifier object as the argument to the <b>fetchUsingQualifier:</b> method.&nbsp; The DBQualifier's entity <i>must</i> match that of the DBRecordStream/List to which it's applied.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">If you're using a DBBinder, you can set the qualifier that's used in subsequent selects through <b>setQualifier:</b> or <b>initForDatabase:withProperties:andQualifier:</b>.&nbsp; (DBBinder separates the select and fetch operations; the qualification is actually placed on the select.)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Variables</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">None declared in this class.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Adopted Protocols</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">DBExpressionValues</font></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">expressionValue</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">isDeferredExpression</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Initializing and freeing</font></td>
+
+<td><font face="Times" size="+1">+ initialize</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">initForEntity:</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">initForEntity:fromDescription:</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">copyFromZone:</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">free</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Modifying</font></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">addDescription:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setEntity:andDescription:</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setName:</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">empty</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Querying</font></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">name</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">entity</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">isEmpty</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Archiving</font></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">read:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">write:</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>addDescription:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>addDescription:</b>(const unsigned char *)<i>descriptionFormat</i>, ...</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Appends the string that's created by the arguments to the DBQualifier's current description.&nbsp; The arguments are in the style of a <b>printf()</b> statement; see the class description above for the rules governing the format of the description string.&nbsp; Returns <b>self</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>initForEntity:fromDescription:</b>,</font> <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setEntity:andDescription:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>copyFromZone:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>copyFromZone:</b>(NXZone*)<i>z</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Creates a copy of the DBQualifier, allocating space for it from zone <i>z</i>.&nbsp; Returns the copy.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>empty</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>empty</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Deletes the DBQualifier's description.&nbsp; Returns YES.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>isEmpty</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>entity</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(id &lt;DBEntities&gt;)<b>entity</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the DBQualifier's entity, as set through <b>setEntity:andDescription:</b> or one of the <b>initForEntity:</b> methods.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>initForEntity:fromDescription:</b>,</font> <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setEntity:andDescription:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>free</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font>&nbsp; <font face="Times" size="+1"><b>free</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Frees the DBQualifier.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>initForEntity:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>initForEntity:</b>(id &lt;DBEntities&gt;)<i>anEntity</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The designated initializer for the DBQualifier class, this initializes a freshly allocated DBQualifier by setting its entity to the argument, but leaves its description empty.&nbsp; Returns <b>self</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>initForEntity:fromDescription:</b>,</font> <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setEntity:andDescription:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>initForEntity:fromDescription:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>initForEntity:</b>(id &lt;DBEntities&gt;)<i>anEntity</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>fromDescription:</b>(const unsigned char *)<i>descriptionFormat</i>, ...</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Initializes a freshly allocated DBQualifier by setting its entity to <i>anEntity</i> and setting its description as specified by the other arguments.&nbsp; See the class description above for the rules governing the format of the description string.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>initForEntity:</b>,</font> <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setEntity:andDescription:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>isEmpty</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>isEmpty</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if the DBQualifier's description is empty (if it hasn't been set or if the object has received an <b>empty</b> message).&nbsp; If the DBQualifier has a description, this returns NO.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>empty</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>name</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(const char *)<b>name</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the name of the DBQualifier, as set through <b>setName:</b>.&nbsp; The ability to name a DBQualifier is provided as a convenience; it isn't used by the Database Kit.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setName:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>read:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>read:</b>(NXTypedStream *)<i>stream</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Reads the DBQualifier from the typed stream <i>stream</i>.&nbsp; Returns <b>self</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setEntity:andDescription:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setEntity:</b>(id &lt;DBEntities&gt;)<i>anEntity</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>andDescription:</b>(const unsigned char *)<i>descriptionFormat, ...</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the DBQualifier's entity and description as given by the arguments.&nbsp; See the class description, above, for information on the description format.&nbsp; Returns <b>self</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>addDescription:</b>,</font> <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>initForEntity:fromDescription:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setName:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>setName:</b>(const char *)<i>aName</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the name of the DBQualifier to <i>aName</i>.&nbsp; The name isn't essential, as discussed in the <b>name</b> method description.&nbsp; Returns YES.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>name</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>write:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>write:</b>(NXTypedStream *)<i>stream</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Writes the DBQualifier to the typed stream <i>stream</i>.&nbsp; Returns <b>self</b>.</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

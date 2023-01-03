@@ -1,0 +1,792 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/GeneralRef/19_WorkspaceManager/Classes/WMInspector.rtf -->
+<!-- Date: Sun Jan  1 17:04:20 2023 -->
+<head>
+<title>WMInspector</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>WMInspector</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Inherits From:</b></font></td>
+
+<td><font face="Times" size="+1">Object</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">apps/Workspace.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The WMInspector class defines the link between the Workspace Manager application and the module that's loaded into the application.&nbsp; When you build a new inspector for the Workspace Manager, you must create a subclass of WMInspector.&nbsp; The inspector you define must load its interface (that is, the nib file containing the interface) in its <b>new</b> method.&nbsp; It must also override the inherited <b>revert:</b> method to load information about the selection into its display.</font>
+
+<p><font face="Times" size="+1">Your inspector can query the Workspace Manager for information on the selection in the File Viewer by sending itself <b>selectionCount</b> and <b>selectionPathInto:separator:</b> messages.&nbsp; It can send itself <b>okButton</b>, <b>revertButton</b>, and <b>window </b>messages to gain access to those features of the Inspector panel.</font>
+
+<p><font face="Times" size="+1">Although the Contents inspector's principal role is to let the user view the contents of a File Viewer entry, it can also let the user edit the displayed data.&nbsp; It's best not to overuse this capability, however, since the Contents inspector wasn't designed to substitute for normal applications.</font>
+
+<p><font face="Times" size="+1">An inspector that permits editing should send itself a <b>touch:</b> message when the user begins modifying the data.&nbsp; This message enables the inspector's OK and Revert buttons and displays a broken &quot;X&quot; in the panel's close box.&nbsp; (See <b>textDidChange:</b> for an alternate way to achieve this result.)&nbsp; The inspector should implement the <b>ok:</b> method to commit the modifications the user has made.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Variables</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">id <b>window</b>;</font>
+
+<p><font face="Times" size="+1">id <b>okButton</b>;</font>
+
+<p><font face="Times" size="+1">id <b>revertButton</b>;</font>
+
+<p><font face="Times" size="+1">id <b>dirNameField</b>;</font>
+
+<p><font face="Times" size="+1">id <b>dirTitleField</b>;</font>
+
+<p><font face="Times" size="+1">id <b>fileNameField</b>;</font>
+
+<p><font face="Times" size="+1">id <b>fileIconButton</b>;</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">window</font></td>
+
+<td><font face="Times" size="+1">The Inspector window.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">okButton</font></td>
+
+<td><font face="Times" size="+1">The Inspector's OK button.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">revertButton</font></td>
+
+<td><font face="Times" size="+1">The Inspector's Revert button.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">dirNameField</font></td>
+
+<td><font face="Times" size="+1">The TextField that holds the current directory.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">dirTitleField</font></td>
+
+<td><font face="Times" size="+1">The TextField that titles <b>dirNameField.</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">fileNameField</font></td>
+
+<td><font face="Times" size="+1">The TextField that displays the file name.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">fileIconButton</font></td>
+
+<td><font face="Times" size="+1">The Button that displays the file's icon.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Accessing the inspector object</font></td>
+
+<td><font face="Times" size="+1">+ new</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Accessing panel controls</font></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">okButton</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">revertButton</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">window</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Accessing Workspace selection</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=308></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">selectionCount</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">selectionPathsInto:separator:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Managing changes</font></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">ok:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">revert:</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">textDidChange:</font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">touch:</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>new</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ <b>new</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Creates a new WMInspector if none exists, or returns the existing one.&nbsp; When the object is created, it must load the nib file that contains the inspector's display.</font>
+
+<p><font face="Times" size="+1">The Workspace Manager sends a <b>new</b> message whenever it needs to access the inspector object.&nbsp; Thus, your subclass of WMInspector should ensure that no more than one instance of its class is created:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">static id ribInspector = nil;</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">+ new</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">{</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">if (ribInspector == nil) {</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">char path[MAXPATHLEN+1];</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">NXBundle *bundle = [NXBundle bundleForClass:self];</font>
+
+<p><img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">self = ribInspector = [super new];</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">if ([bundle getPath:path</font><br>
+<img src="../../../../Images/sp.gif" width=236 height=1><font face="Courier">forResource:&#34;RIBInspector&#34;</font><br>
+<img src="../../../../Images/sp.gif" width=236 height=1><font face="Courier">ofType:&#34;nib&#34;]) {</font><br>
+<img src="../../../../Images/sp.gif" width=208 height=1><font face="Courier">[NXApp loadNibFile:path owner:ribInspector];</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">} else {</font><br>
+<img src="../../../../Images/sp.gif" width=208 height=1><font face="Courier">fprintf (stderr, &#34;Couldn't load RIBInspector.nib\n&#34;);</font><br>
+<img src="../../../../Images/sp.gif" width=208 height=1><font face="Courier">ribInspector = nil;</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">}</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">}</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">return ribInspector;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>ok:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>ok:</b><i>sender</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Implement in your subclass to commit the changes that the user has made to the selected item.&nbsp; The OK button in the Inspector panel sends an <b>ok:</b> message when the user clicks it.</font>
+
+<p><font face="Times" size="+1">This method is optional, but if you implement it, you must send the same message to <b>super</b> as part of your implementation:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">ok:sender</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">{</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* your code to commit changes */</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">[super ok:sender];</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">return self;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This message to <b>super</b> replaces the broken &quot;X&quot; in the panel's close box with the standard &quot;X&quot;, indicating that the changes have been saved.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>revert:</b>,</font> <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>touch:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>okButton</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>okButton</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the <b>id</b> of the Inspector's OK button.&nbsp; This can be useful if you want to alter its title, for example.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>revertButton:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>revert:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>revert:</b><i>sender</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Implement in your subclass to load data into the inspector's display.&nbsp; The Workspace Manager sends this message to the inspector object whenever the inspector's display might need to be updated; for example, when the Inspector panel is opened or when the selection changes in the File Viewer.</font>
+
+<p><font face="Times" size="+1">Your subclass must implement this method, and it must send the same message to <b>super</b> as part of its implementation:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">revert:sender</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">{</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* your code to show contents of selected item(s) */</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">[super revert:sender];</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">return self;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This message to <b>super</b> replaces the broken &quot;X&quot; in the panel's close box with the standard &quot;X&quot;, indicating that the changes have been discarded.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>ok:</b>,</font> <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>touch:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>revertButton</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>revertButton</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the <b>id</b> of the Inspector's Revert button.&nbsp; This can be useful if you want to alter its title, for example.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>okButton:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>selectionCount</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(unsigned)<b>selectionCount</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the number of items selected in the File Viewer.&nbsp; You can use this information to determine whether your inspector should be displayed.&nbsp; For example, most inspectors can give information on only one file at a time, so within their <b>revert: </b>methods, they would have this test:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">if ([self selectionCount] != 1) {</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">return nil;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">} else {</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* get the path and display the file's contents */</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>selectionPathsInto:separator:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>selectionPathsInto:separator:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>selectionPathsInto:</b>(char *)<i>pathString</i> <b>separator:</b>(char)<i>character</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the paths of the files selected in the File Viewer.&nbsp; The paths are place in the string <i>pathString</i>; each path is separated from the previous one by <i>character</i>.&nbsp;&nbsp; For example, if <i>character</i> is `:', <i>pathString</i> could contain &quot;/me/test1:/me/test2:/me/test3&quot;.</font>
+
+<p><font face="Times" size="+1">If your inspector acts on only one file at a time (see <b>selectionCount</b>), the file's path can be identified using this message:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">char fullPath[MAXPATHLEN+1];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[self selectionPathsInto:fullPath separator:'\0'];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>selectionCount</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>textDidChange:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>textDidChange:</b><i>sender</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sends the WMInspector a <b>touch:</b> message on behalf of some Text object in the Inspector panel.</font>
+
+<p><font face="Times" size="+1">By making your inspector object the delegate of any Text object in your inspector's display, the Inspector panel will be updated appropriately as the user alters the panel's contents.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>touch:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>touch:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>touch:</b><i>sender</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Changes the image in the Inspector panel's close box to a broken &quot;X&quot; to indicate that the contents has been edited.&nbsp; Also, enables the OK and Revert buttons.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>textDidChange:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>window</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>window</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the <b>id</b> of the window that contains the user interface for the inspector.</font></td></tr>
+
+</table>
+
+
+
+<p><br>
+
+</body>
+</html>

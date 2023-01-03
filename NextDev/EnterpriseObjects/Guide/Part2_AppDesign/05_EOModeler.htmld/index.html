@@ -1,0 +1,2973 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/EnterpriseObjects/Guide/Part2_AppDesign/05_EOModeler.rtfd -->
+<!-- Date: Sun Jan  1 17:05:32 2023 -->
+<head>
+<title>05_EOModeler</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+4" color="#FF00FF"><b>5</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<p><font face="Times" size="+4"><i>Using EOModeler</i></font>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">You use the EOModeler application to create models. A <i>model</i> defines, in entity-relationship terms, the mapping between a physical database and enterprise object classes.</font>
+
+<p><font face="Times" size="+1">You use EOModeler to:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Read the data dictionary from a database to create a default model, which can then be tailored to suit the needs of your application.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Specify enterprise object classes for the entities in your model.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Generate template source code files for the enterprise object classes you specify.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">A model enables an enterprise object to remain synchronized with a corresponding database row throughout the execution of your application. Models are fully accessible to your application; at run time you can dynamically generate new models or change the mapping in existing models. For information on working with models programmatically, see Chapter 11, &quot;Exploring and Constructing Models.&quot;</font>
+
+<p><font face="Times" size="+1">This chapter describes model files and the EOModeler application. The descriptions here rely heavily on the concepts and terms presented in the Appendix, &quot;Entity-Relationship Modeling.&quot;</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Models</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Although a model can be generated dynamically at run time, you typically create models using EOModeler and then add them to your project as model files. Model files have an ASCII format and the extension <b>.eomodel</b>.</font>
+
+<p><font face="Times" size="+1">Models describe the database-to-enterprise object mapping by using the modeling classes EOModel, EOEntity, EOAttribute, and EORelationship (EORelationships include additional information in the form of EOJoin objects).</font>
+
+<p><font face="Times" size="+1">The following table describes the general database-to-object mapping provided in a model:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Database Element</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Class</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">Data Dictionary</font></td>
+
+<td><font face="Times" size="+1">EOModel</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">Table</font></td>
+
+<td><font face="Times" size="+1">EOEntity</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">Column</font></td>
+
+<td><font face="Times" size="+1">EOAttribute</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">Row</font></td>
+
+<td><font face="Times" size="+1">Enterprise object class (or EOGenericRecord, if a custom</font><br>
+<font face="Times" size="+1">enterprise object class is not specified)</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">While the modeling classes correspond to elements in the physical database, a model represents a level of abstraction above the database. Consequently, the mapping between modeling classes and database components doesn't have to be one-to-one. So, for example, while an EOEntity object described in a model file corresponds to a database table, in reality it can contain references to multiple tables. In that sense, it's actually more analogous to a database view. Similarly, an EOAttribute can either correspond directly to a column in the root entity, or it can be derived or flattened. A derived attribute typically has no corresponding database column, while a flattened attribute is added to one entity from another entity. For more information, see &quot;Adding Derived and Flattened Attributes.&quot;</font>
+
+<p><font face="Times" size="+1">You can store your model files in the <b>Models</b> subdirectory of a <b>Library</b> directory, or you can copy them into your application's project directory (for more information, see Chapter 6, &quot;Creating an Enterprise Objects Framework Project&quot;). When the Enterprise Objects Framework searches for a model, it does so by the model's name--in other words, without reference to the file's path or extension. Models in the project directory precede those in the library directories. The search through the libraries is done in this order: The application main bundle, <b>~/Library/Models</b>, <b>/LocalLibrary/Models</b>, <b>/NextLibrary/Models</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>EOModeler</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The EOModeler application is located in the <b>/NextDeveloper/Apps</b> directory and is represented by the icon shown in Figure 13.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F20.gif" width=66 height=67></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 13</b></font><font face="Times" size="+1">. EOModeler's Application Icon</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">Launch the application by double-clicking the icon, or by double-clicking an existing model file.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F19.gif" width=53 height=53></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 14</b></font><font face="Times" size="+1">. The Model File Icon</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Creating a New Model</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">To create a model:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">In EOModeler, choose New from the Model menu.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">EOModeler displays a panel prompting you to select an adaptor, as shown in Figure 15.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F21.gif" width=218 height=313></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 15</b></font><font face="Times" size="+1">. Selecting an Adaptor</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Select the adaptor you want to use and click OK.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">EOModeler displays the login panel for the database that corresponds to the selected adaptor. The examples in this chapter use the Sybase version of the People database included with the Enterprise Objects Framework; Figure 16 shows the Sybase login panel.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F17.gif" width=394 height=264></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 16</b></font><font face="Times" size="+1">. Sybase Login Panel</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=125></td>
+
+<td><font face="Times" size="+1">When you leave Sybase's Database Server field blank, the default server is used. Characters you type in the Password field are never visible.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Fill in the login panel and click OK.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">When you first log in to a database, EOModeler uses an adaptor to read the data dictionary from the database and create the original model. This model is displayed in the Model Editor, shown in Figure 17, which lists the entities available for the database you specified in the login panel.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F15.gif" width=599 height=269></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 17</b></font><font face="Times" size="+1">. The Model Editor</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">To display the attributes for a particular entity, such as</font> <font face="Helvetica" size="+1">Department</font><font face="Times" size="+1">, select the entity. The attributes appear in the column to the right of the entity.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Using the Model Browser</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">You can use the Model Browser to display the database records associated with an entity in the Model Editor.</font>
+
+<p><font face="Times" size="+1">To display an entity's records in the Model Browser:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Browse Model from the Tools menu.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">EOModeler displays an empty Model Browser.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">To browse the records associated with an entity, select the entity's name in the Model Editor and drag the &quot;tear-off&quot; in the top left corner of the Model Editor to the tear-off well of the Model Browser, as shown in Figure 18.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F0.gif" width=555 height=257></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 18</b></font><font face="Times" size="+1">. Dragging an Entity into the Model Browser</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">The Model Browser fills with data, as shown in Figure 19.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F18.gif" width=553 height=198></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 19</b></font><font face="Times" size="+1">. The Model Browser Filled with Data</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">You can rearrange the columns in the Browser by dragging their title tabs to new positions. You can also resize columns by selecting their title tabs and dragging the tab edges until the column is the desired size.</font>
+
+<p><font face="Times" size="+1">You can change the sorting order of the Browser by using the buttons in the lower right corner. By default, the data is displayed according to how it was returned from the database. However, you can sort on the first column in either ascending or descending order by clicking the appropriate sort button. So, for example, to sort the records alphabetically by the employee's last name in the People database, drag the</font> <font face="Helvetica" size="+1">LastName</font> <font face="Times" size="+1">column into the first column of the Browser and click the ascending sort button. To restore the order of the data as it was returned from the database, click the default order button.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Inspecting Attributes</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">You use the Attribute Inspector to examine the characteristics of the attributes in your model and make any necessary refinements.</font>
+
+<p><font face="Times" size="+1">To inspect an attribute:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">In the Model Editor window, select an entity in the left-most column to display its attributes.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">Attributes are displayed in the column to the right of the selected entity.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Select the attribute you want to inspect.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">For example, select the</font> <font face="Helvetica" size="+1">Address</font> <font face="Times" size="+1">attribute of the</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entity.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Inspector from the Tools menu.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">You can also double-click an attribute to display the Attribute Inspector.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Figure 20 shows the Attribute Inspector displaying the characteristics of the</font> <font face="Helvetica" size="+1">Address</font> <font face="Times" size="+1">attribute.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F2.gif" width=270 height=397></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 20</b></font><font face="Times" size="+1">. The Attribute Inspector</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Attribute Names</b></font>
+
+<p><font face="Times" size="+1">The Name field displays the name your application uses for the attribute. This name doesn't have to be the same as the external name (that is, the name of the corresponding database column). The second text field from the top, known as the Definition field, has a pop-up list which usually reads &quot;Column.&quot; This field can contain either the column name of the attribute or a derived name; you set the mode with the pop-up list. For more information on derived attributes, see &quot;Adding Derived and Flattened Attributes.&quot;</font>
+
+<p><font face="Times" size="+1">You can change an attribute's public name (that is, the name as it appears in the application), but you shouldn't edit its column name or definition unless you are sure you can predict the outcome.</font>
+
+<p><font face="Times" size="+1">The External Type field displays the data type of the attribute data as it's understood by the database. For example, in Figure 20 the External Type for</font> <font face="Helvetica" size="+1">Address</font> <font face="Times" size="+1">is <b>varchar</b>, a data type used by Sybase.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Data Type</b></font>
+
+<p><font face="Times" size="+1">The Data Type area lets you specify the data type to which the attribute will be coerced in the Framework.</font>
+
+<p><font face="Times" size="+1">The contents of the Class and Format fields change according to which of the data type radio buttons is selected. The Class field lists the type of object (that is, the <i>value class</i>) to which the selected data type will be &quot;coerced&quot; in Objective C. For example, String becomes NSString, while Float, Integer, and Double all become NSNumber. When a selected data type has an associated format character, it's listed in the Format field (for a custom type, this field contains a string; for example, you can have a custom class MyImage and specify the format string as &quot;TIFF&quot;). For example, Integer has the format character <b>i</b>, while Float has the format character <b>f</b>. The format characters for NSNumber correspond to Objective C typing conventions.</font>
+
+<p><font face="Times" size="+1">When the value class associated with an attribute is NSNumber, the attribute also has a <i>value type</i>, which is the type an NSNumber will be converted to and from by the EOKeyValueCoding methods <b>takeValuesFromDictionary:</b> and <b>valuesForKeys:</b>. A value type is a scalar data type such as <b>int</b>, <b>float</b>, or <b>double</b>. When you generate template source files from a model, class properties are declared with scalar data types where appropriate. For more information on generating template source files, see &quot;Generating Template Source Code Files.&quot; For more information on key-value coding, see the EOKeyValueCoding protocol specification in the <i>Enterprise Objects Framework Reference</i>.</font>
+
+<p><font face="Times" size="+1">Select the Custom radio button to specify a custom object class. Custom object classes are initialized with an NSString or NSData object. NSData is a Foundation Kit class that puts an object-oriented wrapper around data of any type. For more information about specifying custom object classes, see the EOCustomValues protocol specification in the <i>Enterprise Objects Framework Reference</i>.</font>
+
+<p><font face="Times" size="+1">The Attribute Inspector has a different appearance when you either inspect a date attribute, or explicitly change an attribute's type to Date. See &quot;Inspecting a Date&quot; for more information.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Options</b></font>
+
+<p><font face="Times" size="+1">The Options area contains the Read Only checkbox, which indicates whether the data represented by the attribute can be altered by your application. Derived attributes are always read-only. For more information on derived attributes, see &quot;Adding Derived and Flattened Attributes.&quot;</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Custom Formatting</b></font>
+
+<p><font face="Times" size="+1">The Custom Formatting area allows you to specify formatting to be used for data conversion when a specified operation (select, insert, or update) takes place. The formatting information is used by the database. The Framework uses the <b>%V</b> (value) format character for insert and update, and <b>%P</b> (property) for select.</font>
+
+<p><font face="Times" size="+1">For example, to specify that when an update occurs you want 5 added to the value of an attribute, type <b>%V + 5</b> in the Update text field. The statement <b>%V + 5</b> means &quot;substitute the attribute value for <b>%V</b> and add 5.&quot; The Framework performs the substitution, and the resulting string is sent to the database. In other words, the Framework performs no processing on the string besides the substitution.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">Providing custom formatting can sometimes have the unexpected side-effect of changing the data type of an attribute's value as it's returned from the database. For example, using this field to supply custom formatting for a date can change the date into a string.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Inspecting a Date</b></font>
+
+<p><font face="Times" size="+1">When you select an attribute whose value is coerced into the Objective C type NSCalendarDate or when you explicitly change an attribute's type to Date, you can use the Attribute Inspector to modify how the date is displayed in your application.</font>
+
+<p><font face="Times" size="+1">To change the format of a date:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Select an attribute that represents a date value, or change the data type of an attribute to be Date.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">For example, the</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entity in the People database has a</font> <font face="Helvetica" size="+1">HireDate</font> <font face="Times" size="+1">attribute.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Double-click the attribute to display the Inspector, as shown in Figure 21.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F3.gif" width=270 height=397></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 21</b></font><font face="Times" size="+1">. Inspecting a Date</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">When you inspect a date, the Data Type area in the Attribute Inspector changes to include options for setting a date format and specifying time zones.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Setting a Date Format</b></font>
+
+<p><font face="Times" size="+1">The Date Format field allows you to change the format of a date by editing the format characters. Each format character represents a particular component of a date:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>%d</b> -- day</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>%b</b> -- month</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>%Y</b> -- year</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>%H</b> -- hour</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>%M</b> -- minute</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">See the NSCalendarDate class specification in the <i>Foundation Kit Reference</i> for a complete listing of all available format characters.</font>
+
+<p><font face="Times" size="+1">For example, to cause dates in your application to use the format Day-Month-Year and omit the hour and minutes, edit the Date Format field to contain the text <b>%d-%b-%Y</b>. The text below the Date Format field displays the current date using the specified format. So if you make the described edits to the date May 22, 1994, the text below the Date Format field changes to read <b>22-May-1994</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">A date format is also used for parsing edited dates. Be sure to design your application so that users know the correct format for date entry.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Setting Time Zones</b></font>
+
+<p><font face="Times" size="+1">Set a Client Time Zone or a Server Time Zone by clicking the corresponding Set button. EOModeler displays the Time Zone panel.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F4.gif" width=282 height=229></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 22</b></font><font face="Times" size="+1">. Setting the Time Zone</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">Setting different client and server time zones is useful, for example, if the server is in a different time zone, and you want your application to use local time.</font>
+
+<p><font face="Times" size="+1">You set a time zone by dragging the selector (the highlighted vertical band superimposed on the map) across the world map to the region for which you want to set a time zone. Alternatively, you can click on the region of the map for which you want to set a time zone. The pop-up list at the top of the panel lists the settings available for the current selection.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Forming a Relationship</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">You can use the Model Editor to form a relationship between entities. This relationship must reflect an actual relationship between the entities' corresponding tables in the database.</font>
+
+<p><font face="Times" size="+1">Forming a relationship allows you to access data in a destination table that relates to data in a source table (it's also possible to have a reflexive relationship, in which the source and destination tables are the same). For example, to find the name of the department for which each employee works, you can form a relationship between the</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">and</font> <font face="Helvetica" size="+1">Department</font> <font face="Times" size="+1">entities.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">When you fetch an enterprise object that maps to an entity, EOFault objects are created for the properties that represent relationships. An EOFault &quot;stands in&quot; for an enterprise object (or an array of enterprise objects) that hasn't yet been fetched from the database. When an object that has relationships is fetched, EOFaults are created for the values of those relationships (unless the corresponding objects have already been fetched and uniqued). The real objects are only fetched when you explicitly access them. For more information, see Chapter 2, &quot;From Database to Objects.&quot;</font>
+
+<p><font face="Times" size="+1">To form a relationship:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Select a source entity in the Model Editor, such as</font> <font face="Helvetica" size="+1">Employee</font><font face="Times" size="+1">.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Add Relationship from the EOModeler Property menu.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">The text &quot;toRelationship&quot; appears in the second column with a single arrow. A single arrow denotes a to-one relationship. This is the default notation; you need to change it if the two entities have a to-many relationship (for example, a facility has many departments). When you define a relationship between two entities, make sure it reflects the actual relationship as defined in the database.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">A to-one relationship must always have exactly one row in the destination entity. For relationships that can have zero or more than one row in the destination entity, use a to-many relationship. You specify the cardinality of a relationship (that is, whether it is to-many or to-one) in the Relationship Inspector.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Double-click &quot;toRelationship&quot; to display the Relationship Inspector, as shown in Figure 23.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F11.gif" width=663 height=438></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 23</b></font><font face="Times" size="+1">. Forming a Relationship</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=125></td>
+
+<td><font face="Times" size="+1">You use the Relationship Inspector to specify information about the relationship, such as whether it's to-one or to-many, its semantics (that is, the type of join represented by the relationship), and the operator used in the join statement.</font>
+
+<p><font face="Times" size="+1">When you use the Relationship Inspector, remember that the settings you define must reflect the corresponding implementation in the database, as well as the features supported by your adaptor. EOModeler doesn't know, for example, if a relationship is to-one or to-many, or if your adaptor supports left outer joins. You need to know your database and your adaptor, and specify relationships accordingly. In addition, to-one relationships must use the primary key (or a candidate primary key) of the destination entity as the join component.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">In the Inspector, select the source attribute (</font><font face="Helvetica" size="+1">DeptID</font><font face="Times" size="+1">) in the upper right column.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">Typically, you form a relationship by connecting a primary key in one entity and a corresponding foreign key in another entity. In a to-one relationship, the source entity usually holds the foreign key, while the destination entity holds the primary key. For example,</font> <font face="Helvetica" size="+1">DeptId</font> <font face="Times" size="+1">is a foreign key for</font> <font face="Helvetica" size="+1">Employee</font><font face="Times" size="+1">, while it's a primary key for</font> <font face="Helvetica" size="+1">Department</font><font face="Times" size="+1">.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Select the destination entity (</font><font face="Helvetica" size="+1">Department</font><font face="Times" size="+1">) in the lower left column to display its associated attributes (in the lower right column).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Select the destination attribute (</font><font face="Helvetica" size="+1">DeptId</font><font face="Times" size="+1">) in the lower right column, and click Connect.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">The name of the relationship changes to be &quot;toDepartment&quot;. By default, EOModeler names relationships after the destination entity, prefixed by &quot;to&quot;. You can edit this name if desired.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">In the Model Editor, select the relationship to display the properties associated with the destination entity (</font><font face="Helvetica" size="+1">DepartmentName</font><font face="Times" size="+1">,</font> <font face="Helvetica" size="+1">DeptID</font><font face="Times" size="+1">, and</font> <font face="Helvetica" size="+1">LocationID</font><font face="Times" size="+1">), as shown in Figure 24. EOModeler italicizes properties that are accessed through a relationship.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F9.gif" width=688 height=536></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 24</b></font><font face="Times" size="+1">. Making the Connection</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Adding Derived and Flattened Attributes</b></font>
+
+<p><font face="Times" size="+1">The Enterprise Objects Framework supports three different kinds of attributes: <i>simple, derived</i>, and <i>flattened</i>. A simple attribute corresponds to a single column in the root table of the entity, and may be read or updated directly from or to the database.</font>
+
+<p><font face="Times" size="+1">A derived attribute doesn't map directly to a single column in the root table of the entity. For example, a derived attribute can be based on another attribute that's modified in some way, such as an attribute</font> <font face="Helvetica" size="+1">Bonus</font> <font face="Times" size="+1">that's the result of a calculation performed on a</font> <font face="Helvetica" size="+1">Salary</font> <font face="Times" size="+1">attribute. A derived attribute can also be an aggregate consisting of more than one attribute; for example, you can create a derived attribute</font> <font face="Helvetica" size="+1">FullName</font> <font face="Times" size="+1">that is an aggregate of</font> <font face="Helvetica" size="+1">LastName</font> <font face="Times" size="+1">and</font> <font face="Helvetica" size="+1">FirstName</font><font face="Times" size="+1">.</font>
+
+<p><font face="Times" size="+1">Derived attributes, since they don't correspond to real values in the database, are read-only; it makes no sense to write a derived value.</font>
+
+<p><font face="Times" size="+1">A flattened attribute is a special kind of derived attribute that you effectively add from one entity to another by traversing a relationship. For example, when you form a relationship between two tables such as</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">and</font> <font face="Helvetica" size="+1">Department</font> <font face="Times" size="+1">(as described in the previous section), you can add attributes from</font> <font face="Helvetica" size="+1">Department</font> <font face="Times" size="+1">to</font> <font face="Helvetica" size="+1">Employee</font><font face="Times" size="+1">, such as the attribute</font> <font face="Helvetica" size="+1">DepartmentName</font><font face="Times" size="+1">. This is called &quot;flattening&quot; an attribute. Flattening an attribute is equivalent to creating a joined column; it allows you to create objects that extend across tables.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">To flatten an attribute, the relationship you traverse must be a to-one relationship.</font>
+
+<p><font face="Times" size="+1">To flatten an attribute:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">In the Model Editor, select the relationship that gives you access to the attribute you want to add to your entity.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">For example, to add the name of an employee's department to</font> <font face="Helvetica" size="+1">Employee</font><font face="Times" size="+1">, you can traverse the</font> <font face="Helvetica" size="+1">toDepartment</font> <font face="Times" size="+1">relationship and add the department name (</font><font face="Helvetica" size="+1">DepartmentName</font><font face="Times" size="+1">) to</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">as a flattened attribute.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Select the attribute you want to add (</font><font face="Helvetica" size="+1">DepartmentName</font><font face="Times" size="+1">), and choose Flatten Property from the Property menu.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F1.gif" width=599 height=269></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 25</b></font><font face="Times" size="+1">. Adding a Flattened Attribute</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=125></td>
+
+<td><font face="Times" size="+1">The derived attribute (in this example,</font> <font face="Helvetica" size="+1">toDepartment_DepartmentName</font><font face="Times" size="+1">) appears in the list of properties for</font> <font face="Helvetica" size="+1">Employee</font><font face="Times" size="+1">. The format of the name reflects the traversal path: the attribute</font> <font face="Helvetica" size="+1">DepartmentName</font> <font face="Times" size="+1">is added to</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">by traversing the </font><font face="Helvetica" size="+1">toDepartment</font> <font face="Times" size="+1">relationship.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Double-click the derived attribute (</font><font face="Helvetica" size="+1">toDepartment_DepartmentName</font><font face="Times" size="+1">) to examine its characteristics in the Inspector.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F13.gif" width=665 height=461></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 26</b></font><font face="Times" size="+1">. Examining a Flattened Attribute in the Attribute Inspector</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=125></td>
+
+<td><font face="Times" size="+1">In the Attribute Inspector, the pop-up list to the left of the Definition field identifies the attribute as &quot;Derived&quot;.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Edit the Name text field to simplify the attribute name (for example, to &quot;Department&quot;).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">The Definition field (the second text field from the top of the Attribute Inspector) must accurately reflect the attribute's external name and the table in which it resides. For example, if you edit its text to be &quot;Department&quot; and change its mode to &quot;Column,&quot; it no longer maps to an existing attribute. In other words, only edit this field if you are sure you can predict the outcome.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">To display the result of creating this flattened attribute, drag a selection of the</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entity's attributes into the Model Browser, as shown in Figure 27. Notice that the Browser includes a column for the flattened attribute</font> <font face="Helvetica" size="+1">Department</font><font face="Times" size="+1">.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F6.gif" width=699 height=585></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 27</b></font><font face="Times" size="+1">. Using the Browser to Check Your Model</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">Displaying data associated with your model in the Browser is a good way to check that the model is synchronized with the database. If your model is out of sync with the database (for example, if you try to implement a relationship for which there is no corresponding relationship in the database), attempting to display data in the Browser will fail.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Adding a New Attribute</b></font>
+
+<p><font face="Times" size="+1">You can use the concept of derived attributes to add to an entity a new attribute that doesn't correspond to any database column. This attribute can contain a computed value, for example, or an aggregate of multiple attributes.</font>
+
+<p><font face="Times" size="+1">To add a new attribute to your entity:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">In the Model Editor, select the entity (such as</font> <font face="Helvetica" size="+1">Employee</font><font face="Times" size="+1">) to which you want to add an attribute.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Add Attribute from the Property menu.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">A new attribute with the default name &quot;Attribute&quot; appears in the entity's list of attributes.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">In the Attribute Inspector, edit the Name field to supply a new name for the attribute.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">For example, you can create an attribute called</font> <font face="Helvetica" size="+1">Bonus</font> <font face="Times" size="+1">that uses each employee's salary to calculate a bonus.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Use the pop-up list to the left of the Definition field to change the attribute type from Column to Derived.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Edit the Definition field to supply the SQL needed to specify the derived attribute.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">To give all employees a 10% bonus, supply the text <b>Salary * .10</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Use the Data Type field to specify a data type for the new attribute, such as <b>float</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Figure 28 shows the Attribute Inspector with the new attribute</font> <font face="Helvetica" size="+1">Bonus</font> <font face="Times" size="+1">specified.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F5.gif" width=270 height=397></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 28</b></font><font face="Times" size="+1">. Adding an Attribute</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">The text you supply in the Definition field must be valid SQL for your database. For example, you can add an attribute with the format &quot;LastName, FirstName&quot;. The syntax for Sybase and Oracle is:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Sybase</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Oracle</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">LastName+', `+FirstName</font></td>
+
+<td><font face="Times" size="+1">LAST_NAME||', '||FIRST_NAME</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">While you can use either the internal or external names for simple attributes in this field, for derived and flattened attributes you have to use the internal names (flattened and derived attributes have no external names). For consistency's sake, you may want to use only internal names in this field.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Adding Flattened Relationships</b></font>
+
+<p><font face="Times" size="+1">In addition to flattening attributes, you can also flatten relationships. Flattening a relationship gives a source entity access to relationships that a destination entity has with other entities. It's equivalent to performing a multi-table join. Note that flattening either an attribute or a relationship can result in degraded performance when the destination objects are accessed, since traversing multiple tables makes fetches slower.</font>
+
+<p><font face="Times" size="+1">To flatten a relationship:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Add a relationship from one entity <i>(entity_1</i>) to a second entity (<i>entity_2</i>).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">For example, you can add a to-many relationship from</font> <font face="Helvetica" size="+1">Facility</font> <font face="Times" size="+1">to</font> <font face="Helvetica" size="+1">Department</font><font face="Times" size="+1">.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Add a relationship from <i>entity_2</i> to a third entity (<i>entity_3</i>).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">For example, you can add a to-many relationship from</font> <font face="Helvetica" size="+1">Department</font> <font face="Times" size="+1">to</font> <font face="Helvetica" size="+1">Employee</font><font face="Times" size="+1">.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">From <i>entity_1</i>, select the relationship to <i>entity_2</i> to display its properties.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">In this example, from</font> <font face="Helvetica" size="+1">Facility</font> <font face="Times" size="+1">select</font> <font face="Helvetica" size="+1">toDepartment</font> <font face="Times" size="+1">to display the properties of</font> <font face="Helvetica" size="+1">Department</font><font face="Times" size="+1">.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">In the list of properties for <i>entity_2</i>, select the relationship (</font><font face="Helvetica" size="+1">toEmployee</font><font face="Times" size="+1">) you want to flatten and choose Flatten Property from the Property menu.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">The flattened relationship (in this example,</font> <font face="Helvetica" size="+1">toDepartment_toEmployee</font><font face="Times" size="+1">) appears in the list of properties for</font> <font face="Helvetica" size="+1">Facility</font><font face="Times" size="+1">. The format of the name reflects the traversal path: The relationship</font> <font face="Helvetica" size="+1">toEmployee</font> <font face="Times" size="+1">is added to</font> <font face="Helvetica" size="+1">Facility</font> <font face="Times" size="+1">by traversing the </font><font face="Helvetica" size="+1">toDepartment</font> <font face="Times" size="+1">relationship.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">To-many relationships are denoted by a double arrow, as shown in Figure 29.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F12.gif" width=599 height=269></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 29</b></font><font face="Times" size="+1">. Flattening a Relationship</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Working With Entities</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Once you've refined your model, you're ready to specify enterprise object classes for the entities in the model. There are two stages to specifying an enterprise object class in EOModeler:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Using the Entity Inspector to set the characteristics of an entity and define the mapping between the entity and your enterprise object class.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Optionally, generating template source files for the enterprise object class you specified in the Inspector.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+2"><b>Inspecting an Entity</b></font>
+
+<p><font face="Times" size="+1">You use the Entity Inspector to set an entity's characteristics and specify a mapping between the entity and an enterprise object class.</font>
+
+<p><font face="Times" size="+1">To inspect an entity, double-click it to display the Entity Inspector.</font>
+
+<p><font face="Times" size="+1">Figure 30 shows the Entity Inspector for the</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entity.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F16.gif" width=270 height=397></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 30</b></font><font face="Times" size="+1">. The Entity Inspector</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Entity Names</b></font>
+
+<p><font face="Times" size="+1">The Name field lists the name your application uses for the entity. The External Name field contains the name of the root table in the database. You can change the internal name (that is, the name as it appears in the application), but you shouldn't change the external name unless you are sure you can predict the result.</font>
+
+<p><font face="Times" size="+1">The External Query field allows you to specify any SQL statement that will be executed as is (that is, you can't perform any substitutions). This can be a stored procedure. The columns selected by this SQL statement must be in alphabetical order by internal name, and must match in number and type with the class properties specified for the entity. For more information on external queries, see the EOEntity specification in the <i>Enterprise Objects Framework Reference</i>.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Options</b></font>
+
+<p><font face="Times" size="+1">The Options area contains the Read Only checkbox, which indicates whether the data that's represented by the entity can be altered by your application.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Class</b></font>
+
+<p><font face="Times" size="+1">The Class field initially contains the text &quot;EOGenericRecord&quot;. This is because the default enterprise object class is an EOGenericRecord.</font>
+
+<p><font face="Times" size="+1">An EOGenericRecord:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Knows the entity on which it is based.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Carries its properties as a dictionary.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Implements the EOKeyValueCoding protocol.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">To specify a custom class, type the name of the class in this field. For more information on EOKeyValueCoding and creating custom classes, see &quot;Specifying an Enterprise Object Class.&quot;</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Properties</b></font>
+
+<p><font face="Times" size="+1">The Properties area lets you specify the properties you want to include in your enterprise object class and set characteristics for them.</font>
+
+<p><font face="Times" size="+1">There are three columns in this area. Each column displays the status of a particular setting: Primary Key, Used For Locking, and Class Property. Icons are used to indicate that a setting is enabled for a particular property; the dash icon indicates that a setting is not applicable to a property. You add and delete icons by clicking the appropriate column next to the property.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The Primary Key column is used to declare whether a property is, or is part of, the primary key for the enterprise object class. To create a compound primary key, you simply add a Primary Key icon to the column for each property you want to include in the primary key.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">Adding a primary key to your enterprise object class is mandatory; the primary key is the means by which an enterprise object is uniquely identified within your application and mapped to the appropriate database row.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The Used For Locking column indicates whether an attribute should be used for locking when an update is performed. This setting applies when you use optimistic locking. If you set Used For Locking for an attribute whose data is a BLOB type, it can have an adverse effect on system performance. By default, the Entity Inspector sets all of an entity's attributes to be used for locking.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The Class Property column is used to indicate properties that meet both of these criteria: You want to include them in your class definition, and they can be fetched from the database. By default, the Entity Inspector sets all of an entity's properties as belonging to your class; you can remove a property by clicking its Class Property icon. If you define an attribute that doesn't exist in the database but is used by your application (such as a status flag), you should remove its Class Property icon; note that generated template source files won't include instance variable declarations for these attributes--you'll have to type those in by hand. If you don't remove the Class Property icon for an attribute that has no corresponding database value, it will result in a server error when your application attempts to fetch the property from the database.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">The only properties an enterprise object must include to be viable are those properties (or property) that define a primary key. Only properties you include in the class will be sent to the enterprise object through key-value coding. Relationships you include as class properties will have EOFaults created for them when you perform a selection on objects that map to the entity.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+2"><b>Specifying an Enterprise Object Class</b></font>
+
+<p><font face="Times" size="+1">Specifying an enterprise object class for an entity applies the mapping defined in your model to your custom class, thereby enabling objects of the class to remain synchronized with corresponding database rows.</font>
+
+<p><font face="Times" size="+1">For a more detailed discussion of creating enterprise object classes, see Chapter 4, &quot;Designing Enterprise Objects.&quot;</font>
+
+<p><font face="Times" size="+1">To specify the enterprise object class for an entity:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Determine the properties from the entity that you want to include in your enterprise object class; every property you want to include should have a corresponding Class Property icon set for it.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Add a Primary Key icon for the property or properties that constitute the entity's primary key.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">Remember that the primary key or keys you set for your enterprise object class must mirror the primary key or keys defined for the corresponding table in the database.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">What you do after this point depends on how you plan to implement your enterprise object class. Note that in all cases, an enterprise object class must conform to the informal protocol EOKeyValueCoding, which specifies methods for accessing values associated with keys (&quot;keys&quot; in this context relates to key-value pairs, not to primary keys). But this can be accomplished very differently, depending on the approach you use.</font>
+
+<p><font face="Times" size="+1">You can do any one of the following, depending on the needs of your application:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Use EOGenericRecord.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">If you don't edit the Class field to specify a name for a custom class, the Framework uses EOGenericRecord as an enterprise object class by default. A generic record uses a dictionary to store key-value pairs that correspond to an entity's properties and the data associated with each property. Generic records implement the key-value coding methods <b>takeValuesFromDictionary:</b> and <b>valuesForKeys:</b>. Use EOGenericRecord when you don't need to define special behavior for your class.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">To use EOGenericRecord, simply leave the text &quot;EOGenericRecord&quot; in the Class field in the Entity Inspector.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Create a custom class that includes its own implementation of key-value coding (that is, that provides its own <b>takeValuesFromDictionary:</b> and <b>valuesForKeys:</b> methods). If you plan to create a custom class, you must type its name in the Class field.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Create a custom class that uses the default implementation of key-value coding. If you plan to create a custom class, you must type its name in the Class field.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">If your class doesn't implement <b>takeValuesFromDictionary:</b> and <b>valuesForKeys:</b>, the default NSObject or Object implementation is used, as described in Chapter 4, &quot;Designing Enterprise Objects.&quot;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">If you generate template source files for your class, the resulting header and implementation files include definitions of instance variables and accessor methods that can be used by key-value coding. See &quot;Generating Template Source Code Files.&quot;</font>
+
+<p><font face="Times" size="+1">For more information on key-value coding, see the EOKeyValueCoding protocol specification in the <i>Enterprise Objects Framework Reference</i>.</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">Figure 31 shows the Model Editor and the Entity Inspector after the primary key and properties have been set.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F14.gif" width=661 height=437></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 31</b></font><font face="Times" size="+1">. Specifying a Class for an Entity</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">In Figure 31, note that:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The names of the entity's attributes have been edited to be lowercase. The names that you provide for entities and attributes in your model is a matter of personal preference; the model names need not match the external database names for the mapping to be valid.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">In the Inspector, the property</font> <font face="Helvetica" size="+1">empId</font> <font face="Times" size="+1">has been designated as the enterprise object class's primary key.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">For the flattened attribute</font> <font face="Helvetica" size="+1">department</font><font face="Times" size="+1">, the Inspector automatically displays the Not applicable icons in the Primary Key and Used For Locking columns.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Generating Template Source Code Files</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Once you finish specifying an enterprise object class, you can generate template source code files for it. However, at this stage of the development process, you may want to first create your project and design your application's user interface in Interface Builder. Once you've created a project using Project Builder and included a model file in it, you can generate your template source files and include them directly into the project. For more information on using Project Builder and Interface Builder, see Chapter 6, &quot;Creating an Enterprise Objects Framework Project.&quot;</font>
+
+<p><font face="Times" size="+1">Generating template files produces:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">A header (<b>.h</b>) file that declares instance variables for all of the class properties you specified in the Inspector, and accessor methods for those instance variables.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">In the header file, instance variables that correspond to attributes are declared with the type that was specified for them in the Attribute Inspector. This can be an NSString, an NSCalendarDate, a scalar type such as an <b>int</b> or <b>float</b>, or a custom data type. Instance variables that represent relationships are declared to be of type <b>id</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">An implementation (<b>.m</b>) file that provides basic implementations for the accessor methods.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">To generate template source code files for your enterprise object class:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">In the Model Editor, select the entity for which you have specified a class in the Entity Inspector.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">EOModeler only permits you to create template source files for entities for which you have specified a custom enterprise object class. In other words, you can't generate template files for EOGenericRecord.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Create Template from the Property menu.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">EOModeler displays a Choose Directory panel. If you opened the model file from Project Builder, the Choose Directory panel displays the project as the default destination.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Choose a destination, supply a name for the files if you wish, and click OK.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">If you don't supply a name, the template files are named after the enterprise object class for which they are being generated and are given the appropriate extensions.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">If you opened the model file from a project, an additional panel appears, confirming that you want to insert the files in your project.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The files are generated in the specified location.</font>
+
+<p><font face="Times" size="+1">For example, suppose you define an enterprise object class Employee that includes the properties <b>empID</b>, <b>firstName</b>, <b>hireDate</b>, <b>lastName</b>, <b>department</b>, and <b>toDepartment</b>. The header file generated for this class is as follows:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">// Employee.h</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">//</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">// Created on Mon Aug 08 18:10:19 PDT 1994 by NeXT EOModeler.app</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">#import &lt;eoaccess/eoaccess.h&gt;</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">@interface Employee : NSObject</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">{</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">NSString *department;</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">int empId;</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">NSString *firstName;</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">NSCalendarDate *hireDate;</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">NSString *lastName;</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">id toDepartment;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">#ifdef ACCESSOR_METHODS</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">- (void)setDepartment:(NSString *)value;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">- (NSString *)department;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">- (void)setEmpId:(int)value;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">- (int)empId;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">- (void)setFirstName:(NSString *)value;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">- (NSString *)firstName;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">- (void)setHireDate:(NSCalendarDate *)value;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">- (NSCalendarDate *)hireDate;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">- (void)setLastName:(NSString *)value;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">- (NSString *)lastName;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">- (void)setToDepartment:value;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">- toDepartment;</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">#endif</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">@end</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Note that:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Instance variables are declared to be of the type specified in the model. For example, <b>empID</b> is declared as an <b>int</b>, <b>hireDate </b>is declared as an NSCalendarDate, and the flattened attribute <b>department</b> is declared as an NSString. Instance variables that represent relationships (such as <b>toDepartment</b>) are always declared to be of type <b>id</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Accessor methods are conditionally included in both the header (<b>.h</b>) and implementation (<b>.m</b>) files using an <b>#ifdef</b> statement.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Remember that if there is a possibility that the database column corresponding to a scalar type instance variable can have a NULL value, the instance variable and accessor methods should be declared with type <b>id</b> to accommodate either an EONull or an NSNumber.</font>
+
+<p><font face="Times" size="+1">The implementation (<b>.m</b>) file includes an implementation for each of the accessor methods. For example, the methods for setting and returning the value of the instance variable <b>firstName</b> are:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">- (void)setFirstName:(NSString *)value</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">{</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">[firstName autorelease];</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">firstName = [value retain];</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">- (NSString *)firstName { return firstName; }</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Note that the <b>setFirstName:</b> method uses the allocation and deallocation scheme defined in the Foundation Kit. For more information, see the <i>Foundation Kit Reference</i>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Setting Adaptor Information</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">In addition to describing modeling objects, a model includes a connection dictionary, which contains the information needed to connect to a database server. The keys of the connection dictionary identify the information the server expects, and the values associated with those keys are the values that the adaptor tries when logging into the database.</font>
+
+<p><font face="Times" size="+1">The dictionary keys required by the Oracle, Oracle7, and Sybase adaptors are:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Oracle Adaptors</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Sybase Adaptor</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">hostMachine</font></td>
+
+<td><font face="Times" size="+1">hostName</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">serverID</font></td>
+
+<td><font face="Times" size="+1">databaseName</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">userName</font></td>
+
+<td><font face="Times" size="+1">userName</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">password</font></td>
+
+<td><font face="Times" size="+1">password</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">When you initialize an adaptor from a model, any connection information stored with the model is copied into the adaptor object.</font>
+
+<p><font face="Times" size="+1">The connection dictionary contains the last values you entered in the login panel and saved as a part of your model (so long as you haven't manually edited the connection dictionary in your model file). You can change the connection dictionary's values from EOModeler; this is called setting adaptor information.</font>
+
+<p><font face="Times" size="+1">To set adaptor information:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Set Adaptor Info from the Model menu.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">EOModeler displays a login panel that contains values taken from the model's connection dictionary.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">In the login panel, make the edits you want reflected in your connection dictionary, and click OK.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">For example, if you specified a user name and password to log into a database and create your model, you can remove that information from the connection dictionary by clearing those fields in the login panel. Then, in your application, you can prompt the user for a user name and password by sending a <b>runLoginPanelAndValidateConnectionDictionary</b> message to your adaptor object.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">If you logged into a database as shown in the login panel in Figure 16, the connection dictionary in your model file would be as follows:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">connectionDictionary = {databaseName = People;</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">hostName = &#34;&#34;;</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">password = &#34;&#34;;</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">userName = sa; };</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">If you edit the login panel as shown in Figure 32, the connection dictionary changes to be:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">connectionDictionary = {databaseName = People;</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">hostName = myServer;</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">password = &#34;&#34;;</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">userName = &#34;&#34;; };</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F8.gif" width=394 height=264></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 32</b></font><font face="Times" size="+1">. Setting Adaptor Information</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Checking for Consistency</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">EOModeler provides consistency checking to confirm that your model is valid. A valid model is one in which there are no entities without primary keys, and no relationships without join components. Further, consistency checking is invoked when you attempt to make a change in one part of the model that would invalidate another part of the model (for example, if you try to delete an element that's referenced elsewhere).</font>
+
+<p><font face="Times" size="+1">You can explicitly check your model at any point by choosing Check Consistency from the Model menu. If no inconsistencies are found in your model, the Consistency Check panel is not displayed. Consistency checking is also invoked automatically whenever you perform certain operations. These operations and the associated checks that EOModeler performs are described in the following table:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>When you attempt to...</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>EOModeler checks for...</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">Save the model</font></td>
+
+<td><font face="Times" size="+1">Entities without primary keys</font><br>
+<font face="Times" size="+1">Relationships without join components</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">Delete an entity</font></td>
+
+<td><font face="Times" size="+1">References other entities may have to any aspect of this entity (for example, to its attributes)</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">Delete an attribute</font></td>
+
+<td><font face="Times" size="+1">References to this attribute anywhere else in the model</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">Delete a relationship</font></td>
+
+<td><font face="Times" size="+1">References to this relationship anywhere else in the model</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">Change relationship</font></td>
+
+<td><font face="Times" size="+1">References to this relationship anywhere else in the model</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">cardinality from to-one</font></td>
+
+<td><font face="Times" size="+1">(for example, in flattened attributes or flattened</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">to to-many</font></td>
+
+<td><font face="Times" size="+1">relationships)</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">When a consistency check occurs and inconsistencies are found, the Consistency Check panel appears with a list of diagnostic messages, as shown in Figure 33.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F7.gif" width=472 height=309></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 33</b></font><font face="Times" size="+1">. Checking for Consistency</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">By default, consistency checking is performed whenever you save a model file. You can change this behavior with the Preferences panel.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Deleting Elements from the Model</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">You can delete entities and attributes from your model, as well as any relationships or flattened properties you've added. Even after you delete entities and attributes, you can examine them and restore them to your model; this is accomplished by using the Table Panel (described in the following section). However, if you add a relationship or flattened property to the model and then delete it, it can't be recovered using the Table Panel.</font>
+
+<p><font face="Times" size="+1">To delete elements from the model:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Select the element or elements you want to delete.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Delete from the Edit menu.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Using the Table Panel</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">When you open the Table Panel in EOModeler, it reads the data dictionary from the database and displays all of the available entities and attributes (doing this doesn't overwrite your existing model). This display includes entities and attributes that you may have previously deleted from your model, as well as ones that have been added to the database since your model was originally created. You can use the Table Panel to add to your model any entities or attributes it doesn't currently contain.</font>
+
+<p><font face="Times" size="+1">To see all of the entities and attributes currently available from the database:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Table Panel from the Tools menu.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">EOModeler displays the Table Panel, which lists all of the entities and their attributes, as provided by the data dictionary.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F10.gif" width=335 height=237></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 34</b></font><font face="Times" size="+1">. The Table Panel</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Select any entities you want to add to your model, and click Transfer.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">The entity and all of its attributes are added to your model. To add attributes to your model (such as attributes that were previously deleted), select the corresponding entity in the Table Panel and click Transfer. The attributes are added to your model and merged with the attributes your model already contains.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">Clicking Fetch re-fetches the entities from the database.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">When you use Transfer in the Table Panel, it uses the internal (public) names of entities and attributes for identification, not the external names by which they are known in the database. So, for example, if you had an attribute called</font> <font face="Helvetica" size="+1">EmpID</font><font face="Times" size="+1">, changed its public name to be</font> <font face="Helvetica" size="+1">employeeID</font><font face="Times" size="+1">, and then performed a Transfer on its entity, Table Panel would transfer</font> <font face="Helvetica" size="+1">EmpID</font> <font face="Times" size="+1">to the Model Editor. Then both</font> <font face="Helvetica" size="+1">employeeID</font> <font face="Times" size="+1">and</font> <font face="Helvetica" size="+1">EmpID</font> <font face="Times" size="+1">would appear in the Model Editor.</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

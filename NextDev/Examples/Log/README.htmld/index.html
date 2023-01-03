@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/Examples/Log/README.rtf -->
+<!-- Date: Sun Jan  1 17:01:20 2023 -->
+<head>
+<title>README</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Helvetica" size="+1">This directory has an example loadable kernel server and a user-level program that communicates with it.</font>
+
+<p><font face="Helvetica" size="+1">The loadable kernel server accepts only one MiG-generated remote procedure call, <b>mydriver_do_log()</b>, which causes the server to log a message using <b>kern_serv_log()</b>.</font>
+
+<p><font face="Helvetica" size="+1">Before the user program calls <b>mydriver_do_log()</b>, it enables logging by calling <b>kern_loader_log_level()</b>.&nbsp; After calling <b>mydriver_do_log()</b>, the user program calls <b>kern_loader_get_log()</b> and then listens on a port for the reply message.&nbsp; When the reply message arrives, the user program sends the message to a handling function (using <b>kern_loader_reply_handler()</b>).&nbsp; The handling function prints the data from the message and exits.</font>
+
+<p><font face="Helvetica" size="+1">Chapter 3, &#34;Using Loadable Kernel Servers,&#34; of <i>NeXT Operating System Software</i> gives more information on implementing user-level programs that communicate with loadable kernel servers. <i>Writing Loadable Kernel Servers</i> gives information on implementing your own loadable kernel server.</font>
+
+<p><font face="Helvetica" size="+1">To build the loadable kernel server and user program, follow these steps:</font>
+
+<p><font face="Helvetica" size="+1">1)&nbsp; Make a copy of this directory and change to the new directory in a Terminal window.&nbsp; For example:</font><br>
+<img src="../../../Images/sp.gif" width=67 height=1><font face="Courier" size="+1">localhost&gt; <b>cp -r /NextLibrary/Documentation/NextDev/Examples/Log ~</b></font><br>
+<img src="../../../Images/sp.gif" width=67 height=1><font face="Courier" size="+1">localhost&gt; <b>cd ~/Log</b></font>
+
+<p><font face="Helvetica" size="+1">2)&nbsp; Run <b>make</b> in the <b>KernelServer</b> directory.&nbsp; (It's important that you make the server before the user program, since the user program depends on files created during this step.)</font><br>
+<img src="../../../Images/sp.gif" width=67 height=1><font face="Courier" size="+1">localhost&gt; <b>cd KernelServer</b></font><br>
+<img src="../../../Images/sp.gif" width=67 height=1><font face="Courier" size="+1">localhost&gt; <b>make</b></font>
+
+<p><font face="Helvetica" size="+1">3)&nbsp; Run <b>make</b> in the <b>User</b> directory.</font><br>
+<img src="../../../Images/sp.gif" width=67 height=1><font face="Courier" size="+1">localhost&gt; <b>cd ../User</b></font><br>
+<img src="../../../Images/sp.gif" width=67 height=1><font face="Courier" size="+1">localhost&gt; <b>make</b></font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1">To use the user program:</font>
+
+<p><font face="Helvetica" size="+1">1)&nbsp; Allocate the loadable kernel server.&nbsp; It loads automatically once it's allocated.</font><br>
+<img src="../../../Images/sp.gif" width=67 height=1><font face="Courier" size="+1">localhost&gt; <b>su</b></font><br>
+<img src="../../../Images/sp.gif" width=67 height=1><font face="Courier" size="+1">Password:</font><br>
+<img src="../../../Images/sp.gif" width=67 height=1><font face="Courier" size="+1">localhost# <b>kl_util -a ../KernelServer/mydriver_reloc</b></font><br>
+<img src="../../../Images/sp.gif" width=67 height=1><font face="Courier" size="+1">Adding server with relocatable /me/Log/User/../KernelServer/</font><br>
+<img src="../../../Images/sp.gif" width=134 height=1><font face="Courier" size="+1">mydriver_reloc</font><br>
+<img src="../../../Images/sp.gif" width=67 height=1><font face="Courier" size="+1">Allocating server mydriver</font><br>
+<img src="../../../Images/sp.gif" width=67 height=1><font face="Courier" size="+1">Server mydriver linking /me/Log/User/../KernelServer/mydriver_reloc</font><br>
+<img src="../../../Images/sp.gif" width=134 height=1><font face="Courier" size="+1">against /mach</font><br>
+<img src="../../../Images/sp.gif" width=67 height=1><font face="Courier" size="+1">Server mydriver linking relocatable &#34;/me/Log/User/../KernelServer/</font><br>
+<img src="../../../Images/sp.gif" width=134 height=1><font face="Courier" size="+1">mydriver_reloc&#34;</font><br>
+<img src="../../../Images/sp.gif" width=67 height=1><font face="Courier" size="+1">Server mydriver Allocated</font><br>
+<img src="../../../Images/sp.gif" width=67 height=1><font face="Courier" size="+1">Server mydriver loading</font><br>
+<img src="../../../Images/sp.gif" width=67 height=1><font face="Courier" size="+1">regs.pc = 40294f0</font><br>
+<img src="../../../Images/sp.gif" width=67 height=1><font face="Courier" size="+1">Server mydriver download complete</font><br>
+<img src="../../../Images/sp.gif" width=67 height=1><font face="Courier" size="+1">Server mydriver starting up</font><br>
+<img src="../../../Images/sp.gif" width=67 height=1><font face="Courier" size="+1">Server mydriver Loaded</font><br>
+<img src="../../../Images/sp.gif" width=67 height=1><font face="Courier" size="+1">localhost#</font>
+
+<p><font face="Helvetica" size="+1">2)&nbsp; Run the user program.</font><br>
+<img src="../../../Images/sp.gif" width=67 height=1><font face="Courier" size="+1">localhost# <b>./log</b></font><br>
+<img src="../../../Images/sp.gif" width=67 height=1><font face="Courier" size="+1">Waiting for the log level to change before calling</font><br>
+<img src="../../../Images/sp.gif" width=134 height=1><font face="Courier" size="+1">mydriver_do_log()...</font><br>
+<img src="../../../Images/sp.gif" width=67 height=1><font face="Courier" size="+1">Calling mydriver_do_log().</font><br>
+<img src="../../../Images/sp.gif" width=67 height=1><font face="Courier" size="+1">Calling kern_loader_get_log().</font><br>
+<img src="../../../Images/sp.gif" width=67 height=1><font face="Courier" size="+1">Received a message on the reply port.</font><br>
+<img src="../../../Images/sp.gif" width=67 height=1><font face="Courier" size="+1">Calling kern_loader_reply_handler().</font><br>
+<img src="../../../Images/sp.gif" width=67 height=1><font face="Courier" size="+1">log_data:&nbsp; 172800757:&nbsp;&nbsp; This is the log message (at level</font><br>
+<img src="../../../Images/sp.gif" width=134 height=1><font face="Courier" size="+1">LOG_WARNING).</font>
+
+<p><font face="Helvetica" size="+1">3)&nbsp; If you wish to modify the loadable kernel server and then reload it, you should delete the running version of the <b>kern_loader</b> before allocating the kernel server again.</font><br>
+<img src="../../../Images/sp.gif" width=67 height=1><font face="Courier" size="+1">localhost# <b>kl_util -d mydriver</b></font><br>
+<img src="../../../Images/sp.gif" width=67 height=1><font face="Courier" size="+1">removing server mydriver</font><br>
+<img src="../../../Images/sp.gif" width=67 height=1><font face="Courier" size="+1">Server mydriver deallocating</font><br>
+<img src="../../../Images/sp.gif" width=67 height=1><font face="Courier" size="+1">Server mydriver unloading</font><br>
+<img src="../../../Images/sp.gif" width=67 height=1><font face="Courier" size="+1">Server mydriver re-Allocated</font><br>
+<img src="../../../Images/sp.gif" width=67 height=1><font face="Courier" size="+1">Server mydriver Deallocated</font>
+
+
+
+<p>
+
+</body>
+</html>

@@ -1,0 +1,632 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/Examples/DriverKit/TestDriver/README.rtf -->
+<!-- Date: Sun Jan  1 17:01:20 2023 -->
+<head>
+<title>README</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times" size="+4"><i>Driver Kit Example:</i></font><br>
+<font face="Times" size="+4"><i>Building, Loading, and Debugging</i></font>
+
+<p><br><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=99></td>
+
+<td><font face="Times" size="+1">This example shows you how to compile a simple Driver Kit driver, load it, and debug it with GDB.&nbsp; (GDB is a source-level debugger that's described in Chapter 9 of <i>NEXTSTEP Operating System Software</i> and in <i>NEXTSTEP Development Tools and Techniques</i>.)</font>
+
+<p><font face="Times" size="+1">You need superuser access to two Intel-based computers to use GDB on your driver.&nbsp; The driver will run on one (the <i>slave</i> computer), and GDB will run on the other (the <i>master</i> computer).</font>
+
+<p><font face="Times" size="+1">For information about the Driver Kit, use the Driver Kit target of <b>/NextLibrary/Bookshelves/NextDeveloper.bshlf</b>.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Building the example driver</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=99></td>
+
+<td><font face="Times" size="+1">To build the driver, follow these steps:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=99></td>
+
+<td nowrap><font face="Times" size="+1">1)</font></td>
+
+<td><font face="Times" size="+1">Copy the <b>myTestDriver</b> directory to the place you'd like to work in, such as your home directory.</font></td></tr>
+
+<tr valign=top>
+
+<td width=99 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=99></td>
+
+<td nowrap><font face="Times" size="+1">2)</font></td>
+
+<td><font face="Times" size="+1">Open your copy of <b>myTestDriver/PB.project</b>.&nbsp; This opens the driver project in ProjectBuilder.&nbsp; You can browse the Files view to see how the driver files are organized.</font></td></tr>
+
+<tr valign=top>
+
+<td width=99 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=99></td>
+
+<td nowrap><font face="Times" size="+1">3)</font></td>
+
+<td><font face="Times" size="+1">Change to the Builder view by clicking the rightmost button in the top of the ProjectBuilder window.</font></td></tr>
+
+<tr valign=top>
+
+<td width=99 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=99></td>
+
+<td nowrap><font face="Times" size="+1">4)</font></td>
+
+<td><font face="Times" size="+1">Make sure the Target pop-up list is set to <b>bundle</b>, and click the Build button.&nbsp; ProjectBuilder builds the driver and the user-level <b>tester</b> tool, and puts them into a configuration bundle at <b>myTestDriver/myTestDriver.config</b>.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=99></td>
+
+<td><font face="Times" size="+1">You must perform one more step to build a debuggable version of the driver:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=99></td>
+
+<td nowrap><font face="Times" size="+1">5)</font></td>
+
+<td><font face="Times" size="+1">In a Terminal window, change to the directory <b>myTestDriver/myTestDriver_reloc.tproj</b>, make a <b>debug</b> version of the driver, and copy the relocatable file into <b>myTestDriver/myTestDriver.config</b>.</font><br>
+<font face="Courier">slave&gt; <b>make debug</b></font><br>
+<font face="Courier">slave&gt; <b>rm ../myTestDriver.config/myTestDriver_reloc</b></font><br>
+<font face="Courier">slave&gt; <b>cp myTestDriver_reloc ../myTestDriver.config</b></font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Loading the example driver</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=99></td>
+
+<td><font face="Times" size="+1">To load the driver:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=99></td>
+
+<td nowrap><font face="Times" size="+1">1)</font></td>
+
+<td><font face="Times" size="+1">Copy the driver bundle into the <b>/usr/Devices</b> directory of the slave computer.</font><br>
+<font face="Courier">slave&gt; <b>su</b></font><br>
+<font face="Courier">slave# <b>&#34;rm&#34; -r /usr/Devices/myTestDriver.config</b></font><br>
+<font face="Courier">slave# <b>cp -r ../myTestDriver.config /usr/Devices</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=99 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=99></td>
+
+<td nowrap><font face="Times" size="+1">2)</font></td>
+
+<td><font face="Times" size="+1">Load the driver and initialize it using <b>driverLoader</b> and, optionally, <b>kl_util</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=99 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=99></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">To load and initialize the driver the simple way:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">slave# <b>driverLoader d=myTestDriver</b></font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">Answer queries with 'y' for 'yes', anything else is 'no'.</font><br>
+<img src="../../../../Images/sp.gif" width=126 height=1><font face="Courier">Load driver myTestDriver? <b>y</b></font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">Using Default table for myTestDriver</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">Configure driver myTestDriver unit 0? <b>y</b></font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">slave#</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">To load and initialize the driver so that you can set breakpoints in initialization code (setting breakpoints is described later):</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">slave# <b>kl_util -a /usr/Devices/myTestDriver.config/myTestDriver_reloc</b></font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">Adding server with relocatable  /usr/Devices/myTestDriver.config/myTestDriver_reloc</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">/usr/Devices/myTestDriver.config/myTestDriver_reloc is thin mach-o</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">Allocating server myTestDriver</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">Server myTestDriver linking  /usr/Devices/myTestDriver.config/myTestDriver_reloc against /mach</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">Server myTestDriver linking relocatable  &#34;/usr/Devices/myTestDriver.config/myTestDriver_reloc&#34; into loadable  &#34;/usr/Devices/myTestDriver.config/myTestDriver_loadable&#34;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">Server myTestDriver Allocated</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">slave# <b>kl_util -l myTestDriver</b></font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">Server myTestDriver loading</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">state.eip = 15cd80</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">Server myTestDriver download complete</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">Server myTestDriver starting up</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">Server myTestDriver Loaded</font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier"><i>...Attach the debugger and establish breakpoints, as described later...</i></font>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">slave# <b>driverLoader d=myTestDriver</b></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=99></td>
+
+<td><font face="Helvetica" size="+1"><b>Important:</b></font>&nbsp; <font face="Times" size="+1">Driver Kit drivers can't be unloaded and then reloaded.&nbsp; To reload a Driver Kit driver, you must restart the computer.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=99></td>
+
+<td nowrap><font face="Times" size="+1">4)</font></td>
+
+<td><font face="Times" size="+1">The driver's output appears in the system message log.</font><br>
+<font face="Courier">slave&gt; <b>tail -2 /usr/adm/messages</b></font><br>
+<font face="Courier">Aug 18 18:02:50 slave mach: myTestDriver: interrupt 2 channel 1</font><br>
+<font face="Courier">Aug 18 18:02:50 slave mach: Registering: myTestDriver0</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=99></td>
+
+<td><font face="Times" size="+1">If your driver didn't load, make sure you followed all the above steps properly. <b>/usr/adm/messages</b> may contain hints at the reason the driver failed to load.&nbsp; Specifying the verbose option to <b>driverLoader</b> (<b>driverLoader d=myTestDriver v</b>) may produce some useful output, as well.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Debugging the example driver with GDB</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=99></td>
+
+<td><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">In 3.2, to use GDB to debug a kernel, the slave machine needs to have an Ethernet card that's controlled by a NeXT driver.&nbsp; Non-NeXT drivers don't currently contain support for GDB.</font>
+
+<p><font face="Times" size="+1">To debug the example driver with GDB, follow these steps:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=99></td>
+
+<td nowrap><font face="Times" size="+1">1)</font></td>
+
+<td><font face="Times" size="+1">Copy the loadable object file from <b>/usr/Devices</b> into a place accessible to the master.&nbsp; You need to do this again every time the driver is loaded.</font><br>
+<font face="Courier">slave&gt; <b>cp /usr/Devices/myTestDriver.config/myTestDriver_loadable ~</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=99 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=99></td>
+
+<td nowrap><font face="Times" size="+1">2)</font></td>
+
+<td><font face="Times" size="+1">If the master computer is running the same kernel as the slave, change to the root directory. Otherwise, copy the slave's kernel to a place where the master can read it, and change to that directory.</font><br>
+<font face="Courier">master&gt; <b>cd /</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=99 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=99></td>
+
+<td nowrap><font face="Times" size="+1">3)</font></td>
+
+<td><font face="Times" size="+1">Update the network entry for the slave by running the <b>ping</b> command.&nbsp; Press Control-C after a few seconds.&nbsp; If&nbsp; the output of <b>ping</b> shows 100% packet loss, contact your system administrator.</font><br>
+<font face="Courier">master&gt; <b>/etc/ping slave</b></font><br>
+<font face="Courier">PING slave: 56 data bytes</font><br>
+<font face="Courier">64 bytes from 129.18.2.98: icmp_seq=0. time=34. ms</font><br>
+<font face="Courier">64 bytes from 129.18.2.98: icmp_seq=1. time=3. ms</font><br>
+<font face="Courier"><b>&lt;Control-C&gt;</b></font><br>
+<font face="Courier">----slave PING Statistics----</font><br>
+<font face="Courier">2 packets transmitted, 2 packets received, 0% packet loss</font><br>
+<font face="Courier">round-trip (ms)&nbsp; min/avg/max = 3/18/34</font></td></tr>
+
+<tr valign=top>
+
+<td width=99 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=99></td>
+
+<td nowrap><font face="Times" size="+1">4)</font></td>
+
+<td><font face="Times" size="+1">Start GDB, specifying the kernel's file.</font><br>
+<font face="Courier">master&gt; <b>gdb mach</b></font><br>
+<font face="Courier">GDB is free software and you are welcome to distribute copies of it</font><br>
+<img src="../../../../Images/sp.gif" width=7 height=1><font face="Courier">under certain conditions; type &#34;show copying&#34; to see the conditions.</font><br>
+<font face="Courier">There is absolutely no warranty for GDB; type &#34;show warranty&#34; for details.</font><br>
+<font face="Courier">GDB 4.7 (NeXT 3.1), Copyright 1992 Free Software Foundation, Inc...</font><br>
+<font face="Courier">Reading symbols from /mach...(no debugging symbols found)...done.</font></td></tr>
+
+<tr valign=top>
+
+<td width=99 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=99></td>
+
+<td nowrap><font face="Times" size="+1">5)</font></td>
+
+<td><font face="Times" size="+1">On the slave computer, open the Kernel Debugger window by holding down both Alternate keys and pressing the NumLock key.</font></td></tr>
+
+<tr valign=top>
+
+<td width=99 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=99></td>
+
+<td nowrap><font face="Times" size="+1">6)</font></td>
+
+<td><font face="Times" size="+1">On the master computer, enter the <b>kattach</b> command.</font><br>
+<font face="Courier">(gdb) <b>kattach slave</b></font><br>
+<font face="Courier">Attaching program: /mach to kernel on slave.</font><br>
+<font face="Courier">0x16e6eb in thread_io_bmap ()</font><br>
+<font face="Courier">(gdb)</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=99></td>
+
+<td><font face="Helvetica" size="+1"><b>Tip:</b></font>&nbsp; <font face="Times" size="+1">If <b>kattach</b> fails, see the troubleshooting section below for help.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=99></td>
+
+<td nowrap><font face="Times" size="+1">7)</font></td>
+
+<td><font face="Times" size="+1">Bring the symbol information from the loadable file into GDB.</font><br>
+<font face="Courier">(gdb) <b>add-file /Net/users/jsmith/myTestDriver_loadable</b></font><br>
+<font face="Courier">Reading symbols from /Net/users/jsmith/myTestDriver_loadable...done.</font><br>
+<font face="Courier">(gdb)</font></td></tr>
+
+<tr valign=top>
+
+<td width=99 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=99></td>
+
+<td nowrap><font face="Times" size="+1">8)</font></td>
+
+<td><font face="Times" size="+1">Tell GDB where the driver's source files are.</font><br>
+<font face="Courier">(gdb) <b>dir /Net/users/jsmith/myTestDriver</b></font><br>
+<font face="Courier">Source directories searched: /Net/users/jsmith/myTestDriver://:$cdir:$cwd</font><br>
+<font face="Courier">(gdb)</font></td></tr>
+
+<tr valign=top>
+
+<td width=99 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=99></td>
+
+<td nowrap><font face="Times" size="+1">9)</font></td>
+
+<td><font face="Times" size="+1">Set breakpoints and then continue the slave kernel's execution.</font><br>
+<font face="Courier">(gdb) <b>b panic</b></font><br>
+<font face="Courier">Breakpoint 1 at 0x10d63c</font><br>
+<font face="Courier">(gdb) <b>b getCharValues:forParameter:count:</b></font><br>
+<font face="Courier">The following classes implement getCharValues:forParameter:count::</font><br>
+<font face="Courier">1) -EventDriver&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 4) -IODevice&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 7) -IOVPCodeDisplay</font><br>
+<font face="Courier">2) -EventSrcPCKeyboard&nbsp;&nbsp;&nbsp; 5) -IODisplay&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 8) -myTestDriver</font><br>
+<font face="Courier">3) -EventSrcPCPointer&nbsp;&nbsp;&nbsp;&nbsp; 6) -IOFrameBufferDisplay</font><br>
+<font face="Courier">Which one do you want? <b>8</b></font><br>
+<font face="Courier">Reading in symbols for myTestDriver.m...done.</font><br>
+<font face="Courier">Breakpoint 2 at 0x1f90996: myTestDriver.m:85.</font><br>
+<font face="Courier">(gdb) <b>c</b></font><br>
+<font face="Courier">Continuing.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=99></td>
+
+<td><font face="Times" size="+1">On the slave machine, you can run the user-level program to exercise the driver (<b>/usr/Devices/myTestDriver.config/tester</b>).</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=99></td>
+
+<td nowrap><font face="Times" size="+1">10)</font></td>
+
+<td><font face="Times" size="+1">To stop the slave's kernel (and get a &#34;(gdb)&#34; prompt) without hitting a breakpoint, generate a nonmaskable interrupt on the slave computer by pressing both Alternate keys and the NumLock key.</font><br>
+<font face="Courier">Program received signal 5, Trace/BPT trap</font><br>
+<font face="Courier">0x156e7a in idle_thread ()</font><br>
+<font face="Courier">(gdb)</font></td></tr>
+
+<tr valign=top>
+
+<td width=99 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=99></td>
+
+<td nowrap><font face="Times" size="+1">11)</font></td>
+
+<td><font face="Times" size="+1">To detach from the slave machine, first get a &#34;(gdb)&#34; prompt.&nbsp; Then enter the <b>kill</b> command and quit GDB.</font><br>
+<font face="Courier">(gdb) <b>kill</b></font><br>
+<font face="Courier">Kill the inferior process? (y or n) <b>y</b></font><br>
+<font face="Courier">(gdb) <b>quit</b></font><br>
+<font face="Courier">master&gt;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=99></td>
+
+<td><font face="Helvetica" size="+1"><b>Note:</b></font> <font face="Times" size="+1">The <b>kill</b> command does <i>not</i> kill the slave's kernel; in the future, another GDB command will likely be used for detaching from the slave kernel.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Troubleshooting</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=99></td>
+
+<td><font face="Times" size="+1">This section describes problems you might encounter when following the instructions in this document.&nbsp; Some of these problems might already be corrected in this release.</font>
+
+<p><font face="Times" size="+1"><b>GDB won't attach to the slave computer.</b></font>
+
+<p><font face="Times" size="+1">This is usually caused by one of these three reasons:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=99></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The slave computer doesn't have the Kernel Debugger window open.&nbsp;&nbsp; To open the Kernel Debugger window, hold down both Alternate keys and press the NumLock key.</font></td></tr>
+
+<tr valign=top>
+
+<td width=99 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=99></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Another copy of GDB is attached to the slave.&nbsp; Use <b>ps -aux | grep gdb</b> to find this other copy; you should terminate it with the <b>kill</b> command.</font></td></tr>
+
+<tr valign=top>
+
+<td width=99 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=99></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The network entry for the slave has expired.&nbsp; To update the network entry, exit GDB as described below, and use the <b>ping</b> command as described in step 3 of the debugging section. You can retain the network entry until the master reboots by using the <b>arp</b> command, as follows:</font><br>
+<img src="../../../../Images/sp.gif" width=27 height=1><font face="Courier">master# <b>arp slave</b></font><br>
+<img src="../../../../Images/sp.gif" width=27 height=1><font face="Courier">slave (129.18.2.98) at 0:aa:0:18:5c:3d</font><br>
+<img src="../../../../Images/sp.gif" width=27 height=1><font face="Courier">master# <b>arp -s slave 0:aa:0:18:5c:3d</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=99 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=99></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">You can make sure the <b>arp -s</b> command worked by running <b>arp <i>host</i></b> again and checking for &#34;permanent&#34; in the output:</font><br>
+<img src="../../../../Images/sp.gif" width=27 height=1><font face="Courier">master# <b>arp slave</b></font><br>
+<img src="../../../../Images/sp.gif" width=27 height=1><font face="Courier">slave (129.18.2.98) at 0:aa:0:18:5c:3d permanent</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=99></td>
+
+<td><font face="Times" size="+1"><b>GDB is attached to the slave computer, but you can't get a &#34;(gdb)&#34; prompt.</b></font>
+
+<p><font face="Times" size="+1">If the slave computer is unresponsive to Alternate-Alternate-NumLock, restart it by turning its power off and then on again.&nbsp; (Checking the disks will take a few minutes.)&nbsp; To quit GDB, type Control-Z, enter <b>bg</b> to see which background process GDB is, and then enter <b>kill %<i>n</i></b>, where <b><i>n</i></b> is the number shown by <b>bg</b>:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier"><b>Control-Z</b></font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">Stopped</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">master&gt; <b>bg</b></font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">[1]&nbsp;&nbsp;&nbsp; gdb mach &amp;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">master&gt; <b>kill %1</b></font>
+
+
+
+<p>
+
+</body>
+</html>

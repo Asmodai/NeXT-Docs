@@ -1,0 +1,1123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/Summaries/05_DisplayPS/ClientLibSummary.rtf -->
+<!-- Date: Sun Jan  1 17:01:53 2023 -->
+<head>
+<title>ClientLibSummary</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Client Library Functions</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+3"><b>Controlling a PostScript Execution Context</b></font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Create a context</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">DPSContext</font></td>
+
+<td><font face="Times" size="+1"><b>DPSCreateContext(</b>const char *<i>hostName</i>, const char *<i>serverName</i>, DPSTextProc <i>textProc</i>, DPSErrorProc <i>errorProc</i><b>)</b><sup>&#166</sup></font></td></tr>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">DPSContext</font></td>
+
+<td><font face="Times" size="+1"><b>DPSCreateContextWithTimeoutFromZone(</b>const char *<i>hostName</i>, const char *<i>serverName</i>, DPSTextProc <i>textProc</i>, DPSErrorProc <i>errorProc</i>, int <i>timeout</i>, NXZone *<i>zone</i><b>)</b><sup>&#166</sup></font></td></tr>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">DPSContext</font></td>
+
+<td><font face="Times" size="+1"><b>DPSCreateNonsecureContext(</b>const char *<i>hostName</i>, const char *<i>serverName</i>, DPSTextProc <i>textProc</i>, DPSErrorProc <i>errorProc</i>, int <i>timeout</i>, NXZone *<i>zone</i><b>)</b><sup>&#166</sup></font></td></tr>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">DPSContext</font></td>
+
+<td><font face="Times" size="+1"><b>DPSCreateStreamContext(</b>NXStream *<i>stream</i>, int <i>debugging</i>, DPSProgramEncoding <i>progEnc</i>, DPSNameEncoding <i>nameEnc</i>, DPSErrorProc <i>errorProc</i><b>)</b><sup>&#166</sup></font></td></tr>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">void</font></td>
+
+<td><font face="Times" size="+1"><b>DPSDestroyContext(</b>DPSContext <i>context</i><b>)</b></font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+1"><b>Create a child context</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1"><b>DPSChainContext(</b>DPSContext <i>parent</i>, DPSContext <i>child</i><b>)</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">void</font></td>
+
+<td><font face="Times" size="+1"><b>DPSUnchainContext(</b>DPSContext <i>context</i><b>)</b></font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+1"><b>Access the current context</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">void</font></td>
+
+<td><font face="Times" size="+1"><b>DPSSetContext(</b>DPSContext <i>context</i><b>)</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">DPSContext</font></td>
+
+<td><font face="Times" size="+1"><b>DPSGetCurrentContext(</b>void<b>)</b></font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+1"><b>Control a context</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1"><b>DPSSynchronizeContext(</b>DPSContext <i>context</i>, int <i>enableFlag</i><b>)</b><sup>&#166</sup></font></td></tr>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">void</font></td>
+
+<td><font face="Times" size="+1"><b>DPSWaitContext(</b>DPSContext <i>context</i><b>)</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">void</font></td>
+
+<td><font face="Times" size="+1"><b>DPSAsynchronousWaitContext(</b>DPSContext <i>context</i>, DPSPingProc <i>handler</i>, void *<i>userData</i><b>)</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=87></td>
+
+<td><font face="Helvetica"><b>Warning:</b></font>&nbsp; <font face="Times" size="+1">The following two context-controlling functions aren't implemented in NeXTSTEP</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">void</font></td>
+
+<td><font face="Times" size="+1"><b>DPSInterruptContext()</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">void</font></td>
+
+<td><font face="Times" size="+1"><b>DPSResetContext()</b></font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+1"><b>Extract space from a context</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">DPSSpace</font></td>
+
+<td><font face="Times" size="+1"><b>DPSSpaceFromContext(</b>DPSContext <i>context</i><b>)</b></font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+1"><b>Destroy a space and all contexts in it</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">void</font></td>
+
+<td><font face="Times" size="+1"><b>DPSDestroySpace(</b>DPSSpace <i>spac<b>e</b></i><b>)</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+3"><b>Sending Data to the Window Server</b></font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Send PostScript code to the Window Server</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">void</font></td>
+
+<td><font face="Times" size="+1"><b>DPSWritePostScript(</b>DPSContext <i>context</i>, const void *<i>buf</i>,&nbsp; int <i>count</i><b>)</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">void</font></td>
+
+<td><font face="Times" size="+1"><b>DPSWriteData(</b>DPSContext <i>context</i>, const void *<i>buf</i>, unsigned int <i>count</i><b>)</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">void</font></td>
+
+<td><font face="Times" size="+1"><b>DPSPrintf(</b>DPSContext <i>context</i>, const char *<i>format</i>, ...<b>)</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">void</font></td>
+
+<td><font face="Times" size="+1"><b>DPSFlushContext(</b>DPSContext <i>context</i><b>)</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">void</font></td>
+
+<td><font face="Times" size="+1"><b>DPSFlush(</b>void<b>)</b><sup>&#166</sup></font></td></tr>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">void</font></td>
+
+<td><font face="Times" size="+1"><b>DPSSendEOF(</b>DPSContext <i>context</i><b>)</b><sup>&#166</sup></font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+1"><b>Send an encoded PostScript path to the Window Server</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">void</font></td>
+
+<td><font face="Times" size="+1"><b>DPSDoUserPath(</b>void *<i>coords</i>, int <i>numCoords</i>, DPSNumberFormat <i>numType</i>, unsigned char *<i>ops</i>, int <i>numOps</i>, void *<i>bbox</i>, int <i>action</i><b>)</b><sup>&#166</sup></font></td></tr>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">void</font></td>
+
+<td><font face="Times" size="+1"><b>DPSDoUserPathWithMatrix(</b>void *<i>coords</i>, int <i>numCoords</i>, DPSNumberFormat <i>numType</i>, unsigned char *<i>ops</i>, int <i>numOps</i>, void *<i>bbox</i>, int <i>action</i>, float <i>matrix[6]</i><b>)</b><sup>&#166</sup></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+3"><b>User Objects and User Names</b></font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Create a user object</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1"><b>DPSDefineUserObject(</b>int <i>index</i><b>)</b><sup>&#166</sup></font></td></tr>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">void</font></td>
+
+<td><font face="Times" size="+1"><b>DPSUndefineUserObject(</b>int <i>index</i><b>)</b><sup>&#166</sup></font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+1"><b>Access the system and user name tables</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">void</font></td>
+
+<td><font face="Times" size="+1"><b>DPSMapNames(</b>DPSContext <i>context</i>, unsigned int <i>numNames</i>, const char *const *<i>nameArray</i>, long int *const *<i>numPtrArray</i><b>)</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">const char *</font></td>
+
+<td><font face="Times" size="+1"><b>DPSNameFromIndex(</b>int <i>index</i><b>)</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">const char *</font></td>
+
+<td><font face="Times" size="+1"><b>DPSNameFromTypeAndIndex(</b>short <i>type</i>, int <i>index</i><b>)</b><sup>&#166</sup></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+3"><b>Event-Handling</b></font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Access events from the Window Server</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1"><b>DPSGetEvent(</b>DPSContext <i>context</i>, NXEvent *<i>anEvent</i>, int <i>mask</i>, double <i>timeout</i>, int <i>threshold</i><b>)</b><sup>&#166</sup></font></td></tr>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1"><b>DPSPeekEvent(</b>DPSContext <i>context</i>, NXEvent *<i>anEvent</i>, int <i>mask</i>, double <i>timeout</i>, int <i>threshold</i><b>)</b><sup>&#166</sup></font></td></tr>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">void</font></td>
+
+<td><font face="Times" size="+1"><b>DPSDiscardEvents(</b>DPSContext <i>context</i>, int <i>mask</i><b>)</b><sup>&#166</sup></font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+1"><b>Coalesce events</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1"><b>DPSSetTracking(</b>int <i>flag</i><b>)</b><sup>&#166</sup></font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+1"><b>Set the event-filter function</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td><font face="Times" size="+1">DPSEventFilterFunc <b>DPSSetEventFunc(</b>DPSContext <i>context</i>, DPSEventFilterFunc <i>func</i><b>)</b><sup>&#166</sup></font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+1"><b>Create an event</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1"><b>DPSPostEvent(</b>NXEvent *<i>anEvent</i>, int <i>atStart</i><b>)</b><sup>&#166</sup></font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+1"><b>Create a timed entry</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">DPSTimedEntry</font></td>
+
+<td><font face="Times" size="+1"><b>DPSAddTimedEntry(</b>double <i>period</i>, DPSTimedEntryProc <i>handler</i>, void *<i>userData</i>, int <i>priority</i><b>)</b><sup>&#166</sup></font></td></tr>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">void</font></td>
+
+<td><font face="Times" size="+1"><b>DPSRemoveTimedEntry(</b>DPSTimedEntry <i>teNumber</i><b>)</b><sup>&#166</sup></font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+1"><b>Initiate a count down for the wait cursor</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">void</font></td>
+
+<td><font face="Times" size="+1"><b>DPSStartWaitCursorTimer(</b>void<b>)</b><sup>&#166</sup></font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+1"><b>Allow dead key processing</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">void</font></td>
+
+<td><font face="Times" size="+1"><b>DPSSetDeadKeysEnabled(</b>DPSContext <i>context</i>, int <i>flag</i><b>)</b><sup>&#166</sup></font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+1"><b>Generate an event mask for an event type</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1"><b>NX_EVENTCODEMASK(</b>int <i>type</i><b>)</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+3"><b>File and Port Monitoring</b></font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Monitor a file descriptor</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">void</font></td>
+
+<td><font face="Times" size="+1"><b>DPSAddFD(</b>int <i>fd</i>, DPSFDProc <i>handler</i>, void *<i>userData</i>, int <i>priority</i><b>)</b><sup>&#166</sup></font></td></tr>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">void</font></td>
+
+<td><font face="Times" size="+1"><b>DPSRemoveFD(</b>int <i>fd</i><b>)</b><sup>&#166</sup></font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+1"><b>Monitor a Mach port</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">void</font></td>
+
+<td><font face="Times" size="+1"><b>DPSAddPort(</b>port_t <i>newPort</i>, DPSPortProc <i>handler</i>, int <i>maxSize</i>, void *<i>userData</i>, int <i>priority</i><b>)</b><sup>&#166</sup></font></td></tr>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">void</font></td>
+
+<td><font face="Times" size="+1"><b>DPSRemovePort(</b>port_t <i>port</i><b>)</b><sup>&#166</sup></font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+1"><b>Set the notify port call-back function</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">void</font></td>
+
+<td><font face="Times" size="+1"><b>DPSAddNotifyPortProc(</b>DPSPortProc <i>handler</i>, void *<i>userData</i><b>)</b><sup>&#166</sup></font></td></tr>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">void</font></td>
+
+<td><font face="Times" size="+1"><b>DPSRemoveNotifyPortProc(</b>DPSPortProc <i>handler</i><b>)</b><sup>&#166</sup></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+3"><b>Text-Handling</b></font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Set the text call-back functions</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">DPSTextProc</font></td>
+
+<td><font face="Times" size="+1"><b>DPSSetTextProc(</b>DPSContext <i>context</i>, DPSTextProc <i>tp</i><b>)</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">DPSTextProc</font></td>
+
+<td><font face="Times" size="+1"><b>DPSSetTextBackstop(</b>DPSTextProc <i>textProc</i><b>)</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">DPSTextProc</font></td>
+
+<td><font face="Times" size="+1"><b>DPSGetCurrentTextBackstop(</b><i>void</i><b>)</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+3"><b>Debugging and Error-Handling</b></font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Trace data and events</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1"><b>DPSTraceContext(</b>DPSContext <i>context</i>, int <i>flag</i><b>)</b><sup>&#166</sup></font></td></tr>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">void</font></td>
+
+<td><font face="Times" size="+1"><b>DPSTraceEvents(</b>DPSContext <i>context</i>, int <i>flag</i><b>)</b><sup>&#166</sup></font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+1"><b>Handle errors</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">DPSErrorProc</font></td>
+
+<td><font face="Times" size="+1"><b>DPSSetErrorProc(</b>DPSContext <i>context</i>, DPSErrorProc <i>ep</i><b>)</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">void</font></td>
+
+<td><font face="Times" size="+1"><b>DPSDefaultErrorProc(</b>DPSContext <i>context</i>, DPSErrorCode <i>errorCode</i>, long unsigned int <i>arg<sub>1</sub></i>, long unsigned int <i>arg<sub>2</sub></i><b>)</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">void</font></td>
+
+<td><font face="Times" size="+1"><b>DPSSetErrorBackstop(</b>DPSErrorProc <i>errorProc</i><b>)</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">DPSErrorProc</font></td>
+
+<td><font face="Times" size="+1"><b>DPSGetCurrentErrorBackstop(</b><i>void</i><b>)</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">void</font></td>
+
+<td><font face="Times" size="+1"><b>DPSPrintError(</b>FILE *<i>fp</i>, const DPSBinObjSeqRec <i>error</i><b>)</b><sup>&#166</sup></font></td></tr>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">void</font></td>
+
+<td><font face="Times" size="+1"><b>DPSPrintErrorToStream(</b>NXStream *<i>stream</i>, const DPSBinObjSeqRec <i>error</i><b>)</b><sup>&#166</sup></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+3"><b>Functions Used by pswrap</b></font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Wait for return values from the Window Server</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">void</font></td>
+
+<td><font face="Times" size="+1"><b>DPSAwaitReturnValues(</b>DPSContext <i>context</i><b>)</b></font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+1"><b>Write strings in binary object sequence</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">void</font></td>
+
+<td><font face="Times" size="+1"><b>DPSWriteStringChars(</b>DPSContext <i>context</i>, const char *<i>buf</i>, unsigned int <i>count</i><b>)</b></font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+1"><b>Write PostScript code in a specified format</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">void</font></td>
+
+<td><font face="Times" size="+1"><b>DPSWriteTypedObjectArray(</b>DPSContext <i>context</i>, DPSDefinedType <i>type</i>, const void *<i>array</i>, unsigned int <i>length</i><b>)</b></font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+1"><b>Begin a new binary object sequence</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">void</font></td>
+
+<td><font face="Times" size="+1"><b>DPSBinObjSeqWrite(</b>DPSContext <i>context</i>, const void *<i>buf</i>, unsigned int <i>count</i><b>)</b></font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+1"><b>Define information expected from the PostScript interpreter</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">void</font></td>
+
+<td><font face="Times" size="+1"><b>DPSSetResultTable(</b>DPSContext <i>context</i>, DPSResults <i>table</i>, unsigned int <i>length</i><b>)</b></font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+1"><b>Update a context's name map from the client library's name map</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=86></td>
+
+<td nowrap><font face="Times" size="+1">void</font></td>
+
+<td><font face="Times" size="+1"><b>DPSUpdateNameMap(</b>DPSContext <i>context</i><b>)</b></font></td></tr>
+
+</table>
+
+
+
+</body>
+</html>

@@ -1,0 +1,431 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/OperatingSystem/Part3_DriverKit/Reference/Protocols/IONetworkDeviceMethods.rtf -->
+<!-- Date: Sun Jan  1 17:01:14 2023 -->
+<head>
+<title>IONetworkDeviceMethods</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>IONetworkDeviceMethods</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Adopted By:</b></font></td>
+
+<td><font face="Times" size="+1">IOEthernet</font><br>
+<font face="Times" size="+1">IOTokenRing</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">driverkit/IONetwork.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Protocol Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This protocol must be implemented by network direct device drivers that use IONetwork to tie into the kernel network system. These methods are invoked by IONetwork objects in response to events in the network system.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">Network drivers must run at kernel level.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Creating netbufs</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">allocateNetbuf</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Initializing the hardware</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">finishInitialization</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Sending out a packet</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">outputPacket:address:</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Performing control commands</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">performCommand:data:</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>allocateNetbuf</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(netbuf_t)<b>allocateNetbuf</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This method creates and returns a netbuf to be used for an impending output.</font>
+
+<p><font face="Times" size="+1">This method doesn't always have to return a buffer. For example, you might want to limit the number of buffers your driver instance can allocate (say, 200 kilobytes worth) so that it won't use too much wired-down kernel memory. When this method fails to return a buffer, it should return NULL.</font>
+
+<p><font face="Times" size="+1">Here's an example of implementing <b>allocateNetbuf</b>.</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">#define my_HDR_SIZE&nbsp;&nbsp;&nbsp; 14</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">#define my_MTU&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1500</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">#define my_MAX_PACKET&nbsp; (my_HDR_SIZE + my_MTU)</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">- netbuf_t allocateNetbuf</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">{</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">if (_numbufs == _maxNumbufs)</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">return(NULL);</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">else {</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">_numbufs++;</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">return(nb_alloc(my_MAX_PACKET));</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">}</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1"><b>nb_alloc()</b> (<i>NEXTSTEP Operating System Software)</i></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>finishInitialization</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(int)<b>finishInitialization</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This method should perform any initialization that hasn't already been done. For example, it should make sure its hardware is ready to run. You can specify what the integer return value (if any) should be.</font>
+
+<p><font face="Times" size="+1">If you implement this method, you need to check that [self isRunning] == YES.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>outputPacket:address:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(int)<b>outputPacket:</b>(netbuf_t)<i>packet</i> <b>address:</b>(void *)<i>address</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This method should deliver the specified packet to the given address. Its return value should be zero if no error occurred; otherwise, return an error number from the header file <b>sys/errno.h</b>.</font>
+
+<p><font face="Times" size="+1">If you implement this method, you need to check that [self isRunning] == YES. If so, insert the necessary hardware addresses into the packet and check it for minimum length requirements.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>performCommand:data:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(int)<b>performCommand:</b>(const char *)<i>command</i> <b>data:</b>(void *)<i>data</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This method performs arbitrary control operations; the character string <i>command</i> is used to select between these operations. Although you don't have to implement any operations, there are five standard operations. You can also define your own operations.</font>
+
+<p><font face="Times" size="+1">The standard commands are listed in the following table. The constant strings listed below are declared in the header file <b>net/netif.h</b> (under the <b>bsd</b> directory of <b>/NextDeveloper/Headers</b>).</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Command</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Operation</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">IFCONTROL_SETFLAGS</font></td>
+
+<td><font face="Times" size="+1">Request to have interface flags turned on or off. The <i>data</i> argument for this command is of type <b>union ifr_ifru</b> (which is declared in the header file <b>net/if.h</b>).</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">IFCONTROL_SETADDR</font></td>
+
+<td><font face="Times" size="+1">Set the address of the interface.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">IFCONTROL_GETADDR</font></td>
+
+<td><font face="Times" size="+1">Get the address of the interface.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">IFCONTROL_AUTOADDR</font></td>
+
+<td><font face="Times" size="+1">Automatically set the address of the interface.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">IFCONTROL_UNIXIOCTL</font></td>
+
+<td><font face="Times" size="+1">Perform a UNIX <b>ioctl()</b> command. This is only for compatibility; <b>ioctl()</b> isn't a recommended interface for network drivers. The argument is of type <b>if_ioctl_t *</b>, where the <b>if_ioctl_t </b>structure contains the UNIX ioctl request (for example, SIOCSIFADDR) in the <b>ioctl_command</b> field and the ioctl data in the <b>ioctl_data</b> field.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">An example of implementing <b>performCommand:data:</b> follows.</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">- (int)performCommand:(const char *)command data:(void *)data</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">{</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">int error = 0;</font>
+
+<p><img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">if (strcmp(command, IFCONTROL_SETFLAGS) == 0)</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">/* do nothing */;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">else</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">if (strcmp(command, IFCONTROL_GETADDR) == 0)</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">bcopy(&amp;my_address, data, sizeof (my_address));</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">else</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">error = EINVAL;</font>
+
+<p><img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">return (error);</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+
+
+</body>
+</html>

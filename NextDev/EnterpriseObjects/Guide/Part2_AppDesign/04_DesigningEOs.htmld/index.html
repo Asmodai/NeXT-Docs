@@ -1,0 +1,551 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/EnterpriseObjects/Guide/Part2_AppDesign/04_DesigningEOs.rtf -->
+<!-- Date: Sun Jan  1 17:05:31 2023 -->
+<head>
+<title>04_DesigningEOs</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+4" color="#FF00FF"><b>4</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<p><font face="Times" size="+4"><i>Designing Enterprise Objects</i></font>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The Enterprise Objects Framework and the applications you build with it revolve around the enterprise objects that you design. Designing these objects, then, is in many ways the essence of creating an Enterprise Objects Framework application. This chapter explains the mechanics of designing enterprise objects, describes their structure and interaction with the Framework, and explains how you can take advantage of these elements. This chapter also explores some of the more advanced offerings related to enterprise objects themselves, giving suggestions on how to exploit these features in useful ways.</font>
+
+<p><font face="Times" size="+1">If you're working with an existing database, its schema will dictate many of the decisions you make in designing your enterprise objects. If you're designing your database at the same time as your enterprise objects, however, you can let each design influence the other as they're developed and before you implement them. Be sure to keep both designs in mind as you work; decisions you make about the database design can affect your enterprise object design, and vice versa. This chapter doesn't address issues of database design itself, but the information presented here can help you to create a design that will work effectively with the Enterprise Objects Framework.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Defining the Class</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Designing enterprise objects is ultimately no different from designing any other kind of object. You apply all the standard techniques of object-oriented design, such as identifying the real-world (and database) entities represented by your objects, determining the form of your objects' data, and defining their behavior. The Framework offers you some tools and standard interfaces to aid you in this process, but the steps are the same.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Identifying Class Properties and Behavior</b></font>
+
+<p><font face="Times" size="+1">In designing any object the first step is to identify its class properties and behavior. <i>Class properties</i> are the conceptual attributes or characteristics of an object. A class property can represent an intrinsic attribute of the object's real-world analog, such as a person's age; a relationship with another object, such as that person's manager; or a characteristic defined by circumstances, such as the city that person lives in.</font>
+
+<p><font face="Times" size="+1">You typically implement class properties as instance variables: for example, age as an <b>int</b>, manager as another person object, city as an NSString containing the city's name. Since the way you get values for an object's properties is by invoking methods, however, you can implement class properties in many other ways. For example, an Order object has a total purchase amount, but because this can be determined by adding the purchase amounts for each individual item, the Order object doesn't store the total in an instance variable. Instead, it uses an <b>orderTotal</b> method, which computes the value on demand, to access this property. An object can also store properties in a container such as an NSDictionary (the EOGenericRecord class provided by the Framework does just this).</font>
+
+<p><font face="Times" size="+1">After you determine the properties of your enterprise object class, you identify which of these properties are persistent and which are not. The persistent properties are the ones you store in your database. Other properties may be computed from the values for persistent properties (such as the total of an order computed from its individual items), or be used only within your application (such as a flag indicating that the order contains a request for an out-of-stock item).</font>
+
+<p><font face="Times" size="+1">While you're defining your object's class properties, you should also be thinking about and defining its behavior; after all, one of the main reasons to use the Enterprise Objects Framework is to associate behavior with your persistent data. Behavior is implemented as methods that &quot;do something&quot; (as opposed to merely returning the value for a property). Because the Framework itself handles most of the behavior related to persistent storage, you can focus on the behavior specific to your application.</font>
+
+<p><font face="Times" size="+1">If any of your enterprise object classes need no custom behavior, you may want to forgo designing a custom class and use the EOGenericRecord class provided by the Framework. An EOGenericRecord can take on values for any properties defined in your application's model (described briefly below), but implements no custom behavior. EOGenericRecord objects can hold simple values as well as refer to other enterprise objects through relationships defined in the model.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Defining the Model</b></font>
+
+<p><font face="Times" size="+1">Once you've designed your object classes and your database schema, you build a model that establishes the mapping between these classes and the database's tables, and between the persistent properties of each class and the columns of its table. You normally do this with the EOModeler application. Chapter 5, &quot;Using EOModeler,&quot; describes this part of the design process. EOModeler also generates template source files for your enterprise objects, so you don't have to type these in by hand.</font>
+
+<p><font face="Times" size="+1">Models impose a few restrictions on your object design. A model uses EOEntity objects to associate enterprise object classes with tables in the database. In order to access the correct row in the database for an enterprise object, the Framework has to be able to unambiguously determine the entity for the object. Because of this requirement, a model can associate an enterprise object class with only one entity. Similarly, a model can't associate more than one enterprise object class with a single entity. You can work around this restriction at run time without ambiguity, however, as described in &quot;Overriding a Model at Run Time.&quot;</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">Because it must be usable for any entity, EOGenericRecord is exempt from the &quot;one entity per class&quot; restriction. The Framework maps each instance of EOGenericRecord to an entity, rather than the class itself.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Choosing the Root Class</b></font>
+
+<p><font face="Times" size="+1">If you use EOModeler to generate template files for your class, its superclass is defined as NSObject, the root class used by the Enterprise Objects Framework. You can change this to be any subclass of NSObject, but unless you have special needs your enterprise objects shouldn't have to inherit from the traditional NEXTSTEP root class, Object. If your enterprise objects must work within the structure defined by the Object class hierarchy of NEXTSTEP Release 3.2--for example, if they must be directly transferable by a Pasteboard object--you can define your enterprise object class as descended from the Object root class.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Accessing an Enterprise Object's Data</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">In implementing your enterprise object classes, you want to focus on the code that's unique to your application, not on code that deals with fitting your objects into the Framework. To this end, the Framework uses a standard interface for accessing an enterprise object's properties, with a default implementation that takes advantage of methods you're likely to write for your own use. This interface is defined by the EOKeyValueCoding informal protocol, which works in terms of NSDictionary objects whose keys are the names of the class properties. It declares these two methods for accessing data elements:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>takeValuesFromDictionary:</b> accepts a dictionary of new values and assigns them to the properties named by the keys. It returns YES if it handles every key-value pair in the dictionary, NO otherwise.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>valuesForKeys:</b> accepts an NSArray containing class property names and returns an NSDictionary containing all of the associated values that it can find.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Note that these methods don't have to handle all of the properties requested. If an object doesn't handle a property you want, you can determine that by the return value of the method and deal with it as needed.</font>
+
+<p><font face="Times" size="+1">The Framework provides default implementations of these methods that work for all enterprise objects. The implementations for EOGenericRecord are quite simple: They simply store or retrieve the properties in a dictionary object held by the EOGenericRecord. The implementations for Object and NSObject, on the other hand, dynamically handle the keys requested based on the definition of the receiver's class. These implementations are general enough that your enterprise object classes should rarely need to override either key-value coding method.</font>
+
+<p><font face="Times" size="+1">In accessing an object's class property, the default implementations of the key-value coding methods use the class definition as follows:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">1.</font></td>
+
+<td><font face="Times" size="+1">The key-value coding method looks for an accessor method based on the property name. For example, with a property named <b>lastName</b>, <b>takeValuesFromDictionary:</b> looks for a method of the form <b>setLastName:</b> (note that the first letter of the property name is made uppercase), and <b>valuesForKeys:</b> looks for a method of the form <b>lastName</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">2.</font></td>
+
+<td><font face="Times" size="+1">If the key-value coding method doesn't find an accessor method, it looks for an instance variable whose name is the same as the property's and sets or retrieves its value directly. In setting an instance variable, <b>takeValuesFromDictionary: </b>autoreleases the old value and retains the new one.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">By using the accessor methods you normally define for your objects, the default implementations of the key-value coding methods allow you to concentrate on implementing custom behavior. They also preserve the encapsulation of data enabled by object-oriented programming, allowing your objects to determine how their properties are accessed and what values for those properties are legal. For example, your Employee class can define a <b>setSalary:</b> method that checks its argument for illegal values (such as a negative salary), confines salaries to an upper bound, or updates bonus information based on the new salary. You don't have to override <b>takeValuesFromDictionary:</b> to search for the &quot;salary&quot; key and perform the same work there.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Type Conversion</b></font>
+
+<p><font face="Times" size="+1">Though the key-value coding methods accept any value of type <b>id</b>, the Enterprise Objects Framework typically uses only objects of the following classes:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">NSString</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">NSCalendarDate</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">NSNumber</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">NSData</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">EONull (representing NULL values on the server only)</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Custom value classes defined by your application</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Your enterprise objects can use NSString and NSCalendarDate objects as they are, but probably don't have much use for an NSNumber or NSData object. You usually want to treat numbers as C data types (for convenience as well as efficiency), so the default implementations of the key-value coding methods convert NSNumber values to the appropriate C scalar type for you. You also typically want to convert binary data into a meaningful form, but since you define its form, you have to convert it yourself. The Framework allows you to define a custom class whose instances are initialized with binary data; this saves your accessor methods from having to explicitly convert the data, and allows other objects to access your enterprise object's property in its intended form rather than as an NSData object. See the EOCustomValues and EODatabaseCustomValues protocol specifications in the <i>Enterprise Objects Framework Reference</i> for more information.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Conversion of Numeric Values</b></font>
+
+<p><font face="Times" size="+1">The default implementations of the key-value coding methods convert an NSNumber value to the C scalar (numeric) type required by your accessor method or instance variable. For example, suppose your enterprise object defines these accessor methods:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=125></td>
+
+<td><font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setSalary:</b>(unsigned int)<i>salary</i></font><br>
+<font size="+1"><img src="../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(unsigned int)<b>salary</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">For the <b>setSalary:</b> method, <b>takeValuesFromDictionary:</b> converts the NSNumber value for the &quot;salary&quot; key in the dictionary to an <b>unsigned int</b> and passes it as <i>salary</i>. Similarly, <b>valuesForKeys:</b> converts the return value of the <b>salary</b> method to an NSNumber and inserts that into the dictionary that it returns.</font>
+
+<p><font face="Times" size="+1">An important issue to consider in using C scalar types is that most relational databases allow the use of a NULL value distinct from any numeric value, represented in the Enterprise Objects Framework by the EONull class. Since the C scalar types can't accommodate a distinct NULL value, the default implementations of the key-value coding methods raise an exception on encountering an EONull object that needs to be converted. You should either design your database not to use NULL values for numeric columns, or design your enterprise object class to use NSNumber objects where NULL values are allowed (see &quot;Cautions in Implementing Accessor Methods&quot; below for more information on handling EONull objects).</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Cautions in Implementing Accessor Methods</b></font>
+
+<p><font face="Times" size="+1">Whether you're implementing accessor methods to be used by the key-value coding methods, or overriding the key-value coding methods themselves, there are a few issues you need to be aware of. The first involves handling NULL values from the database; the second involves accessing property values while they're being set.</font>
+
+<p><font face="Times" size="+1">NULL values in a database come into the access layer as EONull objects, and can be passed to your enterprise objects. &quot;Conversion of Numeric Values&quot; described how EONull objects can cause problems for properties with numeric types, but they can cause problems for other property types as well. If your database uses NULL values, your enterprise objects should check any <b>id</b> value received through an accessor method to see whether it's an EONull before sending a message that EONull doesn't respond to.</font>
+
+<p><font face="Times" size="+1">You can encounter another kind of problem if your object's accessor methods for one property assume that another property has already been set and exists in usable form. The default implementation of <b>takeValuesFromDictionary:</b> doesn't guarantee the order that properties are set, so your object's accessor methods can't count on the values of other properties being initialized or usable. Also, when an EODatabaseChannel creates an enterprise object, it creates fault objects for related objects, and these fault objects can be passed to your enterprise objects in a key-value coding message while the database channel is busy fetching. Your accessor methods (or overridden key-value coding methods) should be doubly careful about sending messages to objects fetched through relationships, because these messages can cause a fault object to attempt a fetch with the busy database channel, resulting in a server error. See the discussion of the <b>awakeForDatabaseChannel:</b> method in &quot;Notification of Storage Access&quot; for more information.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Optional Messages for Enterprise Objects</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">In addition to using the required key-value coding methods (which are already implemented for you), the Framework looks for a small set of optional methods and invokes them if they're present. These methods are <b>initWithPrimaryKey:entity:</b>, which provides extra information at the time an enterprise object is created; and <b>awakeForDatabaseChannel:</b> and <b>prepareForDataSource</b>, which inform an enterprise object that its data has been fetched from the database or is about to be saved. These methods are discussed in the following sections.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Initialization</b></font>
+
+<p><font face="Times" size="+1">An enterprise object is typically initialized with <b>init</b>; all of its class property values are handled through the key-value coding methods, so no special initialization is usually needed. When you work with the Framework's database level or with an EODatabaseDataSource, however, you can take advantage of extra information available at the time your enterprise object is initialized. If an enterprise object responds to the <b>initWithPrimaryKey:entity:</b> method, EODatabaseChannel and EODatabaseDataSource use this method instead of <b>init</b>, allowing the object to affect its creation based on the data provided. If the object is fetched from the database, the primary key of the fetched row is passed in; if the object is created by EODatabaseDataSource's <b>createObject</b> method, <b>nil</b> is passed in as the primary key. One possible use for <b>initWithPrimaryKey:entity:</b> is explored in &quot;Overriding a Model at Run Time.&quot;</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Notification of Storage Access</b></font>
+
+<p><font face="Times" size="+1">In addition to passing property values to enterprise objects, the Framework attempts to notify the enterprise objects of the origin of the values or of the nature of the changes made. An EODatabaseChannel informs enterprise objects when it has passed in values just read from the database. Similarly, an EOController informs its enterprise objects when their data is about to be written to storage (whether a relational database or not).</font>
+
+<p><font face="Times" size="+1">After an EODatabaseChannel passes newly-fetched data to an enterprise object, it checks whether the object responds to <b>awakeForDatabaseChannel:</b> and sends the message if the object does. <b>awakeForDatabaseChannel:</b> informs the object that the values it was last given came from the database, and allows it to check those values for any inconsistencies. Note that this message is sent <i>every time</i> data is fetched for the object, not just the first time.</font>
+
+<p><font face="Times" size="+1">Because the database channel is still busy fetching when an enterprise object receives <b>awakeForDatabaseChannel:</b>, the object must be careful about sending messages to other enterprise objects, since they may be faults. If you want to notify your enterprise objects that they've been fetched after the database channel finishes fetching, you can use one of the following techniques:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">If you're using a fetch loop with the database channel, simply send a notification message defined by your enterprise objects after you finish the loop.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">If you're using an EODatabaseDataSource, send a notification message defined by your enterprise objects after sending <b>fetchObjects</b> to the data source object.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">If you're using an EOController, create a delegate that implements the <b>controller:didFetchObjects:</b> method. This method is invoked after the controller fetches all of its objects; you can implement it to send a notification message defined by your enterprise objects.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">These techniques all allow your enterprise objects to access any of their properties, since they're not sent in the context of a <b>takeValuesFromDictionary:</b> message or of a fetch loop. Thus, your enterprise objects can use them to perform a more general &quot;awakening&quot; than that provided by the EODatabaseChannel, which can only send its notification in the context of a fetch loop.</font>
+
+<p><font face="Times" size="+1">Your enterprise objects can also be notified when their data is about to be written to the database. When an EOController saves its enterprise objects to its data source, it sends <b>prepareForDataSource</b> to each object that responds to the message (if you're using a data source directly you can take advantage of this convention by sending this message yourself). An object can use this method to check the validity of its values as edited by the user, returning YES to allow the save to proceed or NO to cause the save to fail. See the EOController class and the EOObjectValidation protocol specifications in the <i>Enterprise Objects Framework Reference</i> for more information.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Overriding a Model at Run Time</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Two methods allow you to dynamically override your model at run time, by substituting different enterprise object classes for those defined in the application's model. An enterprise object can return a substitute object from its <b>initWithPrimaryKey:entity:</b> method, allowing you to associate more than one enterprise object class with a single entity. Also, if you define a delegate for an EODatabaseChannel, it can implement the <b>databaseChannel:relationshipForRow:relationship:</b> method to change the relationships that get resolved when an object is fetched; this allows you to use a single column in the database for any one of several relationships. Both of these methods are explored in the following sections.</font>
+
+<p><font face="Times" size="+1">These are only two examples of the sorts of modifications you can make to the default behavior of the system. Note that changes of this sort complicate your application's architecture, and may conflict with restrictions of the model (for example, the technique described in &quot;Multiple Classes for an Entity&quot; blurs the class-to-entity mapping of a model). You should consider the problems these changes can cause before making them an essential part of your design.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Multiple Classes for an Entity</b></font>
+
+<p><font face="Times" size="+1">You may have a table in a database that's set up so that the value of one column determines whether certain other columns are to be used. For example, if your company uses one table for all employees, whether full- or part-time, interns, or contractors, there are probably columns for each of these four types that apply only to the relevant type. This table probably has an indicator (for example, the first byte of the primary key or a separate &quot;employee type&quot; column) that declares what type of employee each row represents, so that you can determine which columns to use.</font>
+
+<p><font face="Times" size="+1">Now suppose that you want to define an abstract Employee superclass for your enterprise objects, with subclasses FullTimeEmployee, PartTimeEmployee, Intern, and Contractor. The EOModel class only allows you to associate a single class with the</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entity, and this doesn't fit the object model you want. In any case, the different employee types aren't formally distinguished in the database, so you have to select the subclass at run time.</font>
+
+<p><font face="Times" size="+1">You do this by letting the Employee superclass choose the subclass to instantiate for each row, defining its <b>initWithPrimaryKey:entity:</b> method to substitute an instance of the appropriate subclass based on the primary key:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">- initWithPrimaryKey:(NSDictionary *)key entity:(EOEntity *)entity</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">{</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">NSNumber *employeeType;</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">Class employeeClass;</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">Employee *newEO;</font>
+
+<p><img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Check for subclass invoking this method to avoid recursion. */</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">if ([self class] != [Employee class]) {</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">return [super init];</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">self = [super initWithPrimaryKey:key entity:entity];</font>
+
+<p><img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Determine which subclass to instantiate. */</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">employeeType = [key objectForKey:@&#34;employeeType&#34;];</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">switch ([employeeType intValue]) {</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">case 1: employeeClass = [FullTimeEmployee class];</font><br>
+<img src="../../../../Images/sp.gif" width=236 height=1><font face="Courier">break;</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">case 2: employeeClass = [PartTimeEmployee class];</font><br>
+<img src="../../../../Images/sp.gif" width=236 height=1><font face="Courier">break;</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">case 3: employeeClass = [Intern class];</font><br>
+<img src="../../../../Images/sp.gif" width=236 height=1><font face="Courier">break;</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">case 4: employeeClass = [Contractor class];</font><br>
+<img src="../../../../Images/sp.gif" width=236 height=1><font face="Courier">break;</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">default: /* Error. */;</font><br>
+<img src="../../../../Images/sp.gif" width=236 height=1><font face="Courier">[self dealloc];</font><br>
+<img src="../../../../Images/sp.gif" width=236 height=1><font face="Courier">return nil;</font><br>
+<img src="../../../../Images/sp.gif" width=236 height=1><font face="Courier">break;</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">newEO = [[employeeClass allocFromZone:[self zone]]</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">initWithPrimaryKey:key entity:entity];</font>
+
+<p><img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Be sure self gets deallocated. */</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">[self dealloc];</font>
+
+<p><img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">return newEO;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">For clarity, this example uses a separate column called &quot;employeeType&quot; to determine the subclass, which means that the </font><font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entity has a compound primary key. You can also define the employee type indicator as an integral part of a simple primary key (such as the first few bits) for better database performance, or just to keep your model simpler. In any case, the indicator must be defined as part of the primary key.</font>
+
+<p><font face="Times" size="+1">Note that you have to check at the top of the method for a subclass re-invoking this method. Initialization methods nearly always invoke the initialization methods of the superclass. If this method continued when invoked by a subclass, it would result in an infinite loop, with the superclass's implementation continually creating new substitute instances. Also, because <b>self</b> hasn't been fully initialized, <b>dealloc</b> is used instead of <b>release</b>.</font>
+
+<p><font face="Times" size="+1">This approach works to associate several enterprise object classes with a single table by virtue of the classes sharing a common ancestor, which is specified in the model as the one class associated with the table. Even the model remains correct with regard to the mapping. If you ask the model for the name of the class associated with the</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entity, for example, you just get &quot;Employee&quot;. All of the special employee objects are kinds of Employees, though, so this is correct (if imprecise). EOModel's <b>entityForObject:</b> also works in this situation, since it checks all superclasses of an object until it finds one mapped to an entity; for example, it returns the</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entity for any instance of the four subclasses mentioned above.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Dynamic Selection of Relationships</b></font>
+
+<p><font face="Times" size="+1">When an EODatabaseChannel resolves a relationship for a newly fetched object, it first checks to see if its delegate responds to the <b>databaseChannel:relationshipForRow:relationship:</b> method, sending the message if it does with the row just fetched and the relationship it's about to resolve. The delegate can use the information in the row to determine which entity the destination of the relationship should be associated with, and return a substitute relationship as needed.</font>
+
+<p><font face="Times" size="+1">This method allows you to reuse the same column in a table for different kinds of relationships based on other values of the object. For example, suppose you have one table containing two kinds of</font> <font face="Helvetica" size="+1">Employee</font> <font face="Times" size="+1">entities, full- and part-time, each with their own kind of time card. You can use an</font> <font face="Helvetica" size="+1">isPartTime</font> <font face="Times" size="+1">attribute to determine whether the relationship to a time card associates each employee object with the table for full-time cards or the table for part-time cards.</font>
+
+<p><font face="Times" size="+1">To set this up properly in your model, you define all the relationships you need, but mark only one of them in the Class Properties column of EOModeler's Entity Inspector (EOModeler is presented in Chapter 5, &quot;Using EOModeler&quot;). This causes a database to resolve only that relationship when it fetches objects, making it the default relationship from the set you define. You then use <b>databaseChannel:relationshipForRow:relationship:</b> at run time to substitute one of the other relationships. In this example, <b>toFullTimeCard</b> and <b>toPartTimeCard</b> are defined in the model, and <b>toFullTimeCard</b> is the default relationship:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">- (EORelationship *)databaseChannel:channel</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">relationshipForRow:(NSDIctionary *)aRow</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">relationship:(EORelationship *)aRelationship</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">{</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">EORelationship *toFullTimeCard;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">EORelationship *toPartTimeCard;&nbsp; /* Assume this exists. */</font>
+
+<p><img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">if (aRelationship == toFullTimeCard) {</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">NSNumber *isPartTime;</font>
+
+<p><img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">isPartTime = [aRow objectForKey:@&#34;isPartTime&#34;];</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">if ([isPartTime intValue] != 0) {</font><br>
+<img src="../../../../Images/sp.gif" width=208 height=1><font face="Courier">return toPartTimeCard;</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">}</font><br>
+<img src="../../../../Images/sp.gif" width=180 height=1><font face="Courier">return toFullTimeCard;</font><br>
+<img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../Images/sp.gif" width=152 height=1><font face="Courier">return aRelationship;</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This method first checks that the relationship being resolved is <b>toFullTimeCard</b>, and if so, examines the value for the &quot;isPartTime&quot; key in the fetched row to determine which relationship to substitute. If the value is nonzero, then <b>toPartTimeCard </b>is used instead of <b>toFullTimeCard</b>, giving the employee object a part-time card object. Similarly, if the value for the </font><font face="Helvetica" size="+1">isPartTime</font> <font face="Times" size="+1">attribute is 0, <b>toFullTimeCard</b> is used, so that the employee object gets a a full-time card object.</font>
+
+<p><font face="Times" size="+1">Note that this method isn't part of your enterprise object itself, but must be added on with a delegate to an EODatabaseDataSource. If you're sharing your enterprise objects, you also have to share the definition of the delegate you use to support relationship substitution.</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

@@ -1,0 +1,841 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextAdmin/13_NetBoot.rtfd -->
+<!-- Date: Sun Jan  1 13:56:44 2023 -->
+<head>
+<title>13_NetBoot</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Release 3.3 Copyright</font> &copy;<font face="Times">1994 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap><font face="Helvetica" size="+4"><b>13</b></font></td>
+
+<td><font face="Times" size="+4"><i>NetBooting</i></font></td></tr>
+
+<tr valign=top>
+
+<td width=36 height=80></td></tr>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">In some situations, you may need to boot a NeXT computer from the network rather than from its local startup disk. This procedure, known as <i>NetBooting</i>, can be useful if the local disk is damaged or you want to make extensive changes to the local disk (as when upgrading to a new software release).</font></td></tr>
+
+<tr valign=top>
+
+<td width=36 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap></td>
+
+<td><font face="Helvetica" size="+1"><b>Important:</b></font>&nbsp; <font face="Times" size="+1">Once configured, a NetBoot client can continue to boot from the network. However, NetBooting can degrade performance and create security risks. Using NetBoot as a permanent configuration is not recommended unless you have specialized needs.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Configuring a NetBoot Client</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">When a NeXT computer is configured as a NetBoot client, it doesn't use the files stored on its hard disk. Instead, the files and applications necessary for the client to boot are provided by the NetBoot server. Everything that's done to set up a NetBoot client is actually done on the NetBoot server, not on the client.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">It's a good idea to be familiar with the process of system booting before continuing. Familiarity with the booting process makes it much easier to understand the procedures covered in this chapter and to figure out problems that you may encounter along the way. For more information, refer to Chapter 9, &quot;System Startup and Shutdown.&quot;</font>
+
+<p><font face="Times" size="+1">You take three steps to configure a NetBoot client:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Set up the directory that will be remotely mounted on the client's <b>/private</b> directory.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Export to the client the &quot;/&quot; directory and the directory used for <b>/private</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Create a host entry for the client that describes the locations of these directories.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Setting Up the Client Directories on the Server</b></font>
+
+<p><font face="Times" size="+1">Each NetBoot client will share the server's root file system, but there are several administrative files (such as the NetInfo database, log files, and the swapfile) that must be unique to each client. The server must have a separate directory tree for each client, which the client mounts on its own <b>/private</b> directory during startup. This lets a client keep its own files separate from those of other clients.</font>
+
+<p><font face="Helvetica" size="+1"><b>Tip:</b></font>&nbsp; <font face="Times" size="+1">When you set up the directory that will be mounted on a client's <b>/private</b> directory, you copy the files from <b>/usr/template/client</b>. If you find you want to make changes from the default files for all clients, consider making them directly in <b>/usr/template/client</b>. (As always, make a copy of all standard files before editing them.) If you need to change any configuration information for all the NetBoot clients you're about to create, do it in this directory <i>before </i>you create the clients.</font>
+
+<p><font face="Times" size="+1">To create the client directories:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Log in as <b>root</b> on the computer you've chosen to be the NetBoot server.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Helvetica" size="+1"><b>Important:</b></font>&nbsp; <font face="Times" size="+1">A NetBoot server must have sufficient disk space (about 20 MB per NetBoot client), a large amount of memory (at least 16 MB, more is preferable), and have its disk configured with a second partition mounted as <b>/clients</b> (see &quot;Building a Bootable Disk&quot; in Chapter 7).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">To create a directory to mount on the client's <b>/private</b> directory tree, enter the following command in a shell window, replacing <i>client1 ... clientN</i> with the host name(s) of the NetBoot client(s):</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>newclient</b> <i>client1 ... clientN</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">The <b>newclient</b> command copies <b>/usr/template/client</b> into <b>/clients/</b><i>host</i>, where <i>host</i> is the host name of the NetBoot client. Once it's installed into <b>/clients/</b><i>host</i>, this directory tree can be remotely mounted as the <b>/private </b>directory of the client system.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Exporting the Local Directories to the Client</b></font>
+
+<p><font face="Times" size="+1">Now that you have the directories set up for the NetBoot client, you need to make them available across the network by exporting them. This can be accomplished with NFSManager.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Exporting root</b></font>
+
+<p><font face="Times" size="+1">Since the NetBoot client will be using the root directory of the NetBoot server, you must export &quot;/&quot; from the server.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Log into the NetBoot server and start up NFSManager, located in <b>/NextAdmin</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Click the Exported Directories window to make it key.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F4.gif" width=414 height=449></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">If there are already exported directories, you'll need to unexport them, unless they're on a separate disk. Follow these instructions for each directory:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>a.</b></font></td>
+
+<td><font face="Times" size="+1">Click the name in the list, then click Remove.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>b.</b></font></td>
+
+<td><font face="Times" size="+1">You may be prompted for the <b>root</b> password for the local domain. If you are, enter the password and click Login.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Click the Add button in the upper right of the window, then type &quot;/&quot; in the Export Directory panel.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F5.gif" width=298 height=339></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Click OK twice. The root directory now appears in the list of exported directories.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Enter the host name of the NetBoot client in the text field under Root Access, then click Add.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">If you didn't have any directories exported before, enter the host name of the NetBoot client in the text field under Read Only Access and click Add, then set the default access button to None. This provides no access to the root directory for other computers.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F6.gif" width=414 height=449></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>8.</b></font></td>
+
+<td><font face="Times" size="+1">If you did have other directories exported before, set the default access button to &quot;Read only.&quot; If computers need read/write access to some directory on the disk, set the default access button to Read/write.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=53></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Warning:</b></font></td>
+
+<td><font face="Times" size="+1">Allowing read/write access to the root directory is a serious security risk. If possible, don't configure an existing file server as a NetBoot server.</font></td></tr>
+
+<tr valign=top>
+
+<td width=53 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=53></td>
+
+<td nowrap><img src="../images/sp.gif" width=52 height=1><font face="Helvetica" size="+1"><b>9.</b></font></td>
+
+<td><font face="Times" size="+1">Click OK.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+2"><b>Exporting the Private Directory</b></font>
+
+<p><font face="Times" size="+1">Now export the directory that will be mounted as <b>/private</b> on the client.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Still in NFSManager, click the Add button in the upper right of the Exported Directories window.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Enter <b>/clients/</b><i>host</i> in the Export Directory panel, replacing <i>host</i> with the host name of the NetBoot client. Click OK.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Enter the host name of the client in the text field under the Root Access column, then click Add.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Enter the host name of the client in the text field under the Read/Write Access column, then click Add.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Set the default access button to None.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Click OK.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F1.gif" width=414 height=449></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Creating the Host Entry</b></font>
+
+<p><font face="Times" size="+1">After you've identified which server directories are available to the client, you need to create a host table entry that tells where they're located. You do this using the HostManager application.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">If the NetBoot client has not yet been added to the network, use the instructions for host addition in Chapter 2, &quot;Setting Up a NetInfo Network.&quot;</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Start up the HostManager application, located in <b>/NextAdmin</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">If you're not logged in as <b>root</b>, HostManager will display a panel telling you that you must have superuser status to run this application. Enter the password for the <b>root</b> account and click Login.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Open from the Host menu. The Open In NetInfo Domain panel appears.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="../images/F2.gif" width=298 height=531></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Select the root domain by clicking &quot;/&quot; in the Domain section of this panel. If you have a network with more than two levels of NetInfo domains, click the appropriate domain. In the Hostname section of this panel, click the host you're making a NetBoot client, then click OK. The host window appears.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F3.gif" width=514 height=338></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Click the Netboot Configuration button.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F8.gif" width=426 height=212></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Enter <b>mach</b> in the Default Kernel field. Enter the pathname of the partition to be mounted as the client's <b>root </b>directory in the Root Directory text field. This should be <i>server</i>:/ where <i>server</i> is replaced by the host name of the NetBoot server.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>8.</b></font></td>
+
+<td><font face="Times" size="+1">Enter the pathname of the directory to be mounted as the client's private directory in the Private Directory text field. The pathname should be <i>server</i>:<b>/clients/</b><i>hostname</i> where <i>server</i> is the name of the NetBoot server and <i>hostname</i> is the name of the host you're setting up for NetBooting.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F9.gif" width=426 height=212></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>9.</b></font></td>
+
+<td><font face="Times" size="+1">Click OK.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>10.</b></font></td>
+
+<td><font face="Times" size="+1">Save the modified host entry by choosing Save from the Host menu.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Booting the Client</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">You're now ready to boot the client from the network.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Turn on the client computer.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Immediately after the &quot;Testing System&quot; message goes away, stop the boot process by holding down the Command bar and pressing the ~ key (without holding down the Shift key). On keyboards with two Command keys, hold down the right Command key while pressing the ~ key. This displays the ROM Monitor window. (If you're a little slow and the Restart/Power-Off panel appears instead, press the Power key and try again.)</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Boot the computer from the network by entering the command <b>ben</b> at the ROM Monitor prompt. If you want to configure this computer so that it always boots off the Ethernet, you can set the startup device in the Preferences application.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">If you see error messages when you boot, consult the &quot;Troubleshooting&quot; section for help.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Troubleshooting</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">If you receive an error message when using a NetBoot client computer, you may find a solution in one of the following sections.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Conflicts with NFS</b></font>
+
+<p><font face="Times" size="+1">You may see an error message similar to either of the following while using NFSManager or when you reboot the NetBoot server:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">exportfs: /<i>directory</i>: parent-directory (/) already exported</font>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">exportfs: /: sub-directory (/<i>directory</i>) already exported</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">These messages result from the fact that you can't export a directory that's either a parent or a subdirectory of one that's already exported if both directories reside on the same disk partition. For example, if you attempt to export &quot;/&quot; and <b>/usr/spool/mail</b>, you see an error message.</font>
+
+<p><font face="Times" size="+1">To avoid this type of error, export the parent directory only. In this example, this means using NFSManager to remove the entry for <b>/usr/spool/mail</b> so that only &quot;/&quot; is exported. This avoids the error condition and still makes <b>/usr/spool/mail</b> available.</font>
+
+<p><font face="Times" size="+1">For more information, see Chapter 4, &quot;Setting Up the Network File System,&quot; and the UNIX manual page for <b>exportfs</b>.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Permission Problems</b></font>
+
+<p><font face="Times" size="+1">If you encounter a permissions problem when you NetBoot the client system, you see an error similar to this:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=124 height=1><font face="Courier">mount root mars: failed, rpc status 13</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Use NFSManager to make sure that the &quot;/&quot; and <b>private</b> directories are exported with <b>root</b> access for the NetBoot client.</font>
+
+<p><font face="Helvetica" size="+1"><b>Important:</b></font>&nbsp; <font face="Times" size="+1">Security problems can arise if a NeXT computer is configured both as a NetBoot server and as the NFS server for network-wide user accounts and/or the mail server. This arises from the fact that the directories exported for NetBooting require that they grant <b>root</b> access to the NetBoot clients. To avoid possible security risks, use some other computer as the NetBoot server, or use an external disk for the other types of file sharing (general purpose, home directory, or mail). If you must use a computer with a single disk for NetBoot serving and some other type of file serving, be aware of the security risks introduced by granting <b>root</b> access to the entire network.</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

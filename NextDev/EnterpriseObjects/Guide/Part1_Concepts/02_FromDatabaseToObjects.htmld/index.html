@@ -1,0 +1,539 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/EnterpriseObjects/Guide/Part1_Concepts/02_FromDatabaseToObjects.rtfd -->
+<!-- Date: Sun Jan  1 17:05:31 2023 -->
+<head>
+<title>02_FromDatabaseToObjects</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+4" color="#FF00FF"><b>2</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<p><font face="Times" size="+4"><i>From Database to Objects</i></font>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Chapter 1, &quot;Enterprise Objects Framework Overview&quot; described the Enterprise Objects Framework at a fairly high level, presenting the components of the Framework and introducing the term <i>enterprise object</i>. This chapter describes how the Framework's access layer creates enterprise objects from a relational database, and how it propagates changes made to those objects back to the database. Understanding these processes allows you to fully exploit the power of the Framework's database level, and provides you with an example for creating other sources of enterprise objects (such as a flat-file database or real-time data feed).</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Rows as Dictionaries</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The first step toward full object-oriented access to a relational database is the creation of an abstract interface that works with any relational database. Every relational database has its own client library interface for retrieving data from the server, each with vastly different data structures and means for accessing them. This makes client applications highly dependent on the database, and the low level of abstraction typical of such interfaces makes it difficult to create and port applications based on them.</font>
+
+<p><font face="Times" size="+1">The Enterprise Objects Framework uses adaptors to abstract these different interfaces into one simple interface, defined by the Framework's adaptor level. The &quot;bottom end&quot; of an adaptor uses the interfaces specific to the database it was created for, and the interface that the adaptor exports to the client application is the same as that for all other adaptors. An adaptor is typically packaged as a bundle that your application loads as needed, and that contains the database-specific subclasses of the generic adaptor classes, a login panel, and other resources needed for communication with the database.</font>
+
+<p><font face="Times" size="+1">An adaptor presents database rows in the form of NSDictionary objects. The elements of the dictionary correspond to columns (attributes) in the database table: Their names are the names of the attributes as used by the client application, and their values are the values in the database. The mapping between attributes and columns is made by an application's model, as described in Chapter 1, &quot;Enterprise Objects Framework Overview.&quot;</font>
+
+<p><font face="Times" size="+1">When data is retrieved from the database, the values are converted from their database-specific types to instances of these standard value classes:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">NSString, for character strings</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">NSCalendarDate, for calendar dates and times</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">NSNumber, for all scalar numbers (integer or floating-point)</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">NSData, for arbitrary binary data (commonly referred to as BLOBs)</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">You can augment this set by defining custom value classes associated with columns that contain character strings or binary data. See the EOCustomValues and EODatabaseCustomValues protocol specifications in the <i>Enterprise Objects Framework Reference</i> for more information.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">NULL values in the database are represented by instances of a special class, EONull. EONull objects can appear in the place of instances of any of the other value classes when you fetch data.</font>
+
+<p><font face="Times" size="+1">The abstraction provided by the Framework's adaptor level is a powerful first step toward an object-oriented interface, but it's only a first step. NSDictionary objects offer no means for adding customized behavior, such as validation of data or automatic propagation of updates. Relationships between rows, such as that between employees and the departments they work in, aren't reflected in any way other than by matching values in dictionaries; to resolve a relationship you have to determine the attributes defining it and use the values of those attributes to fetch the related rows. Further, each time you retrieve a row from a database, you get a new NSDictionary--there's no facility for determining if the row has already been fetched and exists in memory. To support these features, the Enterprise Objects Framework adds another level on top of the adaptor level. This is the database level.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Creation of an Enterprise Object</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The database level is the subsystem of the Enterprise Objects Framework responsible for creating enterprise objects from a relational database. When you ask an EODatabaseChannel to fetch an object from the database, it uses the adaptor level to get the dictionary for the corresponding row and creates an enterprise object from that dictionary. In addition to passing this data to the new enterprise object, the database level resolves the object's relationships by creating, but not immediately fetching data for, the destination objects of those relationships. The database level also checks whether an enterprise object with the same primary key already exists in memory before allocating a new one.</font>
+
+<p><font face="Times" size="+1">You retrieve enterprise objects with an EODatabaseChannel in two major steps. First, you select the rows in the database for which you want to retrieve objects. In doing so, you specify the entity for which you want to retrieve data, and this entity in turn specifies which enterprise object class is instantiated for every object created. Second, you use a loop to fetch each enterprise object, one at a time (see Chapter 8, &quot;Retrieving Records&quot; for a detailed presentation of this procedure).</font>
+
+<p><font face="Times" size="+1">The basic sequence of events in creating an enterprise object from a relational database is this:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">1.</font></td>
+
+<td><font face="Times" size="+1">The EODatabaseChannel uses its EOAdaptorChannel to fetch a dictionary representing a row in the database. This dictionary contains values only for attributes defined in the model; it doesn't contain references to the destination rows of relationships.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">2.</font></td>
+
+<td><font face="Times" size="+1">The database channel examines the entity you selected to determine the value of the primary key for the row just retrieved.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">3.</font></td>
+
+<td><font face="Times" size="+1">The database channel creates or finds an enterprise object for the fetched data. It does so either by finding a uniqued enterprise object and using that, or by allocating a new instance of the enterprise object class for the selected entity.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">If the channel's EODatabase is configured to perform uniquing of enterprise objects (described below in &quot;Uniquing&quot;), it checks the primary key just retrieved against all enterprise objects its channel has created so far. If an object already exists for the selected entity and the primary key, the database channel uses the existing object in the remaining steps. If an object doesn't already exist, the database channel allocates an instance of the appropriate class.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">4.</font></td>
+
+<td><font face="Times" size="+1">The database channel initializes a newly created enterprise object. If the object responds to <b>initWithPrimaryKey:entity:</b>, the database channel sends that message with the selected entity and the primary key. Otherwise it merely sends <b>init</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">5.</font></td>
+
+<td><font face="Times" size="+1">The channel's EODatabaseContext records a snapshot of the fetched data under the <b>id</b> of the enterprise object. If configured to do so, the channel's EODatabase object also records a snapshot. Snapshots are used when updating objects, as described in &quot;Update Strategies, Snapshots, and Transactions.&quot;</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">6.</font></td>
+
+<td><font face="Times" size="+1">The database channel examines the entity for relationships, and constructs or finds a stand-in object (called a &quot;fault&quot;) for each of those relationships. The stand-in objects are added to the dictionary of attributes retrieved by the adaptor level. See &quot;Delayed Resolution of Relationships&quot; below for more information on resolution of relationships.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">7.</font></td>
+
+<td><font face="Times" size="+1">The database channel assigns the enterprise object the values in the dictionary by sending it a <b>takeValuesFromDictionary: </b>message. <b>takeValuesFromDictionary:</b> is defined by the EOKeyValueCoding informal protocol, which is the standard interface for accessing an enterprise object's data values. Note that the database channel always sends this message, even to an enterprise object that was previously created.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">8.</font></td>
+
+<td><font face="Times" size="+1">If the enterprise object responds to <b>awakeForDatabaseChannel:</b>, the database channel sends it that message, allowing it to perform any additional initialization needed. The enterprise object is now completely initialized, and is returned to the sender of the fetch message.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This outline leaves out a number of peripheral steps, such as handling of error conditions (for example, no transaction in progress), invocation of delegate messages, and handling of faults. Issues such as error conditions and delegate messages are explained in appropriate parts of the <i>Enterprise Objects Framework Reference</i>. Other issues are described in the following sections.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Delayed Resolution of Relationships</b></font>
+
+<p><font face="Times" size="+1">One of the most powerful and useful features of the Framework's database level is that it automatically resolves the relationships defined in a model. It does so by delaying the actual retrieval of data--and communication with the database--until the data is needed. This delayed resolution of relationships occurs in two stages: the creation of a placeholder object for the data to be fetched, and the fetching of that data only when it's needed.</font>
+
+<p><font face="Times" size="+1">When the database level fetches an object, it examines the relationships defined in the model and creates objects representing the destinations of the fetched object's relationships. For example, if you fetch an employee object, you can ask for its manager and immediately receive an object; you don't have to get the manager's employee ID from the object you just fetched and fetch the manager yourself.</font>
+
+<p><font face="Times" size="+1">The database level doesn't immediately fetch data for the destination objects of relationships, however. Fetching is fairly expensive, and further, if the database level fetched objects related to the one explicitly asked for, it would also have to fetch the objects related to those, and so on, until all of the interrelated rows in the database had been retrieved. To avoid this waste of time and resources, the destination objects created are stand-ins, of a special class whose instances transform themselves into actual enterprise objects--and fetch their data--the first time they're accessed. These stand-ins are called <i>fault objects</i>, and come in two varieties: single-object faults for to-one relationships, and array faults for to-many relationships.</font>
+
+<p><font face="Times" size="+1">A fault object occupies the same amount of memory as an instance of the target class (which it's eventually transformed into), and stores the information needed to retrieve the data associated with the fault (the values of the keys defining the relationship for a single-object fault, a qualifier describing enterprise objects for an array fault). A fault object thus consumes some memory in your application, but never consumes more resources than a near-empty instance of its target class.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F1.gif" width=330 height=529></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 10</b></font><font face="Times" size="+1">. Resolution of a Fault Object</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">A fault object behaves in every way possible as an instance of its target class until it receives a message it can't cover for. For example, if you fetch an Employee object and ask for its manager, you get a fault object representing another Employee object. If you send a <b>class</b> message to this fault object, it returns the Employee class. If you send the fault object a message requesting the value of an attribute, such as <b>lastName</b>, however, it uses the database channel that created it to retrieve its data from the database, overwrites its class identity, and invokes the target class's implementation of <b>lastName</b>.</font>
+
+<p><font face="Times" size="+1">Figure 10 illustrates this process. In the top panel, an Employee object, Jane MacAskill, is fetched from the database. Every employee has a manager, and Jane's is Kai Veasey. Instead of fetching Kai's data right away, the database channel creates a fault object containing the value of the foreign key for Jane's</font> <font face="Helvetica" size="+1">toManager</font> <font face="Times" size="+1">relationship (in this case the value is Kai's employee ID). The graphic for the fault object has an empty center with a key in it, indicating that it contains no real values yet. The bottom half of the object shows the messages that the fault object can respond to without having to fetch its data, such as <b>class</b>, <b>retain</b>, and <b>release</b>. The other half of the object's outside is missing, however, showing a &quot;tender area&quot; that a message such a <b>lastName</b> hits (in the middle panel). This causes the fault object to fetch its data from the database, overwrite its identity to become an Employee object, and invoke Employee's implementation of <b>lastName</b>, returning &quot;Veasey&quot; (in the bottom panel).</font>
+
+<p><font face="Times" size="+1">The process of resolving an array fault is similar, except that many enterprise objects may be fetched instead of only one. Array faults behave as instances of the NSArray class, and are triggered by any request for a member object or for the number of objects in the array (the number of objects for a to-many relationship can't be determined without actually fetching them all).</font>
+
+<p><font face="Times" size="+1">Note that a fault object has to use a database channel to fetch its data. Because a database channel can't perform more than one fetch operation at the same time, you should be careful about accessing fault objects in your code. If, during a fetch operation, you need to access an object you've determined is a fault, you have to either cancel the fetch, access the fault, and resume, or get the fault object's qualifier and fetch the fault explicitly with a separate channel. See Chapter 8, &quot;Retrieving Records&quot; for a detailed presentation of the procedure for fetching an object.</font>
+
+<p><font face="Times" size="+1">For more information on faults, see the EOFault class specification in the <i>Enterprise Objects Framework Reference</i>.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Uniquing</b></font>
+
+<p><font face="Times" size="+1">In marrying relational databases to object-oriented programming, one of the key requirements is that a row in the database be associated with only one object in the application. Uniquing of enterprise objects limits memory usage, prevents redundant storage, and allows you to know with confidence that the object you're interacting with represents the true state of its associated row as it was last fetched by your application.</font>
+
+<p><font face="Times" size="+1">Without uniquing, you get a new enterprise object every time you fetch its corresponding row, whether explicitly or through resolution of relationships. The top panel of Figure 11 shows the enterprise objects that exist after fetching three employee objects without uniquing. Kai is Cary's and John's manager. On fetching an object for Cary, an object representing Kai is created to resolve the manager relationship. If you then fetch an object for Kai, a separate object is created. Fetching an object for John then causes yet another object representing Kai to be created.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F0.gif" width=399 height=312></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 11</b></font><font face="Times" size="+1">. Uniquing of Enterprise Objects</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">Kai's row in the database can be altered between any of these individual fetches, resulting in objects representing the same row, but with different data. Contrast this situation with the bottom panel, where uniquing results in only one object ever being created for Kai. In this case, even though Kai's row can be changed, your application has a single view of Kai's data. The data may not reflect what's in the database if another use changes it, but there's no ambiguity within your application.</font>
+
+<p><font face="Times" size="+1">The database level performs uniquing of enterprise objects by default, but you can turn this behavior off if you need to. You might do this if you need to implement your own uniquing scheme or customize the one provided in some way. See the EODatabase class specification in the <i>Enterprise Objects Framework Reference</i> for more information.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Uniquing and Fault Objects</b></font>
+
+<p><font face="Times" size="+1">When a database channel that's configured to perform uniquing constructs a fault for a to-one relationship, it checks the primary key for the destination to see whether that object already exists. If so, it simply uses that object to immediately resolve the relationship. This preserves the uniqueness requirement for enterprise objects, in that there's never more than one <b>id </b>representing the same row in the database. Whether that <b>id</b> represents an actual enterprise object or a fault doesn't matter, since the data will be fetched when it's needed.</font>
+
+<p><font face="Times" size="+1">Similarly, if a database channel fetches data for an object that's already been created as a fault, the database channel turns the fault into an instance of its target class, <i>without changing the <b>id</b></i>, and simply initializes the resulting enterprise object as described in step 4 of the process for creating enterprise objects (described in &quot;Creation of an Enterprise Object&quot;). The process is essentially the same whether you fetch the fault's data or whether the fault fetches the data itself upon being sent a message.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Modifying an Enterprise Object</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Many applications change the data for enterprise objects they read from a database. An application can modify enterprise objects in three ways: It can delete an existing object, create and insert a new object into the database, or update an existing object's data. It can also modify enterprise objects in ways that don't affect their stored data, but such changes aren't relevant to the database.</font>
+
+<p><font face="Times" size="+1">Deletion and insertion are straightforward operations, requiring you to send only a single message (<b>deleteObject:</b> or <b>insertObject:</b>) to a database channel. The process of deleting an object entails removing its corresponding row from the database, clearing the information cached when it was fetched, and releasing the object. Inserting a new object combines the creation of a row in the database with the recording of all information normally cached upon fetching an existing row. (See Chapter 9, &quot;Inserting, Deleting, and Updating Records&quot; for programming procedures.) Either operation fails under simple circumstances: Deletion fails if the row to delete doesn't exist (for example, if someone else already deleted it), and insertion fails if a row already exists with the same primary key as the row to insert.</font>
+
+<p><font face="Times" size="+1">Updating only requires you to send one message as well (<b>updateObject:</b>), but it can fail under more complex circumstances, since an update involves changing a row that already exists and that someone else may be examining or modifying independently. To handle the problems that can arise when updating objects, the database level offers a set of update strategies, which use the snapshots recorded during fetching.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Update Strategies, Snapshots, and Transactions</b></font>
+
+<p><font face="Times" size="+1">The basic ingredients of an update operation are an enterprise object whose data values have been changed, a means of identifying the row in the database that corresponds to the object, and a strategy for handling update conflicts if someone else is trying to update the same row. There must also be a transaction in progress.</font>
+
+<p><font face="Times" size="+1">The &quot;means of identifying&quot; a row is called a <i>snapshot</i>, which is a dictionary object recording a row's primary key and the attributes of that object that are used for locking during an update. (Primary keys and attributes used for locking are defined in a model; see Chapter 5, &quot;Using EOModeler&quot; for more information.) Because even the primary key of an enterprise object can change, snapshots are <i>required</i> to identify the row for updating. A snapshot is recorded under the <b>id</b> of its enterprise object whenever the object is fetched or modified.</font>
+
+<p><font face="Times" size="+1">An <i>update strategy</i> determines how updates should be made in the face of changes by others. For example, one strategy is to lock a row so that no one else can change it until you're done with it; this is called <i>pessimistic locking</i>. Another strategy is to save the state of a row as you fetched it--this is the snapshot--then compare the row with the snapshot at update time to see if it's still the same; this is called <i>optimistic locking</i>, because it assumes the row won't be changed, but does check at the last minute. You can also overwrite a row without even checking--called updating with <i>no locking</i> or a &quot;blind&quot; update. Finally, you can declare that you won't be updating at all, so that snapshots don't have to be kept, which saves system resources.</font>
+
+<p><font face="Times" size="+1">An update must take place within the context of a transaction; thus, snapshots and update strategies are naturally linked with transactions. A snapshot represents the latest known state of a database row within a transaction context; different transaction contexts can have different views of the same row. Similarly, an update strategy applies uniformly to all updates performed within a transaction context. Because the EODatabaseContext class manages transactions, it also manages snapshots and update strategies.</font>
+
+<p><font face="Times" size="+1">An EODatabaseContext always records snapshots for any objects fetched, inserted, or updated during a transaction (unless the no-update policy is in effect). If it begins a transaction within another transaction (called a <i>nested transaction</i>), it creates a separate set of snapshots. When a nested transaction is committed, the snapshots made while it was in progress are folded into the higher-level transaction, replacing any snapshots made before the changes took effect. When the top-level transaction is committed, the database context's transactions are folded into the snapshots kept by the EODatabase object associated with the database context. An EODatabase normally keeps snapshots for all enterprise objects fetched or inserted by any of its channels--a practice that can consume a lot of memory. You can turn off snapshotting in the EODatabase to save that memory, but if you do, snapshots don't survive top-level transactions. Because a top-level transaction's snapshots can't be folded back to the EODatabase, you won't be able to update objects unless you first fetch them in a transaction to create a snapshot in the database context.</font>
+
+<p><font face="Times" size="+1">For more information on using update strategies and snapshots, see the EODatabaseContext class specification in the <i>Enterprise Objects Framework Reference</i>.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Updating an Enterprise Object</b></font>
+
+<p><font face="Times" size="+1">To update an enterprise object, all you normally have to do is start a transaction and send an <b>updateObject:</b> message to an EODatabaseChannel. If you've turned snapshotting off in the EODatabase object, you have to fetch the object before updating it to be sure a snapshot exists. If you leave snapshotting enabled in the EODatabase, snapshots persist across transactions, so you can update objects that you haven't explicitly fetched within the current transaction. (See Chapter 9, &quot;Inserting, Deleting, and Updating Records&quot; for programming procedures.)</font>
+
+<p><font face="Times" size="+1">This is the basic sequence of events in updating an enterprise object:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">1.</font></td>
+
+<td><font face="Times" size="+1">If you're using a pessimistic locking strategy, you have to fetch the row for the object you want to update so that it will be locked. You can also explicitly lock the object, regardless of the update strategy, by sending a <b>lockObject:</b> message to the EODatabaseChannel (<b>lockObject:</b> immediately returns a failure result for an already-locked object, so you can quickly determine whether to continue with the update). A locked object's row is unlocked when the transaction is committed or aborted.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">If you try to update an object that you haven't fetched or locked in the current transaction, the database level falls back to the optimistic locking strategy (which comes into play in step 4).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">2.</font></td>
+
+<td><font face="Times" size="+1">You send the <b>updateObject:</b> message to the EODatabaseChannel.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">3.</font></td>
+
+<td><font face="Times" size="+1">The EODatabaseChannel asks its EODatabaseContext for the snapshot of the enterprise object you're updating. From the snapshot, it gets the object's original primary key, which it uses to identify the row to update. If the EODatabaseContext doesn't have a snapshot and the database channel's EODatabase doesn't keep snapshots, the update fails.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">4.</font></td>
+
+<td><font face="Times" size="+1">If the optimistic locking strategy is in effect, the database channel fetches and locks the row from the database and compares the values retrieved with those in the snapshot. If any of these values differ from those in the snapshot--indicating that the row has been updated since it was last fetched--the update fails.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">5.</font></td>
+
+<td><font face="Times" size="+1">The database channel constructs a dictionary object containing only the attribute values changed from the snapshot, plus the values for any attributes that aren't kept in snapshots (which have nothing to be compared against).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">6.</font></td>
+
+<td><font face="Times" size="+1">The database channel uses its adaptor channel to update the row in the database with the dictionary of changed attribute values.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">7.</font></td>
+
+<td><font face="Times" size="+1">If the update is successful, the database channel updates the snapshot for the enterprise object in its database context.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This outline of steps leaves out details such as delegate messages, error conditions, and so on. For information on these details, see the specifications of the database-level classes in the <i>Enterprise Objects Framework Reference</i>.</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

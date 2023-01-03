@@ -1,0 +1,318 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/EnterpriseObjects/Reference/_ApA_Oracle7Adaptor/Classes/OracleAdaptor.rtf -->
+<!-- Date: Sun Jan  1 17:05:15 2023 -->
+<head>
+<title>OracleAdaptor</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>OracleAdaptor</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Inherits From:</b></font></td>
+
+<td><font face="Times" size="+1">EOAdaptor : NSObject</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">eoadaptors/Oracle7/OracleAdaptor.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">An OracleAdaptor represents a single connection to an Oracle database server, and is responsible for keeping login and model information, performing Oracle-specific formatting of SQL expressions, and reporting errors.</font>
+
+<p><font face="Times" size="+1">The OracleAdaptor class has these restrictions: You can't have nested transactions, and the adaptor doesn't support full outer joins.</font>
+
+<p><font face="Helvetica" size="+1"><b>The Connection Dictionary</b></font>
+
+<p><font face="Times" size="+1">The connection dictionary contains items needed to connect to an Oracle server, such as the server name and database (it's common to omit the user name and password from the connection dictionary, and prompt users to enter those values in a login panel). The keys of this dictionary identify the information the server expects, and the values of those keys are the values that the adaptor uses when trying to connect to the server. For Oracle databases the required keys are as follows:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=125></td>
+
+<td><font face="Times" size="+1">hostMachine</font><br>
+<font face="Times" size="+1">serverId</font><br>
+<font face="Times" size="+1">userName</font><br>
+<font face="Times" size="+1">password</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The connection dictionary can optionally include another key: NLS_LANG, which allows you to set the Oracle NLS_LANG environment variable. NLS_LANG declares to the Oracle server the character set being used by the client, as well as the language in which you want server error messages to appear. The format is as follows:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=125></td>
+
+<td><font face="Times" size="+1"><i>language_territory. characterSet</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">For example, supplying the value <b>japanese_japan.jeuc</b> for the NLS_LANG key tells the server that the language is Japanese, the territory is Japan, and the character set is jeuc. See your Oracle documentation for a complete list of types available for this field.</font>
+
+<p><font face="Times" size="+1">To add the NLS_LANG key and a value to your connection dictionary, you must manually edit your model file. For example:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=143 height=1><font face="Courier">connectionDictionary = {</font><br>
+<img src="../../../../../Images/sp.gif" width=143 height=1><font face="Courier">hostMachine = entropy;</font><br>
+<img src="../../../../../Images/sp.gif" width=143 height=1><font face="Courier">password = tiger;</font><br>
+<img src="../../../../../Images/sp.gif" width=143 height=1><font face="Courier">serverId = sjOracle;</font><br>
+<img src="../../../../../Images/sp.gif" width=143 height=1><font face="Courier">userName = scott;</font><br>
+<img src="../../../../../Images/sp.gif" width=143 height=1><font face="Courier">NLS_LANG = american_america.us7ascii;</font><br>
+<img src="../../../../../Images/sp.gif" width=143 height=1><font face="Courier">};</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Subsequently changing the connection dictionary in your model file using the Set Adaptor Info command in EOModeler has no effect on these keys and their values--they are preserved unless you edit the file to remove them.</font>
+
+<p><font face="Times" size="+1">The default character set for Japanese systems is jeuc. If you are using a non-Japanese system, the default is whatever Oracle provides. You only need to add the NLS_LANG key to your connection dictionary if you are using a character set other than your system's default.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">Enterprise Objects Framework uses NEXTSTEP encoding to represent string data, and it passes strings to the database without converting them to the database character set. If you require that the data passed to your server is in an encoding other than NEXTSTEP encoding, you need to subclass NSString.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Locking</b></font>
+
+<p><font face="Times" size="+1">All adaptors use the database server's native locking facilities to lock rows on the server. The Oracle adaptor locks a row by using the SELECT... FOR UPDATE... statement. This occurs when:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">You send the adaptor channel a <b>selectAttributes:describedByQualifier:fetchOrder:lock:</b> message with YES specified as the value for the <b>lock:</b> keyword.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">You explicitly lock an object's row with the <b>lockObject:</b> message.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">You set pessimistic locking at the database level and fetch objects.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Using SQL*Net</b></font>
+
+<p><font face="Times" size="+1">The Oracle adaptor supports both SQL*Net v1 and v2-style connection strings. The version of SQL*Net used is determined by the connection string you provide (whether through the login panel or through the connection dictionary in your model file).</font>
+
+<p><font face="Times" size="+1">To use SQL*Net v1, supply a user name, password, host machine name, and server ID. This results in a v1-style connection string of the form &quot;userName/password@T:hostMachine:serverID.&quot;</font>
+
+<p><font face="Times" size="+1">To use SQL*Net v2, supply a server ID, user name, and password, but omit the host machine name. This results in a v2-style connection string that has the form &quot;userName/password@serverID.&quot; If you want to use a custom connection string, omit values for all of the keys except serverId in your connection dictionary. You can then use the Server ID field in the Oracle login panel to supply your own connection string.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Variables</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">None declared in this class.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Returning a connection string</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">oracleConnectionString</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>oracleConnectionString</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSString *)<b>oracleConnectionString</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns an NSString containing the user name, password, host machine, and server ID, in a form suitable for use with <b>orlon()</b>, the Oracle logon function. See your Oracle client library documentation for more information.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>cString</b> (NSString)</font></td></tr>
+
+</table>
+
+
+
+<p><br>
+
+</body>
+</html>

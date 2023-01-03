@@ -1,0 +1,847 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/OperatingSystem/Part3_DriverKit/Reference/Classes/IODisplay.rtf -->
+<!-- Date: Sun Jan  1 17:01:11 2023 -->
+<head>
+<title>IODisplay</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>IODisplay</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Inherits From:</b></font></td>
+
+<td><font face="Times" size="+1">IODirectDevice : IODevice : Object</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Conforms To:</b></font></td>
+
+<td><font face="Times" size="+1">IOScreenEvents</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">driverkit/IODisplay.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">IODisplay is an abstract class for controlling video displays. To write a display driver, you need to create a subclass of one of NeXT's IODisplay subclasses--IOFrameBufferDisplay and IOSVGADisplay. IOFrameBufferDisplay is the preferred basis for display drivers, but it can only be used for video cards that linearly map the entire frame buffer into memory. Other video cards require IOSVGADisplay subclasses.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">All VGA cards work even without special drivers. However, they have a small display area (640</font><font size="+1"><img src="../../../../../Images/cB4.gif" width=8 height=7></font><font face="Times" size="+1">480) and are 2-bit grayscale.</font>
+
+<p><font face="Times" size="+1">Most of what you need to create a display driver is described in the IOFrameBufferDisplay and IOSVGADisplay class specifications. In addition, both kinds of display drivers need to specify certain display-specific configuration keys and provide IODisplayInfo structures.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Display Configuration Keys</b></font>
+
+<p><font face="Times" size="+1">Your driver's configuration table must have values for the &quot;VGA Memory Maps&quot; and &quot;Display Mode&quot; keys. &quot;VGA Memory Maps&quot; must be equal to &quot;0xa0000-0xbffff 0xc0000-0xcffff&quot;; those addresses must also be specified for the &quot;Memory Maps&quot; key.</font>
+
+<p><font face="Times" size="+1">An IOFrameBufferDisplay might specify the following in its default configuration table.</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">&#34;Memory Maps&#34; = &#34;0x7e00000-0x7ffffff 0xa0000-0xbffff 0xc0000-0xcffff&#34;;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">&#34;VGA Memory Maps&#34; = &#34;0xa0000-0xbffff 0xc0000-0xcffff&#34;;</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">An IOSVGADisplay would have the following:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">&#34;Memory Maps&#34; = &#34;0xa0000-0xbffff 0xc0000-0xcffff&#34;;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">&#34;VGA Memory Maps&#34; = &#34;0xa0000-0xbffff 0xc0000-0xcffff&#34;;</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">The first range for the &quot;Memory Maps&quot; key must be the range that the window server will use for access to the screen. For example, for IOFrameBufferDisplays, the first range must be that of the linear frame buffer.</font>
+
+<p><font face="Times" size="+1">A default display mode is usually specified with the &quot;Display Mode&quot; key in the default configuration table. The mode can also be set by the user, with Configure's display inspector. You specify the modes your driver supports with the &quot;Display Modes&quot; key in the <b>Localizable.strings</b> file in the <i>Language</i><b>.lproj</b> directories of your driver's bundle. (Driver bundles are discussed in Chapter 4.) An example of specifying display modes is below.</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">&#34;Display Modes&#34; = &#34;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">Height: 600 Width: 800 Refresh: 60Hz ColorSpace: RGB:555/16;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">Height: 768 Width:1024 Refresh: 60Hz ColorSpace: BW:8;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">Height: 768 Width:1024 Refresh: 70Hz ColorSpace: BW:8;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">Height: 768 Width:1024 Refresh: 72Hz ColorSpace: BW:8;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">Height: 768 Width:1024 Refresh: 60Hz ColorSpace: RGB:555/16;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">Height: 768 Width:1024 Refresh: 72Hz ColorSpace: RGB:555/16;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">Height:1024 Width:1280 Refresh: 60Hz ColorSpace: BW:8;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">Height:1024 Width:1280 Refresh: 60Hz ColorSpace: RGB:555/16;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">Height: 600 Width: 800 Refresh: 60Hz ColorSpace: RGB:888/32;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">Height: 768 Width:1024 Refresh: 60Hz ColorSpace: RGB:888/32;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">Height: 768 Width:1024 Refresh: 72Hz ColorSpace: RGB:888/32&#34;;</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">See the &quot;Configuration Keys&quot; section of this chapter for more information on configuration keys.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>IODisplayInfo</b></font>
+
+<p><font face="Times" size="+1">Display drivers need to have an IODisplayInfo structure for each mode the driver supports. Drivers that support multiple modes use one of the <b>selectMode:...</b> methods (provided by IOFrameBufferDisplay and IOSVGADisplay) to find the IODisplayInfo that corresponds to the value of the &quot;Display Mode&quot; key. Once the driver has determined which mode it will be in, it needs to set the value returned by <b>displayInfo</b> so that it points to the appropriate IODisplayInfo structure. The display subsystem, as well as the driver, uses the IODisplayInfo to get information about the driver's mode.</font>
+
+<p><font face="Times" size="+1">The IODisplayInfo type is defined in the <b>driverkit/displayDefs.h</b> header file as the following:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=125></td>
+
+<td><font face="Times" size="+1">typedef struct {</font><br>
+<img src="../../../../../Images/sp.gif" width=11 height=1><font face="Times" size="+1">int <b>width</b>;</font><br>
+<img src="../../../../../Images/sp.gif" width=11 height=1><font face="Times" size="+1">int <b>height</b>;</font><br>
+<img src="../../../../../Images/sp.gif" width=11 height=1><font face="Times" size="+1">int <b>totalWidth</b>;</font><br>
+<img src="../../../../../Images/sp.gif" width=11 height=1><font face="Times" size="+1">int <b>rowBytes</b>;</font><br>
+<img src="../../../../../Images/sp.gif" width=11 height=1><font face="Times" size="+1">int <b>refreshRate</b>;</font><br>
+<img src="../../../../../Images/sp.gif" width=11 height=1><font face="Times" size="+1">void *<b>frameBuffer</b>;</font><br>
+<img src="../../../../../Images/sp.gif" width=11 height=1><font face="Times" size="+1">IOBitsPerPixel <b>bitsPerPixel</b>;</font><br>
+<img src="../../../../../Images/sp.gif" width=11 height=1><font face="Times" size="+1">IOColorSpace <b>colorSpace</b>;</font><br>
+<img src="../../../../../Images/sp.gif" width=11 height=1><font face="Times" size="+1">IOPixelEncoding <b>pixelEncoding</b>;</font><br>
+<img src="../../../../../Images/sp.gif" width=11 height=1><font face="Times" size="+1">unsigned int <b>flags</b>;</font><br>
+<img src="../../../../../Images/sp.gif" width=11 height=1><font face="Times" size="+1">void *<b>parameters</b>;</font><br>
+<font face="Times" size="+1">} <b>IODisplayInfo</b>;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The <b>width</b> and <b>height</b> fields hold the width and height in pixels of the display area. Generally, the width should be at least 640, and the height at least 480. The <b>totalWidth</b> is the width including any undisplayed pixels that might be included for efficiency reasons; often, it's equal to <b>width</b>. The value of <b>rowBytes</b> is equal to <b>totalWidth</b> multiplied by the number of bytes used to address each pixel, as shown in the following table.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Color Mode</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Value of rowBytes</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">SVGA 2-bit grayscale</font></td>
+
+<td><font face="Times" size="+1"><b>totalWidth</b>/4</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">8-bit grayscale</font></td>
+
+<td><font face="Times" size="+1"><b>totalWidth</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">8-bit color</font></td>
+
+<td><font face="Times" size="+1"><b>totalWidth</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">16-bit RGB (either 12 or 15 bits per pixel)</font></td>
+
+<td><font face="Times" size="+1"><b>totalWidth</b> x 2</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">24-bit RGB (24 bits per pixel)</font></td>
+
+<td><font face="Times" size="+1"><b>totalWidth</b> x 4</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The <b>refreshRate</b> field holds the monitor refresh rate, in Hz.</font>
+
+<p><font face="Times" size="+1">The <b>frameBuffer</b> field should contain the first virtual address that screen memory is mapped to. You get this address during initialization by invoking <b>mapFrameBufferAtPhysicalAddress:length:</b>, as documented in the IOFrameBufferDisplay and IOSVGADisplay specifications.</font>
+
+<p><font face="Times" size="+1">The next three fields specify how the display subsystem should interpret the screen memory. The value of <b>bitsPerPixel</b> should be IO_2BitsPerPixel, IO_8BitsPerPixel, IO_12BitsPerPixel, IO_15BitsPerPixel, or IO_24BitsPerPixel. You shouldn't specify IO_VGA, since it's used only by NeXT-supplied VGA support. For IOFrameBufferDisplays, the value of <b>colorSpace</b> is IO_OneIsWhiteColorSpace for black-and-white modes and IO_RGBColorSpace for RGB modes. For IOSVGADisplays, <b>colorSpace</b> is always IO_OneIsBlackColorSpace. The value of <b>pixelEncoding</b> is a string that specifies how each bit of a pixel should be interpreted. Some common values of <b>pixelEncoding</b> are shown below.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Value of pixelEncoding</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">&quot;--------RRRRRRRRGGGGGGGGBBBBBBBB&quot;</font></td>
+
+<td><font face="Times" size="+1">24-bit RGB, 8 bits per component; ignore the most significant byte</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">&quot;-RRRRRGGGGGBBBBB&quot;</font></td>
+
+<td><font face="Times" size="+1">16-bit RGB, 5 bits per component; ignore the most significant bit</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">&quot;RRRRGGGGBBBB----&quot;</font></td>
+
+<td><font face="Times" size="+1">16-bit RGB, 4 bits per component; ignore the 4 least significant bits</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">&quot;WWWWWWWW&quot;</font></td>
+
+<td><font face="Times" size="+1">8-bit grayscale</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">&quot;WW&quot;</font></td>
+
+<td><font face="Times" size="+1">2-bit grayscale; used by IOSVGADisplays</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The <b>flags</b> field contains caching instructions and optionally some flags, combined using the bitwise OR operator. The value you specify for caching depends on whether your hardware supports burst reads. If your hardware supports burst reads (as most '486 hardware does), you should specify IO_DISPLAY_CACHE_WRITETHROUGH to specify that screen memory be cached <i>write-through</i>. Write-through caching means that each write--even to memory that is in the cache--is immediately written to the device. If your hardware doesn't support burst reads, you should use IO_DISPLAY_CACHE_OFF to turn the cache off for screen memory. The third caching option, IO_DISPLAY_CACHE_COPYBACK, isn't currently supported; it specifies that writes have to be explicitly flushed, instead of being passed through the cache immediately. If <b>flags</b> contains no caching instructions, write-through caching is used.</font>
+
+<p><font face="Times" size="+1">IO_DISPLAY_NEEDS_SOFTWARE_GAMMA_CORRECTION and IO_DISPLAY_HAS_TRANSFER_TABLE are the two optional flags. IO_DISPLAY_NEEDS_SOFTWARE_GAMMA_CORRECTION should be specified if the display is in a 16-bit RGB mode with 5 bits per component <i>and</i> the hardware does not support gamma correction in this mode. It tells the display subsystem to use a default gamma correction table when converting the 4 bits used internally into the 5 bits required by the hardware.</font>
+
+<p><font face="Times" size="+1">IO_DISPLAY_HAS_TRANSFER_TABLE should be specified if the hardware supports gamma correction in this mode. Generally, drivers that support gamma correction should implement the <b>setTransferTable:...</b> method, which is described in IOFrameBufferDisplay.</font>
+
+<p><font face="Times" size="+1">The following example shows how a driver specifies <b>flags</b> when its hardware supports gamma correction only for 8-bit modes.</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* displayMode points to the IODisplayInfo for this mode */</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">displayMode-&gt;flags = IO_DISPLAY_CACHE_WRITETHROUGH;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">if (displayMode-&gt;bitsPerPixel == IO_15BitsPerPixel)</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">displayMode-&gt;flags |=&nbsp; IO_DISPLAY_NEEDS_SOFTWARE_GAMMA_CORRECTION;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">else if (displayMode-&gt;bitsPerPixel == IO_8BitsPerPixel)</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">displayMode-&gt;flags |= IO_DISPLAY_HAS_TRANSFER_TABLE;</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The <b>parameters</b> field is ignored by the display system. You can use it for whatever you want.</font>
+
+<p><font face="Times" size="+1">The following code example shows some typical IODisplayInfo structures, taken from a driver based on IOFrameBufferDisplay. See the description of <b>displayInfo</b> for an example for an IOSVGADisplay.</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">/* The frameBuffer field is initialized to 0, since it's determined</font><br>
+<img src="../../../../../Images/sp.gif" width=131 height=1><font face="Courier">* at runtime.&nbsp; The flags field is also determined at runtime.&nbsp; The</font><br>
+<img src="../../../../../Images/sp.gif" width=131 height=1><font face="Courier">* parameters field in this driver points to a mode-specific</font><br>
+<img src="../../../../../Images/sp.gif" width=131 height=1><font face="Courier">* structure that specifies values for the hardware registers.*/</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">const IODisplayInfo S3_928_ModeTable[] = {</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">{&nbsp;&nbsp; /* 800 x 600, 15bpp, 60Hz. */</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">800, 600, 1024, 2048, 60, 0, IO_15BitsPerPixel,</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">IO_RGBColorSpace, &#34;-RRRRRGGGGGBBBBB&#34;, 0,</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">(void *)&amp;S3_928_800x600x15,</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">},</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">{&nbsp;&nbsp; /* 800 x 600, 24bpp, 60Hz. */</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">800, 600, 1024, 4096, 60, 0, IO_24BitsPerPixel,</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">IO_RGBColorSpace, &#34;--------RRRRRRRRGGGGGGGGBBBBBBBB&#34;,</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">0, (void *)&amp;S3_928_800x600x24,</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">},</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">{&nbsp;&nbsp; /* 1024 x 768, 8bpp, 60Hz. */</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">1024, 768, 1024, 1024, 60, 0, IO_8BitsPerPixel,</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">IO_OneIsWhiteColorSpace, &#34;WWWWWWWW&#34;, 0,</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">(void *)&amp;S3_928_1024x768x8,</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">},</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">{&nbsp;&nbsp; /* 1024 x 768, 8bpp, 70Hz. */</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">1024, 768, 1024, 1024, 70, 0, IO_8BitsPerPixel,</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">IO_OneIsWhiteColorSpace, &#34;WWWWWWWW&#34;, 0,</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">(void *)&amp;S3_928_1024x768x8,</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">},</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">{&nbsp;&nbsp; /* 1024 x 768, 8bpp, 72Hz. */</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">1024, 768, 1024, 1024, 72, 0, IO_8BitsPerPixel,</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">IO_OneIsWhiteColorSpace, &#34;WWWWWWWW&#34;, 0,</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">(void *)&amp;S3_928_1024x768x8,</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">},</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">{&nbsp;&nbsp; /* 1024 x 768 x 15bpp, 60Hz. */</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">1024, 768, 1024, 2048, 60, 0, IO_15BitsPerPixel,</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">IO_RGBColorSpace, &#34;-RRRRRGGGGGBBBBB&#34;, 0,</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">(void *)&amp;S3_928_1024x768x15,</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">},</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">{&nbsp;&nbsp; /* 1024 x 768 x 15bpp, 72Hz. */</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">1024, 768, 1024, 2048, 72, 0, IO_15BitsPerPixel,</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">IO_RGBColorSpace, &#34;-RRRRRGGGGGBBBBB&#34;, 0,</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">(void *)&amp;S3_928_1024x768x15,</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">},</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">{&nbsp;&nbsp; /* 1024 x 768 x 24bpp, 60Hz. */</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">1024, 768, 1024, 4096, 60, 0, IO_24BitsPerPixel,</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">IO_RGBColorSpace, &#34;--------RRRRRRRRGGGGGGGGBBBBBBBB&#34;,</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">0, (void *)&amp;S3_928_1024x768x24,</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">},</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">{&nbsp;&nbsp; /* 1024 x 768 x 24bpp, 72Hz. */</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">1024, 768, 1024, 4096, 72, 0, IO_24BitsPerPixel,</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">IO_RGBColorSpace, &#34;--------RRRRRRRRGGGGGGGGBBBBBBBB&#34;,</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">0, (void *)&amp;S3_928_1024x768x24,</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">},</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">{&nbsp;&nbsp; /* 1280 x 1024, 8bpp, 60Hz. */</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">1280, 1024, 1280, 1280, 60, 0, IO_8BitsPerPixel,</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">IO_OneIsWhiteColorSpace, &#34;WWWWWWWW&#34;, 0,</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">(void *)&amp;S3_928_1280x1024x8,</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">},</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">{&nbsp;&nbsp; /* 1280 x 1024, 15bpp, 60Hz. */</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">1280, 1024, 2048, 4096, 60, 0, IO_15BitsPerPixel,</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">IO_RGBColorSpace, &#34;-RRRRRGGGGGBBBBB&#34;, 0,</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">(void *)&amp;S3_928_1280x1024x15,</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">},</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">};</font>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Variables</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">None declared in this class.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Adopted Protocols</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">IOScreenEvents</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">devicePort</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">hideCursor:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">moveCursor:frame:token:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setBrightness:token:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">showCursor:frame:token:</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Getting information about this display</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">displayInfo</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Getting and setting the registration token for this display</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setToken:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">token</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Getting parameters</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">getIntValues:forParameter:count:</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Getting the device port</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">devicePort</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">The IOScreenEvents protocol method <b>devicePort</b> is reimplemented in this class.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>devicePort</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(port_t)<b>devicePort</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the device port, which should be obtained from this instance's IODeviceDescription. This method in the IOScreenEvents protocol is reimplemented in this class.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>displayInfo</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(IODisplayInfo *)<b>displayInfo</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the IODisplayInfo that describes this display. Each display driver instance must use this method to obtain its IODisplayInfo structure. The driver must then set the fields in the structure so that they describe the display's configuration. For example, the following code initializes the IODisplayInfo associated with this instance. See the class description for information on IODisplayInfo structures.</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">static const IODisplayInfo modeTable[] = {</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">{1024, 768, 1024, 256, 60, 0, IO_2BitsPerPixel,</font><br>
+<img src="../../../../../Images/sp.gif" width=159 height=1><font face="Courier">IO_OneIsBlackColorSpace, &#34;WW&#34;, 0, 0,</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">},</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Add more modes here. */</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">};</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">#define modeTableCount&nbsp; (sizeof(modeTable) / sizeof(IODisplayInfo))</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">#define defaultMode 0</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">- initFromDeviceDescription:deviceDescription</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">{</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">IODisplayInfo *displayInfo;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">const IORange *range;</font>
+
+<p><img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">if ([super initFromDeviceDescription:deviceDescription] == nil)</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">return [super free];</font>
+
+<p><img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* selectedMode is a driver-defined instance variable */</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">selectedMode = [self selectMode:modeTable count:modeTableCount</font><br>
+<img src="../../../../../Images/sp.gif" width=264 height=1><font face="Courier">valid:NULL];</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">if (selectedMode &lt; 0) {</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">IOLog(&#34;%s: Sorry, cannot use requested display mode.\n&#34;,</font><br>
+<img src="../../../../../Images/sp.gif" width=222 height=1><font face="Courier">[self name]);</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">selectedMode = defaultMode;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">displayInfo = [self displayInfo];</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">*displayInfo = modeTable[selectedMode];</font>
+
+<p><img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">displayInfo-&gt;frameBuffer = (void *)</font><br>
+<img src="../../../../../Images/sp.gif" width=208 height=1><font face="Courier">[self mapFrameBufferAtPhysicalAddress:0 length:0];</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">if (displayInfo-&gt;frameBuffer == 0)</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">return [super free];</font>
+
+<p><img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">IOLog(&#34;%s: Initialized @ %d Hz.\n&#34;, [self name],</font><br>
+<img src="../../../../../Images/sp.gif" width=194 height=1><font face="Courier">displayInfo-&gt;refreshRate);</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">return self;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>getIntValues:forParameter:count:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(IOReturn)<b>getIntValues:</b>(unsigned int *)<i>array</i> <b>forParameter:</b>(IOParameterName)<i>parameter</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>count:</b>(unsigned int *)<i>count</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Handles NeXT-internal parameters specific to IODisplays; forwards the handling of all other parameters to <b>super</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setToken:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setToken:</b>(int)<i>token</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the registration token for this display.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>token</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>token</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(int)<b>token</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Gets the registration token for this display.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setToken</b></font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

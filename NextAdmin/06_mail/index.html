@@ -1,0 +1,2194 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextAdmin/06_Mail.rtfd -->
+<!-- Date: Sun Jan  1 13:56:42 2023 -->
+<head>
+<title>06_Mail</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Release 3.3 Copyright</font> &copy;<font face="Times">1994 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap><font face="Helvetica" size="+4"><b>6</b></font></td>
+
+<td><font face="Times" size="+4"><i>Managing Electronic Mail</i></font></td></tr>
+
+<tr valign=top>
+
+<td width=36 height=80></td></tr>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">Electronic mail allows users to send messages to one another. These messages can include formatted text, images, sounds, and documents. For a network of computers, you need to set up a mail server. Usually, you do this when you configure your network. This chapter explains how to set up a mail server on a NetInfo network, and discusses the resulting changes in the NetInfo databases.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Setting Up the Mail Server</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">In general, you use SimpleNetworkStarter to set up the mail server. If you've already done this, you can skip this section. If, on the other hand, you didn't set up a mail server when you created your network, and you now want to configure an existing server as the mail server, you need to follow the steps in this section.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">If you have an external hard disk where you would like to store mail messages, set it up and mount it as <b>/usr/spool/mail</b> following the instructions in Chapter 7, &quot;Attaching Peripherals,&quot; before continuing.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Adding a Host Alias</b></font>
+
+<p><font face="Times" size="+1">Mail on a NetInfo network is relayed through a computer identified by the host name <b>mailhost</b>. The computer you've chosen to be the mail server must be recognized as <b>mailhost</b>. Rather than changing the host name of the computer, you add a host alias.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Log into the computer you've chosen to be the mail server, using any valid account.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Start up HostManager, located in <b>/NextAdmin</b>. If you're not logged in as <b>root</b>, a panel appears stating that you must have superuser status. Enter the <b>root</b> password and click Login.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F14.gif" width=322 height=236></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Open from the Host menu. The Open in NetInfo Domain panel appears.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="../images/F2.gif" width=298 height=531></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>/</b> in the upper portion of the panel to select the root domain, then click the host name of the mail server in the bottom portion. Click OK. A host window appears.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F15.gif" width=514 height=338></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Click in the text field under the Host Name Aliases list, then enter <b>mailhost</b>. Click the Add button.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F16.gif" width=514 height=338></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Save the host entry with the new alias by choosing Save from the Host menu.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">This computer can now be accessed with the host name <b>mailhost</b>.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Exporting the Mail Directories</b></font>
+
+<p><font face="Times" size="+1">For network mail to work properly, the mail messages, mail aliases, and mail pictures must all have central, shared locations. When mail messages are sent, they are temporarily stored under the directory <b>/usr/spool/mail</b> until the recipients use NeXTmail</font><font size="-1"><sup><sup>TM</sup></sup></font><font face="Times" size="+1">to load the messages into the mailboxes in their home directories. Mail pictures and aliases are kept in <b>/LocalLibrary/Images/People</b>. You must make sure that both directories exist and are exported to the network:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Start up NFSManager on the mail server.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Drag the icon for <b>/usr/spool/mail</b> from the File Viewer into the well at the top of the Exported Folders window. If you prefer, you can click the Add button below the well, then use the browser that appears to select <b>/usr/spool/mail</b>. A panel appears asking for the <b>root</b> password of the server.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F17.gif" width=322 height=236></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Enter the <b>root</b> password and click Login. The Exported Directories window shows the added directory.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F18.gif" width=414 height=449></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Create a directory named <b>/LocalLibrary/Images/People</b> with the Workspace Manager.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Drag the icon for <b>/LocalLibrary/Images/People</b> from the File Viewer to the well in the Exported Directories window of NFSManager. If you prefer, you can click Add, then select the directory in the browser.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Importing the Mail Directories</b></font>
+
+<p><font face="Times" size="+1">Now you need to make sure that the mail directories are available to all the computers on the network:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Still in NFSManager, choose Import To from the main menu. The Select NetInfo Domain panel appears.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="../images/F91.gif" width=298 height=338></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>/</b> in the left column, then click OK. A new Imported Directories window appears. Notice the name of the domain in the title bar.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="../images/F10.gif" width=515 height=291></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Click Add (make sure you're working in the window for the root domain, and not the window for the local domain). A panel appears.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="../images/F11.gif" width=360 height=220></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Enter the host name of the mail server in the &quot;Server name&quot; text field, then <b>/usr/spool/mail</b> in the &quot;Remote directory&quot; field. A panel appears asking for the <b>root</b> password of the domain.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F21.gif" width=322 height=236></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Enter the <b>root</b> password and click Login. The added directory appears in the window.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F22.gif" width=515 height=291></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Edit the &quot;Mount point&quot; field so that it reads <b>/usr/spool/mail</b>. Click OK.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F23.gif" width=515 height=291></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Click Add.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>8.</b></font></td>
+
+<td><font face="Times" size="+1">In the panel that appears, enter the name of the server into the &quot;Server name&quot; text field and <b>/LocalLibrary/Images/People</b> in the &quot;Remote directory&quot; field. Click OK.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>9.</b></font></td>
+
+<td><font face="Times" size="+1">Edit the &quot;Mount point&quot; field so that it reads <b>/LocalLibrary/Images/People</b>. Click OK.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F12.gif" width=515 height=291></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>10.</b></font></td>
+
+<td><font face="Times" size="+1">Quit NFSManager.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Modifying the Root Domain /locations Directory</b></font>
+
+<p><font face="Times" size="+1">Mail delivery on NeXT computers (and other UNIX systems) is controlled by a <b>sendmail</b> configuration file. Three different configuration files are shipped with NeXT computers, each appropriate for a different situation. In order for mail to work properly, you must have the computers use the correct <b>sendmail</b> configuration file. You do this with NetInfoManager.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Still logged into the mail server, start up NetInfoManager, located in <b>/NextAdmin</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Open from the Domain menu. The Select NetInfo Domain panel appears.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="../images/F5.gif" width=298 height=338></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Select the root domain by clicking <b>/</b> in the left column, followed by clicking OK.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>locations</b> in the middle column of the domain window that appears.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Create a new subdirectory by choosing New Subdirectory from the Domain menu. A new subdirectory named <b>newValue</b> appears in the right column.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F24.gif" width=529 height=263></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Double-click <b>newValue</b> to open the Directory window.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F25.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>newValue</b> in the Values column. Change this value by entering <b>sendmail</b> and pressing Return.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>8.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>name</b> in the Properties column, then add a new property by choosing Append Property from the Directory menu.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F26.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>9.</b></font></td>
+
+<td><font face="Times" size="+1">Change the property key by entering <b>mailhost</b> in the text field and pressing Return.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>10.</b></font></td>
+
+<td><font face="Times" size="+1">Choose New Value from the Directory menu to add a new value to this property.</font></td></tr>
+
+<tr valign=top>
+
+<td width=96 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>11.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>new_value</b> in the Values column, then change it by entering the host name of the mail server and pressing Return.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F28.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>12.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>mailhost</b> in the Properties column, and choose Append Property from the Directory menu to add a new property.</font></td></tr>
+
+<tr valign=top>
+
+<td width=96 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>13.</b></font></td>
+
+<td><font face="Times" size="+1">Change the property key by entering <b>sendmail.cf</b> and pressing Return.</font></td></tr>
+
+<tr valign=top>
+
+<td width=96 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>14.</b></font></td>
+
+<td><font face="Times" size="+1">Choose New Value from the Directory menu, then change the value to be <b>/etc/sendmail/sendmail.sharedsubsidiary.cf</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=96 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap></td>
+
+<td><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">Be careful when entering this file name. A mistake here can cause mail not to work.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F27.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>15.</b></font></td>
+
+<td><font face="Times" size="+1">Save the modified directory by choosing Save from the Directory menu.</font></td></tr>
+
+<tr valign=top>
+
+<td width=96 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>16.</b></font></td>
+
+<td><font face="Times" size="+1">Close the domain window for the root domain.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Modifying the Local Domain /locations Directory</b></font>
+
+<p><font face="Times" size="+1">With the modifications you've made, all the computers on the network will use <b>sendmail.sharedsubsidiary.cf</b> as their <b>sendmail</b> configuration file. However, the mail server needs to use a different configuration file. To enable this, follow these steps:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Still in NetInfoManager, click the domain window for the local domain. If the window isn't available, use Open from the Domain menu to open the local domain of the mail server.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>locations</b> in the domain window.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Add a new subdirectory by choosing New Subdirectory from the Domain menu.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>newValue</b>, then double-click it to open the Directory window.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>newValue</b> in the Values column. Change the value of the <b>name</b> property by entering <b>sendmail</b> and pressing Return.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>name</b> in the Properties column, then add a new property by choosing Append Property from the Directory menu.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Change the property key by entering <b>mailhost</b> in the text field and pressing Return.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>8.</b></font></td>
+
+<td><font face="Times" size="+1">Choose New Value from the Directory menu to add a new value to this property.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>9.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>new_value</b> in the Values column, then change it by entering the host name of the mail server and pressing Return.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F29.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>10.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>mailhost</b> in the Properties column, then add a new property by choosing Append Property from the Directory menu.</font></td></tr>
+
+<tr valign=top>
+
+<td width=96 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>11.</b></font></td>
+
+<td><font face="Times" size="+1">Change the property key by entering <b>sendmail.cf</b> in the text field and pressing Return.</font></td></tr>
+
+<tr valign=top>
+
+<td width=96 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>12.</b></font></td>
+
+<td><font face="Times" size="+1">Choose New Value from the Directory menu to add a new value to this property.</font></td></tr>
+
+<tr valign=top>
+
+<td width=96 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>13.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>new_value</b> in the Values column, then change it to <b>/etc/sendmail/sendmail.mailhost.cf</b> and press Return.</font></td></tr>
+
+<tr valign=top>
+
+<td width=96 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap></td>
+
+<td><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">Again, be very careful entering this file name.</font></td></tr>
+
+<tr valign=top>
+
+<td width=96 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>14.</b></font></td>
+
+<td><font face="Times" size="+1">Save the modified directory by choosing Save from the Directory menu.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F30.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Because you've put this information in the local domain, the mail server will use the file named here, rather than the one named in the root domain. Remember, NetInfo always looks in the local domain first before searching up the domain hierarchy.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Updating Pictures and Aliases</b></font>
+
+<p><font face="Times" size="+1">The Addresses panel of the Mail application includes all the user accounts and aliases available for addressing a message. When new users or aliases are added, the aliases database must be updated. This is accomplished with the command <b>/usr/bin/mailDBupdate</b>. To make things even easier, you can modify a file so that the command runs automatically every day:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Log in as <b>root</b> on the mail server.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Open <b>/etc/crontab.local</b> and add a line like the following to the bottom of the file (if the file doesn't already exist, create it):</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">0 2 * * * root /usr/bin/mailDBupdate</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">This entry updates aliases and pictures every day at 2:00 am. If you'd like to run the command more frequently, or at a different time, modify the entry appropriately. See the UNIX manual page for <b>cron</b> for details.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Save the file.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The aliases database (and mail pictures) will now be updated daily. For more information about mail pictures, see &quot;Adding Pictures for Users&quot; later in this chapter.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">If you set up the mail server with SimpleNetworkStarter, the <b>cron</b> scripts will automatically be modified to include this command.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Examining the NetInfo Database</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Setting up a mail server with SimpleNetworkStarter is deceptively easy. Several different activities are performed behind the scenes, including setting up NFS directories and modifying NetInfo databases. The following steps will show you exactly what happened.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Start up the NetInfoManager application to examine the changes that were made to the NetInfo databases.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Open the root domain by choosing Open from the Domain menu and double-clicking <b>/</b> in the first column of the panel that appears.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>/machines</b> in the domain window, and locate the directory with the host name of the mail server.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F1.gif" width=529 height=263></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Double-click this directory to open the Directory window.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F2.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">Note that the <b>name</b> property now has two values: the original host name and <b>mailhost</b>, allowing this host to be identified by either name. The alias <b>mailhost</b> was added by SimpleNetworkStarter when you set up the mail server. Mail clients send mail to the host <b>mailhost</b> to be relayed to their final destination.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Close the Directory window. Locate the directory <b>/locations/sendmail</b> in the root domain window and double-click it to open a different Directory window.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F3.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>sendmail.cf</b>. Mail delivery is controlled by a <b>sendmail</b> configuration file. The value of this property specifies which configuration file mail clients should use. For mail clients, it's <b>/etc/sendmail/sendmail.sharedsubsidiary.cf</b>.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F31.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>mailhost</b>. The value of this property is the host name of the mail server.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F32.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">Having a value for the <b>mailhost</b> property of the <b>sendmail</b> directory prevents SimpleNetworkStarter from trying to configure additional mail servers on the same network.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>8.</b></font></td>
+
+<td><font face="Times" size="+1">Close the Directory window.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>9.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>mounts</b> in the root domain window. Notice the subdirectories <i>server</i><b>:/usr/spool/mail</b> and <i>server</i><b>:/LocalLibrary/Images/People</b>.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F13.gif" width=587 height=263></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">When mail is sent, it's stored temporarily under the directory <b>/usr/spool/mail</b>. Mail aliases and picture are stored in <b>/LocalLibrary/Images/People</b>. These directories must be available across the network for mail to work properly. The <b>mounts</b> subdirectories shown here mount the required mail directories from the mail server onto the clients. On the mail server, which has local access to those files, the mounts are ignored.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>10.</b></font></td>
+
+<td><font face="Times" size="+1">Close the root domain window. Choose Open from the Domain window, and open the local domain of the mail server.</font></td></tr>
+
+<tr valign=top>
+
+<td width=96 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>11.</b></font></td>
+
+<td><font face="Times" size="+1">Open the directory <b>/locations/sendmail</b> and click <b>sendmail.cf</b>.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F33.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">Notice that on the server, a different <b>sendmail</b> configuration file is specified--<b>/etc/sendmail/sendmail.mailhost.cf</b>. Since NetInfo searches local domains first, this configuration file is used on the mail server instead of the one specified in the root domain.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>12.</b></font></td>
+
+<td><font face="Times" size="+1">Close the Directory window, then click <b>exports</b> in the domain window.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F35.gif" width=529 height=263></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">Notice the subdirectories for <b>/usr/spool/mail</b> and <b>/LocalLibrary/Images/People</b>. These export the directories, making them available across the network. For more information about exporting and importing directories, see Chapter 4, &quot;Setting Up the Network File System.&quot;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>13.</b></font></td>
+
+<td><font face="Times" size="+1">Exit NetInfoManager by choosing Quit from the main menu.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Creating Mail Aliases</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Once you've set up the mail server and clients, you may want to create mail aliases. An alias is an alternate way to address a single user, or a way to address a group of users by a single name.</font>
+
+<p><font face="Times" size="+1">By default, mail addresses are the user names assigned to each account. However, user names are often cryptic and not easily remembered. For example, a user named Natasha Horishnikoff might have the user name <b>nhrshnkf</b>. Using the NetInfoManager application, you can create an alias for a user that's more readable and closer to the user's real name. For the user name <b>nhrshnkf</b>, you might create an alias such as <b>Natasha_Horishnikoff</b> or simply <b>natasha</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>Important:</b></font>&nbsp; <font face="Times" size="+1">At least one of the names of a mail alias must be all lowercase. For example, the mail alias for <b>nhrshnkf </b>can only include <b>Natasha_Horishnikoff</b> if it also has an all lowercase name, such as <b>natasha</b>.</font>
+
+<p><font face="Times" size="+1">A mail alias can also contain more than one user. This type of alias can be thought of as a distribution list; when you send mail addressed to the alias, each member of the list receives the mail message. The members of such an alias can be user names or other mail aliases.</font>
+
+<p><font face="Times" size="+1">The following procedures describe how to use NetInfoManager to create mail aliases.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Start up the NetInfoManager application, located in <b>/NextAdmin</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Open from the Domain menu. Open the root domain by clicking <b>/</b> in the first column of the Select NetInfo Domain panel that appears, and then clicking the OK button.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="../images/F5.gif" width=298 height=338></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Locate and select the <b>/aliases</b> directory in the domain window that appears.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F34.gif" width=587 height=263></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">To create a new alias, choose the New Subdirectory command from the Domain menu. (If you're not logged in as <b>root</b>, a panel may appear prompting you to enter the <b>root</b> password; enter the password and click Login.) A new directory named <b>newValue</b> appears in the <b>aliases</b> column; this directory will hold your new alias.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F36.gif" width=587 height=263></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Double-click <b>newValue</b> to open the directory window.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F6.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>newValue</b> in the Values column, enter the name of the new alias you want to create, and press Return. This changes the value of the <b>name</b> property to the name of the new alias.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Helvetica" size="+1"><b>Important:</b></font>&nbsp; <font face="Times" size="+1">An alias name should contain no spaces or punctuation other than an underscore (&quot;_&quot;) or a hyphen (&quot;-&quot;), as in <b>Admin_Alias</b> or <b>quality-team</b>.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F7.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">If you want this alias to be known by more than one name, choose Append Value from the Directory menu and modify the result to be the additional name. Repeat for all the names of the alias. Remember, at least one value of the <b>name</b> property must be all lowercase.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>8.</b></font></td>
+
+<td><font face="Times" size="+1">Create a new property to identify the members of the alias. Click <b>name</b> in the Properties column, then choose Append Property from the Directory menu. A second property with the key <b>new_value</b> appears in the Properties column.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>9.</b></font></td>
+
+<td><font face="Times" size="+1">Change the key of the new property by entering <b>members</b> followed by pressing Return.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F8.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">The values of the <b>members</b> property will be the account names and aliases that will be addressed by the alias.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>10.</b></font></td>
+
+<td><font face="Times" size="+1">Add a new value to the <b>members</b> property by choosing New Value from the Directory menu. Change this value by entering the account name of the user to be addressed by this alias, followed by pressing Return.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F9.gif" width=343 height=285></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>11.</b></font></td>
+
+<td><font face="Times" size="+1">If you want to create a group (distribution list) alias, you simply add additional values to the <b>members</b> property. Select Append Value from the Directory menu and enter the account name of the additional user followed by pressing Return.</font></td></tr>
+
+<tr valign=top>
+
+<td width=96 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>12.</b></font></td>
+
+<td><font face="Times" size="+1">When you've finished adding account names or aliases to this alias, choose Save from the Directory menu. This adds the new alias to the NetInfo database.</font></td></tr>
+
+<tr valign=top>
+
+<td width=96 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>13.</b></font></td>
+
+<td><font face="Times" size="+1">To update the NeXTmail application database to include all users and mail aliases currently in the NetInfo database, enter the following command in a shell window:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>mailDBupdate</b></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">Every time a user or mail alias is added, deleted, or modified, you must run this command to update the database. If you prefer, you can have this command run automatically by <b>cron</b>. See &quot;Updating Pictures and Aliases&quot; earlier in this chapter.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">You can now use your new alias in any of the address fields of a mail message. When the mail system encounters the alias, the mail message will be delivered to all of the users whose account names or aliases appear as values of the <b>members</b> property for that alias.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Adding Pictures for Users</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">As described in the <i>User's Guide</i>, the NeXTmail application can display the picture of the sender when displaying a message. To do this, NeXTmail reads TIFF images from the directory <b>/LocalLibrary/Images/People</b>. To make a user's picture show up in NeXTmail, perform the following steps:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Obtain a 64</font> <font size="+1"><img src="../images/cB4.gif" width=8 height=7></font> <font face="Times" size="+1">64-pixel TIFF image of the person. This can be scanned in with a scanner, captured from video, or created with a paint program such as IconBuilder.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">On the mail server, copy the image into <b>/LocalLibrary/Images/People/</b><i>user</i><b>.tiff</b>, where <i>user</i> is the person's user name.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Make sure the picture file has read permission for everyone.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Enter the following command into a shell window on the mail server:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>mailDBupdate</b></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The picture will show up in the NeXTmail application next to messages from the user. In addition, the picture will be shown in the NeXTmail Addresses panel.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Troubleshooting</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Troubles with mail can show up as messages not being delivered as expected, mail being returned with the message &quot;unknown user,&quot; or the Addresses panel of the Mail application not displaying all login names or aliases. If you find yourself with one of these situations, you can check several things to verify that they're configured correctly:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Mail directories exported correctly--Use NFSManager to make sure that both <b>/usr/spool/mail</b> and <b>/LocalLibrary/Images/People</b> are exported to the network with read/write access.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Mail directories mounted correctly--Use NFSManager to make sure that the mount entries for both <b>/usr/spool/mail </b>and <b>/LocalLibrary/Images/People</b> are correct. The mount entries should be in the root domain, the mount point for each should be the same as the exported directory, and the server name should match the host name (or alias) of the mail server.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Correct <b>sendmail</b> file being used--Use NetInfoManager to verify that the root domain has a directory called <b>/locations/sendmail</b> with a <b>sendmail.cf</b> property that has the value <b>/etc/sendmail/sendmail.sharedsubsidiary.cf</b>. Also make sure that the local domain on the mail server has a <b>/locations/sendmail</b> directory with a <b>sendmail.cf </b>property that has a value of <b>/etc/sendmail/sendmail.mailhost.cf</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Alias name added for mail server--Use HostManager to verify that the mail server has the host name alias <b>mailhost</b>. Make sure that no other host has this alias. A quick way to check is to enter <b>nidump hosts /</b> in a shell window.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Mail aliases are correct--Make sure that any mail aliases are stored in the root domain rather than a local domain. Check that all mail aliases have at least one value for the <b>name</b> property that's all lowercase letters. A quick way to check is to enter <b>niutil -list / /aliases</b> in a shell window.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">To get more detailed information when you're diagnosing mail problems, you can use the verbose option to <b>mail</b>:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Log into a computer other than the mail server and enter the following command in a shell window:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>mail -v</b> me</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Enter a subject when prompted, then enter a short message and press Return.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Type a period (&quot;.&quot;) on a line by itself and press Return. You see some messages about the mail delivery that should look something like the following:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">me... Connecting to mailhost via etherl...</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">Trying 192.42.72.3...&nbsp; connected.</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">220 mailhost Sendmail NeXT-1.0 (From Sendmail 5.52)/NeXT0.1-Aleph-bf ready at Thu, 23 Jan 92 11:37:36 PST</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">&gt;&gt;&gt; HELLO myhost</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">250 mailhost Hello myhost, pleased to meet you</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">&gt;&gt;&gt; MAIL From:&lt;me&gt;</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">250 &lt;me&gt;... Sender ok</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">&gt;&gt;&gt; RCPT To:&lt;me&gt;</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">250 &lt;me&gt;... Recipient ok</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">&gt;&gt;&gt; DATA</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">354 Enter mail, end with &#34;.&#34; on a line by itself</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">&gt;&gt;&gt; .</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">250 Mail accepted</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">&gt;&gt;&gt; QUIT</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">221 mailhost delivering mail</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">Notice the line that includes &quot;Connecting to mailhost via etherl.&quot; If you see a message that ends with &quot;via local,&quot; you know that the mail server isn't being recognized by this computer. Verify that the <b>mailhost</b> alias is stored correctly and double-check the <b>sendmail</b> configuration file information.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">If mail seems to be delivered correctly from a mail client, try the same command on the mail server:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Log into the mail server and enter the following command in a shell window:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>mail -v</b> me</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Enter a subject when prompted, then enter a short message and press Return.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Type a period (&quot;.&quot;) on a line by itself and press Return. You see some messages about the mail delivery that should look something like the following:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">me... Connecting to via local...</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">me... Sent</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">If you don't see similar messages, check the <b>/locations/sendmail</b> directory in the local domain of the mail server.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">More troubleshooting information about <b>sendmail</b> configuration files can be found in Appendix D, &quot;The <b>sendmail </b>Program.&quot;</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

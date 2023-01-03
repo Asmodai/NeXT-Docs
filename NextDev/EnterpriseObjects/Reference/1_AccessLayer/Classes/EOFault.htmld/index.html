@@ -1,0 +1,774 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/EnterpriseObjects/Reference/1_AccessLayer/Classes/EOFault.rtf -->
+<!-- Date: Sun Jan  1 17:05:20 2023 -->
+<head>
+<title>EOFault</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>EOFault</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Inherits From:</b></font></td>
+
+<td><font face="Times" size="+1">none <i>(EOFault is a root class)</i></font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">eoaccess/EOFault.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">An EOFault is an enterprise object (or an array of enterprise objects) whose data hasn't yet been fetched from the database. When an EODatabaseChannel fetches an object that has relationships, it creates EOFaults for the destinations of those relationships (unless, for to-one relationships, the corresponding objects have already been fetched and uniqued). By not fetching an object until the application actually needs it, the EODatabaseChannel prevents unnecessary interaction with the database server.</font>
+
+<p><font face="Times" size="+1">An EOFault can represent one object, in which case it's called a <i>single-object fault</i>, or it can represent an array of objects described by some qualifier, in which case it's called an <i>array fault</i>. To-one relationships result in single-object faults, while to-many relationships result in array faults. A single-object fault fetches and loads the real object over itself the first time you send a message to it (with some exceptions, listed below). An array fault loads its objects as soon as you send it any message that requires accessing the contents of the array (<b>objectAtIndex:</b>, <b>count</b>, and so on). EOFaults of either type are called <i>fault objects</i>.</font>
+
+<p><font face="Times" size="+1">The <b>objectFaultWithPrimaryKey:entity:databaseChannel:zone:</b> class method creates a single-object fault, and the <b>arrayFaultWithQualifier:fetchOrder:databaseChannel:zone:</b> class method creates an array fault. You can't create a fault object with <b>alloc</b> and <b>init...</b> messages.</font>
+
+<p><font face="Times" size="+1">Your application can explicitly create fault objects to avoid fetch conflicts. This is a concern for newly created enterprise objects that need to fetch objects--other than those given by their relationships--in their <b>takeValuesFromDictionary:</b> or <b>awakeForDatabaseChannel:</b> methods (described in the EOKeyValueCoding and EODatabaseChannelNotification protocol specifications, respectively). Because the channel that fetched the enterprise object is busy, the enterprise object can't use it to fetch other objects--and must be careful not to access any objects that are actually fault objects. An enterprise object can use a different channel to fetch another object immediately, or it can create a fault object so that the instance variable at least contains a valid pointer.</font>
+
+<p><font face="Times" size="+1">A newly created enterprise object must not access a fault object while its channel is busy fetching. Doing so causes the fault to attempt a fetch with that channel, resulting in a fetch conflict. The enterprise object also can't replace a single-object fault with an object it fetches itself; the fault has already been uniqued by the time the enterprise object gets it, and other enterprise objects may hold references to it. An array fault, however, can be replaced; you might want to replace an array fault to change the qualifier or the fetch order that will be used to fetch its targets.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Messages that Don't Cause Fetching</b></font>
+
+<p><font face="Times" size="+1">A fault object responds to some messages as if it were the target object, without causing a fetch. For example, <b>class</b> returns the class of object that will be fetched, not the EOFault class. The following instance methods neither cause a fault object to fetch nor betray the true identity of a fault object:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=125></td>
+
+<td><font face="Times" size="+1">autorelease</font><br>
+<font face="Times" size="+1">class</font><br>
+<font face="Times" size="+1">conformsToProtocol:</font><br>
+<font face="Times" size="+1">description</font><br>
+<font face="Times" size="+1">isKindOfClass:</font><br>
+<font face="Times" size="+1">isMemberOfClass:</font><br>
+<font face="Times" size="+1">isProxy (returns NO)</font><br>
+<font face="Times" size="+1">printForDebugger:</font><br>
+<font face="Times" size="+1">release</font><br>
+<font face="Times" size="+1">respondsToSelector:</font><br>
+<font face="Times" size="+1">retain</font><br>
+<font face="Times" size="+1">retainCount</font><br>
+<font face="Times" size="+1">zone</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Forcing a Fault Object to Fetch</b></font>
+
+<p><font face="Times" size="+1">You can force a fault object to fetch by sending it a message that it can't handle as a fault. The messages listed in the previous section all work with generic run-time information, and so don't cause fetching, but any message that accesses data (such as the key-value coding method <b>valuesForKeys:</b> or a custom message such as <b>lastName</b>) causes the fault to fetch its data with its database channel. EOFault also defines the <b>self</b> message so that it always causes the fault to fetch; this provides you with a method that has no effect on a normal object, but that you can always use to cause a fault object to fetch. Remember that you shouldn't cause a fault to fetch itself if its database channel is busy.</font>
+
+<p><font face="Times" size="+1">With a single-object fault, you can conveniently use EODatabaseChannel's <b>refetchObject:</b> method to get the data for the fault. This technique allows you to fetch the fault's data even when its database channel is busy, by using a different database channel. <b>refetchObject:</b> checks whether it's fetching for a fault object, and transforms the fault into an instance of its enterprise object class.</font>
+
+<p><font face="Times" size="+1">Forcing a fetch on an array fault is best done by replacing the array fault with one that has a different database channel, and then causing the new fault to fetch itself:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">id array;&nbsp;&nbsp;&nbsp; /* Assume this exists and is an array fault. */</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EODatabaseChannel *availableChannel;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">id forcedFault;</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">forcedFault = [EOFault arrayFaultWithQualifier:[array qualifier]</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">fetchOrder:[array fetchOrder]</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">databaseChannel:availableChannel</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">zone:[array zone]];</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[array autorelease];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">array = [[forcedFault self] retain];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This code excerpt creates a new array fault with the same information as the one being fetched, except that it's using a database channel that isn't busy fetching. It then sends <b>self</b> to the new fault to force it to fetch, and assigns it to the original variable.</font>
+
+<p><font face="Times" size="+1">In the event that the Framework is unable to resolve a to-one fault to a single database record (to-one relationships must resolve to exactly one record), <b>unableToFaultWithPrimaryKey:entity:databaseChannel:</b> is invoked; the default implementation of this method raises an exception. You can override this method in your enterprise objects to supply different behavior. See the description of the EOUnableToFaultToOne informal protocol elsewhere in this Reference for more information.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Variables</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Class <b>isa</b>;</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">isa</font></td>
+
+<td><font face="Times" size="+1">A pointer to the instance's class structure.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Creating a fault</font></td>
+
+<td><font face="Times" size="+1">+ arrayFaultWithQualifier:fetchOrder:</font><br>
+<img src="../../../../../Images/sp.gif" width=25 height=1><font face="Times" size="+1">databaseChannel:zone:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font face="Times" size="+1">+ objectFaultWithPrimaryKey:entity:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=333></td>
+
+<td><font face="Times" size="+1">databaseChannel:zone:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Getting information about a fault</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=308></td>
+
+<td><font face="Times" size="+1">+ clearFault:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font face="Times" size="+1">+ databaseChannelForFault:</font><br>
+<font face="Times" size="+1">+ entityForFault:</font><br>
+<font face="Times" size="+1">+ fetchOrderForFault:</font><br>
+<font face="Times" size="+1">+ isFault:</font><br>
+<font face="Times" size="+1">+ primaryKeyForFault:</font><br>
+<font face="Times" size="+1">+ qualifierForFault:</font><br>
+<font face="Times" size="+1">+ targetClassForFault:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Special instance methods</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">description</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">self</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>arrayFaultWithQualifier:fetchOrder:databaseChannel:zone:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ (NSArray *)<b>arrayFaultWithQualifier:</b>(EOQualifier *)<i>aQualifier</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>fetchOrder:</b>(NSArray *)<i>aFetchOrder</i></font><br>
+<font face="Times" size="+1"><b>databaseChannel:</b>(EODatabaseChannel *)<i>aChannel</i></font><br>
+<font face="Times" size="+1"><b>zone:</b>(NSZone *)<i>zone</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns an array fault that will have <i>aChannel</i> fetch its objects according to <i>aQualifier</i> and <i>aFetchOrder</i> (an array of EOAttributeOrdering objects) when it's accessed for the first time. If <i>aChannel</i> is fetching when the array is accessed, a fetch conflict will result, with undefined results.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1">+ <b>objectFaultWithPrimaryKey:entity:databaseChannel:zone</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>clearFault:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ (void)<b>clearFault:</b><i>aFault</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Turns <i>aFault</i> into a freshly initialized instance of the target class. Does <i>not</i> fetch data for the new instance. Raises <b>NSInvalidArgumentException</b> if invoked with an object that isn't a fault object. You should rarely need to use this method.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1">+ <b>targetClassForFault:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>databaseChannelForFault:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ (EODatabaseChannel *)<b>databaseChannelForFault:</b><i>aFault</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the EODatabaseChannel that <i>aFault</i> was created with, or <b>nil</b> if <i>aFault</i> isn't a fault object.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>entityForFault:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ (EOEntity *)<b>entityForFault:</b><i>aFault</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the entity that <i>aFault</i> was created with (or as determined by the qualifier for an array fault). Returns <b>nil</b> if <i>aFault</i> isn't a fault object.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>fetchOrderForFault:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ (NSArray *)<b>fetchOrderForFault:</b><i>aFault</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the array of EOAttributeOrdering objects that <i>aFault</i> was created with, or <b>nil</b> if <i>aFault</i> isn't an array fault.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>isFault:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ (BOOL)<b>isFault:</b><i>anObject</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if <i>anObject</i> is a fault object, NO otherwise. You should use this method, not <b>isKindOfClass:</b>, if you need to know whether an object is in fact a fault object.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>objectFaultWithPrimaryKey:entity:databaseChannel:zone:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ <b>objectFaultWithPrimaryKey:</b>(NSDictionary *)<i>aKey</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>entity:</b>(EOEntity *)<i>anEntity</i></font><br>
+<font face="Times" size="+1"><b>databaseChannel:</b>(EODatabaseChannel *)<i>aChannel</i></font><br>
+<font face="Times" size="+1"><b>zone:</b>(NSZone *)<i>zone</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns a single-object fault for an enterprise object with the specified primary key and entity. When accessed, <i>aChannel </i>fetches the actual object for the fault, allocating it from <i>zone</i>. If <i>aChannel</i> is fetching when the fault attempts to fetch, a fetch conflict will result, with undefined results.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font face="Times" size="+1">+ <b>arrayFaultWithQualifier:fetchOrder:databaseChannel:zone</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>primaryKeyForFault:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ (NSDictionary *)<b>primaryKeyForFault:</b><i>aFault</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the primary key for a single-object fault, <b>nil</b> for an array fault or non-fault object.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>qualifierForFault:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ (EOQualifier *)<b>qualifierForFault:</b><i>aFault</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the qualifier used to fetch the object or objects that <i>aFault</i> was created for. For a single-object fault this is the qualifier of the entity the fault was created with, plus the primary key specification; for an array fault this is simply the qualifier the fault was created with. Returns <b>nil</b> if fault isn't a <i>aFault</i> object.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>qualifier</b> (EOEntity)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>targetClassForFault:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ (Class)<b>targetClassForFault:</b><i>aFault</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the class that will be instantiated when <i>aFault</i> is fetched. For a single-object fault the class is determined by the entity the fault was created with; for an array fault the class is NSMutableArray. Returns <b>nil</b> if <i>aFault</i> isn't a fault object.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>entity</b> (EOQualfier)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSString *)<b>description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns a string object that represents the contents of the fault object, without causing it to fetch its data. A single-object fault's description contains the name of its entity and the value of its primary key; an array fault's description contains the qualifier used to fetch its objects.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>self</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>self</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Causes the fault object to fetch its data and return <b>self</b>. You can use this message to force a fault object to fetch its data immediately.</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

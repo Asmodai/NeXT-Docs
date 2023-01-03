@@ -1,0 +1,755 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/EnterpriseObjects/Reference/3_UIObjects/Classes/NXFormatter.rtf -->
+<!-- Date: Sun Jan  1 17:05:26 2023 -->
+<head>
+<title>NXFormatter</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>NXFormatter</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Inherits From:</b></font></td>
+
+<td><font face="Times" size="+1">Object</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">eointerface/NXFormatter.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">An NXTableView uses NXFormatter objects to display and edit individual fields. Though a formatter only displays or edits one value at a time, but because the format within a table view's row or column is uniform, the formatter is usually associated with an entire row or column. Because a formatter can be reused for many different fields, it has to get the values to display from a <i>data source</i> that can provide values based on position within an axis.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">An NXFormatter's data source is an object that implements methods of the NXTableDataSource informal protocol, and is <i>not</i> the sort defined by the EODataSources protocol. In fact, for an NXTableView used with an EOController the data source is an EOColumnAssociation.</font>
+
+<p><font face="Times" size="+1">NXFormatter is an abstract superclass. The Enterprise Objects Framework provides three concrete subclasses for displaying text and images:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">NXImageFormatter, which scales and displays images</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">NXTextFormatter, which quickly displays static (uneditable) text</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">NXEditableFormatter, which displays editable text</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">NXFormatter's primary method is <b>drawFieldAt::inside:inView:withAttributes::usePositions::</b>. This method, invoked by an NXTableView to display a value, defines the way in which an NXFormatter formats and displays that value. The default implementation of this method does nothing; each subclass must implement it in a meaningful way.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Batching</b></font>
+
+<p><font face="Times" size="+1">NXFormatter defines three methods for optimization of repeated display of values. This allows a formatter to set up and reuse some initial state (such as font or PostScript graphics state) that would be expensive to reestablish for each individual field. <b>beginBatching:</b> tells the formatter to set up its state, <b>resetBatching:</b> tells it to reset that state, and <b>endBatching</b> tells the formatter that the repeated display is over and that it can dispose of the cached state.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Notifying the Formatter's Delegate</b></font>
+
+<p><font face="Times" size="+1">An NXFormatter capable of editing its values notifies its delegate of changes by sending messages described in the NXFormatterValidation informal protocol specification. All a delegate need to receive notification is implement the appropriate method; if the delegate doesn't respond to a message it isn't sent.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Variables</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">id <b>delegate</b>;</font>
+
+<p><font face="Times" size="+1">id <b>dataSource</b>;</font>
+
+<p><font face="Times" size="+1">id <b>value</b>;</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">delegate</font></td>
+
+<td><font face="Times" size="+1">The formatter's delegate.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">dataSource</font></td>
+
+<td><font face="Times" size="+1">The object that provides the formatter with values to display; this is also the data source of the formatter's axis.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">value</font></td>
+
+<td><font face="Times" size="+1">The value to be formatted (an object conforming to the NXTableValue protocol).</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Getting and displaying a value</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">getValueAt::withAttributes::usePositions::</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">drawFieldAt::inside:inView:withAttributes::</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=333></td>
+
+<td><font face="Times" size="+1">usePositions::</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Batching format requests</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">beginBatching:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">resetBatching:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">endBatching</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Assigning a delegate</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setDelegate:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">delegate</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Assigning a data source</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setDataSource:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">dataSource</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>beginBatching:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>beginBatching:</b>(id &lt;NXTableVectors&gt;)<i>attributes</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Informs the NXFormatter that a formatting session is about to begin. You never invoke this method directly; it's invoked automatically by the NXTableView just before it sends the first in a series of <b>drawFieldAt::...</b> messages. A formatting session is concluded by an <b>endBatching</b> message and is restarted by <b>resetBatching:</b>.</font>
+
+<p><font face="Times" size="+1">The default implementation of <b>beginBatching:</b> does nothing. You can reimplement this method in a subclass to perform pre-formatting initialization to optimize a series of display operations. The return value is ignored. The <i>attributes</i> argument is currently unused (it's always <b>nil</b>).</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>dataSource</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>dataSource</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the NXFormatter's data source.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>dataSource</b> (NXTableView)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>delegate</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>delegate</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the NXFormatter's delegate.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>drawFieldAt::inside:inView:withAttributes::usePositions::</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>drawFieldAt:</b>(unsigned int)<i>rowIndex</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>:</b>(unsigned int)<i>columnIndex</i></font><br>
+<font face="Times" size="+1"><b>inside:</b>(NXRect *)<i>frameRect</i></font><br>
+<font face="Times" size="+1"><b>inView:</b><i>aView</i></font><br>
+<font face="Times" size="+1"><b>withAttributes:</b>(id &lt;NXTableVectors&gt;)<i>rowAttributes</i></font><br>
+<font face="Times" size="+1"><b>:</b>(id &lt;NXTableVectors&gt;)<i>columnAttributes</i></font><br>
+<font face="Times" size="+1"><b>usePositions:</b>(BOOL)<i>rowPosFlag</i></font><br>
+<font face="Times" size="+1"><b>:</b>(BOOL)<i>columnPosFlag</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Retrieves a value from the data source, formats it, and displays it in <i>aView</i>. NXFormatter's implementation does nothing and returns <b>self</b>; it's up to a subclass to implement this method in a meaningful way.</font>
+
+<p><font face="Times" size="+1">Typically, a subclass's implementation follows these steps:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">1.</font></td>
+
+<td><font face="Times" size="+1">Retrieve the value to display. This is done by using <b>getValueAt::...</b> with the arguments, which sets the NXFormatter's <b>value </b>instance variable:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[self getValueAt:rowIndex :columnIndex</font><br>
+<img src="../../../../../Images/sp.gif" width=166 height=1><font face="Courier">withAttributes:rowAttributes :columnAttributes</font><br>
+<img src="../../../../../Images/sp.gif" width=166 height=1><font face="Courier">usePositions:rowPosFlag :columnPosFlag];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">2.</font></td>
+
+<td><font face="Times" size="+1">The formatter prepares <b>value</b> for display, for example, by creating a Cell to do the drawing. The formatter can use <i>rowAttributes</i> and <i>columnAttributes</i> to determine alignment and other display properties.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">3.</font></td>
+
+<td><font face="Times" size="+1">The formatter displays the formatted value inside <i>frameRect</i>, which is given in <i>aView</i>'s coordinate system. Note that the focus will be locked on <i>aView</i> before this message is sent--the formatter doesn't have to lock the focus itself.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1"><i>aView</i> isn't an NXTableView, but a private view used by the NXTableView.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>endBatching</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>endBatching</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Notifies the NXFormatter that a formatting session is over. See the <b>beginBatching:</b> method for more information. The return value is ignored.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>resetBatching:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>getValueAt::withAttributes::usePositions::</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>getValueAt:</b>(unsigned int)<i>rowIndex</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>:</b>(unsigned int)<i>columnIndex</i></font><br>
+<font face="Times" size="+1"><b>withAttributes:</b>(id &lt;NXTableVectors&gt;)<i>rowAttributes</i></font><br>
+<font face="Times" size="+1"><b>:</b>(id &lt;NXTableVectors&gt;)<i>columnAttributes</i></font><br>
+<font face="Times" size="+1"><b>usePositions:</b>(BOOL)<i>rowPosFlag</i></font><br>
+<font face="Times" size="+1"><b>:</b>(BOOL)<i>columnPosFlag</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Retrieves a value from the data source, places it in the NXFormatter's <b>value</b> instance variable, and returns the value. You never invoke this method from your application; however, if you create a subclass of NXFormatter, it needs to invoke this method from the implementation of <b>drawFieldAt::...</b>, as explained in the description of that method. A subclass of NXFormatter doesn't normally need to override this method.</font>
+
+<p><font face="Times" size="+1">The &quot;use position&quot; flags determine which retrieval methods of the data source are used. If both are NO, then <b>getValueFor::into:</b> is sent to the data source with the identifiers of <i>rowAttributes</i> and <i>columnAttributes</i>. If one of the flags is YES, then <b>getValueFor:at:into:</b> is sent to the data source with the corresponding index argument and the identifier of its complementary axis. For example, if <i>rowPosFlag</i> is YES, this message is generated:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[dataSource getValueFor:[columnAttributes identifier] at:rowIndex</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">into:value];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The result is undefined if both flags are YES.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>identifier</b> (NXTableVectors protocol)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>resetBatching:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>resetBatching:</b>(id &lt;NXTableVectors&gt;)<i>attributes</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Tells the NXFormatter to restart a formatting session. See the <b>beginBatching:</b> method for more information. The return value is ignored.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>endBatching</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setDataSource:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setDataSource:</b><i>anObject</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the NXFormatter's data source to <i>anObject</i>. Returns <b>self</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setDataSource:</b> (NXTableView)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setDelegate:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>setDelegate:</b><i>anObject</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the NXFormatter's delegate to <i>anObject</i>. Returns <b>self</b>.</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

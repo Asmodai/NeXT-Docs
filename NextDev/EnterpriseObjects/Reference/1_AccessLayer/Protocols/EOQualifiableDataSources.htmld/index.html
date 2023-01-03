@@ -1,0 +1,196 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/EnterpriseObjects/Reference/1_AccessLayer/Protocols/EOQualifiableDataSources.rtf -->
+<!-- Date: Sun Jan  1 17:05:23 2023 -->
+<head>
+<title>EOQualifiableDataSources</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>EOQualifiableDataSources</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Adopted By:</b></font></td>
+
+<td><font face="Times" size="+1">EODatabaseDataSource</font><br>
+<font face="Times" size="+1">EODetailDatabaseDataSource</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Incorporates:</b></font></td>
+
+<td><font face="Times" size="+1">EODataSources</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">eoaccess/EODataSources.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Protocol Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The EOQualifiableDataSources protocol defines the interface for a data source (as defined in the EODataSources protocol specification) that supplies objects based on a relationship from a source (or &quot;master&quot;) object. For example, suppose a Department object has a relationship giving all Employee objects associated with it. When you qualify a data source on this relationship, that data source supplies all the Employee objects for that department (and no other objects).</font>
+
+<p><font face="Times" size="+1">The Enterprise Objects Framework provides two classes that adopt this protocol, each with its own behavior. EODetailDatabaseDataSource always works as a detail data source, getting its objects from its master data source and doing no fetching of its own. An EODatabaseDataSource acts as an independent data source, even when set up as the detail of another EODatabaseDataSource. This difference in behavior is explored in the following two sections.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>EODetailDatabaseDataSource</b></font>
+
+<p><font face="Times" size="+1">An EODetailDatabaseDataSource is a qualifiable data source that accesses objects existing in memory rather than in the external store. It acts as a &quot;slave&quot; to its master data source (an EODatabaseDataSource), which retains most of the control in supplying and modifying enterprise objects. The master data source holds the connection to the external source of objects: It fetches all objects for itself and its detail data source, and processes all insertions, updates, and deletions of enterprise objects.</font>
+
+<p><font face="Times" size="+1">The EODetailDatabaseDataSource gets its objects by traversing relationships of its master's objects, using the relationship key specified in <b>qualifyWithRelationshipKey:ofObject:</b> to get the destination objects for the master object. It performs updates by forwarding operations to its master; a consequence of this is that changes made by a detail data source are immediately visible in the master when the detail data source performs <b>saveObjects</b>.</font>
+
+<p><font face="Times" size="+1">Because an EODetailDatabaseDataSource accesses objects already fetched into memory, it can't specify a sort order for the objects it supplies. It also doesn't qualify the objects it supplies any further than its relationship specifies; you can't ask an EODetailDatabaseDataSource for all the employees of the Production department who earn more than $40,000, for example.</font>
+
+<p><font face="Times" size="+1">You usually create an EODetailDatabaseDataSource by sending <b>dataSourceQualifiedByKey:</b> to an EODatabaseDataSource. This method is declared by the EOMasterDataSources protocol. Once you have a detail data source, you use the <b>qualifyWithRelationshipKey:ofObject:</b> method of the EOQualifiableDataSources protocol to choose the source object in the master data source. The detail data source then supplies objects fitting the relationship for the source object.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>EODatabaseDataSource as a Qualifiable Data Source</b></font>
+
+<p><font face="Times" size="+1">An EODatabaseDataSource can fetch objects on its own, and can restrict the objects it provides with a qualifier narrowing properties of the objects to certain ranges or values. Setting an EODatabaseDataSource up as a detail of another is thus simply another way of setting the qualifier of the data source: only objects matching the relationship for the source object are fetched. The relationship key for such a detail data source, then, is used in a qualifier to fetch the object from the database, as opposed to the key for an EODetailDatabaseDataSource, which is used in a key-value coding message to get the in-memory object for the relationship.</font>
+
+<p><font face="Times" size="+1">An EODatabaseDataSource qualified in this manner is called a <i>qualified peer data source</i>; it's attached to its master data source, but it works on its own with the external store of objects, fetching and modifying objects directly. Because a qualified peer works independently, the changes it makes may not be immediately visible in its &quot;master.&quot;</font>
+
+<p><font face="Times" size="+1">Because it fetches objects from the database rather than accessing those already in memory, a qualified peer data source can specify a sort order when retrieving objects, and can qualify those objects beyond its relationship (though it may not in fact provide either feature). For example, you can ask an EODatabaseDataSource to fetch only employees of the Production department who earn more than $40,000 with the <b>setAuxiliaryQualifier:</b> method.</font>
+
+<p><font face="Times" size="+1">You typically create a qualified peer EODatabaseDataSource by allocating and initializing it yourself. You then send it a <b>qualifyWithRelationshipKey:ofObject:</b> message, with the object being one supplied by the master data source. The master and qualified peer data sources maintain no formal connection with regard to the external store, and operate independently of each other.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>qualifyWithRelationshipKey:ofObject:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>qualifyWithRelationshipKey:</b>(NSString *)<i>relName</i> <b>ofObject:</b><i>anEO</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Qualifies the receiver so that it supplies objects based on <i>relName</i>, which is the name of a relationship of <i>anEO</i> (that is, a key of the form used with the EOKeyValueCoding protocol). If the receiver was created with the <b>dataSourceQualifiedByKey: </b>method of the EOMasterDataSources protocol, <i>relName</i> should be the same name used to create it. If <i>anEO</i> is <b>nil</b>, the detail data source typically supplies nothing; for example, this is useful for temporarily &quot;turning off&quot; a data source when no records are selected in its master.</font>
+
+<p><font face="Times" size="+1">Suppose, for example, that an application has a</font> <font face="Helvetica" size="+1">Department</font> <font face="Times" size="+1">entity with a</font> <font face="Helvetica" size="+1">toEmployees</font> <font face="Times" size="+1">relationship. This code excerpt, then, creates a detail data source for employees in the Production department:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">id &lt;EOMasterDataSources&gt; deptDataSource;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">Department *productionDept;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">id &lt;EOQualifiableDataSources&gt; empSource;</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">empSource = [deptDataSource dataSourceQualifiedByKey:@&#34;toEmployees&#34;];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[empSource retain];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[empSource qualifyWithRelationshipKey:@&#34;toEmployees&#34;</font><br>
+<img src="../../../../../Images/sp.gif" width=159 height=1><font face="Courier">ofObject:productionDept];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[empSource fetchObjects];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Once a qualifiable data source has been created, it can be set to retrieve the employees of another department by sending <b>qualifyWithRelationshipKey:ofObject:</b> again. This code excerpt changes <b>empSource</b> to retrieve employees in the System Software department:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">Department *sysSoftwareDept;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[empSource qualifyWithRelationshipKey:@&#34;toEmployees&#34;</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">ofObject:sysSoftwareDept];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[empSource fetchObjects];</font>
+
+
+
+</body>
+</html>

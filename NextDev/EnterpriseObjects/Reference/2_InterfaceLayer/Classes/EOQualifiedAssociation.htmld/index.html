@@ -1,0 +1,147 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/EnterpriseObjects/Reference/2_InterfaceLayer/Classes/EOQualifiedAssociation.rtf -->
+<!-- Date: Sun Jan  1 17:05:25 2023 -->
+<head>
+<title>EOQualifiedAssociation</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>EOQualifiedAssociation</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Inherits From:</b></font></td>
+
+<td><font face="Times" size="+1">EOAssociation : NSObject</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Conforms To:</b></font></td>
+
+<td><font face="Times" size="+1">EOAssociationNotification (EOAssociation)</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">eointerface/EOQualifiedAssociation.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The EOQualifiedAssociation class implements associations between EOControllers. Often several elements in the user interface are linked through a master-detail relationship. EOQualifiedAssociations establish these links. When an EOController receives a <b>saveToObjects</b>, <b>saveToDataSource</b>, or <b>redisplay</b> message, it not only propagates that action to its next controller, but it also checks each association to see if its destination can perform that action, in which case it also propagates the action to the association's destination. The destination doesn't have to be linked through an EOQualifiedAssociation, though; it merely has to respond to the appropriate messages and have some kind of association that works properly with it.</font>
+
+<p><font face="Times" size="+1">When an EOQualifiedAssociation receives a <b>contentsDidChange</b> or <b>selectionDidChange</b> from its controller (the master), it needs to requalify its destination controller (the detail). It does this by getting the selected object from the master controller and using <b>qualifyWithRelationshipKey:ofObject:</b> (described in the EOQualifiableDataSources protocol specification) to qualify the data source of its destination controller with the association key and the selected object, and then having the destination controller fetch to update its display. A detail controller can meaningfully display values only when exactly one object is selected in the master; if the master controller doesn't have exactly one object selected, the association passes <b>nil</b> as the object to qualify for, which disables the detail controller.</font>
+
+<p><font face="Times" size="+1">It's possible for an EOQualifiedAssociation to be set up with a detail controller that doesn't yet have a data source. In this case the association will get a detail data source from the master by sending it a <b>dataSourceQualifiedByKey:</b> message (described in the EOMasterDataSources protocol specification). It then assigns the new data source to the detail controller by sending it a <b>setDataSource:</b> message.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Variables</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">None declared in this class.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">None declared in this class.</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/EnterpriseObjects/Reference/2_InterfaceLayer/IntroEOInterface.rtfd -->
+<!-- Date: Sun Jan  1 17:05:23 2023 -->
+<head>
+<title>IntroEOInterface</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+4" color="#FF00FF"><b>2</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<p><font face="Times" size="+4"><i>The Interface Layer</i></font>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Library:</b></font></td>
+
+<td><font face="Times" size="+1">libEOInterface_s.a</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Header File Directory:</b></font></td>
+
+<td><font face="Times" size="+1">/NextDeveloper/Headers/eointerface</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=6></td>
+
+<td><font face="Helvetica" size="+3"><b>Introduction</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The interface layer of the Enterprise Objects Framework defines classes and protocols that allow your application to interact with any source of enterprise objects and control the values of their properties through the user interface. For the purposes of the interface layer, an enterprise object is any object that implements the EOKeyValueCoding informal protocol as described in Chapter 1, &quot;The Access Layer.&quot;</font>
+
+<p><font face="Times" size="+1">The interface layer works with a <i>model-view-controller</i> paradigm, in which an application's data (model) is kept separate from the user interface (view) by an intermediate layer (controller). Your application's enterprise objects are the model. The classes of the Enterprise Objects Framework interface layer compose the controller system for your application.</font>
+
+<p><font face="Times" size="+1">This introduction lists the individual classes and protocols of the interface layer, suggesting entry points into the reference material. All of the reference material for the Enterprise Objects Framework assumes that you're familiar with the Foundation Kit and with the concepts described in the <i>Enterprise Objects Framework Developer's Guide</i>.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Classes and Protocols</b></font>
+
+<p><font face="Times" size="+1">Figure 2 illustrates the classes in the interface layer proper. Though not illustrated here, the interface layer also includes a few user interface object classes--NXTableView, NXImageView, and their related classes and protocols--that add to those provided by the Application Kit. See Chapter 3, &quot;User Interface Objects,&quot; for information on these classes.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">The user interface object classes are essentially the ones provided in the Database Kit. The Enterprise Objects Framework versions of these classes use an NX prefix to distinguish them; they're otherwise nearly identical to their Database Kit counterparts.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=107></td>
+
+<td><img src="F0.gif" width=557 height=146></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Figure 2</b></font><font face="Times" size="+1">. The Interface Layer Inheritance Hierarchy</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">The central class of the interface layer is EOController, which assumes primary responsibility for synchronizing the data in your application's enterprise objects with its user interface. It does so by using EOAssociation objects to associate properties of the enterprise objects with user interface objects. An association monitors a user interface object, informing the controller when the user interface is edited so that the enterprise object's property can be changed, and updating the user interface object when the controller tells it about a change in value. EOAssociation has several subclasses specific to classes of user interface object: EOControlAssociation is used for most subclasses of Control, while EOBrowserAssociation is used with NXBrowser objects, and so on. As you can see from Figure 2, the inheritance relationships of user interface classes have little to do with the inheritance relationships of their association subclasses.</font>
+
+<p><font face="Times" size="+1">All EOAssociation classes implement the EOAssociationNotification protocol, which declares methods sent by an EOController to notify associations of changes to the objects whose values they display. Another protocol related to EOAssociations is EOAssociationClasses. This informal protocol, or category, declares a single method that user interface classes can implement to offer a subclass of EOAssociation to be used with them. PopUpList, for example, implements this method to return the EOPopUpAssociation class object.</font>
+
+<p><font face="Times" size="+1">Finally, enterprise objects working at the interface layer can implement the EOObjectValidation protocol. This protocol allows an enterprise object to be notified when it's about to be saved out to the external data store used by the controller (for example, a database).</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

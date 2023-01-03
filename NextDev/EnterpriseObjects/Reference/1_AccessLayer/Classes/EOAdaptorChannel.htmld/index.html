@@ -1,0 +1,2232 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/EnterpriseObjects/Reference/1_AccessLayer/Classes/EOAdaptorChannel.rtf -->
+<!-- Date: Sun Jan  1 17:05:16 2023 -->
+<head>
+<title>EOAdaptorChannel</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>EOAdaptorChannel</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Inherits From:</b></font></td>
+
+<td><font face="Times" size="+1">NSObject</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">eoaccess/EOAdaptorChannel.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">An EOAdaptorChannel represents an independent communication channel to the database server its EOAdaptor is connected to. You use an adaptor channel to manipulate rows (records) by selecting, fetching, inserting, deleting, and updating them. An adaptor channel also gives you access to some of the metadata on the server, such as what tables exist and what their basic attributes and relationships are.</font>
+
+<p><font face="Times" size="+1">All of an adaptor channel's operations take place within the context of transactions controlled or tracked by its EOAdaptorContext. An adaptor context may manage several channels (though not all can), but a channel is associated with only one context.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Accessing the Database</b></font>
+
+<p><font face="Times" size="+1">An adaptor channel operates on database rows in the form of NSDictionary objects. The keys of the dictionary represent the names of attributes (columns), the values for those keys are the values for the attributes. It's important to note that the table and column names in the database server are <i>not</i> the same as the entity and attribute names that the Enterprise Objects Framework uses (though an application can set them to be identical). It's also important to distinguish between a dictionary key that identifies a property of a row and that row's <i>primary key</i>, which is a subset of the dictionary's key-value pairs that uniquely identifies a row in the server.</font>
+
+<p><font face="Times" size="+1">Once you've set up a suite of adaptor objects and begun a transaction, you can have the adaptor channel operate on the data in the server. To insert a new row for a particular entity, for example, you create a dictionary object containing all the key-value pairs for the entity's properties, and send the channel an <b>insertRow:forEntity:</b> message.</font>
+
+<p><font face="Times" size="+1">The other three operations--delete, update, and select--each require an EOQualifier object to specify which rows to affect. An EOQualifier describes specific rows for a single entity based on the values of properties; for example, rows whose</font> <font face="Helvetica" size="+1">salary </font><font face="Times" size="+1">attribute is greater than 40,000. See the EOQualifier class specification for more information on creating qualifiers.</font>
+
+<p><font face="Times" size="+1">Fetching rows with an adaptor channel is a two-stage process. First, you select the rows with a <b>selectAttributes:describedByQualifier:fetchOrder:lock:</b> message. This establishes one or more <i>result sets</i> of records to be fetched. If the selection succeeds, you then send <b>fetchAttributes:withZone:</b> messages to retrieve individual rows until there are no more. This code template displays the highlights of the process:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAdaptorChannel *myChannel;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOEntity *employeeEntity;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* Assume this exists. */</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOAttribute *salaryAttribute;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSMutableArray *attributes;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">EOQualifier *myQualifier;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">NSMutableDictionary *theRow;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">BOOL ok;</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">attributes = [NSMutableArray array];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">salaryAttribute = [employeeEntity attributeNamed:@&#34;salary&#34;];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[attributes addObject:salaryAttribute];</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">myQualifier = [employeeEntity qualifier];</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[[myChannel adaptorContext] beginTransaction];</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">ok = [myChannel selectAttributes:attributes</font><br>
+<img src="../../../../../Images/sp.gif" width=236 height=1><font face="Courier">describedByQualifier:myQualifier</font><br>
+<img src="../../../../../Images/sp.gif" width=236 height=1><font face="Courier">fetchOrder:nil lock:NO];</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">if (ok) {</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">while (theRow = [myChannel fetchAttributes:attributes</font><br>
+<img src="../../../../../Images/sp.gif" width=341 height=1><font face="Courier">withZone:NULL]) {</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">/* Process theRow. */</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">}</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">[[myChannel adaptorContext] commitTransaction];</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">To perform a fetch you need to specify the attributes you're interested in, and you need a qualifier to select the rows. You can ask the EOEntity object that represents a table for any of its named attributes; the excerpt above is using the attribute named &quot;salary&quot;. You can get a basic qualifier for an entity, which results in a <b>selectAttributes:</b>... message selecting all records for that entity, or build a more restrictive qualifier, for example, one that only selects employees whose salary is above 4000. <b>selectAttributes:describedByQualifier:fetchOrder:lock:</b> then selects the records in preparation for fetching (see the description of this method for information on the fetch order and lock parameters). Once you've selected a set of records, you use a loop to fetch each one individually with <b>fetchAttributes:withZone:</b>.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Getting Basic Schema Information</b></font>
+
+<p><font face="Times" size="+1">You can use the adaptor-level objects without loading an EOModel file by having the adaptor channel read a minimal model from the database server's system dictionary. To build such a model you use the &quot;describe and read&quot; methods:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=125></td>
+
+<td><font face="Times" size="+1">describeTableNames</font><br>
+<font face="Times" size="+1">describeModelwithTableNames:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><b>describeTableNames</b> reads and returns an array of table names from the database. <b>describeModelWithTableNames: </b>constructs a default model out of the database's meta data.&nbsp; It also puts the adaptor name and connection dictionary in the new model.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Notifying the Adaptor Channel's Delegate</b></font>
+
+<p><font face="Times" size="+1">All of the row-manipulation methods notify the adaptor channel's delegate before and after performing their operations. The delegate need only implement a message to receive it. The delegate may respond to a &quot;before&quot; message by allowing the operation, rejecting it, or overriding it. The return type of each of the &quot;before&quot; messages is <b>EODelegateResponse</b>, and an adaptor channel interprets the return value of a delegate message as follows:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Return Value</b></font></td>
+
+<td><font face="Helvetica" size="+1"><b>Interpretation</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">EODelegateRejects</font></td>
+
+<td><font face="Times" size="+1">Abort the requested operation and return a failure result.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">EODelegateApproves</font></td>
+
+<td><font face="Times" size="+1">Continue the requested operation and return an appropriate result</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=9></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">EODelegateOverrides</font></td>
+
+<td><font face="Times" size="+1">Do nothing, but return a success result.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">When a delegate overrides an operation, it's responsible for ensuring that the result of that operation is achieved. For example, if the delegate returns <b>EODelegateOverrides</b> from an <b>adaptorChannel:willSelectAttributes:describedByQualifier:fetchOrder:lock:</b> message, it must make sure that the appropriate rows are in fact selected.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Sending SQL Statements Directly to the Server</b></font>
+
+<p><font face="Times" size="+1">An EOAdaptorChannel allows you to send SQL directly to the database server with its <b>evaluateExpression:</b> method. This gives you access to database-specific features not made available by the adaptor channel itself, but can cause state changes on the server that aren't noted by objects in your application. If you cause state changes in evaluating SQL, you're responsible for notifying the appropriate objects of the changes; the classes of the Enterprise Objects Framework that are affected by evaluation of SQL typically describe the kinds of notifications they require.</font>
+
+<p><font face="Times" size="+1">If your adaptor doesn't have a model set, you can use <b>describeResults</b> to determine the attributes selected for a current fetch operation. Even if you perform the selection by sending raw SQL to the server, this method returns usable attributes that allow you to fetch rows.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Variables</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">None declared in this class.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Opening and closing a channel</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">openChannel</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">isOpen</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">closeChannel</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Modifying rows</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">insertRow:forEntity:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">deleteRowsDescribedByQualifier:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">updateRow:describedByQualifier:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Fetching rows</font></td>
+
+<td><font face="Times" size="+1">+ dateForAttribute:year:month:day:hour:minute:</font><br>
+<img src="../../../../../Images/sp.gif" width=25 height=1><font face="Times" size="+1">second:zone:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">selectAttributes:describedByQualifier:fetchOrder:lock:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">describeResults</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">fetchAttributes:withZone:</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">isFetchInProgress</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">cancelFetch</font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">dictionaryWithObjects:forAttributes:zone:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Sending SQL to the server</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">evaluateExpression:</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Getting the adaptor context</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">adaptorContext</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=7></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Getting schema information</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">describeModelWithTableNames:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">describeTableNames</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Debugging</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setDebugEnabled:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">isDebugEnabled</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Setting the channel's delegate</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">setDelegate:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">delegate</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Class Methods</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>dateForAttribute:year:month:day:hour:minute:second:zone:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">+ (NSCalendarDate *)<b>dateForAttribute:</b>(EOAttribute *)<i>attr</i> <b>year:</b>(int)<i>year</i> <b>month:</b>(unsigned)<i>month</i> <b>day:</b>(unsigned)<i>day </i><b>hour:</b>(unsigned)<i>hour</i> <b>minute:</b>(unsigned)<i>minute</i> <b>second:</b>(unsigned)<i>second</i> <b>zone:</b>(NSZone *)<i>zone</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">EOAdaptorChannel subclasses can use this method to create a calendar date object to return in an adaptor row.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>adaptorContext</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(EOAdaptorContext *)<b>adaptorContext</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the EOAdaptorChannel's EOAdaptorContext.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>adaptor</b> (EOAdaptorContext)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>cancelFetch</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>cancelFetch</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Clears all result sets established by the last <b>selectAttributes:describedByQualifier:fetchOrder:lock:</b> message and terminates the current fetch, so that <b>isFetchInProgress</b> returns NO.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>closeChannel</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>closeChannel</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Closes the EOAdaptorChannel so that it can't perform operations with the server. Any fetch in progress is canceled. If the channel's adaptor context has outstanding transactions, however, the result depends on the server: Some database servers roll back all outstanding transactions but others do nothing.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>openChannel</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>isOpen</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>transactionNestingLevel</b> (EOAdaptorContext)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>delegate</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>delegate</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the adaptor channel's delegate. A subclass of EOAdaptorChannel doesn't need to override this method.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>deleteRowsDescribedByQualifier:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>deleteRowsDescribedByQualifier:</b>(EOQualifier *)<i>aQualifier</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Deletes the rows described by <i>aQualifier</i>. The adaptor channel's context must have a transaction in effect for this method to work. Returns YES on success, NO on failure. Some possible reasons for failure are:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">No row described by <i>aQualifier</i> exists (so no rows are actually deleted).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The user logged in to the database doesn't have permission to delete.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The adaptor channel is in an invalid state (for example, fetching).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The adaptor context has no transaction in progress.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This method invokes the delegate methods <b>adaptorChannel:willDeleteRowsDescribedByQualifier:</b> and <b>adaptorChannel:didDeleteRowsDescribedByQualifier:</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>describeAttributesForEntity:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSArray *)<b>describeAttributesForEntity:</b>(EOEntity *)<i>anEntity</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the basic attributes for <i>anEntity</i> constructed from metadata in the database server. This method doesn't actually assign the attributes to <i>anEntity</i>--your application must do that explicitly.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">This method is obsolete. Use <b>describeModelWithTableNames:</b> and <b>describeTableNames</b>, instead.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>addEntity:</b> (EOEntity),</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>describeModelWithTableNames:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>describeTableNames</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>describeEntities</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSArray *)<b>describeEntities</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns an array of entities constructed from metadata in the database server; for example, from the catalog or system tables. These entities contain no attribute or relationship information--your application must load that explicitly.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">This method is obsolete. Use <b>describeModelWithTableNames:</b> and <b>describeTableNames</b>, instead.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>addEntity:</b> (EOModel),</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>describeAttributesForEntity:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>describeRelationshipsForEntity:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4> </font><font face="Times" size="+1"><b>describeModelWithTableNames:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>describeTableNames</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>describeModelWithTableNames:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(EOModel *)<b>describeModelWithTableNames:</b>(NSArray *)<i>tableNames</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Constructs a default model out of the database's meta data.&nbsp; It also puts the adaptor name and connection dictionary in the new model. This method is typically used in conjunction with <b>describeTableNames</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>describeTableNames</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>describeRelationshipsForEntity:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSArray *)<b>describeRelationshipsForEntity:</b>(EOEntity *)<i>anEntity</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns the basic relationships for <i>anEntity</i> constructed from metadata in the database server (if such data is available). This method doesn't actually assign the relationships to <i>anEntity</i>--your application must do that explicitly.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">This method is obsolete. Use <b>describeModelWithTableNames:</b> and <b>describeTableNames</b>, instead.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>addRelationship:</b> (EOEntity class),</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>describeModelWithTableNames:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>describeTableNames</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>describeTableNames</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSArray *)<b>describeTableNames</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Reads and returns an array of table names from the database.&nbsp; This method in conjunction with <b>describeModelWithTableNames:</b> is used to build a default model.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>describeModelWithTableNames:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>describeResults</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSArray *)<b>describeResults</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns an array object of EOAttributes describing the properties available in the current result set, as determined by <b>selectAttributes:describedByQualifier:fetchOrder:lock:</b> or a select statement evaluated by <b>evaluateExpression:</b>.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>dictionaryWithObjects:forAttributes:zone:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSMutableDictionary *)<b>dictionaryWithObjects:</b>(id *)<i>objects</i> <b>forAttributes:</b>(NSArray *)<i>attributes</i> <b>zone:</b>(NSZone *)<i>zone</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This method is used by AdaptorChannel subclasses to create dictionaries that can be returned from <b>fetchAttributes:withZone:</b>. Use of this method is optional; it was added because it enables performance optimizations.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>fetchAttributes:withZone:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>evaluateExpression:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>evaluateExpression:</b>(NSString *)<i>anExpression</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sends <i>anExpression</i> to the database server for evaluation. Returns YES if no error occurs, NO if any error occurs. An EOAdaptorChannel uses this method to perform all of its database operations.</font>
+
+<p><font face="Times" size="+1">Evaluation of an arbitrary expression may result in any number of changes in state on the server. Adaptors must at least track whether the evaluation of an expression results in a select operation being performed, thereby putting the adaptor in fetch mode. See the EODatabaseChannel class specification for special considerations in using this method with an EODatabaseChannel's adaptor channel.</font>
+
+<p><font face="Times" size="+1">This method invokes the delegate methods <b>adaptorChannel:willEvaluateExpression:</b> and <b>adaptorChannel:didEvaluateExpression:</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>isFetchInProgress</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>fetchAttributes:withZone:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSMutableDictionary *)<b>fetchAttributes:</b>(NSArray *)<i>attributes</i> <b>withZone:</b>(NSZone *)<i>zone</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Fetches the next row from the result set of the last <b>selectAttributes:describedByQualifier:fetchOrder:lock:</b> or <b>evaluateExpression:</b> message and returns values for the EOAttributes contained in <i>attributes</i>. When there are no more rows in the current result set, this method returns <b>nil</b>, and if there are more results sets this method invokes the delegate method <b>adaptorChannelDidChangeResultSet:</b>. When there are no more rows or result sets, this method returns <b>nil</b>, ends the fetch, and sends <b>adaptorDidFinishFetching:</b> to the delegate. <b>isFetchInProgress</b> returns YES until the fetch is cancelled or until this method exhausts all result sets and returns <b>nil</b>.</font>
+
+<p><font face="Times" size="+1">In addition to the delegate methods mentioned above, this method may also invoke the delegate methods <b>adaptorChannel:willFetchAttributes:withZone:</b> and <b>adaptorChannel:didFetchAttributes:withZone:</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>cancelFetch</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>insertRow:forEntity:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>insertRow:</b>(NSDictionary *)<i>aRow</i> <b>forEntity:</b>(EOEntity *)<i>anEntity</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Inserts the values of <i>aRow</i> into the table in the database that corresponds to <i>anEntity</i>. <i>aRow</i> is an NSDictionary whose keys are attribute names and whose values are the values to insert. The adaptor channel's context must have a transaction in effect for this method to work. Returns YES on success, NO on failure.</font>
+
+<p><font face="Times" size="+1">Some possible reasons for failure are:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The user logged in to the database doesn't have permission to insert a new row.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The adaptor channel is in an invalid state (for example, fetching).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The adaptor context has no transaction in progress.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The row fails to satisfy a constraint defined in the database server.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This method invokes the delegate methods <b>adaptorChannel:willInsertRow:forEntity:</b> and <b>adaptorChannel:didInsertRow:forEntity:</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>deleteRowsDescribedByQualifier:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>selectAttributes:describedByQualfier:fetchOrder:lock:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>isDebugEnabled</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>isDebugEnabled</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if the adaptor channel logs evaluated SQL and other useful information to the console (or to the standard error stream), NO if not.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>isFetchInProgress</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>isFetchInProgress</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if the adaptor channel is fetching, NO otherwise. An adaptor channel is fetching if it's been sent a successful <b>selectAttributes:describedByQualifier:fetchOrder:lock:</b> message, or if an expression sent through <b>evaluateExpression: </b>resulted in a select operation being performed. An adaptor channel stops fetching when there are no more records to fetch or when it's sent a <b>cancelFetch</b> message.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>fetchAttributes:WithZone:</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>isOpen</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>isOpen</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns YES if the channel has been opened with <b>openChannel</b>, NO if not.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>closeChannel</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>openChannel</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>openChannel</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Puts the channel and both its context and adaptor into a state where they are ready to perform database operations. Returns YES on success, NO on failure or if the channel is already open.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>closeChannel</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>isOpen</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>hasValidConnectionDictionary</b> (EOAdaptor)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>readTypeForAttribute:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>readTypeForAttribute:</b>(EOAttribute *)<i>anAttribute</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Loads external type information from the database server into <i>anAttribute</i>. Returns YES on success, NO on failure.</font>
+
+<p><font face="Times" size="+1">Attributes read with the <b>describeAttributesForEntity:</b> methods already have their type information set; you only need to use this method to read type information for a manually created attribute, or for an attribute whose type in the database may have changed.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>readTypesForEntity:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>readTypesForEntity:</b>(EOEntity *)<i>anEntity</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Loads external type information from the database server into all nonflattened attributes (not relationships) of <i>anEntity</i>. Returns YES on success, NO on failure.</font>
+
+<p><font face="Times" size="+1">Entities read with the <b>describeEntities</b> methods already have their type information set; you only need to use this method to read type information for a manually created entity, or for an entity whose attribute types in the database may have changed.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>describeAttributesForEntity:</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>isFlattened</b> (EOAttribute)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>selectAttributes:describedByQualifier:fetchOrder:lock:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>selectAttributes:</b>(NSArray *)<i>attributes</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>describedByQualifier:</b>(EOQualifier *)<i>aQualifier</i></font><br>
+<font face="Times" size="+1"><b>fetchOrder:</b>(NSArray *)<i>fetchOrder</i></font><br>
+<font face="Times" size="+1"><b>lock:</b>(BOOL)<i>flag</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Selects the EOAttributes in <i>attributes</i> for rows matching <i>aQualifier</i>. The selected rows compose one or more result sets, each row of which will be returned by subsequent <b>fetchAttributes:withZone:</b> messages according to <i>fetchOrder</i> (an array of EOAttributeOrdering objects). If <i>fetchOrder</i> is <b>nil</b>, rows aren't sorted as they're fetched. If <i>flag</i> is YES and the adaptor supports locking, the rows are locked so that no other user can modify them. The adaptor channel's context must have a transaction in effect for this method to work. Returns YES on success, NO on failure.</font>
+
+<p><font face="Times" size="+1">Some possible reasons for failure are:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The adaptor channel is in an invalid state (for example, fetching).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The adaptor context has no transaction in progress.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Locking was requested but the adaptor doesn't support it.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This method invokes the delegate methods <b>adaptorChannel:willSelectAttributes:describedByQualifier:fetchOrder:lock: </b>and <b>adaptorChannel:didSelectAttributes:describedByQualifier:fetchOrder:lock:</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>isFetchInProgress</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>cancelFetch</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setDebugEnabled:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setDebugEnabled</b>:(BOOL)<i>flag</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets according to <i>flag</i> whether the adaptor channel logs evaluated SQL and other useful debugging information to the console (or to the standard error stream). The information provided may vary from adaptor to adaptor and may change from release to release.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>setDelegate:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setDelegate:</b><i>anObject</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets the adaptor channel's delegate to <i>anObject</i> and retains it. A subclass of EOAdaptorChannel doesn't need to override this method.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>updateRow:describedByQualifier:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>updateRow:</b>(NSDictionary *)<i>newValues</i> <b>describedByQualifier:</b>(EOQualifier *)<i>aQualifier</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Updates the row described by <i>aQualifier</i> by changing its values to match those in <i>newValues</i>. <i>newValues</i> is an NSDictionary whose keys are attribute names and whose values are the new values for those attributes (the dictionary need only contain entries for the attributes being changed). The adaptor channel's context must have a transaction in effect for this method to work. Returns YES on success, NO on failure. Some possible reasons for failure are:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">No row described by <i>aQualifier</i> exists.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><i>aQualifier</i> describes more than one row.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The user logged in to the database doesn't have permission to update.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The adaptor channel is in an invalid state (for example, fetching).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The adaptor context has no transaction in progress.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../../../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The new values fail to satisfy a constraint defined in the database server.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">This method invokes the delegate methods <b>adaptorChannel:willUpdateRow:describedByQualifier:</b> and <b>adaptorChannel:didUpdateRow:describedByQualifier:</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>isFetchInProgress</b>,</font> <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>beginTransaction</b> (EOAdaptorContext)</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Methods Implemented by the Delegate</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>adaptorChannelDidChangeResultSet:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>adaptorChannelDidChangeResultSet:</b><i>channel</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked from <b>fetchAttributes:withZone:</b> to tell the delegate that fetching will start for the next result set when a select operation resulted in multiple result sets. This method is invoked just before a <b>fetchAttributes:withZone:</b> returns <b>nil</b> when there are still result sets left to fetch.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>adaptorChannel:didDeleteRowsDescribedByQualifier:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>adaptorChannel:</b><i>channel</i> <b>didDeleteRowsDescribedByQualifier:</b>(EOQualifier *)<i>aQualifier</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked from <b>deleteRowsDescribedByQualifier:</b> to tell the delegate that some rows have been deleted. The delegate may take whatever action it needs based on this information.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>adaptorChannel:didEvaluateExpression:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>adaptorChannel:</b><i>channel</i> <b>didEvaluateExpression:</b>(NSString *)<i>anExpression</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked from <b>evaluateExpression:</b> to tell the delegate that a query language expression has been evaluated by the database server. Note that nearly every method that communicates with a database does so by using <b>evaluateExpression:</b>. The delegate may take whatever action it needs based on this information. Note that the adaptor channel can determine whether <i>anExpression</i> resulted in a select operation being performed.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>adaptorChannel:didFetchAttributes:withZone:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSMutableDictionary *)<b>adaptorChannel:</b><i>channel</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>didFetchAttributes:</b>(NSMutableDictionary *)<i>attributes</i></font><br>
+<font face="Times" size="+1"><b>withZone:</b>(NSZone *)<i>zone</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked from <b>fetchAttributes:withZone:</b> to tell the delegate that a single row has been fetched. The delegate may return a substitute dictionary that will be used instead of <i>attributes</i>, or return <b>nil</b> to cause <b>fetchAttributes:withZone:</b> to fail and return <b>nil</b>. Returning <b>nil</b> doesn't cancel the fetch, however.</font>
+
+<p><font face="Helvetica" size="+1"><b>See also:</b></font>&nbsp; <font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1"><b>cancelFetch</b></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>adaptorChannelDidFinishFetching:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>adaptorChannelDidFinishFetching:</b><i>channel</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked from <b>fetchAttributes:withZone:</b> to tell the delegate that fetching is finished for the current select operation. This method is invoked when a fetch ends in <b>fetchAttributes:withZone:</b> because there are no more result sets.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>adaptorChannel:didInsertRow:forEntity:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>adaptorChannel:</b><i>channel</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>didInsertRow:</b>(NSDictionary *)<i>aRow</i></font><br>
+<font face="Times" size="+1"><b>forEntity:</b>(EOEntity *)<i>anEntity</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked from <b>insertRow:forEntity:</b> to tell the delegate that a row has been inserted. The delegate may use this information to update records, redisplay onscreen information, or take whatever other action it needs.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>adaptorChannel:didSelectAttributes:describedByQualifier:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=125></td>
+
+<td><font face="Helvetica" size="+1"><b>fetchOrder:lock:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>adaptorChannel:</b><i>channel</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>didSelectAttributes:</b>(NSArray *)<i>attributes</i></font><br>
+<font face="Times" size="+1"><b>describedByQualifier:</b>(EOQualifier *)<i>aQualifier</i></font><br>
+<font face="Times" size="+1"><b>fetchOrder:</b>(NSArray *)<i>fetchOrder</i></font><br>
+<font face="Times" size="+1"><b>lock:</b>(BOOL)<i>flag</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked from <b>selectAttributes:describedByQualifier:fetchOrder:lock:</b> to tell the delegate that some rows have been selected. The delegate may take whatever action it needs based on this information.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>adaptorChannel:didUpdateRow:describedByQualifier:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>adaptorChannel:</b><i>channel</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>didUpdateRow:</b>(NSDictionary *)<i>newValues</i></font><br>
+<font face="Times" size="+1"><b>describedByQualifier:</b>(EOQualifier *)<i>aQualifier</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked from <b>updateRow:describedByQualifier:</b> to tell the delegate that a row has been updated. <i>newValues</i> are the values written to the row described by <i>aQualifier</i>. The delegate may take whatever action it needs based on this information.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>adaptorChannel:willDeleteRowsDescribedByQualifier:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(EODelegateResponse)<b>adaptorChannel:</b><i>channel</i> <b>willDeleteRowsDescribedByQualifier:</b>(EOQualifier *)<i>aQualifier</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked from <b>deleteRowsDescribedByQualifier:</b> to tell the delegate that a row is being deleted. The delegate can modify <i>aQualifier</i> to affect the result of the delete operation. See &quot;Notifying the Adaptor Channel's Delegate&quot; in the class description for an explanation of the possible return values.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>adaptorChannel:willEvaluateExpression:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(EODelegateResponse)<b>adaptorChannel:</b><i>channel</i> <b>willEvaluateExpression:</b>(NSMutableString *)<i>anExpression</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked from <b>evaluateExpression:</b> to tell the delegate that <i>anExpression</i> is about to be sent to the database server. Note that nearly every method that communicates with a database does so by using <b>evaluateExpression:</b>. The delegate may modify <i>anExpression</i> to affect the result. See &quot;Notifying the Adaptor Channel's Delegate&quot; in the class description for an explanation of the possible return values.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>adaptorChannel:willFetchAttributes:withZone:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSMutableDictionary *)<b>adaptorChannel:</b><i>channel</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>willFetchAttributes:</b>(NSArray *)<i>attributes</i> <b>withZone:</b>(NSZone *)<i>zone</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked from <b>fetchAttributes:withZone:</b> to tell the delegate that a single row will be fetched. If the delegate returns a non-<b>nil </b>value, that value will be treated as a dictionary resulting from a fetch operation; the adaptor channel doesn't perform a fetch, and <b>fetchAttributes:withZone:</b> returns YES. The delegate must ensure that the server skips the current row so that the next fetch message doesn't simply get that same row.</font>
+
+<p><font face="Times" size="+1">If the delegate returns <b>nil</b> the adaptor channel performs the fetch itself.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>adaptorChannel:willInsertRow:forEntity:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(EODelegateResponse)<b>adaptorChannel:</b><i>channel</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>willInsertRow:</b>(NSMutableDictionary *)<i>aRow</i></font><br>
+<font face="Times" size="+1"><b>forEntity:</b>(EOEntity *)<i>anEntity</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked from <b>insertRow:forEntity:</b> to tell the delegate that a row is being inserted. The delegate can change the values for attribute names in <i>aRow</i>, or add or delete attribute-value pairs. See &quot;Notifying the Adaptor Channel's Delegate&quot; in the class description for an explanation of the possible return values.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>adaptorChannel:willSelectAttributes:describedByQualifier:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=125></td>
+
+<td><font face="Helvetica" size="+1"><b>fetchOrder:lock:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(EODelegateResponse)<b>adaptorChannel:</b><i>channel</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>willSelectAttributes:</b>(NSMutableArray *)<i>attributes</i></font><br>
+<font face="Times" size="+1"><b>describedByQualifier:</b>(EOQualifier *)<i>aQualifier</i></font><br>
+<font face="Times" size="+1"><b>fetchOrder:</b>(NSArray *)<i>fetchOrder</i></font><br>
+<font face="Times" size="+1"><b>lock:</b>(BOOL)<i>flag</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked from <b>selectAttributes:describedByQualifier:fetchOrder:lock:</b> to tell the delegate that a select operation is being performed. The delegate can modify <i>attributes</i> to affect the select operation, but shouldn't modify <i>aQualifier</i>. See &quot;Notifying the Adaptor Channel's Delegate&quot; in the class description for an explanation of the possible return values.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>adaptorChannel:willUpdateRow:describedByQualifier:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(EODelegateResponse)<b>adaptorChannel:</b><i>channel</i></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=163></td>
+
+<td><font face="Times" size="+1"><b>willUpdateRow:</b>(NSMutableDictionary *)<i>newValues</i></font><br>
+<font face="Times" size="+1"><b>describedByQualifier:</b>(EOQualifier *)<i>aQualifier</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invoked from <b>updateRow:describedByQualifier:</b> to tell the delegate that the row described by <i>aQualifier</i> will be updated. The delegate can change the values for particular attribute names in <i>newValues</i>, add or delete entire entries, and can modify <i>aQualifier</i> to affect the update operation. See &quot;Notifying the Adaptor Channel's Delegate&quot; in the class description for an explanation of the possible return values.</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

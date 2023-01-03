@@ -1,0 +1,469 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/EnterpriseObjects/Reference/1_AccessLayer/Protocols/EOKeyValueCoding.rtf -->
+<!-- Date: Sun Jan  1 17:05:23 2023 -->
+<head>
+<title>EOKeyValueCoding</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Enterprise Objects Framework Release 1.1 Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+4"><b>EOKeyValueCoding</b></font><br>
+<font face="Helvetica" size="+1"><b>(informal protocol)</b></font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Category Of:</b></font></td>
+
+<td><font face="Times" size="+1">NSObject</font><br>
+<font face="Times" size="+1">Object</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1"><b>Declared In:</b></font></td>
+
+<td><font face="Times" size="+1">eoaccess/EOKeyValueCoding.h</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Category Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">The methods of the EOKeyValueCoding category form the main transmission mechanism for data in the Enterprise Objects Framework, in which the properties of an enterprise object are accessed indirectly by name, rather than directly through invocation of an accessor method or as instance variables. Thus, any object can represent its state as an NSDictionary whose keys are the names of its properties.</font>
+
+<p><font face="Times" size="+1">The method for setting an enterprise object's values is <b>takeValuesFromDictionary:</b>, which uses the keys of the dictionary passed in to identify the new values for the object's properties. The method for getting values is <b>valuesForKeys:</b>, which extracts the value for each key in the array passed in and returns the key-value pairs in a dictionary. These two methods are defined for both NSObject and Object to use the accessor methods normally implemented by objects (or to access instance variables directly if need be), so that you don't have to write special code simply to integrate your enterprise objects into the Framework. Your enterprise objects can also override the default implementations to do custom processing of values as they enter and leave the objects.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Default Implementations</b></font>
+
+<p><font face="Times" size="+1">The Framework provides default implementations of <b>takeValuesFromDictionary:</b> and <b>valuesForKeys:</b> that work for all objects. The implementations for EOGenericRecord are quite simple: They simply store or retrieve the properties in a dictionary object held by the EOGenericRecord. NSDictionary and NSMutableDictionary, though not suitable for use as enterprise objects, meaningfully implement these methods by directly accessing their key-value pairs. The implementations for Object and NSObject, on the other hand, dynamically handle the keys requested based on the definition of the receiver's class. These implementations are general enough that your enterprise object classes should rarely need to override either key-value coding method.</font>
+
+<p><font face="Times" size="+1">In accessing an object's property, the default implementations of the key-value coding methods use the class definition as follows:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">1.</font></td>
+
+<td><font face="Times" size="+1">The key-value coding method looks for an accessor method based on the property name. For example, with a property named <b>lastName</b>, <b>takeValuesFromDictionary:</b> looks for a method of the form <b>setLastName:</b> (note that the first letter of the property name is made uppercase), and <b>valuesForKeys:</b> looks for a method of the form <b>lastName</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=12></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Helvetica" size="+1">2.</font></td>
+
+<td><font face="Times" size="+1">If the key-value coding method doesn't find an accessor method, it looks for an instance variable whose name is the same as the property's and sets or retrieves its value directly. In setting an instance variable, <b>takeValuesFromDictionary:</b> retains the new value and releases the old one.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Type-checking and Type Conversion</b></font>
+
+<p><font face="Times" size="+1">The default implementations of the key-value coding methods accept any <b>id</b> type as a value, and do no type-checking or type conversion among object classes. It's possible, for example, to pass an NSString to <b>takeValuesFromDictionary:</b> as the value for a property the receiver expects to be an NSDate. The sender of a key-value coding message is thus responsible for ensuring that the values are of the proper class. An EOController, for example, converts string values from the user interface with its data source's <b>coerceValue:forKey:</b> method. If you're using a data source to manage your enterprise objects, you can use this method as well. Note that if you're using the Framework's access layer you can determine from an EOModel which value class is associated with each attribute--EODatabaseDataSource uses this information in its implementation of <b>coerceValue:forKey:</b>.</font>
+
+<p><font face="Times" size="+1">The key-value coding methods handle one special case with regard to value types. Numeric values must be transferred in dictionaries as NSNumber objects, but aren't very efficient for calculation or storage; most objects store numeric properties as C scalar (numeric) types and declare their access methods to handle them in that form. In addition to being represented as NSNumbers in dictionaries, numeric property values are handled by an EOController as NSString objects. Because numeric properties are very common, the default implementations of the key-value coding methods convert an object value to the C scalar (numeric) type required by the enterprise object's accessor method or instance variable. For example, suppose your enterprise object defines these accessor methods:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=125></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>setSalary:</b>(unsigned int)<i>salary</i></font><br>
+<font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(unsigned int)<b>salary</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">For the <b>setSalary:</b> method, <b>takeValuesFromDictionary:</b> converts the object value for the &quot;salary&quot; key in the dictionary to an <b>unsigned int</b> and passes it as <i>salary</i>. Similarly, <b>valuesForKeys:</b> converts the return value of the <b>salary</b> method to an NSNumber and inserts that into the dictionary that it returns.</font>
+
+<p><font face="Times" size="+1">The default implementations support the following scalar types:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">char</font></td>
+
+<td><font face="Times" size="+1">unsigned char</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">short</font></td>
+
+<td><font face="Times" size="+1">unsigned short</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">unsigned int</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">long</font></td>
+
+<td><font face="Times" size="+1">unsigned long</font></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1">float</font></td>
+
+<td><font face="Times" size="+1">double</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Object values are converted to these types with the standard messages <b>charValue</b>, <b>intValue</b>, <b>floatValue</b>, and so on. Note that the key-value coding methods don't check that an object value actually responds to these messages; this can result in a run-time error if the object doesn't respond to the appropriate message.</font>
+
+<p><font face="Times" size="+1">An important issue to consider in using C scalar types is that most relational databases allow the use of a NULL value distinct from any numeric value, represented in the Enterprise Objects Framework by the EONull class. Since the C scalar types can't accommodate a distinct NULL value, the default implementations of the key-value coding methods raise <b>NSInvalidArgumentException</b> on encountering an EONull object that needs to be converted. You should either design your database not to use NULL values for numeric columns, or design your enterprise object class to use NSNumber objects where NULL values are allowed.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Implementing Key-Value Coding Methods</b></font>
+
+<p><font face="Times" size="+1">Your own enterprise object class can either rely on the default behavior of its superclass or override it, partially or completely. For example, a subclass of NSObject may have a few properties that it needs to handle in a special way, but the rest can all be handled by the default implementation. In this case, you might implement the methods of this category according to the following templates.</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">- (BOOL)takeValuesFromDictionary:(NSDictionary *)aDictionary</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">{</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">NSMutableDictionary *mutDict;</font>
+
+<p><img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Make a mutable version of the passed-in dict. */</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">mutDict = [[aDictionary mutableCopy] autorelease];</font>
+
+<p><img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">/* Take whatever values you need from mutDictionary, removing them</font><br>
+<img src="../../../../../Images/sp.gif" width=159 height=1><font face="Courier">* from mutDict as you do so.</font><br>
+<img src="../../../../../Images/sp.gif" width=159 height=1><font face="Courier">*/</font>
+
+<p><img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">return [super takeValuesFromDictionary:mutDict];</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><b>takeValuesFromDictionary:</b> here creates its own mutable copy of the dictionary passed in. It handles the keys it needs to, removing them from the dictionary so that the superclass' implementation won't set them as well, and then passes the remaining key-value pairs to <b>super</b>. To completely override the superclass' implementation this method would have to handle every key-value pair in the dictionary, returning YES if all key-value pairs were handled, and NO if any of them couldn't be processed.</font></td></tr>
+
+</table>
+
+<p><img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">- (NSDictionary *)valuesForKeys:(NSArray *)keys</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">{</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">NSMutableArray *mutKeys = [[keys mutableCopy] autorelease];</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">NSMutableDictionary *mutDict = [NSMutableDictionary dictionary];</font><br>
+<img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">int i;</font>
+
+<p><img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">for (i = [mutKeys count] - 1; i &gt;= 0; i--) {</font>
+
+<p><img src="../../../../../Images/sp.gif" width=173 height=1><font face="Courier">/* See if you can put the value for the key at i into mutDict.</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">* If your object stores the value as a mutable object you</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">* should create an immutable copy and autorelease it before</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">* putting it into mutDict. mutDict will ratain what you give</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">* it as needed.</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">*/</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">if (/* you put the value for the key at i in the dict */) {</font><br>
+<img src="../../../../../Images/sp.gif" width=208 height=1><font face="Courier">[mutKeys removeObjectAtIndex:i];</font><br>
+<img src="../../../../../Images/sp.gif" width=180 height=1><font face="Courier">}</font>
+
+<p><img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">};</font>
+
+<p><img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">[mutDict addEntriesFromDictionary:[super valuesForKeys:mutKeys]];</font>
+
+<p><img src="../../../../../Images/sp.gif" width=152 height=1><font face="Courier">return mutDict;</font><br>
+<img src="../../../../../Images/sp.gif" width=124 height=1><font face="Courier">}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1"><b>valuesForKeys:</b> creates a mutable copy of the key array passed in, and a mutable dictionary in which to place the values requested. It handles the keys it needs to and removes them from the array, then passes the remaining keys to <b>super</b> and adds the returned values to the dictionary it's building. To completely override the superclass' implementation this method can simply omit the message to <b>super</b> after putting all the values it can find for the keys into the dictionary.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Cautions</b></font>
+
+<p><font face="Times" size="+1">Three situations demand care with regard to the key-value coding mechanism. First, be aware that the default implementation of <b>takeValuesFromDictionary:</b> doesn't guarantee the order that property values are set. Thus, your enterprise object's accessor methods shouldn't assume that other properties' values have been established when they're invoked.</font>
+
+<p><font face="Times" size="+1">Second, if your application is using the access layer, you should be careful in implementing accessor methods that set values (or in overriding <b>takeValuesFromDictionary:</b>) about sending messages to the value objects in the dictionary. <b>takeValuesFromDictionary:</b> is often sent while a fetch is in progress, and if your implementation sends a message to an EOFault object, it will try to fetch the object it stands in for, causing a server error. See the EODatabaseChannelNotification informal protocol specification for suggestions on how to work around this problem.</font>
+
+<p><font face="Times" size="+1">Third, it's possible for a property's value in a database to be NULL, in which case your enterprise object receives an EONull object as the value.&nbsp; Similarly, if you delete the destination of a to-one relationship in a master-detail configuration, the corresponding property in the master is set to EONull. If either of these situations can occur, your enterprise objects must check whether the values they receive are EONulls, and treat them appropriately.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Method Types</b></font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Setting and getting values</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">takeValuesFromDictionary:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=306></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">valuesForKeys:</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Resetting key bindings</font></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">flushKeyBindings</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=69></td>
+
+<td><font face="Helvetica" size="+2"><b>Instance Methods</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>flushKeyBindings</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(void)<b>flushKeyBindings</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Invalidates the cached key-binding information for the receiver's class. The Enterprise Objects Framework uses this information to optimize the default implementations of the other methods of this protocol by caching method selectors and instance variable type information.</font>
+
+<p><font face="Times" size="+1">This method should be invoked whenever a class is modified or removed from the runtime system.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>takeValuesFromDictionary:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(BOOL)<b>takeValuesFromDictionary:</b>(NSDictionary *)<i>aDictionary</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Sets properties of the receiver with values from <i>aDictionary</i>. Returns YES if the receiver read all values from the dictionary, NO if it couldn't take all values.</font>
+
+<p><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">The access and interface layers of the Enterprise Objects Framework don't consider a return value of NO to be an error, and take no special action based on such a return value.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>valuesForKeys:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font size="+1"><img src="../../../../../Images/c2D.gif" width=8 height=4></font> <font face="Times" size="+1">(NSDictionary *)<b>valuesForKeys:</b>(NSArray *)<i>keyArray</i></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Returns a dictionary providing as many values as possible for the keys in <i>keyArray</i>. Not all values requested are guaranteed to be retrieved. Note that it's possible for a property's value in a database to be NULL, in which case your enterprise object receives an EONull object as the value. Similarly, if you delete the destination of a to-one relationship in a master-detail configuration, the corresponding property in the master is set to EONull.</font></td></tr>
+
+</table>
+
+
+
+<p><br>
+
+</body>
+</html>

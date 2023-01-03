@@ -1,0 +1,143 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextDev/GeneralRef/07_IndexingKit/OtherFeatures/AttributeReaderFormat.rtf -->
+<!-- Date: Sun Jan  1 17:04:15 2023 -->
+<head>
+<title>AttributeReaderFormat</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Copyright</font> &copy;<font face="Times">1995 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+3"><b>Attribute Reader Format</b></font>
+
+<p><font face="Times" size="+1">The Indexing Kit's Attribute Reader Format (ARF) is a simple extension of Microsoft's Rich Text Format (RTF) designed to support content analysis.&nbsp; For more information on how ARF is generated or used by the Indexing Kit, see the IXAttributeReader and IXAttributeParser class specification.</font>
+
+<p><font face="Times" size="+1">This document assumes that you are at least briefly familiar with the Rich Text Format specification.&nbsp; Specifically, it assumes that you know what control groups and control words are, and how they are delimited.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Attributes</b></font>
+
+<p><font face="Times" size="+1">The content of most texts can be analyzed in terms of various attributes, like author, title, date of publication, bibliography list, and so on.&nbsp; ARF supports the declaration of arbitrary attributes, and the association of those attributes with individual lexemes, for the purpose of describing an analysis of textual content.&nbsp; For example, from the ARF descriptions of news wire articles, those containing the word &quot;wetland&quot; in their titles could be readily identified.</font>
+
+<p><font face="Times" size="+1">An attribute is declared by an RTF control group starting with the control word <b>\zd</b> followed by the name of the attribute.&nbsp; For example:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">{\zd Title}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">A type may be defined for the attribute by the control word <b>\zt</b> followed by an Objective C type encoding.&nbsp; If no type is specified, &quot;*&quot; (string) is assumed by default.&nbsp; The following RTF control group defines an unsigned integer-valued attribute representing the year of publication:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">{\zd YearOfPublication\ztI}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">Currently, only scalar types are supported.&nbsp; Specifically <i>not</i> supported are structures, non-string pointers, unions, and bitfields.</font>
+
+<p><font face="Times" size="+1">Attribute declarations are numbered sequentially, beginning with 1.&nbsp; An attribute's sequence number may be used later to refer to that attribute in a lexeme definition (described below).&nbsp; For example, of the attributes declared so far, Title would be number 1 and YearOfPublication would be number 2.&nbsp; A pre-declared attribute, Default, is assigned the number 0, and is associated with every lexeme that has no explicit association.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>Lexemes</b></font>
+
+<p><font face="Times" size="+1">A lexeme is a unit of content extracted from a text, and associated with an attribute by a lexical analyzer, such as an IXAttributeReader.&nbsp; Lexemes are defined by an RTF control group starting with the control word <b>\z</b>; the value of the lexeme immediately follows, and is terminated by the start of another control word or by the end of the control group. An attribute association can be specified with the control word <b>\za</b>, which takes the attribute number as a numeric parameter.&nbsp; If no attribute is specified, the Default attribute is assumed.&nbsp; For example, the word &quot;excursions&quot; could be defined as a lexeme in the Title attribute, and &quot;summer&quot; as a lexeme in the Default attribute, as follows:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">{\z excursions\za1}</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">{\z summer}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">A lexeme may contain multiple words to represent a phrase or an idiom.&nbsp; For example:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">{\z joie de vivre}</font><br>
+<img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">{\z tongue in cheek}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+1"><b>Note:</b></font>&nbsp; <font face="Times" size="+1">If the length of the lexeme exceeds 8191 characters, the remainder will be discarded.</font>
+
+<p><font face="Times" size="+1">A count or weight for the lexeme may be specified by the <b>\zw</b> control word.&nbsp; Normally, this control word is omitted, since counts are usually computed automatically by the parser.&nbsp; It may be useful, however, to specify counts explicitly, thus permitting the use of alternative weighting schemes. Counts supplied in this manner are added to the computed counts.&nbsp; For example, this fragment adds 100 occurrences of the lexeme &quot;camping&quot; in the Title attribute:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">{\z camping\za1\zw100}</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Times" size="+1">Finally, a cookie, introduced by the <b>\zc</b> control word, may accompany the lexeme.&nbsp; The cookie is an ASCII string encoding a value opaque to the parser.&nbsp; This is typically used to describe a position within the source, such as a cell in a spreadsheet, or a footnote in a document.&nbsp; Here's a lexeme definition with a cookie whose value is &quot;A17&quot;:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">{\z bike\zcA17}</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><font face="Helvetica" size="+2"><b>References</b></font>
+
+<p><font face="Times" size="+1">Lexemes are numbered in the same manner as attributes, as they are encountered, beginning with 1.&nbsp; The control word <b>\zr</b>, which takes a lexeme number as a numeric parameter, may be substituted for the lexeme with that number.&nbsp; This provides great space savings when processing large amounts of text.&nbsp; For example, if the &quot;excursions&quot; lexeme declared earlier were the 37<sup>th</sup>lexeme, then the following fragment would indicate another occurrence of that lexeme, resulting in a compression ratio of more than 3 to 1:</font></td></tr>
+
+</table>
+
+<p><img src="../../../../Images/sp.gif" width=124 height=1><font face="Courier">\zr37</font>
+
+
+
+</body>
+</html>

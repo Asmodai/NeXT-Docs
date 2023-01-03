@@ -1,0 +1,2527 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NextAdmin/02_QuickStart.rtfd -->
+<!-- Date: Sun Jan  1 13:56:30 2023 -->
+<head>
+<title>02_QuickStart</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Release 3.3 Copyright</font> &copy;<font face="Times">1994 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap><font face="Helvetica" size="+4"><b>2</b></font></td>
+
+<td><font face="Times" size="+4"><i>Setting Up a NetInfo Network</i></font></td></tr>
+
+<tr valign=top>
+
+<td width=36 height=80></td></tr>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">Connecting your NEXTSTEP computers in a network allows users to share files, exchange mail, and log into any computer attached to the network. Setting up a simple network is a straightforward process. For the purposes of this discussion, a simple network is one with no more than about 20 computers that doesn't include any other types of systems.</font></td></tr>
+
+<tr valign=top>
+
+<td width=36 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">This chapter covers the procedures necessary to set up a simple network, share files across that network, and create network-wide user accounts. Although the procedures in this chapter are geared toward a simple network, they're also used for more complex networks.</font></td></tr>
+
+<tr valign=top>
+
+<td width=36 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">If your network is large or includes multiple types of computers, refer to Chapter 10, &quot;Configuring a Large Network,&quot; or Chapter 11, &quot;NEXTSTEP Computers in a Mixed Network.&quot; In addition, Chapter 3, &quot;NetInfo Networking,&quot; Chapter 4, &quot;Setting Up the Network File System,&quot; and Chapter 5, &quot;Managing User Accounts and User Groups,&quot; may apply, depending on your situation.</font></td></tr>
+
+<tr valign=top>
+
+<td width=36 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">Building a network of NEXTSTEP computers involves using the Manager applications in the <b>/NextAdmin</b> directory. These Manager applications let you set up network administrative information to create file-sharing and other services, allowing some computers to host resources for all computers connected to the network. The name <i>NetInfo</i> refers to the data structure for this network information.</font></td></tr>
+
+<tr valign=top>
+
+<td width=36 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">The term <i>domain</i> refers to a set of information governing the use of resources such as disk space, use of peripherals, and special programs such as email and Network File Sharing (NFS). The information contained in a domain resides in a special database and is accessed through a server process dedicated to referencing that database.</font></td></tr>
+
+<tr valign=top>
+
+<td width=36 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">Each computer has its own <i>local</i> domain containing information solely for that computer.</font></td></tr>
+
+<tr valign=top>
+
+<td width=36 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">A network of computers requires at least one additional domain, conceptually on an upper level, that contains information about network-wide resources, such as which computer will host file server processes, email server processes, and user home directories. A NetInfo network may include several levels of domains, arranged in a hierarchy. At the lowest level are the local domains for each computer. At the highest level is the <i>root</i> domain for the entire network. The name <i>local</i> is the required name for the database that stores information for each individual computer, and the name <b>/</b> is required for the highest level (<i>root</i>) domain. Any domains at intermediate levels may be named as you, the system administrator, see fit. In general, this text will use the terms <i>local domain</i> and <i>root domain</i> to mean the lowest level and highest level domains, respectively.</font></td></tr>
+
+<tr valign=top>
+
+<td width=36 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">The term <i>simple network</i> refers to a network of no more than a few dozen NetInfo computers, each of which supports its own local administrative domain and at least one of which supports the network-wide adminstrative domain. A simple network provides services such as network time coordination, email, and various file-sharing services that support common home directories for users, network-accessible application storage, and other file-sharing features as well as shared access to hardware resources such as printers and fax modems.</font></td></tr>
+
+<tr valign=top>
+
+<td width=36 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">The first Manager application you will use to build your network is SimpleNetworkStarter (SNS). SNS creates an upper-level domain for the network as a whole that stores information about each of the computers on the network as well as specifications as to which computers host network-wide services and resources. Note that you may never have to change the local domain on any computer; all the networking information can be stored in the upper-level domain.</font></td></tr>
+
+<tr valign=top>
+
+<td width=36 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=36></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">When you're done using SNS on the computer that will run the NetInfo server for the root domain, your network should be structured as a two-level domain hierarchy composed of the local domain for each computer on the network as well as the root domain that governs the entire network. At that point you can add computers which are factory-set to auto-configure themselves to your network.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Making a Plan</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Before you jump in and start building your network, it's a good idea to have a plan. Such a plan will help make sure that all the components of your network are properly configured. It's much easier to set up a network correctly than it is to modify an existing network. If you haven't yet read Chapter 1, now would be a good time to do so.</font>
+
+<p><font face="Times" size="+1">As you make your plan, here are some things you need to decide:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Choose the computer that will run the master NetInfo server process for the root domain.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">A <i>server</i> is a program that provides resources to other programs. (A program that uses resources provided by a server is called a <i>client</i>). The resources provided can include disk space, a printer, or administrative information--such as the current time, or information about users and other computers. The <i>master NetInfo server </i>process for the root domain of the network provides access to the information in the root domain of that network. For backup, you should have other computers running NetInfo servers for the root domain, but only one is the master (read and write); the others are clones (read only).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">The computer you select for this purpose should have extra memory and disk space and should be available at all times. Consider placing the computer that runs the master NetInfo server for the network's root domain in a secure location.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Choose a host name for each of the computers.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">Host names should be eight characters or less, all lowercase, and contain only letters, numerals, hyphens (-), and underbars (_). Choosing host names within these limits will make sure that they work in all situations.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Determine the Internet address for your network.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">In order for the computers on your network to communicate via the Internet to computers at other sites, each must be assigned a unique Internet address. See Appendix C, &quot;Internet Addressing,&quot; for details about having a set of addresses assigned to you. Even if you aren't planning to connect to the Internet now, it's highly recommended that you register your network anyway. That way, you won't need to change all the addresses if you later decide to connect to the Internet. If you're absolutely certain your network will never be connected to the outside world, you can just use the default addresses provided by the various applications.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Choose a computer that will provide clone NetInfo service for the root domain.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">A <i>clone server</i> is a server process that references a read-only copy of a NetInfo domain database. It's always a good idea to have at least one clone server for the root domain so that your network will continue to function even if the computer running the master NetInfo server for the root domain becomes unavailable. Having a clone server can also help reduce the load on the master server by providing another source for administrative data.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Decide what kind of file service you'll be using and which systems will provide them. Make sure that any computers used for file serving have plenty of disk space (and probably additional memory as well). Remember that the term &quot;server&quot; means a process that provides a service of some sort (in this case, access to a computer's filesystem).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">The four kinds of file service to consider are:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Home directory--A home directory server provides access across the network to a directory that holds home directories for user accounts. More than one computer can run a home directory server. All directories that are made available in this way are listed as possible home directories in UserManager (see &quot;Adding Users&quot; later in this chapter).</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Applications--You can save disk space as well as simplify network adminstration and upgrading by putting software applications in a central directory and making that directory available across the network. This directory will show up on each computer as <b>/LocalApps</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">General purpose--You may want to make other directories available across the network so that users can share them. For example, you might want to set up a directory to hold files related to a specific project.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Mail--A mail server provides access to a directory that stores incoming mail for the network. In addition to managing the email files, a mail server also handles distribution of messages. It's important for a computer hosting a mail server to have extra memory as well as sufficient disk space, for this computer runs the network-wide mail server process for the network and its /usr/spool/mail directory stores all mail files for the whole network.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1"><b>Note:</b>&nbsp; If you'll be using an external disk drive for file services, install and configure the drive before adding the computer to the network. See Chapter 7, &quot;Attaching Peripherals.&quot;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Determine the physical layout for your network.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">Decide where each piece of equipment will go and what kind of physical access should be allowed. For example, you might decide to keep computers dedicated to providing network services in a locked room. If you want, you can assemble the computers and network now, but leave the computers powered off. Otherwise, you can assemble the computers as you go.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Decide whether each user should have a network account or local account.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">In most cases, you should use network accounts rather than local accounts. Network accounts can be used from any computer on the network: the account information resides in the root NetInfo domain, and the account's home directory is accessible through the network. Local accounts restrict each user to a specific computer. See &quot;Adding Users&quot; later in this chapter.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Setting Up the Master NetInfo Server</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">The first computer you need to set up is the computer that will run the master NetInfo server for the network's root domain, the source of administrative data for all of the computers on the network. This computer will serve a network-wide NetInfo database, which stores information about client computers, users, and other services. (For more details about NetInfo, see Chapter 3.) SimpleNetworkStarter (SNS) is the Manager application to use for this job.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Make sure the computer you've chosen to run the master server is <i>not</i> attached to the network, then power it on.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">You <i>must</i> have a password assigned to the <b>root</b> account. If you've already assigned one, log in using any valid account. If not, follow these steps to assign passwords:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>a.</b></font></td>
+
+<td><font face="Times" size="+1">If this is the first time you've turned on this computer, choose a language and keyboard when prompted.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>b.</b></font></td>
+
+<td><font face="Times" size="+1">Use the Preferences application to assign a password to the <b>me</b> account (for more information, see the <i>User's Guide</i>).</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>c.</b></font></td>
+
+<td><font face="Times" size="+1">Log out, then log back in as <b>root</b> (because <b>root</b> doesn't have a password, you won't need to enter one in the login window).</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>d.</b></font></td>
+
+<td><font face="Times" size="+1">Assign a password to <b>root</b> using the Preferences application.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Start up SimpleNetworkStarter, located in <b>/NextAdmin</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">If you're not logged in as <b>root</b>, you're prompted for the <b>root</b> password.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F0.gif" width=322 height=242><font face="Times" size="+1">.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">After SNS accepts your login it inspects the <b>/etc/netinfo</b> directories, makes backups of all the NetInfo databases as well as the <b>/etc/hostconfig</b> file. This will take up to a minute. SNS saves the <b>/etc/netinfo</b> directory as the <b>/etc/netinfo.backup</b> directory and the <b>/etc/hostconfig</b> file as the <b>/etc/hostconfig.backup</b> file.</font>
+
+<p><font face="Times" size="+1">SNS keeps a log of its activities which you can inspect using the Log command of SNS's main menu. Note that lines in bold typeface denote changes in SNS's activities and Italics denote conclusions SNS has reached.</font>
+
+<p><font face="Times" size="+1">SNS keeps a copy of its log in the <b>/usr/adm/SNS.log</b> file. Note that SNS overwrites its log information onto the <b>/usr/adm/SNS.log</b> file from session to session, obliterating the history. You can inspect <b>/usr/adm/SNS.log</b> by using the Edit application. Note also that the <b>SNS.log</b> file is plain ASCII, without bold and Italic font distinctions you see on-screen as SNS is running.</font>
+
+<p><font face="Times" size="+1">SNS then presents its main window.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F1.gif" width=428 height=456></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Click the button labeled &quot;Provide the services specified below&quot; in the top section of this window. This sets the default configuration and enables the switches in the bottom section of the window. If SNS does not detect a master server on the network, it sets a checkmark in the first switch, &quot;Maintain the master copy of network administrative data.&quot;</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Enter the host name you've chosen for this computer in the Hostname field of the center section (see &quot;Making a Plan&quot; earlier in this chapter).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Enter the appropriate Internet address in the IP Address text field of section 2. See &quot;Making a Plan&quot; earlier in this chapter, and Appendix C, &quot;Internet Addressing.&quot;</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F2.gif" width=428 height=456></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">The Network Options button is used to modify information specific to large networks or networks that include different types of computers. The NetInfo Options button lets you set up a clone server on a new subnet. If your network falls into either of these categories, see Chapters 10 or 11 for more information. You won't need to use it when you set up a computer that runs the master Netinfo server process for a network. For a simple network, you can ignore these buttons.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Setting Options</b></font>
+
+<p><font face="Times" size="+1">Section 3 of SNS's main window lets you specify what services you want this computer to provide. The file sharing services let you specify what portions of this computer's filesystem to make available to the network. You are now ready to set options for your computer in section 3 of the window.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">The first switch in section 3, labeled &quot;Maintain the master copy of network administrative data,&quot; is already checked, by default, to set this computer up to provide master NetInfo services. Note that if you are setting up network domains and services for the first time, SNS will present an Alert panel if you uncheck this switch, saying &quot;The first server you configure must have a copy of the administrative database.&quot; Click OK in this Alert panel and SNS will set a checkmark for this switch.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Check the switch that's labeled &quot;Limit access to network administrative data to the local network&quot; if you want to increase the security of the data you've stored in the network-wide database. With this switch checked, the data in the NetInfo database is only available to the computers making up this network. If you have a large network made up of subnets, see Chapter 10, &quot;Configuring a Large Network.&quot;</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Check the switch that's labeled &quot;Automatically add new NEXTSTEP systems to the network&quot; if you want new computers to be added to the network simply by attaching them and powering them on. If you click the switch to turn it off, you'll have to add new computers &quot;by hand&quot; with HostManager. See Chapter 3 for details.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Leave the switch checked that's labeled &quot;Require a password to add computers to the network&quot; if you've elected to use automatic host addition and you want to make the process more secure. With this feature turned on, you'll be prompted for a password whenever you add a new computer to the network. (You'll set this password during the configuration process.) If you click the switch to turn this feature off, anyone can add a NEXTSTEP computer to the network without knowing a password.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Check the switch that's labeled &quot;Run network time server software on this computer&quot; if you want all computers to get their time from this computer rather from their local system clocks. This feature makes sure that the time is synchronized for all computers on the network. This is important if you share any files across the network, to make sure that file modification and access times are kept consistent between computers. Turning this feature off means that each computer will set its time independent of the others.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Check the switch that's labeled &quot;Maintain the network's e-mail server&quot; if you want this computer to provide the network e-mail services. Be sure this feature is turned off if you'll be using some other computer for this purpose.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Setting Up File Services</b></font>
+
+<p><font face="Times" size="+1">Now that you've set all the network options, you can determine whether you want the computer hosting the master NetInfo server to provide any file-sharing services as well. In general, it's not a good idea to combine a master NetInfo services with file-sharing services because the processing requirements can degrade performance. On very small networks (fewer than about 10 computers), this shouldn't be a problem.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Check the switch labeled Homes for network users if you want this computer to serve a directory used to hold home directories.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">By default, SimpleNetworkStarter will create a directory named <b>/Users</b> for this purpose.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">If you want to use some other directory to hold home directories, you must be sure it already exists on the computer you're working on. Click the Set... button, and a browser will appear showing the computer's filesystem. Select the directory.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">Once you've completed building the network, the directory chosen here will appear on all computers on the network as <b>/Net/</b><i>hostname</i><b>/</b><i>directory</i>, where <i>hostname</i> is the host name of the computer providing the filesystem storage space and <i>directory</i> is the directory chosen. If you are working on a computer named <b>earth</b> using SNS' default, other computers will show the <b>/Net/earth/Users</b> directory. This directory will also appear as one of the choices for home directories in the UserManager application. See &quot;Adding Users&quot; later in this chapter.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">If you don't want this computer to serve home directories, click the switch so that the check disappears.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Check the switch labeled <b>/LocalApps</b> if you want this computer to serve a shared <b>/LocalApps</b> directory. A shared <b>/LocalApps</b> directory is used to provide a central location for applications.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">By default, a directory named <b>/LocalApps</b> will be created and used for this purpose.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">If you want to use some other directory to provide network access to application programs, you must be sure it already exists on the computer you're working on. Click the Set... button, and a browser will appear showing the computer's filesystem. Select the directory.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">If you don't want this computer to share applications, click the switch so that the check disappears.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Click the switch labeled General Purpose if you want this computer to provide some other shared directory (such as a directory containing project files).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">By default, a directory named <b>/General</b> will be created for you.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">If you want to use some other directory to be used instead, you must be sure it already exists on the computer you're working on. Click the Set... button, and a browser will appear showing the computer's filesystem. Select the directory. Once the network configuration is complete, this directory will show up on other computers as <b>/Net/</b><i>hostname</i><b>/</b><i>directory</i>, where <i>hostname</i> is the host name of the server and <i>directory</i> is the name of the directory chosen.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">If you don't want to serve a general purpose directory, leave the switch unchecked.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Building the Network</b></font>
+
+<p><font face="Times" size="+1">Now you can start building your network.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Review the selections you've made and make sure they're what you want.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Click the button labeled Configure to begin the process of configuring the network.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">If you haven't set a password for the <b>root</b> account on this computer, you're required to set one. Enter the password, then verify your typing, as prompted.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F13.gif" width=378 height=184></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">The application now creates a network-wide NetInfo database, which will be used to store administrative data for all network computers to share.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">If you've chosen to use a password for adding computers to the network, you're prompted to set one. Enter the password twice, as prompted.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F14.gif" width=378 height=184></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">When the panel appears asking you to attach the computer to the network, do so. Once attached, click OK.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F3.gif" width=364 height=203></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">Once the database is created, network services are started. When all of the services have been started, you're returned to the main window.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Setting Up Other Servers</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">With the shared administrative server configured, it's time to configure the rest of the servers. For a network of more than a few computers, you will probably want to configure other servers so that each runs on its own computer.</font>
+
+<p><font face="Times" size="+1"><b>Note:</b>&nbsp; If you haven't chosen to use automatic host addition, you'll need to add the other servers with HostManager. See Chapter 3, &quot;NetInfo Networking,&quot; for details.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Connect a new computer to the network. Do this <i>before</i> you start it up; otherwise, it won't be correctly added to the network.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Turn on the computer. In a few moments, a window appears with the following message:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">Network doesn't recognize computer.</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">Enter host name:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">Enter the host name you've chosen for the computer and press Return.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Next, you're asked if you want to add the host to the network.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">Add computer to the network [y/n]?</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">Type <b>y</b> and press Return.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">If you're using a password for automatic host addition, you're prompted for it.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">Enter network password:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">Enter the network password and press Return.</font>
+
+<p><font face="Times" size="+1">If you see any messages other than those discussed here, see the &quot;Troubleshooting&quot; section later in this chapter.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">If necessary, set the language and keyboard. If you haven't done so yet, add passwords for the <b>me</b> and <b>root </b>accounts.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Start up SimpleNetworkStarter.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Click the button labeled &quot;Provide the Service Specifed Below.&quot; This will enable some of the switches in the bottom section of the window.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1"><b>Note:</b>&nbsp; Don't change the values in the Host Name and IP address fields. If you do, you'll get an error message when you try to configure the computer.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>8.</b></font></td>
+
+<td><font face="Times" size="+1">If you want this computer to run a clone server of the network NetInfo database, leave the switch labeled &quot;Serve the shared...&quot; checked. Otherwise, click the switch to uncheck it.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1"><b>Note:</b>&nbsp; It's a good idea to set up at least one clone server for your network.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>9.</b></font></td>
+
+<td><font face="Times" size="+1">If you'll be using this computer as the post office, click the appropriate check box. If some other computer on the network is already providing this service, this option won't be available.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Times" size="+1"><b>10.</b></font></td>
+
+<td><font face="Times" size="+1">If you'll be using this computer as a file server, set it up using the appropriate check box and directory well. See the previous section for details.</font></td></tr>
+
+<tr valign=top>
+
+<td width=96 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Times" size="+1"><b>11.</b></font></td>
+
+<td><font face="Times" size="+1">Click the button labeled &quot;Configure.&quot; A User Authentication panel appears.</font></td></tr>
+
+<tr valign=top>
+
+<td width=96 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Times" size="+1"><b>12.</b></font></td>
+
+<td><font face="Times" size="+1">Enter the password of the <b>root</b> account of the root NetInfo domain.</font></td></tr>
+
+<tr valign=top>
+
+<td width=96 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Times" size="+1"><b>13.</b></font></td>
+
+<td><font face="Times" size="+1">Repeat these procedures for each additional computer that will provide network services.</font></td></tr>
+
+<tr valign=top>
+
+<td width=96 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Times" size="+1"><b>14.</b></font></td>
+
+<td><font face="Times" size="+1">Although it's not always necessary, it's a good idea to reboot all the computers providing network services. Power down all computers, then reboot the computer running the master NetInfo server for the root domain, then turn on each of the other servers one at a time.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Adding Other Hosts</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">You can now add the remaining computers to the network. Follow these procedures for each computer.</font>
+
+<p><font face="Times" size="+1"><b>Note:</b>&nbsp; If you haven't chosen to use automatic host addition, you'll need to add the other hosts with HostManager. See Chapter 3, &quot;NetInfo Networking,&quot; for details.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Attach the computer to the network, then turn it on.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">When you're prompted for the host name, enter the one you've chosen.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">The configuration server asks if you want to add the host to the network. Type <b>y</b> and press Return.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">If you're using a password for automatic host addition, you're prompted for it. Enter the network password and press Return.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">If you see any other messages, see the &quot;Troubleshooting&quot; section later in this chapter.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">If necessary, choose a language and keyboard. If you haven't yet, set passwords for the <b>me</b> and <b>root</b> accounts.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">If you want to secure the local administrative data, do the following:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>a.</b></font></td>
+
+<td><font face="Times" size="+1">Start up SimpleNetworkStarter.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>b.</b></font></td>
+
+<td><font face="Times" size="+1">Click the button labeled &quot;Access shared network resources as a client.&quot;</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>c.</b></font></td>
+
+<td><font face="Times" size="+1">Click &quot;Configure.&quot;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Repeat for each client.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">You now have a complete NetInfo network.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Testing the Network</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">After completing the configuration of your network, it's a good idea to test things and make sure everything is functioning properly. If you encounter any problems performing these steps, see the &quot;Troubleshooting&quot; section at the end of this chapter.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Verify that <b>/LocalApps</b> is being shared:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>a.</b></font></td>
+
+<td><font face="Times" size="+1">Put a file in <b>/LocalApps</b> on the computer providing file services for the <b>/LocalApps</b> directory. .</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>b.</b></font></td>
+
+<td><font face="Times" size="+1">Log into various other computers and check the File Viewer to make sure that the file shows up in <b>/LocalApps</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>c.</b></font></td>
+
+<td><font face="Times" size="+1">Remove the file.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Verify that a general-purpose file server is functioning, just as you would an application server:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>a.</b></font></td>
+
+<td><font face="Times" size="+1">Create a file in the directory being served.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>b.</b></font></td>
+
+<td><font face="Times" size="+1">Log into a few computers and check that the file and directory appear in the File Viewer. The directory will appear as <b>/Net/</b><i>hostname</i><b>/</b><i>directory</i>, where <i>hostname</i> is the host name of the file server, and <i>directory</i> is the name of the directory being shared.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>c.</b></font></td>
+
+<td><font face="Times" size="+1">Remove the test file.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">To test a home directory server, first make sure the directory is accessible across the network:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>a.</b></font></td>
+
+<td><font face="Times" size="+1">Create a file in the directory being served.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>b.</b></font></td>
+
+<td><font face="Times" size="+1">Log into a few computers and check the File Viewer to make sure the test file appears in the browser. The file should show up as <b>/Net/</b><i>hostname</i><b>/</b><i>directory</i><b>/</b><i>file</i>, where <i>hostname</i> is the host name of the file server, <i>directory</i> is the name of the directory being shared (if you used the default directory, it will be named <b>Users</b>), and <i>file</i> is the name of the test file.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>c.</b></font></td>
+
+<td><font face="Times" size="+1">Remove the test file.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">The second half of testing a home directory server is to verify that UserManager recognizes the directory as a valid place for user accounts. See &quot;Adding Users&quot; later in this chapter.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">To test the mail server, send a few mail messages and verify that the mail is received. This is easier if you add a couple of network accounts, then send mail between them. Be sure to send and receive on various computers, including the computer running the mail server.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">If you want to test mail before you've added accounts, you can send a message from <b>me</b> to <b>root</b>.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Adding Users</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Now you're ready to add new users. This section details how to use UserManager to add a network user account.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Log into the computer that is running the home directory server. If more than one computer provides home directory services, log into the appropriate one. You can only create home directories with UserManager while logged into the computer that holds the directory.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1"><b>Note:</b>&nbsp; If you want to be able to add users from a computer other than the one running the home directory server, you'll need to use NFSManager to grant <b>root</b> access to the home directory across the network. See Chapter 4, &quot;Setting Up the Network File System,&quot; and Chapter 5, &quot;Managing User Accounts and User Groups,&quot; for details.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Start up UserManager, located in <b>/NextAdmin</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">If you're not logged in as <b>root</b>, you're prompted for the <b>root</b> password. Enter the <b>root</b> password and click Login.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="../images/F4.gif" width=332 height=243></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Choose New User from the User menu. The User Type panel appears.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F5.gif" width=364 height=191></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Click Network. The Select NetInfo Domain panel appears. (If you choose Local in the User Type panel, you go directly to the New User window.)</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F6.gif" width=308 height=347></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Click <b>/</b> in the left column, to indicate that the user account should be available from any computer on the network, then click OK. The New User Short Form window appears.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="F7.gif" width=362 height=336></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1">Complete the New User window as follows:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>a.</b></font></td>
+
+<td><font face="Times" size="+1">Enter the user's full name in the text field of the same name. You're free to use uppercase characters, lowercase characters, and spaces in this field.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>b.</b></font></td>
+
+<td><font face="Times" size="+1">Enter the account name in the Username field. This is the name the user will log in with. Each account name must be unique, contain no more than 8 characters, be all lowercase, and contain no spaces. A common convention at sites with many users is to use a person's first initial and last name as their account name (<b>ppatton</b>, for example). At smaller sites, first names are usually sufficient (<b>pat</b>, for instance).</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>c.</b></font></td>
+
+<td><font face="Times" size="+1">Enter a password into the Password field. For security reasons, what you type is not displayed. A password must be no more than 8 characters and contain no spaces. A combination of uppercase and lowercase letters with numerals and other characters will make the password harder to guess, and therefore more secure.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1"><b>Note:</b>&nbsp; If you decide not to assign a password at this time, make sure that each user adds a password <i>immediately</i>. An account without a password can be used by anyone.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>d.</b></font></td>
+
+<td><font face="Times" size="+1">Accept the home directory that UserManager specifies, the <b>/Users</b> directory.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1"><b>Note:</b>&nbsp; Chapter 5, &quot;Managing User Accounts and User Groups,&quot; presents information for specifying home directories of your choice.</font></td></tr>
+
+<tr valign=top>
+
+<td width=124 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td nowrap><font face="Times" size="+1"><b>e.</b></font></td>
+
+<td><font face="Times" size="+1">If necessary, change the language choice for this user by pressing the Language button and dragging to the appropriate choice.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>8.</b></font></td>
+
+<td><font face="Times" size="+1">Choose Save from the User menu.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>9.</b></font></td>
+
+<td><font face="Times" size="+1">If you assigned a password to this user, a panel appears asking you to verify that password. Enter the password, then click OK.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="../images/F8.gif" width=266 height=168></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Times" size="+1"><b>10.</b></font></td>
+
+<td><font face="Times" size="+1">A panel appears asking you to verify the components of the new user account. Note that several values were assigned by default (for more information on these fields, see Chapter 5, &quot;Managing User Accounts and User Groups&quot;). Review the values and click Yes if they're correct. (If they're not, click No. Correct the fields in the New User window, then choose Save again.)</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=106></td>
+
+<td><img src="../images/F9.gif" width=342 height=375></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Times" size="+1"><b>11.</b></font></td>
+
+<td><font face="Times" size="+1">The next panel informs you that the user's home directory doesn't exist, and asks if it should be created. Click Yes.</font></td></tr>
+
+<tr valign=top>
+
+<td width=96 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">After a few moments, the New User window returns.</font></td></tr>
+
+<tr valign=top>
+
+<td width=96 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=96></td>
+
+<td nowrap><font face="Times" size="+1"><b>12.</b></font></td>
+
+<td><font face="Times" size="+1">You can repeat these steps to create additional accounts. Chapter 5, &quot;Managing User Accounts and User Groups,&quot; shows you how to add multiple users in a single session.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Maintenance Planning</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">Now that you have a functional network with user accounts, you might think you're all done. However, this is only the beginning. You now have to maintain the network you so carefully constructed. It's a good idea to put together a plan detailing how you'll keep your network in top form. Things to consider include:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">How and when file backups will be performed.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">How space conflicts will be resolved when a computer providing file services run out of disk space (probably sooner than you expect).</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">How the network will be reconstructed in the case of a major catastrophe.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Which person will be responsible and which procedure will be followed when network troubles arise.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">It's also a good idea to maintain a written log of activities. For example, you might want to track information about backups, adding or deleting users, installing new equipment, and troubleshooting sessions.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+3"><b>Troubleshooting</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">If you have problems with any of the procedures in this chapter, use this section to help solve them.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Multiple Computers Can't Access a Shared Directory</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The computer providing service isn't turned on or isn't booted--Turn the computer on and/or boot it.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The computer providing service is having software problems (is frozen or has crashed)--Reboot the computer.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">An external disk has become disconnected or turned off--Turn off the computer, reconnect and/or turn on the external disk, then reboot the computer.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">A directory isn't properly configured--Use SimpleNetworkStarter or NFSManager to verify that the directory is being shared correctly.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>One or More Computers Aren't Communicating with the Network</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">A computer isn't attached to the network--Attach the computer and reboot it.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">None of the computers running NetInfo servers on the network are turned on--Turn on the computers.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">A computer was allowed to boot without a network--Reboot the computer. (If the <i>configuration server</i> is slow to respond, a prompt appears during the boot process asking if it's OK to continue without the network connection. Pressing Control-c in response to this prompt will disable the connection to the computer running the network server. A <i>configuration server</i> is a process that provides an address and name to a requesting process on a booting computer; for more information, see Chapters 3 and 10.)</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The value for the <b>trusted_networks</b> property (in the root directory of the NetInfo root domain) is incorrect. The <b>trusted_networks</b> property value is set if you check SNS's switch that's labeled &quot;Limit access to network administrative data to the local network&quot; to increase the security of the data you've stored in the network-wide database. With this switch checked, the data in the NetInfo database is only available to the computers making up this network. Verify the values of the <b>ip_address</b> properties in the <b>/machines</b> subdirectories in all domains. (If you have a large network made up of subnets, see Chapter 10, &quot;Configuring a Large Network.&quot;)</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+1"><b>Mail Messages Aren't Being Delivered Properly</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Two users are logged in using <i>local</i> accounts with the same name (<b>me</b>, for example)--Make sure users log in with their network accounts; eliminate duplicate local accounts; and make sure only one person is using a given local account. Whoever has the Mail application that fetches the soonest after the mail is delivered will get the mail.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The directory <b>/usr/spool/mail</b> isn't mounted properly--Use NFSManager to verify that this directory is being shared correctly (see Chapter 4, &quot;Setting Up the Network File System,&quot; and Chapter 6, &quot;Managing Electronic Mail,&quot; for details). The wrong <b>sendmail</b> configuration file may be being used either at the server end or at the client end (see Chapter 6, &quot;Managing Electronic Mail&quot; for details).</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Times" size="+1">For more complete mail troubleshooting tips, see Appendix D, &quot;The <b>sendmail</b> Program.&quot;</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Unexpected Messages Appear During Automatic Host Addition</b></font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=105 height=1><font face="Courier"><img src="../images/bullet1.gif" width=4 height=8 vspace=3> Name recognized. New CPU board or ROM chip [y/n]?</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">Indicates that the <i>configuration server</i> already detects a host entry for the host name you entered. Answer <b>no</b> (or <b>n</b>). You'll be prompted for another host name.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=105 height=1><font face="Courier"><img src="../images/bullet1.gif" width=4 height=8 vspace=3> Host name already in use.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">Indicates that the host name you entered is the name of a computer currently running on the network. After a brief delay, you'll be prompted for a different host name.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=105 height=1><font face="Courier"><img src="../images/bullet1.gif" width=4 height=8 vspace=3> Incorrect password.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">You entered the network password incorrectly. You'll be returned to the beginning of the configuration process, where you'll need to enter the host name again.</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=105 height=1><font face="Courier"><img src="../images/bullet1.gif" width=4 height=8 vspace=3> Server error: no available IP address</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=124></td>
+
+<td><font face="Times" size="+1">The <i>configuration server</i> has no more addresses available to assign. The range of assignable addresses will need to be modified on the configuration server, as described in Chapter 3. Once additional addresses are available, you can add the new host.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td><font face="Helvetica" size="+3"><b>Recovering from Catastrophic Failure</b></font>
+
+<p><font face="Times" size="+1">Under extreme (and rare) circumstances, it may be necessary to return a computer to its original state (before it was configured with SimpleNetworkStarter). For example, if your computer crashes during configuration, SimpleNetworkStarter may not be able to recover properly. Usually, if SimpleNetworkStarter can't complete the configuration, it will return your system to the state it was in before you began the procedure. If your system crashes before this has happened, you'll need to extract the original files &quot;by hand.&quot; The following procedure replaces all the files that were modified by SimpleNetworkStarter with their originals.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Turn off the computer, then turn it back on.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Boot up the computer in &quot;single user&quot; mode.</font><br>
+<font face="Times" size="+1">If you're using an Intel-based PC type of computer, watch for the <b>boot:</b> prompt (after the ROM system check and the message that &quot;NEXTSTEP will start up in 10 seconds....&quot; At the <b>boot:</b> prompt, enter <b>?</b> and the system will present a list of options followed by another <b>boot:</b> prompt. At the <b>boot:</b> prompt enter <b>sd()mach_kernel -s</b> and the system will come up in single user mode.</font><br>
+<font face="Times" size="+1">If you're using a NeXT computer, <i>Immediately</i> after the &quot;Testing System&quot; message goes away, stop the boot process by holding down the Command bar and pressing the <b>~</b> key (without pressing Shift). On keyboards with two Command keys, hold down the right Command key while pressing the <b>~</b> key. In the case of a NeXTstation, this displays the ROM monitor window, which contains information about the hardware. At the <b>NeXT&gt;</b> prompt enter the <b>bsd -s</b> command to boot the computer in single-user mode. For more information, see Chapter 9.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Check the file system by executing <b>fsck</b> following the instructions in the &quot;Troubleshooting&quot; section of Chapter 9.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Enter the following command to change directory to the <b>/etc</b> directory:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier"><b>cd</b> /etc</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Restore the original files by entering the following commands:</font></td></tr>
+
+</table>
+
+<p><img src="../images/sp.gif" width=143 height=1><font face="Courier">rm /etc/hostconfig</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">cp /etc/hostconfig.backup /etc/hostconfig</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">rm -r /etc/netinfo</font><br>
+<img src="../images/sp.gif" width=143 height=1><font face="Courier">cp -r /etc/netinfo.backup /etc/netinfo</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Reboot the computer. It should now be in its original state.</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>
