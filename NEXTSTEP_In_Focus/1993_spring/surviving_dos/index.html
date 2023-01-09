@@ -1,0 +1,555 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NEXTSTEP_In_Focus/1993Spring/Surviving_DOS.rtfd -->
+<!-- Date: Sun Jan  1 15:46:16 2023 -->
+<head>
+<title>Surviving_DOS</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times"><i>NEXTSTEP In Focus</i>, Spring 1993 (Volume 3, Issue 2).</font><br>
+<font face="Times">Copyright</font> &copy;<font face="Times">1993 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><font face="Helvetica" size="+4"><b>Surviving DOS</b></font>
+
+<p><font face="Helvetica">Dan Peknik</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">If your Intel computer comes with NEXTSTEP preloaded and configured and you plan to use NEXTSTEP exclusively, you might never have to use DOS. However, if you have to install NEXTSTEP or if you want to switch between it and DOS (or another operating system), you may need to learn some DOS basics. Don't worry--this article gives you a comfortable start.</font>
+
+<p><font face="Helvetica" size="+2">WHENCE DOS?</font>
+
+<p><font face="Times" size="+1">DOS (Disk Operating System) was introduced in 1981 for release with IBM's PC flavor of computers. While DOS is not the multitasking mogul that UNIX is, its style and wide acceptance make it appealing to many. Proponents of DOS say that its widely documented features and general industry acceptance make it an ideal platform for home use.</font>
+
+<p><font face="Times" size="+1">There are currently several versions of DOS in use. Of them, DOS 4 is notable for removing the limit of 32 MB per disk partition and including built-in advanced memory management. There's also DOS 5, the version recommended for use with NEXTSTEP. And now, DOS 6 is being released.</font>
+
+<p><font face="Helvetica" size="+2">BASIC DIFFERENCES</font>
+
+<p><font face="Times" size="+1">If you need to use DOS commands, there are a few things you must know right away.</font>
+
+<p><font face="Times" size="+1">First, file names and commands in DOS are not case-sensitive as they are in UNIX. For example, in DOS, a file named <b>MyFile.txt</b> is the same as a file named <b>myfile.txt </b>or <b>MYFILE.txt</b>. In UNIX, these would be three different files.</font>
+
+<p><font face="Times" size="+1">Also, DOS file names, unlike file names in UNIX, can have no more than eight characters in the prefix (the main part of the name), and no more than three characters in the extension. You can use the letters <b>A</b> through <b>Z</b> and the numbers <b>0 </b>through <b>9</b> in file names. In addition, these characters are valid</font><font face="Helvetica"><b>:</b></font>
+
+<p><img src="../../Images/sp.gif" width=6 height=1><font face="Courier" size="-1">~ ! @ # $ ^ &amp; (&nbsp; ) - _ {&nbsp; }&nbsp; '</font>
+
+<p><font face="Times" size="+1">For instance, <b>~MYFILE.$$$</b> is a valid DOS file name, while <b>*MYFILE.%%%</b> is not. Also, DOS file names can't include spaces.</font>
+
+<p><font face="Times" size="+1">A further difference is that the path name delimiters for DOS and UNIX are different, and confusingly so. In UNIX you indicate directory names on a path with the character &quot;/&quot;, while in DOS you use &quot;\&quot;. (This is often disconcerting for first-time users of either system, and even for pros who have been away for a while.) So, a path name that looks like <b>/usr/spool/mail</b> in UNIX is <b>\usr\spool\mail</b> in DOS.</font>
+
+<p><font face="Times" size="+1">A more subtle difference is that, while UNIX sees most everything in its file system as a file--directories are just a special kind of file--DOS treats files and directories differently from each other. For example, UNIX sees the directory <b>/etc</b> the same way it sees any file within it; a directory is just a file that contains information about other files. DOS marks directories specially and gives them their own standing in the <i>File Allocation Table</i>, or <i>FAT</i>. This FAT is like a table of contents for your disk. It contains a listing of all files, file types, and locations like a library card catalog.</font>
+
+<p><font face="Times" size="+1">A little experimentation in DOS reveals the significance of these differences.</font>
+
+<p><font face="Helvetica" size="+2">TRANSLATING COMMANDS</font>
+
+<p><font face="Times" size="+1">Although you can accomplish many of the same tasks with both DOS and UNIX, few commands are common between them. The table below is a quick reference to the basic commands of the two operating systems.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><b>Task</b></font></td>
+
+<td nowrap><font face="Helvetica"><b>DOS command</b></font></td>
+
+<td><font face="Helvetica"><b>UNIX command</b></font></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">List the contents</font></td>
+
+<td nowrap><font face="Courier">dir</font></td>
+
+<td><font face="Courier">ls</font></td></tr>
+
+<tr valign=top>
+
+<td nowrap><img src="../../Images/sp.gif" width=14 height=1><font face="Helvetica">of a directory</font></td>
+
+<td nowrap></td>
+
+<td></td></tr>
+
+<tr valign=top>
+
+<td height=7></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">Create a new directory</font></td>
+
+<td nowrap><font face="Courier">mkdir <i>directory</i></font></td>
+
+<td><font face="Courier">mkdir <i>directory</i></font></td></tr>
+
+<tr valign=top>
+
+<td nowrap></td>
+
+<td nowrap><font face="Courier">md <i>directory</i></font></td>
+
+<td></td></tr>
+
+<tr valign=top>
+
+<td height=7></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">Remove a directory</font></td>
+
+<td nowrap><font face="Courier">rmdir <i>directory</i></font></td>
+
+<td><font face="Courier">rmdir <i>directory</i></font></td></tr>
+
+<tr valign=top>
+
+<td nowrap></td>
+
+<td nowrap><font face="Courier">rd <i>directory</i></font></td>
+
+<td></td></tr>
+
+<tr valign=top>
+
+<td height=7></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">Erase a file</font></td>
+
+<td nowrap><font face="Courier">erase <i>file</i></font></td>
+
+<td><font face="Courier">del <i>file</i></font></td></tr>
+
+<tr valign=top>
+
+<td nowrap></td>
+
+<td nowrap><font face="Courier">rm <i>file</i></font></td>
+
+<td></td></tr>
+
+<tr valign=top>
+
+<td height=7></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">Copy a file</font></td>
+
+<td nowrap><font face="Courier">copy <i>oldname newname</i></font></td>
+
+<td><font face="Courier">cp <i>oldname newname</i></font></td></tr>
+
+<tr valign=top>
+
+<td height=7></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">Go to another directory</font></td>
+
+<td nowrap><font face="Courier">cd <i>\dir\dir</i></font></td>
+
+<td><font face="Courier">cd <i>/dir/dir</i></font></td></tr>
+
+<tr valign=top>
+
+<td height=7></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">Go to the root directory</font></td>
+
+<td nowrap><font face="Courier">cd \</font></td>
+
+<td><font face="Courier">cd /</font></td></tr>
+
+<tr valign=top>
+
+<td height=7></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">Move or rename a file</font></td>
+
+<td nowrap><font face="Courier">rename <i>oldname newname</i></font></td>
+
+<td><font face="Courier">mv <i>oldname newname</i></font></td></tr>
+
+<tr valign=top>
+
+<td height=7></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">Clear the screen</font></td>
+
+<td nowrap><font face="Courier">cls</font></td>
+
+<td><font face="Courier">clear</font></td></tr>
+
+<tr valign=top>
+
+<td height=7></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">Display a text file</font></td>
+
+<td nowrap><font face="Courier">type <i>file</i></font></td>
+
+<td><font face="Courier">cat <i>file</i></font></td></tr>
+
+<tr valign=top>
+
+<td height=7></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">Start a text editor</font></td>
+
+<td nowrap><font face="Courier">edit</font></td>
+
+<td><font face="Courier">vi</font></td></tr>
+
+<tr valign=top>
+
+<td nowrap></td>
+
+<td nowrap><font face="Courier">edlin</font></td>
+
+<td><font face="Courier">ed</font><br>
+<font face="Courier">ex</font></td></tr>
+
+<tr valign=top>
+
+<td height=7></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">Check a disk</font></td>
+
+<td nowrap><font face="Courier">chkdsk</font></td>
+
+<td><font face="Courier">fsck</font></td></tr>
+
+<tr valign=top>
+
+<td height=7></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">Display a file,</font></td>
+
+<td nowrap><font face="Courier">type <i>file</i> | more</font></td>
+
+<td><font face="Courier">more &lt; <i>file</i></font></td></tr>
+
+<tr valign=top>
+
+<td nowrap><img src="../../Images/sp.gif" width=14 height=1><font face="Helvetica">screen by screen</font></td>
+
+<td nowrap><font face="Courier">more <i>file</i></font></td>
+
+<td></td></tr>
+
+<tr valign=top>
+
+<td height=7></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">Set an environment</font></td>
+
+<td nowrap><font face="Courier">set <i>variable</i></font></td>
+
+<td><font face="Courier">setenv <i>variable</i></font></td></tr>
+
+<tr valign=top>
+
+<td nowrap><img src="../../Images/sp.gif" width=14 height=1><font face="Helvetica">variable</font></td>
+
+<td nowrap></td>
+
+<td></td></tr>
+
+<tr valign=top>
+
+<td height=7></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">Print a file</font></td>
+
+<td nowrap><font face="Courier">print <i>file</i></font></td>
+
+<td><font face="Courier">lpr <i>file</i></font></td></tr>
+
+<tr valign=top>
+
+<td height=7></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">Show help information</font></td>
+
+<td nowrap><font face="Courier">help</font></td>
+
+<td><font face="Courier">man</font></td></tr>
+
+<tr valign=top>
+
+<td height=7></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">Back up a file system</font></td>
+
+<td nowrap><font face="Courier">backup</font></td>
+
+<td><font face="Courier">dump</font><br>
+<font face="Courier">tar</font><br>
+<font face="Courier">dd</font></td></tr>
+
+</table>
+
+<p><font face="Times" size="+1">When a DOS command has options, you indicate them with a forward slash (<b>/</b>). For example, the command &quot;<b>dir /w</b>&quot; displays a directory listing the file names in columns.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2">FILE NAME EXTENSIONS</font>
+
+<p><font face="Times" size="+1">In using DOS, you'll find that files generally have three-character extensions. These extensions define what type of file you are dealing with. Here are some standard DOS extensions:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><b>Extension</b></font></td>
+
+<td><font face="Helvetica"><b>Type of File</b></font></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Courier">.COM</font></td>
+
+<td><font face="Helvetica">An executable file</font></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Courier">.EXE</font></td>
+
+<td><font face="Helvetica">An executable file, often an application; to run it type the file name without the extension (for example, to run <b>test.exe</b> type &#34;<b>test</b>&#34;)</font></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Courier">.SYS</font></td>
+
+<td><font face="Helvetica">A DOS system file, often containing a device driver</font></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Courier">.BAT</font></td>
+
+<td><font face="Helvetica">A DOS &#34;batch&#34; file in ASCII format, containing DOS commands to be run in sequence; for example, <b>autoexec.bat</b></font></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Courier">.CPI</font></td>
+
+<td><font face="Helvetica">Code Page Information for defining International Character Sets</font></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Courier">.HLP</font></td>
+
+<td><font face="Helvetica">A help file</font></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Courier">.PRO</font></td>
+
+<td><font face="Helvetica">Printer profiles for the graphics command</font></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Courier">.INI</font></td>
+
+<td><font face="Helvetica">A Windows or DOS Shell initialization file, in ASCII format</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2">FILES TO KNOW</font>
+
+<p><font face="Times" size="+1">In configuring DOS, you'll probably come across two important files named <b>autoexec.bat</b> and <b>config.sys</b>. The file <b>config.sys</b> defines memory usage and allocation of memory to such things as drivers for your mouse, Ethernet card, and other devices. After <b>config.sys</b> has laid the foundation, the <b>autoexec.bat</b> file runs batch commands to do things like start a program automatically after booting, clear the screen, or change the command line prompt.</font>
+
+<p><font face="Times" size="+1">Here's an example of <b>config.sys</b>:</font>
+
+<p><font face="Courier" size="-1">DEVICE=C:\DOS\HIMEM.SYS</font><br>
+<font face="Courier" size="-1">DEVICE=C:\DOS\EMM386.EXE</font><br>
+<font face="Courier" size="-1">DOS=HIGH</font><br>
+<font face="Courier" size="-1">LASTDRIVE=E</font>
+
+<p><font face="Times" size="+1">When it runs, the file loads a memory manager and an extended memory manager, loads DOS into the upper section of memory, and sets the last drive to be <b>E:</b>.</font>
+
+<p><font face="Times" size="+1">Here's an example of <b>autoexec.bat</b>:</font>
+
+<p><font face="Courier" size="-1">@ECHO OFF</font><br>
+<font face="Courier" size="-1">PROMPT $p$g</font><br>
+<font face="Courier" size="-1">PATH A:\;C:\;C:\DOS</font><br>
+<font face="Courier" size="-1">SET TEMP=C:\DOS</font>
+
+<p><font face="Times" size="+1">When it runs, this file turns echoing off (so the remaining commands aren't shown on the screen as they run), changes the command line prompt so that it shows the current directory, sets up a path for searching for files, and sets the environment variable TEMP, which indicates where programs should store temporary files.</font>
+
+<p><font face="Times" size="+1">These files are a way to configure DOS the way you like it. You can experiment with them and optimize them however you want.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2">&quot;N FOR NEXTSTEP, D FOR DOS&quot;</font>
+
+<p><font face="Times" size="+1">If you want to be able to run DOS and NEXTSTEP (or any other operating system), you'll need to partition your disk. A hard disk for your computer can have up to four partitions, which are like virtual disks. You use two utilities to configure partitions, <b>fdisk</b> and <b>format</b>. The utility <b>fdisk</b> creates partitions and marks each one with its respective function (primary partition, extended partition, or logical partition). It also indicates which is the boot partition. <b>format</b> formats the partitions, as well as the actual disks. Become familiar with these utilities since they play a big role in your PC's NEXTSTEP configuration. (See your DOS documentation and installation guide for details.)</font>
+
+<p><font face="Times" size="+1">If you want to be able to boot from DOS, you need a DOS partition. Your installation guide explains how create partitions, as well as how to indicate which partition to boot from by default.</font>
+
+<p><font face="Times" size="+1">When you use it to create a DOS partition, <b>fdisk</b> also writes two hidden files to the DOS partition: <b>io.sys</b> and <b>msdos.sys</b>. The <b>io.sys</b> file contains instructions that deal with the input and output capabilities of your computer's ROM, while the <b>msdos.sys </b>file contains instructions for writing to disks, setting date and time, specifying serial ports, and the like.</font>
+
+<p><br><br>
+
+<p><img src="graph1rev.gif" width=155 height=74>
+
+<p><font face="Times" size="+1"><i>The boot sector indicates where partitions start.</i></font>
+
+<p><font face="Times" size="+1">When your computer boots, it first looks at the <i>boot sector</i> of your hard disk. The boot sector points to the active partition, which is the one the system should boot from.</font>
+
+<p><font face="Times" size="+1">The computer then goes to that partition and, if it's a DOS boot partition, runs <b>io.sys</b>. In turn, <b>io.sys</b> calls a program called <b>sysinit</b>, which calls <b>ms-dos.sys</b>, which in turn calls a configuration text file called <b>config.sys</b> that contains information about how DOS should configure memory. Then, <b>sysinit</b> locates and runs <b>command.com</b>, which contains all of DOS's commands such as <b>dir</b> and <b>mkdir</b>. DOS is then ready to go--you can start Microsoft Windows</font><font size="-1"><sup><sup>TM</sup></sup></font> <font face="Times" size="+1">or continue to work in DOS.</font>
+
+<p><font face="Times" size="+1">In contrast, if the boot sector points to a NEXTSTEP partition or if there is only one partition (a NEXTSTEP partition), the system loads a file called <b>boot1</b>. The file <b>boot1 </b>knows how to find <b>boot</b> (actually <b>/usr/standalone/boot</b>), the NEXTSTEP boot block. NEXTSTEP starts and loads as usual.</font>
+
+<p><font face="Times" size="+1">When you install NEXTSTEP and create partitions, the installation application replaces the existing boot sector with a different but compatible one called <b>boot0</b>. This new boot sector doesn't automatically boot from the active partition, but instead asks you to indicate which partition to boot from (that's where the &quot;n for NEXTSTEP, d for DOS&quot; prompt comes in). It then accesses that partition and loads the proper boot file.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2">DOS FILES IN NEXTSTEP</font>
+
+<p><font face="Times" size="+1">If your machine is configured correctly and you have a DOS partition that NEXTSTEP can recognize, you can see your DOS partition when you're in NEXTSTEP, as in the figure below.</font>
+
+<p><br><br>
+
+<p><img src="doswin.gif" width=371 height=243>
+
+<p><font face="Times" size="+1"><i>DOS files can appear in a File Viewer window.</i></font>
+
+<p><font face="Times" size="+1">NEXTSTEP gives you access to the files in your DOS partitions. This makes transferring files between NEXTSTEP and DOS easy. You can, for example, view text files in Edit by double-clicking them. You can test this out by looking at DOS files like <b>autoexec.bat</b> and <b>config.sys</b>.</font>
+
+<p><font face="Times" size="+1">However, you can't run DOS applications directly from Workspace Manager</font><font size="-1"><sup><sup>TM</sup></sup></font><font face="Times" size="+1">, as you can NEXTSTEP applications. To do that, you'll need to switch to DOS, or use a DOS emulator like Insignia's SoftPC</font><font size="-1"><sup>&reg;</sup></font><font face="Times" size="+1">. <i>(Editor's note: See &quot;Tips &amp; Techniques&quot; for more on using DOS and NEXTSTEP together.)</i></font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2">FURTHER READING</font>
+
+<p><font face="Times" size="+1">If you want to find out more about DOS and how to use it, there are many excellent books available to help you. The following are highly recommended:</font>
+
+<p><font face="Times" size="+1">Jamsa, Kris A. <i>DOS, The Complete Reference</i>, 3rd ed. Berkeley, CA: Osborne McGraw-Hill, 1991.</font>
+
+<p><font face="Times" size="+1">Gookin, Dan. <i>Beginner's Guide to DOS</i>. San Diego, CA: Computer Pub. Enterprises, 1991.</font>
+
+<p><font face="Times" size="+1">Miller, Alan R. <i>The ABC's of MS-DOS</i>. San Francisco, CA: Sybex, 1988.</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1"><i>Dan Peknik is a System/Network Support Engineer in the Customer Support Team. You can reach him by e-mail at <b>Dan_Peknik@next.com</b>.</i></font>
+
+<p><br><br><br><br>
+
+<p><font face="Helvetica" size="+3">KNOW THE LINGO</font>
+
+<p><font face="Times"><i>If you're new to Intel machines, you may be trying to figure out what ISA and EISA are, and whether expanded memory and expansion buses have anything to do with each other. Here's a list of PC-related terms to help you find your way through the jargon.</i></font>
+
+<p><font face="Helvetica"><b>active partition</b>&nbsp; The partition your computer boots from. The master boot record is located here; it tells the machine how to boot and what files to use in doing so, thereby determining which operating system it will use. This is usually your <b>C:</b> drive in DOS. It's also known as the &quot;primary partition&quot; or &quot;boot partition.&quot; See also <i>partition</i>, <i>extended partition</i>, and <i>logical partition</i>.</font>
+
+<p><font face="Helvetica"><b>boot partition</b>&nbsp; See <i>active partition</i>.</font>
+
+<p><font face="Helvetica"><b>boot sector</b>&nbsp; A reserved sector that contains information about the disk, including the disk's capacity and any partitions on the disk. In particular, it indicates whether the disk is partitioned and which is the active partition. It's also known as the &quot;partition table.&quot;</font>
+
+<p><font face="Helvetica"><b>BIOS (Basic Input/Output System, or ROM BIOS)</b>&nbsp; Routines that act as the interface between the operating system and hardware devices. In general, the BIOS contains the interfaces for specific hardware, while device drivers contain generic interfaces.</font>
+
+<p><font face="Helvetica"><b>cold boot</b>&nbsp; The process of starting your computer by turning it on.</font>
+
+<p><font face="Helvetica"><b>conventional memory</b>&nbsp; The first 640KB of memory in a PC. This was the maximum contiguous memory accessible by early PCs. See also <i>extended memory</i> and <i>expanded memory</i>.</font>
+
+<p><font face="Helvetica"><b>DMA channel (Disk Memory Access channel)</b>&nbsp; A port that a high speed communication device can use to communicate with the CPU. DMA channels can be shared by devices if they are not used by more than one device at a time; however, usually they are assigned to only one device. See also <i>I/O port</i>.</font>
+
+<p><font face="Helvetica"><b>EISA (Extended Industry Standard Architecture)</b>&nbsp; A 32-bit expansion bus standard that is compatible with ISA. It's pronounced &quot;e - sah.&quot; See also <i>ISA</i> and <i>MCA</i>.</font>
+
+<p><font face="Helvetica"><b>expanded memory</b>&nbsp; A memory system designed for the 8088 and 8086 computers to allow them to access more than 1MB of memory, up to 32MB. This system pages information in and out of conventional memory. See also <i>conventional memory</i> and <i>extended memory</i>.</font>
+
+<p><font face="Helvetica"><b>expansion bus</b>&nbsp; A system that allows you to add peripherals to your PC. NEXTSTEP supports two buses for the PC: <i>ISA</i> and <i>EISA</i>. See also <i>MCA</i>.</font>
+
+<p><font face="Helvetica"><b>extended memory</b>&nbsp; The memory beyond the 1MB addressable by the 8088 chip, accessible only in protected mode. See also <i>conventional memory</i> and <i>expanded memory</i>.</font>
+
+<p><font face="Helvetica"><b>extended partition</b>&nbsp; In DOS, a second partition after the primary partition. See also <i>partition</i>, <i>active partition</i>, and <i>logical partition.</i></font>
+
+<p><font face="Helvetica"><b>FAT (File Allocation Table)</b>&nbsp; A table that DOS uses to store and track the location of each file's contents, available disk space, and damaged sectors.</font>
+
+<p><font face="Helvetica"><b>IDE (Integrated Device Electronics)</b>&nbsp; A disk drive interface standard. Contrast with <i>SCSI</i>.</font>
+
+<p><font face="Helvetica"><b>I/O port</b>&nbsp; A port (essentially a range of space in memory) through which the CPU communicates with a device.</font>
+
+<p><font face="Helvetica"><b>IRQ line (Interrupt Request line)</b>&nbsp; An interrupt number with which a device is associated and by which the device signals interrupts to the CPU. Each device must have a unique IRQ line; there are 16 IRQ numbers available in a PC. The CPU responds to interrupts in order of priority, with the lowest numbered IRQ line having highest priority.</font>
+
+<p><font face="Helvetica"><b>ISA (Industry Standard Architecture)</b>&nbsp; An 8- or 16-bit expansion bus standard that is the predominant bus architecture. It's pronounced &quot;i - sah.&quot; Contrast with <i>EISA</i> and <i>MCA</i>.</font>
+
+<p><font face="Helvetica"><b>logical partition</b>&nbsp; A partition that exists within an extended partition. To partition a disk into more than two drives using DOS <b>fdisk</b>, you create an extended partition and divide it into logical partitions called <b>D:</b>, <b>E:</b>, and so on. NEXTSTEP <b>fdisk</b> can divide a disk into up to four actual partitions. See also <i>partition</i>, <i>extended partition</i>, and <i>active partition</i>.</font>
+
+<p><font face="Helvetica"><b>master boot record (MBR)</b>&nbsp; The first track of the disk, which tells the system how to boot, usually by pointing to the active partition.</font>
+
+<p><font face="Helvetica"><b>MCA (Micro Channel Architecture)</b>&nbsp; A 32-bit expansion bus standard that is not compatible with ISA. This standard is not supported for NEXTSTEP. Contrast with <i>ISA</i> and <i>EISA</i>.</font>
+
+<p><font face="Helvetica"><b>multi-sync monitor</b>&nbsp; A type of monitor that can automatically adjust its synchronization to the output of the attached video card. Such monitors are recommended for use with NEXTSTEP.</font>
+
+<p><font face="Helvetica"><b>non-interlaced monitor</b>&nbsp; A monitor that displays an entire screen at a time, rather than all of the even lines, then the odd lines, then the refreshed even lines, and so on. A non-interlaced monitor exhibits less flicker. Such monitors are recommended for use with NEXTSTEP.</font>
+
+<p><font face="Helvetica"><b>partition</b>&nbsp; A collection of circular tracks (or cylinders) on a hard disk that is used for a single purpose. See also <i>active partition</i>, <i>extended partition</i>, and <i>logical partition.</i></font>
+
+<p><font face="Helvetica"><b>partition table</b>&nbsp; See <i>boot sector</i>.</font>
+
+<p><font face="Helvetica"><b>primary partition</b>&nbsp; See <i>active partition</i>.</font>
+
+<p><font face="Helvetica"><b>protected mode</b>&nbsp; A mode of accessing PC memory that allows the operating system to access memory beyond the first 640KB. This mode is available in systems with a 80286 chip or later ('386, '486, and so on). See also <i>extended memory</i>.</font>
+
+<p><font face="Helvetica"><b>RAM base address</b>&nbsp; For each device, the lowest address where the driver software for that device is stored.</font>
+
+<p><font face="Helvetica"><b>SCSI (Small Computer System Interface)</b>&nbsp; A general purpose device interface standard. It's used for all kinds of devices, like printers, scanners, serial ports, and disk drives. Contrast with <i>IDE</i>.</font>
+
+<p><font face="Helvetica"><b>SVGA (Super VGA)</b>&nbsp; An extension to the VGA standard. SVGA monitors can display 800 x 600 pixels in 16 or 256 colors, depending on the amount of video memory available. SVGA cards are often also capable of higher resolutions with fewer colors.</font>
+
+<p><font face="Helvetica"><b>system disk</b>&nbsp; A disk containing the files that load an operating system. Also called a &quot;boot disk.&quot;</font>
+
+<p><font face="Helvetica"><b>Upper Memory Block (UMB)</b>&nbsp; Space in memory (the addresses from 640KB to 1MB) that stores BIOS routines to access hardware interfaces such as video adapters, Ethernet cards, and expanded memory page addresses. None of this memory is available for standard program memory.</font>
+
+<p><font face="Helvetica"><b>VESA (Video Electronics Standards Association)</b>&nbsp; An industry association that establishes video and data bus standards.</font>
+
+<p><font face="Helvetica"><b>VGA (Video Graphics Adapter)</b>&nbsp; A PC video standard that can display 640 x 480 pixels in 256 colors (eight bits).</font>
+
+<p><font face="Helvetica"><b>warm boot</b>&nbsp; The process of restarting your computer without turning it off. To do this in DOS, press <b>CTRL-ALT-DEL</b>; in NEXTSTEP on a PC, press <b>ALT-NumLock</b>.</font>
+
+
+
+<p><br>
+
+</body>
+</html>

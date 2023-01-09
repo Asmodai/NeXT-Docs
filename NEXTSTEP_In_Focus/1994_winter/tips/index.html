@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NEXTSTEP_In_Focus/1994Winter/Tips.rtf -->
+<!-- Date: Sun Jan  1 15:46:21 2023 -->
+<head>
+<title>Tips</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times"><i>NEXTSTEP In Focus</i>, Winter 1994 (Volume 4, Issue 1).</font><br>
+<font face="Times">Copyright</font> &copy;<font face="Times">1994 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+1"><b>TIPS &amp; TECHNIQUES</b></font>
+
+<p><br><br>
+
+<p><font face="Times" size="+3"><b>Measuring Local Disk Space</b></font>
+
+<p><font face="Times" size="+1">System administrators often want to find how much space is available on just the local disks, without also checking imported file systems.</font>
+
+<p><font face="Times" size="+1">There's an infrequently used argument to the UNIX <b>df</b> command that helps with this: the <b>-t </b>flag with an argument specifying the type of the file system to check. Values of the argument to <b>-t</b> can be of any valid file system type, like those used in <b>/etc/fstab</b> or as arguments to or output from the UNIX <b>mount</b> command.</font>
+
+<p><font face="Times" size="+1">Figure 1 shows three examples of how to use this option.</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1"><b>Figure 1:</b>&nbsp; <i>Examples of running <b>df</b> with the <b>-t</b> flag</i></font>
+
+<p><img src="../../Images/sp.gif" width=13 height=1><font face="Courier">sabre [~]-412%&nbsp; <b>df -t 4.3</b></font><br>
+<img src="../../Images/sp.gif" width=13 height=1><font face="Courier">Filesystem&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; kbytes&nbsp;&nbsp;&nbsp; used&nbsp;&nbsp; avail capacity&nbsp; Mounted on</font><br>
+<img src="../../Images/sp.gif" width=13 height=1><font face="Courier">/dev/sd0b&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 498935&nbsp; 405012&nbsp;&nbsp; 44029&nbsp;&nbsp;&nbsp; 90%&nbsp;&nbsp;&nbsp; /NeXT-3.0</font><br>
+<img src="../../Images/sp.gif" width=13 height=1><font face="Courier">/dev/sd0a&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 500015&nbsp; 372758&nbsp;&nbsp; 77255&nbsp;&nbsp;&nbsp; 83%&nbsp;&nbsp;&nbsp; /</font><br>
+<img src="../../Images/sp.gif" width=13 height=1><font face="Courier">/dev/fd0a&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1231&nbsp;&nbsp;&nbsp;&nbsp; 905&nbsp;&nbsp;&nbsp;&nbsp; 326&nbsp;&nbsp;&nbsp; 74%&nbsp;&nbsp;&nbsp; /SneakerNet</font><br>
+<img src="../../Images/sp.gif" width=13 height=1><font face="Courier">sabre [~]-413%&nbsp; <b>df -i -t 4.3</b></font><br>
+<img src="../../Images/sp.gif" width=13 height=1><font face="Courier">Filesystem&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; iused&nbsp;&nbsp; ifree&nbsp; %iused&nbsp; Mounted on</font><br>
+<img src="../../Images/sp.gif" width=13 height=1><font face="Courier">/dev/sd0b&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 23102&nbsp;&nbsp; 83394&nbsp;&nbsp;&nbsp; 22%&nbsp;&nbsp; /NeXT-3.0</font><br>
+<img src="../../Images/sp.gif" width=13 height=1><font face="Courier">/dev/sd0a&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 17075&nbsp;&nbsp; 89421&nbsp;&nbsp;&nbsp; 16%&nbsp;&nbsp; /</font><br>
+<img src="../../Images/sp.gif" width=13 height=1><font face="Courier">/dev/fd0a&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 16&nbsp;&nbsp;&nbsp;&nbsp; 368&nbsp;&nbsp;&nbsp;&nbsp; 4%&nbsp;&nbsp; /SneakerNet</font><br>
+<img src="../../Images/sp.gif" width=13 height=1><font face="Courier">rhino [~]-414%&nbsp; <b>df -t dos</b></font><br>
+<img src="../../Images/sp.gif" width=13 height=1><font face="Courier">Filesystem&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; kbytes&nbsp;&nbsp;&nbsp; used&nbsp;&nbsp; avail capacity&nbsp; Mounted on</font><br>
+<img src="../../Images/sp.gif" width=13 height=1><font face="Courier">/dev/rfd0b&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1424&nbsp;&nbsp;&nbsp; 1320&nbsp;&nbsp;&nbsp; 104&nbsp;&nbsp;&nbsp; 93%&nbsp;&nbsp;&nbsp; /stuff</font>
+
+<p><font face="Times" size="+1">The first example shows how to examine the free space on the local 4.3BSD-type file systems--these are the normal UNIX file systems on NEXTSTEP computers.&nbsp; Note that this includes a locally mounted floppy disk, <b>/dev/fd0a</b>, mounted on <b>/SneakerNet</b>.</font>
+
+<p><font face="Times" size="+1">The second example shows the same file systems, but instead of checking the free space available, it examines the number of inodes (files) stored on the file systems. The third example shows a floppy disk with a DOS-format file system.</font>
+
+<p><font face="Times"><i>Thanks to Alan M. Marcum for this useful tip.</i></font>
+
+<p><br><br><br>
+
+<p><font face="Times" size="+3"><b>sendmail Security Patch</b></font>
+
+<p><font face="Times" size="+1">Two versions of <b>sendmail</b> are provided with NEXTSTEP Release 3.1 and 3.2: <b>sendmail </b>(version 5.67) and <b>sendmail.old</b> (version 5.52). Late last year, the Computer Emergency Response Team (CERT) identified a handful of security problems with NeXT's versions of <b>sendmail</b>. These problems are described in CERT Advisories CA-93: 16 and CA-93: 16A. In response, NeXT has modified <b>sendmail</b> and <b>sendmail.old</b> to close these security holes. The new versions are now available as a patch on NeXTanswers. To get them, use e-mail or <b>ftp</b> to retrieve documents 1513 and 1514.</font>
+
+<p><br><br><br>
+
+<p><font face="Times" size="+3"><b>Mending the Error of Our Ways</b></font>
+
+<p><font face="Times" size="+1">We'd like to correct a few inaccuracies in the <i>NEXTSTEP In Focus</i> Fall issue.</font>
+
+<p><font face="Times" size="+1">In &quot;Advanced Networking Tools,&quot; we describe several programs that can help you manage a NEXTSTEP network. These programs are part of UNIX. None of the programs was written by NeXT.</font>
+
+<p><font face="Times" size="+1">Also, in &quot;Using SCSI in a PC World,&quot; a diagram depicts a fax modem card on a SCSI chain. However, we're not aware that any such device is really available.</font>
+
+
+
+<p><br>
+
+</body>
+</html>

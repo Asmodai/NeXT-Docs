@@ -1,0 +1,446 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NEXTSTEP_In_Focus/1993Summer/Tips.rtfd -->
+<!-- Date: Sun Jan  1 15:46:19 2023 -->
+<head>
+<title>Tips</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times"><i>NEXTSTEP In Focus</i>, Summer 1993 (Volume 3, Issue 3).</font><br>
+<font face="Times">Copyright</font> &copy;<font face="Times">1993 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><font face="Helvetica" size="+3"><b>TIPS &amp; TECHNIQUES</b></font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>ADDING A TCP/IP PRINTER TO A NEXTSTEP COMPUTER NETWORK</b></font>
+
+<p><font face="Times" size="+1">Have you ever wanted to send a report or drawing directly to a powerhouse printer--one with camera-ready resolution, a speed-demon engine, and maybe even multiple paper trays? This article explains how to install a standalone printer on a NEXTSTEP network via TCP/IP.</font>
+
+<p><font face="Helvetica" size="+1"><b>Before you start...</b></font>
+
+<p><font face="Times" size="+1">To use this procedure, you must be using a NEXTSTEP Release 3.1 or later system. Also, the stand-alone printer you install must use the lpd protocol. Some TCP/IP printers don't use this protocol, and therefore won't work with this setup.</font>
+
+<p><font face="Helvetica" size="+1"><b>Is it a printer or a host?</b></font>
+
+<p><font face="Times" size="+1">A standalone printer--one that doesn't hang off a specific machine--is special in that it has a host name. When you configure a new printer in NetInfoManager, you usually set the <b>rm</b> property to be the host name of the remote print server computer, the computer the printer is attached to.</font>
+
+<p><font face="Times" size="+1">In setting up a standalone printer, though, you define the printer to be its own print server computer. Therefore, you set the host name of the remote print server (the <b>rm</b> property of the <b>printers</b> directory) to be the same as the name of the printer (the <b>name</b> property in <b>machines</b>).</font>
+
+<p><font face="Helvetica" size="+1"><b>Four steps to a hookup</b></font>
+
+<p><font face="Times" size="+1">Here is how to add a TCP/IP printer, using the example of a NewGen TurboPS/1200T printer:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Set up your printer and Ethernet interface according to the printer's documentation. Then, connect the printer to the network.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Find or set the Internet address for the printer. Some printers require you to set the Internet address, while other are preset. Either way, make sure the Internet address doesn't conflict with that of other computers and devices.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">Using NetInfoManager, add a new <b>machines</b> entry in the <b>root</b> domain. It should have two properties, <b>name</b> and <b>ip_address</b>. The value of <b>name</b> should consist only of alphanumeric characters. In our example, <b>name</b> is set to <b>newgen</b>, and <b>ip_address</b> is set to 192.42.172.200.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<p><img src="new_machines_entry2.gif" width=583 height=314>
+
+<p><font face="Helvetica" size="+1"><b>Figure 1:</b></font>&nbsp; <font face="Times" size="+1"><i>Use NetInfoManager to add a new machines entry for the standalone printer.</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Also using NetInfoManager, add a <b>printers</b> entry in the <b>root</b> domain. Set these properties:</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>name</b> is the printer name that's displayed in the Print panel. It must contain only alphanumeric characters.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>lp</b> needs to be present in the directory, but doesn't need a value.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>lo</b> gives the printer a resource lock. Its value must be &quot;lock&quot;.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>rm</b> is the name of the remote printer's server. Set it to be the same as the <b>name </b>property in Step 3.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>rp</b> is the remote printer's name.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>sd</b> is the directory that print jobs spool in. Set it to <b>/usr/spool/NeXT/</b><i>printername</i>.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>ty</b> is the printer's type, usually the manufacturer's brand name, with underscores (_) substituted for spaces and percent signs (%) for slashes (/). See &quot;Get the right printer description&quot; to find out more about this property.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>_nxfinalform</b> causes PostScript comments to be interpreted correctly. It needs to be present in the directory, but doesn't need a value.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>note</b> is optional. Its value is displayed in the Print panel, and is useful for comments.</font></td></tr>
+
+</table>
+
+<p><font face="Times" size="+1">For example, here are the settings for the NewGen TurboPS/1200T printer:</font>
+
+<p><font face="Courier">name = TurboPS1200T</font><br>
+<font face="Courier">lp =</font><br>
+<font face="Courier">lo = lock</font><br>
+<font face="Courier">rm = newgen</font><br>
+<font face="Courier">rp = TurboPS1200T</font><br>
+<font face="Courier">sd = /usr/spool/NeXT/TurboPS1200T</font><br>
+<font face="Courier">ty = NewGen_TurboPS1200T</font><br>
+<font face="Courier">_nxfinalform =</font><br>
+<font face="Courier">note = This is a NewGen printer.</font>
+
+<p><br><br><br>
+
+<p><img src="F0.gif" width=556 height=310>
+
+<p><font face="Helvetica" size="+1"><b>Figure 2:</b></font>&nbsp; <font face="Times" size="+1"><i>Also use NetInfoManager to set the printer properties.</i></font>
+
+<p><font face="Helvetica" size="+1"><b>Making sure it works</b></font>
+
+<p><font face="Times" size="+1">Now that you've set up your TCP/IP printer, you need to check that it works properly.</font>
+
+<p><font face="Helvetica"><b><i>Check that it's accessible</i></b></font>
+
+<p><font face="Times" size="+1">The first test is to confirm that the computers on the network can see the printer. For this, use the <b>ping</b> command. For example:</font>
+
+<p><font face="Courier">ping newgen 56 5</font>
+
+<p><font face="Times" size="+1">This example sends five information packets of 56 bytes each to the host <b>newgen</b>.</font>
+
+<p><font face="Times" size="+1">Look at the output of the <b>ping</b> command. The important information is &quot;% Packet Loss&quot; in the summary line. On a local network, this number should be 0.</font>
+
+<p><font face="Helvetica"><b><i>Try to print</i></b></font>
+
+<p><font face="Times" size="+1">If the <b>ping</b> is successful, try sending a file to the printer using either <b>enscript</b> or <b>lpr</b>. The command <b>enscript</b> converts text files to PostScript format and sends them to the specified printer. For example, &quot;<b>enscript -Pnewgen hope.txt</b>&quot; prints a copy of the file <b>hope.txt</b> on the printer <b>newgen</b>.</font>
+
+<p><font face="Times" size="+1">The command <b>lpr</b> works similarly, but only for PostScript files. For example, &quot;<b>lpr -Pnewgen hope.ps</b>&quot;.</font>
+
+<p><font face="Helvetica"><b><i>Specify the right paper size</i></b></font>
+
+<p><font face="Times" size="+1">Some printers, such as the NewGen of our example, require a separate paper tray for each size of paper. The printer may have an auto-sensing device to detect the type of paper tray. If you select a paper size in the Print panel when the proper tray isn't there, the printer may begin the job and jam. The workaround for this is to select manual feed for non-standard paper sizes.</font>
+
+<p><font face="Helvetica"><b><i>Check that fonts are listed</i></b></font>
+
+<p><font face="Times" size="+1">The NEXTSTEP spooling filter supports automatic font downloading and printer feature inclusion, such as paper tray switching. For standalone PostScript printers, fonts are included at the beginning of the PostScript stream if they are needed. The print job uses &quot;%%DocumentFonts:&quot; and &quot;%%DocumentNeededFonts:&quot; PostScript comments to declare which fonts are needed.</font>
+
+<p><font face="Times" size="+1">If you have problems with fonts, make sure that there's a &quot;%%DocumentFonts&quot; or &quot;%%DocumentNeededFonts:&quot; PostScript comment in the header or trailer of the file you're printing. Then try using <b>fontloader</b>. (See the UNIX manual page.)</font>
+
+<p><font face="Helvetica"><b><i>Get the right printer description</i></b></font>
+
+<p><font face="Times" size="+1">The <b>ty</b> property for the printer serves two purposes:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">It indicates the printer's type in the Print panel.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">It tells NEXTSTEP which <b>.ppd</b> file to use.</font></td></tr>
+
+</table>
+
+<p><font face="Times" size="+1">&quot;ppd&quot; stands for &quot;PostScript Printer Description.&quot; This file knows about the special features of your particular printer, such as extra paper trays or the ability to switch among various printing resolutions. After putting this file in the proper place, you can access your printer's capabilities directly from the Print panel. NEXTSTEP uses standard version 4.0 Adobe <b>.ppd</b> files. The <b>ty</b> property setting for the printer is the same as the <b>.ppd</b> file name with blanks instead of underscores and percents (%) instead of slashes (/), and without a &quot;<b>.ppd</b>&quot; extension.</font>
+
+<p><font face="Times" size="+1"><b>.ppd</b> files are the same for NEXTSTEP, Macintosh, and DOS systems. If there's no NEXTSTEP <b>.ppd</b> file for your printer, copy one from another platform. Be sure it's version 4.0 format--the version number is listed at the top of the file. (<b>.ppd</b> files are plain ASCII text files, so you can look at them with Edit.) Put <b>.ppd</b> files in <b>/LocalLibrary/PrinterTypes, /NextLibrary/PrinterTypes/</b><i>your_language</i><b>.lproj</b>, <b>/HostLibrary/PrinterTypes</b>, or&nbsp; <b>~/Library/PrinterTypes</b>.</font>
+
+<p><font face="Times" size="+1">Incidentally, the reason TCP/IP printers can't be properly installed in pre-3.1 systems is that in those systems the <b>.ppd</b> files are ignored. As a result, fonts aren't downloaded automatically, paper trays aren't selected correctly, and so on.</font>
+
+<p><font face="Helvetica" size="+1"><b>For more info...</b></font>
+
+<p><font face="Times" size="+1">That's it! Your standalone printer should be up and running. For more information on topics covered in this article or related areas, such as modifying <b>.ppd</b> files, check out the following sources:</font>
+
+<p><font face="Times" size="+1">Adobe Systems Incorporated. <i>Programming the Display Postscript System with NeXTSTEP</i>. Menlo Park, CA: Addison-Wesley, 1992.</font>
+
+<p><font face="Times" size="+1">McGilton, Henry. <i>PostScript by Example</i>. Reading, MA: Addison-Wesley, 1992.</font>
+
+<p><font face="Times" size="+1">NeXT Computer, Inc. &quot;Printers and Printer Troubleshooting,&quot; <i>NEXTSTEP Network and System Administration</i>. Menlo Park, CA: Addison-Wesley, 1992.</font>
+
+<p><font face="Times" size="+1">NeXT Computer, Inc. &quot;Printing,&quot; <i>NEXTSTEP 3.0 Release Notes</i>. Redwood City, CA: NeXT Computer, Inc., 1992.</font>
+
+<p><font face="Times" size="+1">Also see the UNIX manual pages for <b>printcap</b>, <b>lpr</b>, <b>enscript</b>, and <b>fontloader</b>.</font>
+
+<p><font face="Times" size="+1"><i>Special thanks to Bob O'Connor for this great tip! Bob is an independent NEXTSTEP and Macintosh consultant in Washington, DC. He can be reached by e-mail at</i></font><br>
+<font face="Times" size="+1"><b><i>justbob@andi.org</i></b> <i>and by telephone at (703) 207-9438.</i></font>
+
+<p><br><br><br><br>
+
+<p><font face="Helvetica" size="+2"><b>GETTING NEXTANSWERS BY FTP</b></font>
+
+<p><font face="Times" size="+1">In addition to fax and e-mail, there's a new way to get information from NeXTanswers--<b>ftp</b>. <b>ftp</b> is a program that lets you transfer files using File Transfer Protocol. Nearly all of the same NeXTanswers files are available by <b>ftp</b>, e-mail, and fax. (The only exceptions to this rule are the entries in the directory <b>Software_&amp;_Examples</b>, which are available by e-mail and <b>ftp</b>, but not by fax.)</font>
+
+<p><font face="Times" size="+1">To use <b>ftp</b> to get files from NeXTanswers, your network must be connected to the Internet, or you must log into a computer that's on the Internet.</font>
+
+<p><font face="Times" size="+1">If you've never used <b>ftp</b> before, here's a quick primer on how to use it to get NeXTanswers files. However, <b>ftp</b> has many more commands and features than those described here. To find out more about it, see the <b>ftp</b>(1) UNIX manual page.</font>
+
+<p><font face="Helvetica" size="+1"><b>Starting a session</b></font>
+
+<p><font face="Times" size="+1">To get NeXTanswers files by <b>ftp</b>, type the following command at a Terminal prompt:</font>
+
+<p><font face="Courier" size="-1">ftp ftp.next.com</font>
+
+<p><font face="Times" size="+1">This starts an <b>ftp</b> session connected to the computer <b>ftp.next.com</b>, here at NeXT.</font>
+
+<p><font face="Times" size="+1">When you're asked for an account name, type &quot;anonymous&quot;. In place of a password, type your e-mail address.</font>
+
+<p><font face="Times" size="+1">Here's a sample session, with the user input in bold:</font>
+
+<p><font face="Courier">bang&gt; <b>ftp ftp.next.com</b></font><br>
+<font face="Courier">Connected to ftp.</font><br>
+<font face="Courier">220 ftp FTP server (Version 5.1 (NeXT 1.0) Thu Apr 29, 1993) ready.</font><br>
+<font face="Courier">Name (ftp.blues.com:jstarr): <b>anonymous</b></font><br>
+<font face="Courier">331 Guest login ok, send ident as password.</font><br>
+<font face="Courier">Password:</font><br>
+<font face="Courier">230 Guest login ok, access restrictions apply.</font><br>
+<font face="Courier">ftp&gt;</font>
+
+<p><font face="Times" size="+1">The password isn't echoed on the screen; in this example, it was &quot;jstarr@blues.com&quot;.</font>
+
+<p><font face="Times" size="+1">What's happening is that you're logging into a guest account, <b>anonymous</b>. Because lots of people use this account, you enter your e-mail address at the &quot;Password:&quot; prompt to voluntarily identify yourself. We use this information to gather statistics on NeXTanswers usage. This style of using <b>ftp</b> is called <i>anonymous ftp</i>.</font>
+
+<p><font face="Times" size="+1">Once you've logged in, <b>ftp</b> prompts you to enter commands.The <b>ftp</b> prompt is &quot;ftp&gt;&quot;.</font>
+
+<p><font face="Times" size="+1"><b>Tip:</b> You can set up a <b>.netrc</b> file in your home directory to make using <b>ftp</b> easier. The <b>.netrc</b> file can supply your name and password to the remote <b>ftp</b> server automatically, and you can define macros in it for steps you perform often. See the UNIX manual page for <b>ftp</b>(1) for more information.</font>
+
+<p><font face="Helvetica" size="+1"><b>Getting help</b></font>
+
+<p><font face="Times" size="+1">While you're using <b>ftp</b>, you can get a list of commands by typing &quot;<b>help</b>&quot; or &quot;<b>?</b>&quot; at the <b>ftp </b>prompt. To get help on a specific ftp command, type &quot;<b>help</b> <i>command</i>&quot; or &quot;<b>?</b> <i>command</i>&quot;.</font>
+
+<p><font face="Helvetica" size="+1"><b>Working with the NeXTanswers directories</b></font>
+
+<p><font face="Times" size="+1">The NeXTanswers files are organized in several directories. The current directory hierarchy is shown in Figure 3. When you first connect, you're in the <b>/</b> (root) directory. The NeXTanswers files are in directories in <b>/pub</b>.</font>
+
+<p><img src="NeXTAnswers.gif" width=506 height=315>
+
+<p><font face="Helvetica" size="+1"><b>Figure 3:</b></font> <font face="Times" size="+1"><i>The current NeXTanswers directory hierarchy</i></font>
+
+<p><font face="Helvetica"><b><i>What's in the directories</i></b></font>
+
+<p><font face="Times" size="+1">The files are stored several ways:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>Files</b> contains the files in their original formats, such as Rich Text and PostScript.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>AsciiFiles</b> contains plain text versions of the files. You might want to use these versions if you aren't using NEXTSTEP.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>CompressedFiles</b> contains the original files, compressed with the same kind of compression used by Workspace Manager. These files are smaller and faster to transfer.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>ByNumber</b> contains numbered links to the compressed files. The numbers match the numbers in the NeXTanswers index, so you can select files to transfer by index number.</font></td></tr>
+
+</table>
+
+<p><font face="Times" size="+1">The <b>pub</b> directory also contains three special files. <b>README</b> gives instructions for using <b>ftp</b>, <b>1000_Help</b> gives instructions for using NeXTanswers in general, and <b>1001_Master_Index</b> is an index to the NeXTanswers files.</font>
+
+<p><font face="Helvetica"><b><i>Changing remote directories</i></b></font>
+
+<p><font face="Times" size="+1">To change your current directory on the NeXTanswers computer, use <b>cd</b>. For example:</font>
+
+<p><font face="Courier" size="-1">cd NEXTSTEP_In_Focus</font>
+
+<p><font face="Times" size="+1">To see the path of the current remote directory, use the command <b>pwd</b>.</font>
+
+<p><font face="Helvetica"><b><i>Displaying remote directory contents</i></b></font>
+
+<p><font face="Times" size="+1">To list the contents of a directory, use <b>dir</b> or <b>ls</b>. <b>ls</b> displays an abbreviated list.</font>
+
+<p><font face="Helvetica"><b><i>Changing local directories</i></b></font>
+
+<p><font face="Times" size="+1">When you transfer a file, it's put in the current directory on your local computer. To change your current local directory so that you're putting files in the right place, use the <b>lcd </b>command, which works just like <b>cd</b> does locally. For example:</font>
+
+<p><font face="Courier">lcd Library/NeXTanswers_files</font>
+
+<p><font face="Helvetica" size="+1"><b>Transferring files</b></font>
+
+<p><font face="Times" size="+1">To get a file, change to the directory that contains the file, then transfer the file. The file is copied to the current directory on your local computer.</font>
+
+<p><font face="Helvetica"><b><i>Setting transfer mode</i></b></font>
+
+<p><font face="Times" size="+1"><b>ftp</b> has several modes of transferring files. You set the transfer mode to make sure that <b>ftp </b>translates files correctly between character sets, file systems, and so on.</font>
+
+<p><font face="Times" size="+1">The two transfer modes you need for NeXTanswers files are ASCII and binary. ASCII is for transferring plain text files, while binary is for non-ASCII files like <b>.rtfd</b> and compressed files. The default transfer mode is ASCII. Select the mode you want with the commands <b>ascii</b> and <b>binary</b>. Binary mode can actually transfer ASCII files correctly, so it's easiest to just transfer everything in binary mode.</font>
+
+<p><font face="Helvetica"><b><i>Making the transfer</i></b></font>
+
+<p><font face="Times" size="+1">To transfer a single file, use the command &quot;<b>get</b> <i>remote-file</i> [<i>local-file</i> ]&quot;. For example:</font>
+
+<p><font face="Courier">get Dell_DGX.rftd</font>
+
+<p><font face="Times" size="+1">The local file name is optional. If you don't specify it, <b>ftp</b> gives your copy of the file the same name as the NeXTanswers file.</font>
+
+<p><font face="Times" size="+1">You get the numbered files from the ByNumber directory in the same way:</font>
+
+<p><font face="Courier" size="-1">get 1154.compressed</font>
+
+<p><font face="Times" size="+1"><b>Important:</b> Remember to transfer <b>.rtfd</b> and compressed files in binary mode.</font>
+
+<p><font face="Times" size="+1">To transfer several files at once, use the command &quot;<b>mget</b> <i>remotefiles</i>&quot;. <b>ftp</b> expands <i>remotefiles</i> on the remote computer and transfers each file whose name matches. For example:</font>
+
+<p><font face="Courier" size="-1">mget Adaptec*</font>
+
+<p><font face="Times" size="+1">This example transfers all files in the current NeXTanswers directory that start with &quot;Adaptec&quot;.</font>
+
+<p><font face="Times" size="+1"><b>Note:</b> Don't use <b>mget</b> to transfer entire directories. Because <b>.rtfd</b> files are actually directories, you shouldn't use <b>mget</b> to transfer them.</font>
+
+<p><font face="Helvetica" size="+1"><b>Aborting a file transfer</b></font>
+
+<p><font face="Times" size="+1">If you start transferring a file and want to stop before the transfer completes, press the terminal interrupt key or key sequence--usually <b>CTRL-C</b>. <b>ftp</b> stops sending files as soon as possible. This doesn't end the <b>ftp</b> session.</font>
+
+<p><font face="Helvetica" size="+1"><b>Ending the session</b></font>
+
+<p><font face="Times" size="+1">When you finish getting files from NeXTanswers, type &quot;<b>bye</b>&quot; or &quot;<b>quit</b>&quot; to end the session and exit <b>ftp</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>Staying up to date</b></font>
+
+<p><font face="Times" size="+1">NeXTanswers sometimes changes as we respond to your feedback. To keep informed of changes and additions to the system, get updated versions of the <b>README</b>, <b>NeXTanswers_News</b>, help, and index files occasionally. In particular, <b>README</b> and <b>NeXTanswers_News</b> describe important changes to the directory structure and other features that you should know about.</font>
+
+<p><font face="Helvetica" size="+1"><b>If you have trouble...</b></font>
+
+<p><font face="Times" size="+1">If you have problems using NeXTanswers by <b>ftp</b> or any other means, send e-mail explaining the problem to <b>NeXTanswers-request@next.com</b>.</font>
+
+
+
+<p>
+
+</body>
+</html>

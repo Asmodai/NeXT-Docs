@@ -1,0 +1,289 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NEXTSTEP_In_Focus/1993Spring/Big_Setup.rtf -->
+<!-- Date: Sun Jan  1 15:46:14 2023 -->
+<head>
+<title>Big_Setup</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times"><i>NEXTSTEP In Focus</i>, Spring 1993 (Volume 3, Issue 2).</font><br>
+<font face="Times">Copyright</font> &copy;<font face="Times">1993 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+4"><b>The Big Setup--</b></font><br>
+<font face="Helvetica" size="+4"><b>Behind the Scenes of Configure</b></font>
+
+<p><font face="Helvetica">Matt Watson</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">When you install NEXTSTEP on an Intel-based computer, you spend a few minutes (maybe more than a few) specifying which devices your system has and how they're set up. Then you click Save and continue installing.</font>
+
+<p><font face="Times" size="+1">But what happened to all those settings you so painstakingly selected? How did the installation program know which defaults to pick, and where did it store the list of devices you said you have? What if you change your system later and add more devices--how will you update that list?</font>
+
+<p><font face="Times" size="+1">This article takes you behind the scenes of the Configure application, which handles these details for you, and shows you how and where the configuration information is stored and how to change it all later.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2">DRIVER BUNDLES AND CONFIGURATION FILES</font>
+
+<p><font face="Times" size="+1">NEXTSTEP for Intel Processors stores configuration information for the system as a whole and for each device--like the mouse, video monitor, network card, external drives, and so on--in a special directory called <b>/usr/Devices</b>. In this directory are driver bundles that contain the device configuration settings. Each system has a bundle called <b>System.config</b> that configures the whole system, plus a bundle called <i>Driver</i><b>.config</b> for each type of device, where <i>Driver</i> is a type of device or a device name.</font>
+
+<p><font face="Times" size="+1">For example, for an average system, <b>/usr/Devices</b> could contain the following bundles:</font>
+
+<p><font face="Courier" size="-1">ATIGXPro.config</font><br>
+<font face="Courier" size="-1">ATIUltraPro.config</font><br>
+<font face="Courier" size="-1">Adaptec1542B.config</font><br>
+<font face="Courier" size="-1">Beep.config</font><br>
+<font face="Courier" size="-1">BusMouse.config</font><br>
+<font face="Courier" size="-1">CirrusLogicGD542X.config</font><br>
+<font face="Courier" size="-1">DPT2012.config</font><br>
+<font face="Courier" size="-1">EpsonWingine.config</font><br>
+<font face="Courier" size="-1">EtherExpress16.config</font><br>
+<font face="Courier" size="-1">Etherlink3.config</font><br>
+<font face="Courier" size="-1">Floppy.config</font><br>
+<font face="Courier" size="-1">IDE.config</font><br>
+<font face="Courier" size="-1">JAWS.config</font><br>
+<font face="Courier" size="-1">LGIWingine.config</font><br>
+<font face="Courier" size="-1">PS2Keyboard.config</font><br>
+<font face="Courier" size="-1">PS2Mouse.config</font><br>
+<font face="Courier" size="-1">ParallelPort.config</font><br>
+<font face="Courier" size="-1">ProAudioSpectrum.config</font><br>
+<font face="Courier" size="-1">QVision.config</font><br>
+<font face="Courier" size="-1">S3.config</font><br>
+<font face="Courier" size="-1">SMC16.config</font><br>
+<font face="Courier" size="-1">SerialMouse.config</font><br>
+<font face="Courier" size="-1">SerialPorts.config</font><br>
+<font face="Courier" size="-1">System.config</font><br>
+<font face="Courier" size="-1">TokenExpress.config</font><br>
+<font face="Courier" size="-1">TsenglabsET4000.config</font><br>
+<font face="Courier" size="-1">VGA.config</font>
+
+<p><font face="Times" size="+1">The directory <b>/NextLibrary/Devices</b> is a link to <b>/usr/Devices</b> that you can see without being in UNIX Expert mode.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2">WHAT'S IN THE DRIVER BUNDLES</font>
+
+<p><font face="Times" size="+1">Each driver bundle (including <b>System.config</b>) can contain the following files and directories:</font>
+
+<p><font face="Courier" size="-1">Default.table</font><br>
+<font face="Courier" size="-1"><i>Driver</i>.table</font><br>
+<font face="Courier" size="-1">Instance<i>n</i>.table</font><br>
+<font face="Courier" size="-1"><i>DriverInspector</i></font><br>
+<font face="Courier" size="-1"><i>Language</i>.lproj/</font><br>
+<img src="../../Images/sp.gif" width=15 height=1><font face="Courier" size="-1">Custom.nib</font><br>
+<img src="../../Images/sp.gif" width=15 height=1><font face="Courier" size="-1">Localizable.strings</font><br>
+<img src="../../Images/sp.gif" width=15 height=1><font face="Courier" size="-1">Info.rtf</font><br>
+<font face="Courier" size="-1"><i>Driver</i>_reloc</font>
+
+<p><font face="Times" size="+1">You don't need to know what's in each file to configure the system, since Configure does the work for you. However, if you're curious about how these files are used, here's a summary. (For details, see the Driver Kit developer documentation.)</font>
+
+<p><font face="Times" size="+1"><b>Default.table</b> is a commented, read-only file that gives the default configuration settings for a generic device. <i>Driver</i><b>.table</b> is a commented, read-only file that gives the default settings for a particular manufacturer's device. Both of these files are optional, but at least one exists in every bundle. Configure uses them to build <b>Instance</b><i>n</i><b>.table</b> files, which contain specific configuration information for each instance of the device you have. For example, if you have two of the same device, Configure makes two files called <b>Instance0.table</b> and <b>Instance1.table</b>.</font>
+
+<p><font face="Times" size="+1">For each language you use, <b>Localizable.strings</b> contains the text strings that applications display about the device. For example, it includes the name of the device as it appears in the list of devices in Configure. <b>Info.rtf</b> (or <b>Info.rtfd</b>) contains the text and images displayed when you click the Info button in the Inspector panel.</font>
+
+<p><font face="Times" size="+1">The <i>Driver</i><b>_reloc</b> file is the executable file of the device driver. The <i>DriverInspector </i>binary is the executable file for the Inspector panel; its name is the same as the <i>Driver </i>part of the bundle name. <b>Custom.nib</b> is the nib file for the Inspector panel.</font>
+
+<p><font face="Helvetica" size="+1"><b>Indirect devices</b></font>
+
+<p><font face="Times" size="+1">Some device drivers don't control a card, but instead control something that's attached to a card. They're called <i>indirect device drivers</i>. For example, if you have a SCSI disk attached to a SCSI controller, the disk is controlled by an indirect device driver, and the controller by a direct device driver. An indirect device driver communicates with its hardware indirectly, by sending requests to its associated direct device driver.</font>
+
+<p><font face="Times" size="+1">Some indirect device drivers don't need any configuration information other than an <b>Instance</b><i>n</i><b>.table</b> file. The bundle for an indirect device driver can contain just <b>Instance</b><i>n</i><b>.table</b> files, <i>Language</i><b>.lproj</b> directories, and an executable file.</font>
+
+<p><font face="Helvetica" size="+1"><b>The System configuration bundle</b></font>
+
+<p><font face="Times" size="+1">The <b>System.config</b> bundle is special in a few ways. Its <b>Instance0.table</b> has default configuration information for the system as a whole. For example, it specifies which device drivers to load at boot time and which to load later. It can also identify the bus architecture of the machine (such as &quot;ISA&quot; or &quot;EISA&quot;) and the manufacturer's name and model number for the computer (like &quot;Dell 450/DE2&quot;, &quot;Compaq Q/Vision&quot;, or &quot;ISA Bus System&quot;). The example below shows a sample <b>Default.table</b> from a <b>System.config </b>bundle.</font>
+
+<p><font face="Times" size="+1"><i>Default.table in System.config shows the default configuration for the system.</i></font>
+
+<p><img src="../../Images/sp.gif" width=6 height=1><font face="Courier" size="-1">&#34;Version&#34; = &#34;1.0&#34;;&nbsp;&nbsp;&nbsp; /* Version of this file */</font><br>
+<img src="../../Images/sp.gif" width=6 height=1><font face="Courier" size="-1">&#34;Machine Name&#34; = &#34;Dell 450/DE2&#34;;&nbsp;&nbsp;&nbsp; /* Manufacturer's name */</font><br>
+<img src="../../Images/sp.gif" width=6 height=1><font face="Courier" size="-1">&#34;Bus Type&#34; = &#34;EISA&#34;;&nbsp;&nbsp;&nbsp; /* Bus architecture */</font><br>
+<img src="../../Images/sp.gif" width=6 height=1><font face="Courier" size="-1">&#34;Boot Drivers&#34; = &#34;IDE Floppy AHA1542&#34;;&nbsp;&nbsp;&nbsp; /* Drivers to load at boot time */</font><br>
+<img src="../../Images/sp.gif" width=6 height=1><font face="Courier" size="-1">&#34;Active Drivers&#34; = &#34;VGA SystemSerial&#34;;&nbsp;&nbsp;&nbsp; /* Bundles to load after booting*/</font><br>
+<img src="../../Images/sp.gif" width=6 height=1><font face="Courier" size="-1">&#34;Kernel&#34; = &#34;sd(1)mach_kernel&#34;;&nbsp;&nbsp;&nbsp; /* Pathname of the kernel to load */</font><br>
+<img src="../../Images/sp.gif" width=6 height=1><font face="Courier" size="-1">&#34;Kernel Flags&#34; = &#34;-s rootdev=sd1a nbuf=64&#34;;&nbsp; /* Additional kernel settings */</font>
+
+<p><font face="Helvetica" size="+1"><b>Configuration keywords</b></font>
+
+<p><font face="Times" size="+1">In the <b>Default.table</b> and <b>Instance</b><i>n</i><b>.table</b> files, these keywords indicate the devices' settings:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><b>Keyword</b></font></td>
+
+<td><font face="Helvetica"><b>Description</b></font></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">Title</font></td>
+
+<td><font face="Helvetica">The name of the bundle</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">Family</font></td>
+
+<td><font face="Helvetica">The general category of the device: &#34;Audio&#34;, &#34;Network&#34;, &#34;Parallel&#34;, &#34;Pointing Device&#34;, &#34;Printer&#34;, &#34;Serial&#34;, &#34;SCSI&#34;, &#34;Video&#34;, or &#34;Other&#34;</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">Location</font></td>
+
+<td><font face="Helvetica">The location of the device, like &#34;Slot1&#34; or &#34;System Baseboard&#34;</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">Instance</font></td>
+
+<td><font face="Helvetica">The instance number of the file, like &#34;0&#34;, &#34;1&#34;, &#34;2&#34;</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">Version</font></td>
+
+<td><font face="Helvetica">The format version of the file, such as &#34;3.1&#34; or &#34;2.245&#34;</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">Driver Name</font></td>
+
+<td><font face="Helvetica">The name of the driver class in the Driver_reloc file, like &#34;ATIDisplay&#34;</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">Valid IRQ Levels</font></td>
+
+<td><font face="Helvetica">IRQ lines that the device could use (in base10 format, separated by single spaces), such as &#34;7&#34; or &#34;614&#34;</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">IRQ Levels</font></td>
+
+<td><font face="Helvetica">IRQ lines reserved for the device</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">Valid DMA Channels</font></td>
+
+<td><font face="Helvetica">DMA channels that the device can use (in base10 format, separated by single spaces) such as &#34;3&#34; or &#34;27&#34;</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">DMA Channels</font></td>
+
+<td><font face="Helvetica">DMA channels reserved for the device</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">Memory Maps</font></td>
+
+<td><font face="Helvetica">Memory ranges reserved for the device (in base16, separated by single spaces), such as &#34;0x0D200-0x0D3FF 0x0E400-0x0E7FF&#34;</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">I/O Ports</font></td>
+
+<td><font face="Helvetica">I/O port ranges reserved for the device (in base16, separated by single spaces), such as &#34;0x280-0x28F&#34;</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+2">WHAT GOES ON</font>
+
+<p><font face="Times" size="+1">The Configure application is actually not very complicated. Configuring is basically a matter of creating <b>Instance</b><i>n</i><b>. table</b> files with the right settings, and ensuring that no two devices conflict.</font>
+
+<p><font face="Times" size="+1">When you configure a device, Configure looks in the device's <b>Default.table</b> and <i>Driver</i><b>.table</b> for information such as the name and family of the device, default memory maps, and so on. It then creates an <b>Instance</b><i>n</i><b>.table</b> with this information and the device settings you selected for the device, such as IRQ lines and I/O ports.</font>
+
+<p><font face="Times" size="+1">If it discovers conflicts between your settings for devices, such as two devices with the same IRQ line, it doesn't create the <b>Instance</b><i>n</i><b>. table</b> files but instead alerts you of the problem and lets you fix it. Configure is also aware of subtle rules about the devices, such as the order in which they must be listed in the <b>Instance0.table</b> in <b>System.config</b>.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2">RECONFIGURING IN A PINCH</font>
+
+<p><font face="Times" size="+1">Normally, you use the Configure application to add, remove, and reconfigure devices. However, there might be a time when you can't use Configure. For example, if something goes really wrong with your devices and you can't boot the system, you can boot in single-user mode and edit the configuration files by hand using a UNIX editor.</font>
+
+<p><font face="Times" size="+1">Before you jump into manipulating the driver bundles, though, try booting your system with a default configuration. To do this, when the system starts, type the following at the boot prompt:</font>
+
+<p><font face="Courier">-s config=Default</font>
+
+<p><font face="Times" size="+1">This causes the boot program to use <b>Default.table</b> in <b>System.config</b> to try to boot, which usually works. Once you've booted, use Configure to fix the rest of the configuration.</font>
+
+<p><font face="Times" size="+1">If you think you know what's wrong in the bundles and don't want to go through the whole configuring process, then you can edit the bundles by hand. Check with NeXT Support first to make sure what you plan to do won't cause a problem--configuring has lots of &quot;rules of thumb&quot; and you might not know all the effects of a change. Then, type the following at the boot prompt:</font>
+
+<p><font face="Courier">mach_kernel -s</font>
+
+<p><font face="Times" size="+1">This boots the system in single-user mode. You can then use a single-user mode editor (such as <b>sed</b>) to edit the configuration bundles.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2">THE SAFEST WAY TO CONFIGURE</font>
+
+<p><font face="Times" size="+1">Although you can edit the configuration bundles in <b>/usr/Devices</b> by hand, using the Configure application saves you the trouble, prevents easy mistakes like typos in an address range, and makes sure there are no device conflicts. So, it's the easiest and safest way to set up a new device. For more information on using Configure, see your installation guide.</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1"><i>Matt Watson is a Software Engineer specializing in configuration and installation tools for NEXTSTEP for Intel Processors. You can reach him by e-mail at <b>Matt_Watson@next.com</b>.</i></font>
+
+
+
+<p>
+
+</body>
+</html>

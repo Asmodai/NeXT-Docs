@@ -1,0 +1,450 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NEXTSTEP_In_Focus/1993Summer/Typical_NetInfo_Setup.rtfd -->
+<!-- Date: Sun Jan  1 15:46:20 2023 -->
+<head>
+<title>Typical_NetInfo_Setup</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times"><i>NEXTSTEP In Focus</i>, Summer 1993 (Volume 3, Issue 3).</font><br>
+<font face="Times">Copyright</font> &copy;<font face="Times">1993 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><font face="Helvetica" size="+4"><b>A Typical NetInfo Setup</b></font>
+
+<p><font face="Helvetica">Alan M. Marcum</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">To make the conceptual explanations of NetInfo in this issue concrete, we'll use the example of a fictional NetInfo installation. Rhino Aviation, a typical company, manufactures accessories for the aviation industry--things like navigation radios, sun shades, and engine instruments. Rhino uses its NEXTSTEP computers the way many companies do: They have an application they've built that's critical to their business--a drafting program--and they use applications that come with NEXTSTEP or that they've bought from third-party vendors.</font>
+
+<p><font face="Times" size="+1"><b>Note:</b> The document references in this and other articles in this issue refer to the books and articles listed in &quot;NEXTSTEP Networking References.&quot;</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>RHINO'S COMPANY ORGANIZATION AND NETWORK DESIGN</b></font>
+
+<p><font face="Times" size="+1">Rhino Aviation has several departments: engineering, product marketing, sales, technical support, publicity, and information services. They have a connection to the Internet and two Class C network numbers; they couldn't get a Class B network number when they first applied and still can't get one, but they've outgrown a single Class C network.</font>
+
+<p><font face="Times" size="+1">Rhino's administrative information is organized into a three-level NetInfo hierarchy. Each department has its own domain, and there's a separate domain for the mail servers. A user can log into and use almost any computer anywhere in the company as if it were on his or her own desk. The only computers that regular users can't access are:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The firewall machine between Rhino's internal network and the Internet</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The mail servers</font></td></tr>
+
+</table>
+
+<p><font face="Times" size="+1">In addition to NetInfo, they use the Domain Name System (DNS, sometimes called BIND, <b>named</b>, or the resolver). If Rhino's network weren't connected to the Internet, they wouldn't use the DNS. Because it is, they use it both to resolve remote site name references and to resolve names internally. Rhino Aviation doesn't use the Network Information Service (NIS).</font>
+
+<p><font face="Helvetica" size="+1"><b>The domain hierarchy</b></font>
+
+<p><font face="Times" size="+1">Figure 1 shows part of Rhino's domain hierarchy. Each box represents a domain. The first line in the box is the domain name, the second line is the tag of the database used for the domain in this example, and the third line is the name of the computer that the domain's master server runs on. To the right of some domains are the names of computers that run the domains' clone servers. This is a three-level hierarchy; nine domains are shown.</font>
+
+<p><br><br>
+
+<p><img src="Fig1_SimpleHeirarchy.gif" width=460 height=230>
+
+<p><font face="Helvetica" size="+1"><b>Figure 1:</b></font>&nbsp; <font face="Times" size="+1"><i>A portion of Rhino Aviation's domain hierarchy</i></font>
+
+<p><font face="Helvetica" size="+1"><b>Who's serving whom</b></font>
+
+<p><font face="Times" size="+1">The <b>serves</b> properties in the root domain are set up like this:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><b>name</b></font></td>
+
+<td nowrap><font face="Helvetica"><b>Internet address</b></font></td>
+
+<td><font face="Helvetica"><b>serves</b></font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">super21</font></td>
+
+<td nowrap><font face="Helvetica">192.42.172.2</font></td>
+
+<td><font face="Helvetica">./Rhino</font><br>
+<font face="Helvetica">mktg/network</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">mite</font></td>
+
+<td nowrap><font face="Helvetica">192.42.172.3</font></td>
+
+<td><font face="Helvetica">mktg/network</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">192.42.172.4</font></td>
+
+<td><font face="Helvetica">./Rhino</font><br>
+<font face="Helvetica">eng/network</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">mustang</font></td>
+
+<td nowrap><font face="Helvetica">192.42.172.5</font></td>
+
+<td><font face="Helvetica">./Rhino</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">cadet</font></td>
+
+<td nowrap><font face="Helvetica">192.42.172.6</font></td>
+
+<td><font face="Helvetica">eng/network</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">192.42.172.34</font></td>
+
+<td><font face="Helvetica">sales/network</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">sabre</font></td>
+
+<td nowrap><font face="Helvetica">192.42.172.66</font></td>
+
+<td><font face="Helvetica">ts/network</font><br>
+<font face="Helvetica">./Rhino</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">chaparral</font></td>
+
+<td nowrap><font face="Helvetica">192.42.172.98</font></td>
+
+<td><font face="Helvetica">info/network</font><br>
+<font face="Helvetica">./Rhino</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">mark21</font></td>
+
+<td nowrap><font face="Helvetica">192.42.173.130</font></td>
+
+<td><font face="Helvetica">mail/network</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">statesman</font></td>
+
+<td nowrap><font face="Helvetica">192.42.173.2</font></td>
+
+<td><font face="Helvetica">pub/network</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">pfm</font></td>
+
+<td nowrap><font face="Helvetica">192.42.173.67</font></td>
+
+<td></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">rhino</font></td>
+
+<td nowrap><font face="Helvetica">192.42.172.194</font></td>
+
+<td></td></tr>
+
+</table>
+
+<p><font face="Times" size="+1">(Some of these computers aren't shown in Figure 1.)</font>
+
+<p><font face="Times" size="+1">The <b>/eng</b> domain has these <b>serves</b> properties:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><b>name</b></font></td>
+
+<td nowrap><font face="Helvetica"><b>Internet address</b></font></td>
+
+<td><font face="Helvetica"><b>serves</b></font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">192.42.172.4</font></td>
+
+<td><font face="Helvetica">./network</font><br>
+<font face="Helvetica">exec/local</font><br>
+<font face="Helvetica">../Rhino</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">192.42.172.34</font></td>
+
+<td><font face="Helvetica">ranger/local</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">super21</font></td>
+
+<td nowrap><font face="Helvetica">192.42.172.2</font></td>
+
+<td><font face="Helvetica">../Rhino</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">cadet</font></td>
+
+<td nowrap><font face="Helvetica">192.42.172.6</font></td>
+
+<td><font face="Helvetica">cadet/local</font><br>
+<font face="Helvetica">./network</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">The <b>/mktg</b> domain contains these properties in the appropriate subdirectories of <b>/machines</b>:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><b>name</b></font></td>
+
+<td nowrap><font face="Helvetica"><b>Internet address</b></font></td>
+
+<td><font face="Helvetica"><b>serves</b></font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">mite</font></td>
+
+<td nowrap><font face="Helvetica">192.42.172.3</font></td>
+
+<td><font face="Helvetica">./network</font><br>
+<font face="Helvetica">mite/local</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">super21</font></td>
+
+<td nowrap><font face="Helvetica">192.42.172.2</font></td>
+
+<td><font face="Helvetica">../Rhino</font><br>
+<font face="Helvetica">super21/local</font><br>
+<font face="Helvetica">./network</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">mustang</font></td>
+
+<td nowrap><font face="Helvetica">192.42.172.5</font></td>
+
+<td><font face="Helvetica">../Rhino</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">Each local domain has the following information, which happen to be the defaults, in <b>/machines</b>:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><b>name</b></font></td>
+
+<td nowrap><font face="Helvetica"><b>Internet address</b></font></td>
+
+<td><font face="Helvetica"><b>serves</b></font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">localhost</font></td>
+
+<td nowrap><font face="Helvetica">127.0.0.1</font></td>
+
+<td><font face="Helvetica">./local</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">broadcasthost</font></td>
+
+<td nowrap><font face="Helvetica">255.255.255.255</font></td>
+
+<td><font face="Helvetica">../network</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Other first- and second-level domains</b></font>
+
+<p><font face="Times" size="+1">For simplicity, some second-level domains in the hierarchy aren't shown in Figure 1. There's nothing special or different about those not shown in the figure; they're left out just to make the diagram simpler. They're in Figure 2, as are several of the first-level domains. (Domains are numbered from the bottom up--for example, the local domain is first-level.)</font>
+
+<p><img src="Fig2_DomainHeirarchy.gif" width=460 height=256>
+
+<p><font face="Helvetica" size="+1"><b>Figure 2:</b></font>&nbsp; <font face="Times" size="+1"><i>Part of Rhino Aviation's domain hierarchy</i></font>
+
+<p><font face="Times" size="+1">Two separate root domains are shown in Figure 2. The one whose master runs on <b>super21</b>, tagged <b>Rhino</b>, is for the entire companywide NetInfo hierarchy; the one whose master runs on <b>rhino</b>, tagged <b>local</b>, is for the firewall machine, called <b>rhino</b> (or <b> rhino.Rhino.com</b>). In other words, the firewall machine <i>isn't</i> bound to the rest of the NetInfo domain hierarchy. For clarity, we'll call the &quot;real&quot; root domain--the top of the company-wide domain, tagged <b>Rhino</b>--the &quot;root domain,&quot; and call the firewall's domain the &quot;firewall domain.&quot;</font>
+
+<p><font face="Times" size="+1">This sort of domain hierarchy configuration is pretty common. It maps closely to the recommendations in the <i>NEXTSTEP Network and System Administration</i> manual, the NEXTSTEP System Administration classes, and past <i>support bulletin</i> articles including Tucker 1992 and Cottle, &quot;When One Server Isn't Enough,&quot; 1993.</font>
+
+<p><font face="Times" size="+1">The information in <b>/users</b> in the firewall's domain is separate from that in the root domain. This is critically important for strong network security--for example, it forces someone trying to break into your network to break into two separate accounts. For further explanation, see Tucker 1992 and Garfinkel and Spafford 1991.</font>
+
+<p><font face="Times" size="+1">As noted especially in Cottle, &quot;When One Server Isn't Enough,&quot; 1993, the aliases database doesn't reside in the root domain, but rather in the <b>/mail</b> domain. This decreases the size of the root domain dramatically, without decreasing functionality. (The alias information is needed only by the mail servers anyway.) Typically, the root domain has more clones than other domains, especially mail-specific domains such as <b>/mail</b>. Decreasing the size of the root domain allows Rhino Aviation's network to grow much larger, more easily.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>BALANCE IN A NETINFO HIERARCHY</b></font>
+
+<p><font face="Times" size="+1">In other NetInfo configuration examples you've seen elsewhere, you might have seen a &quot;balanced hierarchy.&quot; With a balanced hierarchy, every local domain has the same number of ancestors. The Rhino Aviation hierarchy has a nearly balanced hierarchy. However, balance isn't required.</font>
+
+<p><font face="Times" size="+1">How might the hierarchy not be balanced? Assume that most of the network uses a three-level domain hierarchy. If some local domain's parent is the root domain, then that portion of the network uses only a two-level domain hierarchy. Similarly, if some second-level domain's parent <i>isn't</i> the root domain, then that portion of the network uses a four-level or deeper hierarchy.</font>
+
+<p><font face="Times" size="+1">You might use an unbalanced hierarchy if one second-level domain has become very large and needs to be divided. You might also use one if one second-level domain represents a department that has grown and now has &quot;subdepartments.&quot; Or, using an unbalanced hierarchy might just make sense. As an example, look at Figure 3.</font>
+
+<p><img src="Fig3_UnbalancedHeirarchy.gif" width=460 height=288>
+
+<p><font face="Helvetica" size="+1"><b>Figure 3:</b></font>&nbsp; <font face="Times" size="+1"><i>An unbalanced domain hierarchy</i></font>
+
+<p><font face="Times" size="+1">In this example, all domains except for <b>/sales</b> are the same as in the previous illustration. The <b>/sales</b> domain hierarchy is shown all the way to the local domains. In this case, when referring to the domain hierarchy from, for example, <b>genesee</b>, the <b>network</b> domain (<b>/sales/syracuse</b>) is the second-level domain, the <b>Department</b> domain (<b>/sales</b>) is the third-level domain, and the root domain is the <i>fourth-level</i> domain.</font>
+
+<p><font face="Times" size="+1">This third example is just for illustration. For the rest of the issue, you can assume we're referring to the hierarchy in Figure 2.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>WHERE TO NOW?</b></font>
+
+<p><font face="Times" size="+1">With this groundwork laid, the remaining articles in this issue examine how things stand before NetInfo starts, how servers get information they need about NetInfo through the lookup server, what binding and connecting are and how they work, how changes to a domain are propagated, and how to handle particularly tricky troubleshooting.</font>
+
+
+
+<p>
+
+</body>
+</html>

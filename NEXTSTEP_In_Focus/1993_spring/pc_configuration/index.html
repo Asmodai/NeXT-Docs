@@ -1,0 +1,1068 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NEXTSTEP_In_Focus/1993Spring/PC_Configuration.rtf -->
+<!-- Date: Sun Jan  1 15:46:15 2023 -->
+<head>
+<title>PC_Configuration</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times"><i>NEXTSTEP In Focus</i>, Spring 1993 (Volume 3, Issue 2).</font><br>
+<font face="Times">Copyright</font> &copy;<font face="Times">1993 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><font face="Helvetica" size="+4"><b>PC Configuration for NEXTSTEP</b></font>
+
+<p><font face="Helvetica">Terry Williams</font>
+
+<p><font face="Times" size="+1">Undoubtedly, one of the most challenging tasks facing a NEXTSTEP system administrator or installer is configuring PCs to run NEXTSTEP. There's a plethora of PC-compatible adapters and products to deal with, and each has its own quirks.</font>
+
+<p><font face="Times" size="+1">There are, however, a few <i>de facto</i> rules that make PC configuration easier. In most cases, the defaults that the NEXTSTEP installation software uses will be fine, and you will have to do only a little tweaking. In a few instances, though, you might have to do more than tweak. This article describes the configuration pieces that are common in PCs, and helps you see how they fit together.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2">HARDWARE INTERRUPT REQUEST LINES</font>
+
+<p><font face="Times" size="+1">Probably the most difficult and frustrating task in setting up a PC is dealing with hardware interrupts. Each peripheral system and device uses hardware interrupts to gain access to the CPU, using an <i>Interrupt Request line</i> (<i>IRQ line</i>). Each connected peripheral must be set to a unique hardware interrupt. There are 16 distinct levels of these interrupts in a PC, and therefore 16 IRQ lines. You have to make sure they're all assigned properly.</font>
+
+<p><font face="Helvetica" size="+1"><b>How interrupts work</b></font>
+
+<p><font face="Times" size="+1">When a device needs access to the CPU, it raises a signal (or &quot;interrupt&quot;) on its IRQ line. If the CPU's current task has a lower priority than the interrupt, the CPU puts aside what it's doing to immediately handle the interrupt. If more than one interrupt arrives at a time or if the CPU is already servicing an interrupt, the CPU honors the lowest numbered (highest priority) IRQ line first. For example, if the CPU is reading something from a disk and you type something, the keyboard interrupt causes the CPU to put the disk read temporarily on hold. When the CPU completes the interrupt task, it clears that device's IRQ line and continues with what it was doing before.</font>
+
+<p><font face="Times" size="+1">Problems arise when you have multiple devices on the same IRQ line (except in special cases, as described below). The CPU and driver software that manage the device expect particular interrupts from particular devices, and things get confusing if the CPU sees an interrupt from a fax modem, for example, on an IRQ line that is set for something else, like an Ethernet adapter.</font>
+
+<p><font face="Times" size="+1"><i>Side note:</i> Devices can sometimes share interrupts, but only if the device driver software can handle such situations. Typically, interrupt sharing is managed by adapters that support multiple serial interface or SCSI ports. Some EISA and MCA adapters support interrupt sharing. However, NEXTSTEP for Intel Processors doesn't currently support any interrupt sharing.</font>
+
+<p><font face="Helvetica" size="+1"><b>Fixed and available IRQs</b></font>
+
+<p><font face="Times" size="+1">When configuring a PC, you need to find a unique IRQ line for each device or peripheral system connected to your PC. Some IRQs are traditionally assigned to particular devices, while others are available for you to assign.</font>
+
+<p><font face="Times" size="+1">Some IRQs that are traditionally designated for particular devices can sometimes be available anyway. For example, if a system doesn't have a serial port 2, or if nothing is connected to it, its traditional interrupt line (IRQ 3) would be available for, say, the Ethernet adapter.</font>
+
+<p><font face="Times" size="+1">However, some IRQ lines are fixed and can't ever be used by adapters. For example, IRQ lines 0, 1, 2, 8, and 13 are never available.</font>
+
+<p><font face="Times" size="+1">The following table shows common and required settings for IRQ lines.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica"><b>IRQ line</b></font></td>
+
+<td><font face="Helvetica"><b>Device</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><img src="../../Images/sp.gif" width=19 height=1><font face="Helvetica">0</font></td>
+
+<td><font face="Helvetica">System clock (fixed)</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><img src="../../Images/sp.gif" width=19 height=1><font face="Helvetica">1</font></td>
+
+<td><font face="Helvetica">Keyboard (fixed)</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><img src="../../Images/sp.gif" width=19 height=1><font face="Helvetica">2</font></td>
+
+<td><font face="Helvetica">Cascade from interrupt controller #2 (fixed)</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><img src="../../Images/sp.gif" width=19 height=1><font face="Helvetica">3</font></td>
+
+<td><font face="Helvetica">Serial port 2</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><img src="../../Images/sp.gif" width=19 height=1><font face="Helvetica">4</font></td>
+
+<td><font face="Helvetica">Serial port 1</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><img src="../../Images/sp.gif" width=19 height=1><font face="Helvetica">5</font></td>
+
+<td><font face="Helvetica">Parallel port 2</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><img src="../../Images/sp.gif" width=19 height=1><font face="Helvetica">6</font></td>
+
+<td><font face="Helvetica">Floppy disk drive controller</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><img src="../../Images/sp.gif" width=19 height=1><font face="Helvetica">7</font></td>
+
+<td><font face="Helvetica">Parallel port 1</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><img src="../../Images/sp.gif" width=19 height=1><font face="Helvetica">8</font></td>
+
+<td><font face="Helvetica">Real-time clock (fixed)</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><img src="../../Images/sp.gif" width=19 height=1><font face="Helvetica">9</font></td>
+
+<td><font face="Helvetica">Redirected as IRQ2</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><img src="../../Images/sp.gif" width=19 height=1><font face="Helvetica">10</font></td>
+
+<td><font face="Helvetica">Available</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><img src="../../Images/sp.gif" width=19 height=1><font face="Helvetica">11</font></td>
+
+<td><font face="Helvetica">Available</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><img src="../../Images/sp.gif" width=19 height=1><font face="Helvetica">12</font></td>
+
+<td><font face="Helvetica">PS/2 mouse</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><img src="../../Images/sp.gif" width=19 height=1><font face="Helvetica">13</font></td>
+
+<td><font face="Helvetica">Math coprocessor (fixed)</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><img src="../../Images/sp.gif" width=19 height=1><font face="Helvetica">14</font></td>
+
+<td><font face="Helvetica">Hard disk controller</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><img src="../../Images/sp.gif" width=19 height=1><font face="Helvetica">15</font></td>
+
+<td><font face="Helvetica">Available</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2">I/O PORT ADDRESSES</font>
+
+<p><font face="Times" size="+1">The CPU uses I/O ports to communicate directly with devices. An <i>I/O port</i> tells the CPU where to find data, control information, and status information for the associated device. Ports are much like memory addresses and occupy address space, but they aren't used for storage. A port is where the CPU goes to get data from the port's assigned device or to check the status of the device, and where the CPU puts any data it's sending to the device.</font>
+
+<p><font face="Times" size="+1">Each device must have an I/O port and, like IRQ lines, devices often have traditional port address ranges. However, many adapters allow you to set or change their port addresses. You usually view and change the addresses through the <b>BIOS Setup</b> utility. (If you have an EISA system, you might also need to use the EISA Configuration Utility (ECU) that comes with your system to work with port addresses.)</font>
+
+<p><font face="Times" size="+1">The following table lists a few common I/O port address ranges.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica"><b>Address range</b></font></td>
+
+<td><font face="Helvetica"><b>Device</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica">0A0 - 0BF</font></td>
+
+<td><font face="Helvetica">Interrupt controller 2</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica">0F8 - 0FF</font></td>
+
+<td><font face="Helvetica">Math coprocessor</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica">1F0 - 1F8</font></td>
+
+<td><font face="Helvetica">Primary hard disk controller</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica">170 - 178</font></td>
+
+<td><font face="Helvetica">Secondary hard disk controller</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica">278 - 27F</font></td>
+
+<td><font face="Helvetica">Parallel port 2</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica">2B0 - 2DF</font></td>
+
+<td><font face="Helvetica">VGA</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica">2F8 - 2FF</font></td>
+
+<td><font face="Helvetica">Serial port 2</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica">378 - 37F</font></td>
+
+<td><font face="Helvetica">Parallel port 1</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica">380 - 38F</font></td>
+
+<td><font face="Helvetica">SDLC, bisynchronous 2</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica">3A0 - 3AF</font></td>
+
+<td><font face="Helvetica">Bisynchronous 1</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica">3B0 - 3BF</font></td>
+
+<td><font face="Helvetica">Monochrome adapter with printer port</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica">3F0 - 3F7</font></td>
+
+<td><font face="Helvetica">Floppy disk drive controller</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica">3F8 - 3FF</font></td>
+
+<td><font face="Helvetica">Serial port 1</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2">DIRECT MEMORY ACCESS CHANNELS</font>
+
+<p><font face="Times" size="+1"><i>Directly Memory Access channels</i> (<i>DMA channels</i>) are communication channels for the CPU and peripherals that need direct access to data in memory. A special controller called a <i>DMA controller</i> deals with transferring data to and from memory, freeing the CPU for other tasks. Some peripherals can make requests of the DMA controller without having to bother the CPU--this speeds things along quite a bit.</font>
+
+<p><font face="Times" size="+1">DMA channels are usually assigned to high speed communication devices like Ethernet adapters, floppy disk drives, and SCSI controllers. A DMA channel should be unique to a particular device; however, it can be shared as long as it's not used simultaneously by multiple devices. Below is a table of standard DMA assignments.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica"><b>DMA channel</b></font></td>
+
+<td><font face="Helvetica"><b>Standard usage</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><img src="../../Images/sp.gif" width=27 height=1><font face="Helvetica">0</font></td>
+
+<td><font face="Helvetica">Available for 16 bit</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><img src="../../Images/sp.gif" width=27 height=1><font face="Helvetica">1</font></td>
+
+<td><font face="Helvetica">Available</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><img src="../../Images/sp.gif" width=27 height=1><font face="Helvetica">2</font></td>
+
+<td><font face="Helvetica">Floppy disk drive controller</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><img src="../../Images/sp.gif" width=27 height=1><font face="Helvetica">3</font></td>
+
+<td><font face="Helvetica">Available</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><img src="../../Images/sp.gif" width=27 height=1><font face="Helvetica">4</font></td>
+
+<td><font face="Helvetica">Cascade for DMA 0 - 3</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><img src="../../Images/sp.gif" width=27 height=1><font face="Helvetica">5</font></td>
+
+<td><font face="Helvetica">Available for 16 bit</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><img src="../../Images/sp.gif" width=27 height=1><font face="Helvetica">6</font></td>
+
+<td><font face="Helvetica">Available for 16 bit</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><img src="../../Images/sp.gif" width=27 height=1><font face="Helvetica">7</font></td>
+
+<td><font face="Helvetica">Available for 16 bit</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2">RAM BASE ADDRESS</font>
+
+<p><font face="Times" size="+1">For some devices, such as video boards, you have to specify the starting address of the program that controls the device (the driver software or the adapter's ROM) or the data used by the device. This location is called the <i>RAM base address</i>. A number of things can occupy this space. For example, a video device might have data memory in these addresses. Make sure that the RAM for one device doesn't overlap that of another device--that is, make sure its RAM base address is not within the range of another device. The following table shows how some of this reserve memory is usually laid out.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica"><b>Address range</b></font></td>
+
+<td><font face="Helvetica"><b>Purpose</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica">A0000h - BFFFFh</font></td>
+
+<td><font face="Helvetica">Video RAM</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica">C0000h - D0000h</font></td>
+
+<td><font face="Helvetica">Adapter board ROM area&nbsp; (available)</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica">E0000h - FFFFFh</font></td>
+
+<td><font face="Helvetica">Motherboard ROM BIOS (some of this may be available)</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica">100000h - 1FFFFFh</font></td>
+
+<td><font face="Helvetica">DOS high memory area</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2">HOW DO YOU SET THESE THINGS?</font>
+
+<p><font face="Times" size="+1">Now that you know what everything is, how do you work with it? It depends on the architecture of your PC and devices.</font>
+
+<p><font face="Helvetica" size="+1"><b>Industry Standard Architecture (ISA)</b></font>
+
+<p><font face="Times" size="+1">Most ISA components are jumper configured, which means you have to physically set switches on the board or device. However, if the device comes with configuration software, it may be more convenient to use the software than to fiddle with the jumper settings. Follow the manufacturer's suggested settings, unless NEXTSTEP calls for something different--there are rare occasions when the manufacturer defaults for NEXTSTEP-supported devices are not appropriate for use with NEXTSTEP.</font>
+
+<p><font face="Times" size="+1">Check the documentation for the device to find the manufacturer's suggestions, and see the individual configuration settings in your NEXTSTEP installation guidelines or NeXTanswers for exceptions to the defaults.</font>
+
+<p><font face="Helvetica" size="+1"><b>Extended Industry Standard Architecture (EISA)</b></font>
+
+<p><font face="Times" size="+1">Some EISA adapters have jumpers that you set, but most do not. When you install an EISA adapter, you must add it to the EISA ROM before you can use it. The ECU that ships with your system's motherboard probably adds the board for you automatically when you first run it; see the ECU documentation. When the board is added and identified, you're asked to insert a floppy disk that has a particular configuration file--a floppy disk comes with each EISA adapter that you install. Even if the board is automatically added, check the details of the board's settings in the ECU program. While doing that, make performance adjustments as necessary. In general, follow the EISA adapter documentation.</font>
+
+<p><font face="Times" size="+1">The ECU also configures the bus slot for the particular adapter. If you change the slot position of the adapter, you must rerun the ECU. The changes to the EISA configuration information are loaded into EISA ROM when you save and exit. In fact, EISA system configuration is downloaded each time you turn on the computer.</font>
+
+<p><font face="Times" size="+1">You configure ISA boards in an EISA system exactly as if you were installing them in an ISA system.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2">IS IT A PC YET?</font>
+
+<p><font face="Times" size="+1">To see if the thing works, you have to install at least the minimum necessary components that allow the computer to boot and display video. You need:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=9></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">A video adapter and display (for testing you can use the internal video adapter, if your computer has one)</font></td></tr>
+
+<tr valign=top>
+
+<td width=9 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=9></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">A keyboard</font></td></tr>
+
+<tr valign=top>
+
+<td width=9 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=9></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">A floppy disk drive</font></td></tr>
+
+<tr valign=top>
+
+<td width=9 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=9></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">A bootable floppy disk (for DOS or some other operating system)</font></td></tr>
+
+<tr valign=top>
+
+<td width=9 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=9></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Some memory</font></td></tr>
+
+</table>
+
+<p><font face="Times" size="+1">To run NEXTSTEP you also need:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=9></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">A NEXTSTEP-supported video adapter</font></td></tr>
+
+<tr valign=top>
+
+<td width=9 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=9></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">A NEXTSTEP-supported mouse</font></td></tr>
+
+<tr valign=top>
+
+<td width=9 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=9></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">A 250MB or larger hard disk</font></td></tr>
+
+<tr valign=top>
+
+<td width=9 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=9></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">16MB or more of memory</font></td></tr>
+
+</table>
+
+<p><font face="Times" size="+1">You need to know:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=9></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">How to access the ROM BIOS of your system (usually there's a key sequence that you press after the computer finishes its memory test). See your PC's documentation.</font></td></tr>
+
+<tr valign=top>
+
+<td width=9 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=9></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">How to load and start the ECU program if the computer is an EISA computer.</font></td></tr>
+
+<tr valign=top>
+
+<td width=9 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=9></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The devices that are present and their proper hardware configuration.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2">YOU'RE OFF!</font>
+
+<p><font face="Times" size="+1">So, configuring your PC doesn't have to be dreadful, if you read the manufacturer's documentation and double-check for conflicts between devices. For additional tips on installing a particular device, be sure to check the configuration information available from NeXTanswers. <i>(Editor's note: See &quot;Tips &amp; Techniques&quot; for details.)</i></font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2">SUGGESTED READING</font>
+
+<p><font face="Times" size="+1">There are many good books on PC architecture available. Here are two we particularly like:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=9></td>
+
+<td><font face="Times" size="+1">Rosch, Winn L. <i>The Winn Rosch Hardware Bible</i>, 2nd ed. New York: Brady Pub., 1992.</font>
+
+<p><font face="Times" size="+1">Angermeyer, John, et al. <i>The Waite Group's Tricks of the MS-DOS Masters</i>, 2nd ed. Carmel, IN: Howard W. Sams &amp; Co., 1990.</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<p><font face="Times" size="+1"><i>Terry Williams is a System Administration Instructor in NeXT Education. You can reach him by e-mail at <b>Terry_Williams@next.com</b>.</i></font>
+
+<p><br><br><br><br><br>
+
+<p><font face="Helvetica" size="+3">CONFIGURATION TROUBLESHOOTING</font>
+
+<p><font face="Helvetica" size="+1"><b>No video</b></font>
+
+<p><font face="Helvetica">If no video is present, make sure that your video system is set up properly.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=9></td>
+
+<td nowrap><font face="Helvetica"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Helvetica">Check that the cabling is installed correctly.</font></td></tr>
+
+<tr valign=top>
+
+<td width=9 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=9></td>
+
+<td nowrap><font face="Helvetica"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Helvetica">If you are using an expansion bus video adapter, be sure that any on-board video systems are disabled.</font></td></tr>
+
+<tr valign=top>
+
+<td width=9 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=9></td>
+
+<td nowrap><font face="Helvetica"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Helvetica">If you are using on-board video, check that it's enabled.</font></td></tr>
+
+<tr valign=top>
+
+<td width=9 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=9></td>
+
+<td nowrap><font face="Helvetica"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Helvetica">Check that the ROM BIOS setup is configured properly for your video application.</font></td></tr>
+
+</table>
+
+<p><font face="Helvetica" size="+1"><b>Poor video</b></font>
+
+<p><font face="Helvetica">Poor video can mean &quot;snow&quot; in the output, poor horizontal or vertical synchronization (flipping screens), dim output, or bright output.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=9></td>
+
+<td nowrap><font face="Helvetica"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Helvetica">Check that your cabling is installed correctly.</font></td></tr>
+
+<tr valign=top>
+
+<td width=9 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=9></td>
+
+<td nowrap><font face="Helvetica"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Helvetica">Check the configuration of the monitor.</font></td></tr>
+
+<tr valign=top>
+
+<td width=9 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=9></td>
+
+<td nowrap><font face="Helvetica"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Helvetica">Check the configuration of the video adapter.</font></td></tr>
+
+</table>
+
+<p><font face="Helvetica" size="+1"><b>System won't boot past memory test</b></font>
+
+<p><font face="Helvetica">Memory sails past, but the system doesn't load the software.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=9></td>
+
+<td nowrap><font face="Helvetica"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Helvetica">If you are using an expansion bus hard disk controller, make sure its IRQ line doesn't conflict with anything.</font></td></tr>
+
+<tr valign=top>
+
+<td width=9 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=9></td>
+
+<td nowrap><font face="Helvetica"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Helvetica">Disable either an integrated IDE controller or the expansion bus hard disk controller.</font></td></tr>
+
+<tr valign=top>
+
+<td width=9 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=9></td>
+
+<td nowrap><font face="Helvetica"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Helvetica">Check that the hard disk controller's IRQ line is not set to 6 (which must be the floppy disk drive controller).</font></td></tr>
+
+</table>
+
+<p><font face="Helvetica" size="+1"><b>System boots DOS (not NEXTSTEP) by default</b></font>
+
+<p><font face="Helvetica">This assumes that NEXTSTEP still boots properly when you type <b>n</b> at the &quot;n for NEXTSTEP, d for DOS&quot; prompt at startup. Usually, this is because a DOS partition is the active partition.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=9></td>
+
+<td nowrap><font face="Helvetica"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Helvetica">Use <b>fdisk</b> to set the NEXTSTEP partition to be active.</font></td></tr>
+
+<tr valign=top>
+
+<td width=9 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=9></td>
+
+<td nowrap><font face="Helvetica"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Helvetica">The boot sector or file may have been corrupted. Run the UNIX utility <b>/usr/etc/disk</b> to rewrite the NEXTSTEP boot blocks.</font></td></tr>
+
+</table>
+
+<p><font face="Helvetica" size="+1"><b>System fails to boot NEXTSTEP in multi-user mode</b></font>
+
+<p><font face="Helvetica">The most likely causes for this are improperly configured NEXTSTEP drivers or incompatibility between the drivers and the hardware.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=9></td>
+
+<td nowrap><font face="Helvetica"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Helvetica">Ensure that all IRQ lines, I/O port addresses, and RAM base addresses are set properly and are unique between devices.</font></td></tr>
+
+<tr valign=top>
+
+<td width=9 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=9></td>
+
+<td nowrap><font face="Helvetica"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Helvetica">Try to boot in the default configuration. To do this, type the following at the boot prompt:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=18 height=1><font face="Courier">config=Default</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td><font face="Helvetica">Now, run Configure to reconfigure the system.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=9></td>
+
+<td nowrap><font face="Helvetica"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Helvetica">Boot in single-user mode and create a new configuration table. To do this, type the following at the boot prompt:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=15 height=1><font face="Courier">-s config=Default</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td><font face="Helvetica">Now copy /usr/Devices/System.config/Default.table to /usr/Devices/System.config/Instance0.table.</font></td></tr>
+
+</table>
+
+<p><font face="Helvetica" size="+1"><b>Other problems</b></font>
+
+<p><font face="Helvetica">In general, check NeXTanswers for ways to avoid configuration gotchas for all devices, and to fix them if they already got you.--TW</font>
+
+
+
+<p><br><br><br><br>
+
+</body>
+</html>

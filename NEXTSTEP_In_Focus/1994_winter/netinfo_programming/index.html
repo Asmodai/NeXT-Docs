@@ -1,0 +1,749 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NEXTSTEP_In_Focus/1994Winter/NetInfo_Programming.rtfd -->
+<!-- Date: Sun Jan  1 15:46:21 2023 -->
+<head>
+<title>NetInfo_Programming</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times"><i>NEXTSTEP In Focus</i>, Winter 1994 (Volume 4, Issue 1).</font><br>
+<font face="Times">Copyright</font> &copy;<font face="Times">1994 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><font face="Times" size="+4">NetInfo Programming</font>
+
+<p><font face="Times" size="+1">Marc Majka</font>
+
+<p><font face="Times" size="+1"><i>The NetInfo programming library and NetInfo Kit provide tools for building your own administrative applications and utilities. These tools include a number of data structures and objects, plus library routines for accessing and manipulating NetInfo data. This article provides a quick introduction to this set of resources.</i></font>
+
+<p><br><br><br>
+
+<p><font face="Times" size="+3"><b>Building Your Own Tools</b></font>
+
+<p><font face="Times" size="+1">When you think of NEXTSTEP system and network&nbsp; administration, you probably think of applications like User Manager and NFS Manager that configure and maintain services on your network. You might occasionally use NetInfo Manager to inspect one of your NetInfo databases, and you might even use <b>niutil</b> in a shell script to perform some administrative tasks.</font>
+
+<p><font face="Times" size="+1">What you might not know is that NEXTSTEP also provides you with tools to write your own utility programs and custom resource management applications. These tools are NetInfo Kit and the NetInfo programming library.</font>
+
+<p><font face="Times" size="+1">To use the NetInfo library, you need to be familiar with programming in C. The library defines a set of functions that access NetInfo database servers and a set of data structures for holding NetInfo data. NetInfo Kit contains some useful objects that you can use in your Objective C programs together with the NetInfo library.</font>
+
+<p><font face="Times" size="+1">Writing programs that access NetInfo also requires a good working knowledge of how NetInfo works. The articles in the Summer 1993 issue of <i>NEXTSTEP In Focus</i> provide excellent background information.</font>
+
+<p><br><br><br>
+
+<p><font face="Times" size="+3"><b>The Programmer's Point of View</b></font>
+
+<p><font face="Times" size="+1">As a system administrator, you know that NetInfo is a database system that stores configuration information and administrative records. Many different programs access NetInfo database servers to look up this information. As a NetInfo programmer, you'll need to keep in mind that NetInfo is really a collection of database servers.</font>
+
+<p><font face="Times" size="+1">A NetInfo domain is a set of servers that work together to keep their databases synchronized. Only one of them--the master server--accepts operations from clients that modify its database. When the master modifies its database, it immediately instructs all the other servers for that domain--the <i>clone servers</i>--to perform the same modification. This way, all the databases in the domain remain identical.</font>
+
+<p><font face="Times" size="+1"><b>Connecting where you want to</b></font>
+
+<p><font face="Times" size="+1">When you write a program, you can choose to make a connection to a specific server if you wish, but the NetInfo library will also let you just specify the domain you want to access. Your program gets a connection to one of the servers for that domain. Because they all have identical data in their databases, it doesn't matter which server your program contacts.</font>
+
+<p><font face="Times" size="+1">The library routines automatically connect your program to the master server if the server does any write operations. If your program is just reading data, the library detects communication failures and automatically reconnects you to another server. NetInfo always attempts to make connections to servers that respond most quickly, to provide client programs like yours with the fastest service.</font>
+
+<p><font face="Times" size="+1"><b>Moving in the hierarchy</b></font>
+
+<p><font face="Times" size="+1">If your program needs to establish connections to various domains, you can navigate throughout your NetInfo domain hierarchy using both absolute and relative domain names. For example, you can open a connection to the <b>/</b> domain (the root domain) or the <b>/marketing</b> domain, and you can connect to the parent (<b>..</b>) of a domain or to a child domain.</font>
+
+<p><font face="Times" size="+1">Your program can have many connections open at one time. Each open connection is represented by a handle. When you call a library routine, you pass that routine a handle, which contains all the information the routine needs to carry out a transaction with a NetInfo server.</font>
+
+<p><font face="Times" size="+1"><b>Reading and writing</b></font>
+
+<p><font face="Times" size="+1">Once your program has established a connection, it will need to read and write data. A NetInfo database contains a set of records that are organized as a hierarchy. A record is called a <i>directory </i>and has a unique ID number. Inside the directory is a list of properties. A <i>property</i> is a keyword along with a list of associated values. The property key and all the values are stored in NetInfo as character strings. The library defines them as the type <b>ni_name</b>, which is a character pointer.</font>
+
+<p><font face="Times" size="+1">Each directory also contains a list of the directory ID numbers of all its subdirectories and the ID number of its parent directory. You can use these ID numbers to navigate through the directory hierarchy. You can also ask the NetInfo servers to search for directories that have a given property key or that have a certain value for a given property key.</font>
+
+<p><font face="Times" size="+1"><b>Variety of programming tools</b></font>
+
+<p><font face="Times" size="+1">There are library routines to create and destroy directories, to create and destroy properties within directories, and to add and delete values in existing properties. There are also a variety of routines to help you manage the various data structures in memory. This rich set of tools lets you choose your own programming style.</font>
+
+<p><font face="Times" size="+1">For example, a program to create a new user account record in NetInfo might have a sequence of transactions with the database server, first creating a new directory, then adding each property in turn, with the values of each of those properties being added to the database one at a time. Alternatively, you could build up a list of all the properties and their values as a data structure in memory, and create the complete directory in a single transaction with the server.</font>
+
+<p><br><br><br>
+
+<p><font face="Times" size="+3"><b>NetInfo Kit</b></font>
+
+<p><font face="Times" size="+1">The NetInfo library routines give you everything you need for accessing NetInfo servers. That's fine if you're writing a utility program that you'll run from a UNIX command line, or adding NetInfo operations to an application that doesn't require user interaction. However, if you're writing a NEXTSTEP application that does need to provide that type of user interface, you can save yourself some trouble by using the objects in the NetInfo Kit.</font>
+
+<p><font face="Times" size="+1"><b>Object classes</b></font>
+
+<p><font face="Times" size="+1">The kit contains five object classes. The NIDomain class represents a NetInfo domain. It maintains a connection handle, which you can get from an NIDomain object and use in the library routines. NIDomain implements a number of Objective C methods that examine information that's part of the handle.</font>
+
+<p><font face="Times" size="+1">There's only one data access method defined by the domain class, which duplicates one of the library's directory search routines. If you're using NetInfo Kit, you'll still need to use the NetInfo library routines to access the database.</font>
+
+<p><font face="Times" size="+1"><b>Interface classes</b></font>
+
+<p><font face="Times" size="+1">The other four classes in the kit are Panels that help you with the user interface part of your applications. NIDomainPanel lets a user select a domain to open. This is the panel you see in NetInfo Manager when you use the Open menu command. NIOpenPanel lets you select a domain in its top half and a directory in its bottom half. This kind of panel is used for User Manager's Open User command. NISavePanel is almost identical, but it's better suited for selecting a domain and directory when you're going to save something to NetInfo. The last class is NILoginPanel, which collects a name and password.</font>
+
+<p><br><br><br>
+
+<p><font face="Times" size="+3"><b>The NetInfo Library Data Types</b></font>
+
+<p><font face="Times" size="+1">Before looking at the library routines, you should become familiar with its data structures. They're defined in the header file <b>ni_prot.h</b>, in <b>/NextDeveloper/Headers</b>/<b>netinfo</b>.</font>
+
+<p><font face="Times"><b><i>ni_prot.h</i></b> <i>is derived from the file <b>ni_prot.x</b>.&nbsp; It's a Sun RPC protocol specification for NetInfo communications.</i></font>
+
+<p><font face="Times" size="+1"><b>ni_object</b></font>
+
+<p><font face="Times" size="+1">ni_object is what the library uses internally to store a NetInfo directory. You'll never have to use this definition directly--you'll just manipulate various parts of it at various times--but it's good to start with it so that you can see where the various parts are all used.</font>
+
+<p><font face="Times" size="+1">A directory is stored in a data structure defined like this:</font>
+
+<p><font face="Courier">struct ni_object {</font><br>
+<img src="../../Images/sp.gif" width=19 height=1><font face="Courier">ni_id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; nio_id;</font><br>
+<img src="../../Images/sp.gif" width=19 height=1><font face="Courier">ni_proplist&nbsp; nio_props;</font><br>
+<img src="../../Images/sp.gif" width=19 height=1><font face="Courier">u_long&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; nio_parent;</font><br>
+<img src="../../Images/sp.gif" width=19 height=1><font face="Courier">ni_idlist&nbsp;&nbsp;&nbsp; nio_children;</font><br>
+<img src="../../Images/sp.gif" width=10 height=1><font face="Courier">};</font>
+
+<p><font face="Times" size="+1">Figure 1 shows an ni_object.</font>
+
+<p><img src="1_NetInfoAPI_ni_object.gif" width=551 height=481>
+
+<p><font face="Times"><b>Figure 1:</b>&nbsp; <i>An ni_object</i></font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1"><b>ni_id</b></font>
+
+<p><font face="Times" size="+1">An ni_id contains the unique ID number of the directory, along with a directory version number called the <i>directory instance number</i>. Every time a server modifies a directory, the instance number is incremented by one. This allows the server to detect a client attempting to write an out-of-date directory back to the database. The ni_id structure looks like this:</font>
+
+<p><font face="Courier">struct ni_id {</font><br>
+<img src="../../Images/sp.gif" width=19 height=1><font face="Courier">u_long&nbsp;&nbsp;&nbsp; nii_object;</font><br>
+<img src="../../Images/sp.gif" width=19 height=1><font face="Courier">u_long&nbsp;&nbsp;&nbsp; nii_instance;</font><br>
+<img src="../../Images/sp.gif" width=9 height=1><font face="Courier">};</font>
+
+<p><font face="Times" size="+1">nii_object is the ID number, and nii_instance is the instance (or version) number.</font>
+
+<p><font face="Times" size="+1"><b>ni_proplist</b></font>
+
+<p><font face="Times" size="+1">Following the ID, a directory contains an ni_proplist. This is one of several list types defined in the library--each of these list types contains a counter for the length of the list, followed by a list of elements.&nbsp;&nbsp; An ni_proplist is a list of ni_property structures:</font>
+
+<p><font face="Courier">typedef struct {</font><br>
+<img src="../../Images/sp.gif" width=19 height=1><font face="Courier">u_int&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ni_proplist_len;</font><br>
+<img src="../../Images/sp.gif" width=19 height=1><font face="Courier">ni_property&nbsp; *ni_proplist_val;</font><br>
+<img src="../../Images/sp.gif" width=9 height=1><font face="Courier">} ni_proplist;</font>
+
+<p><font face="Times" size="+1">The ni_property structures it contains are defined this way:</font>
+
+<p><font face="Courier">struct ni_property {</font><br>
+<img src="../../Images/sp.gif" width=19 height=1><font face="Courier">ni_name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; nip_name;</font><br>
+<img src="../../Images/sp.gif" width=19 height=1><font face="Courier">ni_namelist&nbsp; nip_val;</font><br>
+<img src="../../Images/sp.gif" width=9 height=1><font face="Courier">};</font>
+
+<p><font face="Times" size="+1">A <i>property</i> is a name, the <i>property key</i>, and a list of names that are the values associated with that key. Figure 2 shows an ni_property.</font>
+
+<p><img src="2_NetInfoAPI_ni_property.gif" width=555 height=301>
+
+<p><font face="Times"><b>Figure 2:</b>&nbsp; <i>An ni_property</i></font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">A ni_name is just a C character pointer:</font>
+
+<p><font face="Courier">typedef char *ni_name;</font>
+
+<p><font face="Times" size="+1">The values of a property are stored in an ni_namelist. This is another list type that contains a length count and the elements of the list. An ni_namelist is defined like this:</font>
+
+<p><font face="Courier">typedef struct {</font><br>
+<img src="../../Images/sp.gif" width=19 height=1><font face="Courier">u_int&nbsp;&nbsp;&nbsp;&nbsp; ni_namelist_len;</font><br>
+<img src="../../Images/sp.gif" width=19 height=1><font face="Courier">ni_name&nbsp; *ni_namelist_val;</font><br>
+<img src="../../Images/sp.gif" width=9 height=1><font face="Courier">} ni_namelist;</font>
+
+<p><font face="Times" size="+1">Figure 3 shows a fragment of C code that you might use to print out a property list. It prints the list in exactly the same format that <b>niutil -read</b> prints a directory.</font>
+
+<p><font face="Times"><b>Figure 3:</b>&nbsp; <i>How to print a property list</i></font>
+
+<p><img src="../../Images/sp.gif" width=5 height=1><font face="Courier">int&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pn, vn;</font><br>
+<img src="../../Images/sp.gif" width=5 height=1><font face="Courier">ni_proplist&nbsp; *plist;</font><br>
+<img src="../../Images/sp.gif" width=5 height=1><font face="Courier">ni_property&nbsp; *prop</font><br>
+<img src="../../Images/sp.gif" width=5 height=1><font face="Courier">ni_namelist *values</font><br>
+<img src="../../Images/sp.gif" width=5 height=1><font face="Courier">...</font><br>
+<img src="../../Images/sp.gif" width=5 height=1><font face="Courier">/* for each property */</font><br>
+<img src="../../Images/sp.gif" width=5 height=1><font face="Courier">for (pn = 0; pn &lt;&nbsp; plist-&gt;ni_proplist_len; pn++) {</font>
+
+<p><img src="../../Images/sp.gif" width=5 height=1><font face="Courier">prop = &amp;plist.ni_proplist_val[pn];</font><br>
+<img src="../../Images/sp.gif" width=19 height=1><font face="Courier">/* print the property key */</font><br>
+<img src="../../Images/sp.gif" width=19 height=1><font face="Courier">printf(&#34;%s:&#34;, prop-&gt;nip_name);</font>
+
+<p><img src="../../Images/sp.gif" width=19 height=1><font face="Courier">values = &amp;prop.nip_val;</font>
+
+<p><img src="../../Images/sp.gif" width=19 height=1><font face="Courier">/* for each value in the namelist for this property */</font><br>
+<img src="../../Images/sp.gif" width=19 height=1><font face="Courier">for (vn = 0; vn &lt; values-&gt;ni_namelist_len; vn++) {</font><br>
+<img src="../../Images/sp.gif" width=19 height=1><font face="Courier">/* print the value */</font><br>
+<img src="../../Images/sp.gif" width=19 height=1><font face="Courier">printf(&#34; %s&#34;, values-&gt;ni_namelist_val[vn]);</font><br>
+<img src="../../Images/sp.gif" width=19 height=1><font face="Courier">}</font><br>
+<img src="../../Images/sp.gif" width=19 height=1><font face="Courier">printf(&#34;\n&#34;);</font><br>
+<img src="../../Images/sp.gif" width=5 height=1><font face="Courier">}</font>
+
+<p><font face="Times" size="+1"><b>Parents and children</b></font>
+
+<p><font face="Times" size="+1">The last two parts of a directory are the directory ID number of its parent directory (an unsigned long) and a list of its child directories.</font>
+
+<p><font face="Times" size="+1">The list of child directories is an ni_idlist:</font>
+
+<p><font face="Courier">typedef struct {</font><br>
+<img src="../../Images/sp.gif" width=19 height=1><font face="Courier">u_int&nbsp;&nbsp;&nbsp; ni_idlist_len;</font><br>
+<img src="../../Images/sp.gif" width=19 height=1><font face="Courier">u_long&nbsp; *ni_idlist_val;</font><br>
+<img src="../../Images/sp.gif" width=9 height=1><font face="Courier">} ni_idlist;</font>
+
+<p><font face="Times" size="+1">Like the other list types, it includes a length count. Only the directory ID number is</font><br>
+<font face="Times" size="+1">stored in the list. You can create an ni_id from a directory ID number by setting the nii_object value in an ni_id type. If you are fetching data from a server for a specific directory, the nii_instance is ignored. However, if you need to set the nii_instance for a directory, you can use <b>ni_self()</b>. We'll examine this more later.</font>
+
+<p><br><br><br>
+
+<p><font face="Times" size="+3"><b>Connecting with the Library</b></font>
+
+<p><font face="Times" size="+1">You can make a connection to a domain or to a specific server in a domain. In most cases, it's more convenient to connect to a domain and let the NetInfo library maintain the connection for you. The library automatically reconnects to another server if your connection fails or times out. It also automatically reconnects your program to the domain's master if you perform a write operation.</font>
+
+<p><font face="Times" size="+1">You can choose to make a connection to a domain based on its absolute domain name--for example, <b>/</b>, <b>/sales</b>, or <b>/mktg/mustang</b>--or based on its name relative to another domain. The library keeps track of domains in&nbsp; handles. You can't examine the contents of a domain handle. It's defined as an opaque pointer type void *.</font>
+
+<p><font face="Times" size="+1"><b>Opening a connection</b></font>
+
+<p><font face="Times" size="+1">The basic routine for making a connection is <b>ni_open()</b>. The first argument is a domain handle, the second is a domain name (a character string), and the third is for the returned handle for the new connection. If the first argument is a NULL pointer, the domain name is absolute. If it's the handle for another domain, then the domain name is relative to that domain. Here are some examples.</font>
+
+<p><br><br>
+
+<p><font face="Courier">void *local_domain,  *root_domain,</font><br>
+<img src="../../Images/sp.gif" width=34 height=1><font face="Courier">*parent_domain;</font>
+
+<p><font face="Courier">/* open the local domain */</font><br>
+<font face="Courier">ni_open(NULL, &#34;.&#34;, &amp;local_domain);</font>
+
+<p><font face="Courier">/* open the root domain */</font><br>
+<font face="Courier">ni_open(NULL, &#34;/&#34;, &amp;root_domain);</font>
+
+<p><font face="Courier">/* open&nbsp; local domain's parent */</font><br>
+<font face="Courier">ni_open(local_domain, &#34;..&#34;, &amp;parent_domain);</font>
+
+<p><font face="Times" size="+1">If you want to make a connection to a specific server, use <b>ni_connect()</b>. You need to know the server's Internet address and its NetInfo database tag. Recall that every NetInfo server on a particular computer has a unique name called its <i>tag</i>. The tag also identifies the database used by a server. For example, the server with the tag <b>local</b> maintains the database <b>/etc/netinfo/local.nidb</b>.</font>
+
+<p><font face="Times" size="+1">The Internet address must be a pointer to a sockaddr_in structure. You also need to tell the library how you want to deal with communication failures. For example, if you wanted to set and enable a four-second read time-out for your connection, use <b>ni_setreadtimeout()</b> to set the time-out interval and enable time-out notification with <b>ni_setabort()</b>:</font>
+
+<p><font face="Courier">void&nbsp;&nbsp; *dom;</font><br>
+<font face="Courier">struct&nbsp; sockaddr_inhost;</font><br>
+<font face="Courier">char&nbsp;&nbsp; *address, *tag;</font><br>
+<font face="Courier">...</font><br>
+<font face="Courier">/* set up the address */</font><br>
+<font face="Courier">/* AF_INET is in &lt;sys/socket.h&gt; */</font><br>
+<font face="Courier">host.sin_family = AF_INET;</font><br>
+<font face="Courier">host.sin_addr.s_addr = inet_addr(address);</font>
+
+<p><font face="Courier">/* connect to specified server */</font><br>
+<font face="Courier">dom = ni_connect(&amp;host, tag);</font>
+
+<p><font face="Courier">/* abort on errors */</font><br>
+<font face="Courier">ni_setabort(dom, 1);</font>
+
+<p><font face="Courier">/* set a 4-second read time-out */</font><br>
+<font face="Courier">ni_setreadtimeout(dom, 4);</font>
+
+<p><font face="Times" size="+1"><b>Setting time-outs and other parameters</b></font>
+
+<p><font face="Times" size="+1">You can set read and write time-outs for any connection using <b>ni_setreadtimeout()</b> and <b>ni_setwritetimeout()</b>. You can also set time-outs when you open a connection to a domain by using the routine <b>ni_fancyopen()</b>, which uses the same three arguments as <b>ni_open()</b> plus a fourth argument that carries read and write time-outs, an on/off abort flag, and a flag that indicates whether your program needs to be able to do write operations. You set this flag for an open connection with <b>ni_needwrite()</b>.</font>
+
+<p><font face="Times" size="+1">If you set the &quot;need write&quot; flag to 1, either with an initial call to <b>ni_fancyopen()</b> or with a call to <b>ni_needwrite()</b> after a connection is already open, the library reconnects your program to the domain's master server.</font>
+
+<p><font face="Times" size="+1">This isn't really necessary, because the library reconnects to the master any time you do a write operation. However, it's useful to &quot;lock onto&quot; the master early on in your program if you know you'll be doing write operations later on. Connecting to the master ensures that any data your program reads will be up to date, since there is a slight delay involved in propagating updates to clones.</font>
+
+<p><font face="Times" size="+1"><b>Checking and freeing connections</b></font>
+
+<p><font face="Times" size="+1">Sometimes you want to know which server for a domain your program is currently connected to. You can determine this with <b>ni_addrtag()</b>. It returns the address as a struct sockaddr_in and the tag of the server. When you're finished with a connection, you can close the connection and free the memory used by the handle with <b>ni_free()</b>.</font>
+
+<p><font face="Times" size="+1"><b>Verifying the connection</b></font>
+
+<p><font face="Times" size="+1">One final note on <b>ni_open()</b>, <b>ni_fancyopen()</b>, and <b>ni_connect()</b>: These routines create connection handles to a server, but there's no interaction with a server until you attempt to read or write. For example, you can open a domain successfully, but all the servers for that domain might be down.</font>
+
+<p><font face="Times" size="+1">To test a connection, make sure you've set the abort flag, then attempt to read from the server. Here's an easy test:</font>
+
+<p><font face="Courier">ni_id&nbsp; dir;</font><br>
+<font face="Courier">...</font><br>
+<font face="Courier">/* abort on errors */</font><br>
+<font face="Courier">ni_setabort(dom, 1);</font>
+
+<p><font face="Courier">/* fetch root directory ni_id */</font><br>
+<font face="Courier">ret = ni_root(dom, &amp;dir);</font><br>
+<font face="Courier">if (ret != NI_OK) {</font><br>
+<img src="../../Images/sp.gif" width=13 height=1><font face="Courier">fprintf(stderr,</font><br>
+<img src="../../Images/sp.gif" width=26 height=1><font face="Courier">&#34;Connection failed!\n&#34;);</font><br>
+<img src="../../Images/sp.gif" width=13 height=1><font face="Courier">...</font><br>
+<font face="Courier">}</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+3"><b>Connecting with NetInfo Kit</b></font>
+
+<p><font face="Times" size="+1">The NIDomain class has four methods for opening a connection. There are two methods for connecting to a named domain, and two for connecting to a server using an address and tag. Figure 4 shows the four methods.</font>
+
+<p><font face="Times"><b>Figure 4:</b>&nbsp; <i>Methods for connecting with NetInfo Kit</i></font>
+
+<p><font face="Times">(ni_status)<b>setConnection:</b>(const char *)<i>domain</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=16></td>
+
+<td nowrap><font face="Times">-</font></td>
+
+<td><font face="Times">(ni_status)<b>setConnection:</b>(const char *)<i>domain</i></font><br>
+<font face="Times"><b>readTimeout:</b>(int)<i>rtime</i></font><br>
+<font face="Times"><b>writeTimeout:</b>(int)<i>wtime</i></font><br>
+<font face="Times"><b>canAbort:</b>(BOOL)<i>abortFlag</i></font><br>
+<font face="Times"><b>mustWrite:</b>(BOOL)<i>writeFlag</i></font></td></tr>
+
+<tr valign=top>
+
+<td width=16 height=14></td></tr>
+
+<tr valign=top>
+
+<td width=16></td>
+
+<td nowrap><font face="Times">-</font></td>
+
+<td><font face="Times">(ni_status)<b>setTaggedConnection:</b>(const char *)tag to:(char *)<i>hostName</i></font></td></tr>
+
+<tr valign=top>
+
+<td width=16 height=14></td></tr>
+
+<tr valign=top>
+
+<td width=16></td>
+
+<td nowrap><font face="Times">-</font></td>
+
+<td><font face="Times">(ni_status)<b>setTaggedConnection:</b>(const char *)<i>tag</i></font><br>
+<font face="Times">to:(char *)<i>hostName</i></font><br>
+<font face="Times"><b>readTimeout:</b>(int)<i>rtime</i></font><br>
+<font face="Times"><b>writeTimeout:</b>(int)<i>wtime</i></font><br>
+<font face="Times"><b>canAbort:</b>(BOOL)<i>abortFlag</i></font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">Once you've made a connection, you can get the domain handle with <b>getDomainHandle</b>. You can use the NIDomainPanel class to allow a user to select a domain. You use this class in a manner very similar to a file OpenPanel. The panel runs modally while the user selects a domain. When the user finishes with the panel, you can use the domain method to ask the panel for the selected domain name.</font>
+
+<p><br><br><br>
+
+<p><font face="Times" size="+3"><b>Errors</b></font>
+
+<p><font face="Times" size="+1">Most of the NetInfo library routines return a status code that you can examine to detect errors. The return code is of the enum type ni_status. The return status NI_OK indicates that the operation was successful. Other codes indicate errors; the values are defined in <b>ni_prot.h</b>. You can pass the value of a return code to the routine <b>ni_error()</b> to get a character string that describes the error.</font>
+
+<p><br><br><br>
+
+<p><font face="Times" size="+3"><b>Accessing Directories</b></font>
+
+<p><font face="Times" size="+1">Once you have a connection to a domain or to a server, you'll need to navigate though the directory hierarchy. There are many ways of accessing directories.</font>
+
+<p><font face="Times" size="+1"><b>Accessing a particular directory</b></font>
+
+<p><font face="Times" size="+1">When you want to read from or write to a specific directory, you need to pass an ni_id structure to the server to identify the directory you're interested in. If you already know the directory ID number, you can set up an ni_id yourself.</font>
+
+<p><font face="Times" size="+1">For example, the routine <b>ni_read()</b> fetches the property list from a directory. To fetch the property list from directory 17, you could use the code in Figure 5.</font>
+
+<p><font face="Times"><b>Figure 5:</b>&nbsp; <i>Using <b>ni_read()</b> to find subdirectories</i></font>
+
+<p><img src="../../Images/sp.gif" width=10 height=1><font face="Courier">void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *dom;</font><br>
+<img src="../../Images/sp.gif" width=10 height=1><font face="Courier">ni_id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dir;</font><br>
+<img src="../../Images/sp.gif" width=10 height=1><font face="Courier">ni_proplist&nbsp; props;</font><br>
+<img src="../../Images/sp.gif" width=10 height=1><font face="Courier">ni_status&nbsp;&nbsp;&nbsp; ret;</font>
+
+<p><img src="../../Images/sp.gif" width=10 height=1><font face="Courier">...</font>
+
+<p><img src="../../Images/sp.gif" width=10 height=1><font face="Courier">dir.nii_object = 17;</font><br>
+<img src="../../Images/sp.gif" width=10 height=1><font face="Courier">ret = ni_read(dom, &amp;dir, &amp;props);</font><br>
+<img src="../../Images/sp.gif" width=10 height=1><font face="Courier">if (ret != NI_OK) {</font><br>
+<img src="../../Images/sp.gif" width=31 height=1><font face="Courier">fprintf(stderr, &#34;ni_read error: directory 17: %s\n&#34;, ni_error(ret));</font><br>
+<img src="../../Images/sp.gif" width=29 height=1><font face="Courier">exit(1);</font><br>
+<img src="../../Images/sp.gif" width=10 height=1><font face="Courier">}</font>
+
+<p><font face="Times" size="+1">Note that you don't need to set the directory's nii_instance for any type of read access to a directory. However, if you need to determine the nii_instance of a directory, you can ask the server to look up its value for you. The routine <b>ni_self()</b> refreshes the instance number:</font>
+
+<p><font face="Courier">ret = ni_self(dom, &amp;dir);</font>
+
+<p><font face="Times" size="+1">Although it's possible to access directories by number, that isn't the usual access style. More typically, you'll access directories based on something that you know about them, like their name, the value that they have for some property, or their position in the hierarchy.&nbsp;&nbsp; A directory's name is actually just the value of its name property. If there are several values for the name property, then you can use any one of them as the directory's name.</font>
+
+<p><font face="Times" size="+1"><b>Navigating the directory hierarchy</b></font>
+
+<p><font face="Times" size="+1">Accessing directories by navigating up and down the directory hierarchy is made possible by three routines, <b>ni_root()</b>, <b>ni_children()</b>, and <b>ni_parent()</b>. <b>ni_root()</b> returns an ni_id structure for the root directory:</font>
+
+<p><font face="Courier">void&nbsp;&nbsp;&nbsp;&nbsp; *dom</font><br>
+<font face="Courier">ni_id&nbsp;&nbsp;&nbsp;&nbsp; rootdir;</font><br>
+<font face="Courier">ni_status ret;</font><br>
+<font face="Courier">...</font><br>
+<font face="Courier">ret = ni_root(dom, &amp;rootdir);</font>
+
+<p><font face="Times" size="+1">Once you've got a directory, you can find its child directories with <b>ni_children()</b>, which returns an ni_idlist. Figure 6 shows how you can use this.</font>
+
+<p><font face="Times"><b>Figure 6:</b>&nbsp; <i>Using <b>ni_children()</b> to find subdirectories</i></font>
+
+<p><img src="../../Images/sp.gif" width=15 height=1><font face="Courier">void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *dom</font><br>
+<img src="../../Images/sp.gif" width=15 height=1><font face="Courier">ni_id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rootdir, childdir;</font><br>
+<img src="../../Images/sp.gif" width=15 height=1><font face="Courier">ni_status&nbsp; ret;</font><br>
+<img src="../../Images/sp.gif" width=15 height=1><font face="Courier">int&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; in;</font><br>
+<img src="../../Images/sp.gif" width=15 height=1><font face="Courier">ni_idlist&nbsp; ilist;</font>
+
+<p><img src="../../Images/sp.gif" width=15 height=1><font face="Courier">...</font>
+
+<p><img src="../../Images/sp.gif" width=15 height=1><font face="Courier">ret = ni_root(dom, &amp;rootdir);</font>
+
+<p><img src="../../Images/sp.gif" width=15 height=1><font face="Courier">/* find subdirectories */</font><br>
+<img src="../../Images/sp.gif" width=15 height=1><font face="Courier">ret = ni_children(dom, &amp;rootdir, &amp;ilist);</font><br>
+<img src="../../Images/sp.gif" width=15 height=1><font face="Courier">if (ret != NI_OK) {</font><br>
+<img src="../../Images/sp.gif" width=36 height=1><font face="Courier">fprintf(stderr, &#34;ni_children: %s\n&#34;,</font><br>
+<img src="../../Images/sp.gif" width=55 height=1><font face="Courier">ni_error(ret));</font><br>
+<img src="../../Images/sp.gif" width=34 height=1><font face="Courier">exit(1);</font><br>
+<img src="../../Images/sp.gif" width=15 height=1><font face="Courier">}</font>
+
+<p><img src="../../Images/sp.gif" width=15 height=1><font face="Courier">/* for each child */</font><br>
+<img src="../../Images/sp.gif" width=15 height=1><font face="Courier">for (in = 0; in &lt;&nbsp; ilist.ni_idlist_len; in++) {</font><br>
+<img src="../../Images/sp.gif" width=36 height=1><font face="Courier">childdir.nii_object = ilist.ni_idlist_val[in];</font>
+
+<p><img src="../../Images/sp.gif" width=36 height=1><font face="Courier">/* fetch instance number for this directory */</font><br>
+<img src="../../Images/sp.gif" width=36 height=1><font face="Courier">ret = ni_self(dom, &amp;childdir);</font><br>
+<img src="../../Images/sp.gif" width=36 height=1><font face="Courier">if (ret != NI_OK) {</font><br>
+<img src="../../Images/sp.gif" width=56 height=1><font face="Courier">fprintf(stderr, &#34;ni_self: %s\n&#34;, ni_error(ret));</font><br>
+<img src="../../Images/sp.gif" width=56 height=1><font face="Courier">exit(1);</font><br>
+<img src="../../Images/sp.gif" width=36 height=1><font face="Courier">}</font>
+
+<p><img src="../../Images/sp.gif" width=36 height=1><font face="Courier">/* print the directory ID and instance number */</font><br>
+<img src="../../Images/sp.gif" width=36 height=1><font face="Courier">printf(&#34;id = %ld&nbsp; instance = %ld\n&#34;,</font><br>
+<img src="../../Images/sp.gif" width=56 height=1><font face="Courier">childdir.nii_object, childdir.nii_instance);</font><br>
+<img src="../../Images/sp.gif" width=15 height=1><font face="Courier">}</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">The <b>ni_list()</b> routine also fetches a list of all the children of a directory, but when you call it, you also give it a property key. For example, suppose the ni_id variable <i>machinesdir</i> represents the directory <b>/machines</b>. To get a list of all the child directories, each with a list of all its netgroups, you could use a call like this:</font>
+
+<p><font face="Courier">ni_entrylist elist;</font><br>
+<img src="../../Images/sp.gif" width=13 height=1><font face="Courier">...</font><br>
+<font face="Courier">ret = ni_list(dom, &amp;machinesdir, &#34;netgroups&#34;, &amp;elist)</font>
+
+<p><font face="Times" size="+1">The ni_entrylist that you get back contains a length count and a set of entries. Each entry contains a directory ID number and a namelist that contains the values for the selected property in that child directory.</font>
+
+<p><font face="Times" size="+1">You go back up the hierarchy with calls to <b>ni_parent()</b>. It gives you the ID of the parent directory, which you can then place in an ni_id structure:</font>
+
+<p><font face="Courier">ret = ni_parent(dom, &amp;childdir, &amp;parentid);</font><br>
+<font face="Courier">...</font><br>
+<font face="Courier">parentdir.nii_object = parentid;</font><br>
+<font face="Courier">ret = ni_self(dom, &amp;parentdir);</font>
+
+<p><font face="Times" size="+1">If you're looking for a specific directory, or for a list of directories that satisfy some search criteria, you can ask the server to search its database. The routines that help you are <b>ni_pathsearch()</b> and <b>ni_lookup()</b>.</font>
+
+<p><font face="Times" size="+1"><b>ni_pathsearch()</b> causes the server to look up a directory in the database based on its pathname, which you pass as a string. Although it's usually the case that you specify the values of name properties to specify the path, you can use any property key and associated value. Figure 7 shows some examples.</font>
+
+<p><font face="Times"><b>Figure 7:</b>&nbsp; <i>Searching for property/value pairs</i></font>
+
+<p><img src="../../Images/sp.gif" width=14 height=1><font face="Courier">/* search for a user by name */</font><br>
+<img src="../../Images/sp.gif" width=14 height=1><font face="Courier">ret = ni_pathsearch(dom, &amp;dir, &#34;/users/sarah&#34;);</font>
+
+<p><img src="../../Images/sp.gif" width=14 height=1><font face="Courier">/* search for a user by uid */</font><br>
+<img src="../../Images/sp.gif" width=14 height=1><font face="Courier">ret = ni_pathsearch(dom, &amp;dir, &#34;/users/uid=107&#34;);</font>
+
+<p><img src="../../Images/sp.gif" width=14 height=1><font face="Courier">/* search for a computer by Internet address */</font><br>
+<img src="../../Images/sp.gif" width=14 height=1><font face="Courier">ret = ni_pathsearch(dom, &amp;dir, &#34;/machines/ip_address 192.42.172.17&#34;);</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">You can search for a <b>property=value</b> combination even if the property has many values. As long as the property has at least one value that matches what you give it, <b>ni_pathsearch()</b>&nbsp; returns the directory. For example, if your mail server's <b>hostname</b> is <b>range</b>, and has the hostname alias <b>mailhost</b>, then the <b>name</b> property would have those two values. The following two searches will find the same directory:</font>
+
+<p><font face="Courier">* search by name &#34;ranger&#34; */</font><br>
+<font face="Courier">ret = ni_pathsearch(dom, &amp;dir, &#34;/machines/name=ranger&#34;);</font>
+
+<p><font face="Courier">/* search by name &#34;mailhost&#34; */</font><br>
+<font face="Courier">ret = ni_pathsearch(dom, &amp;dir, &#34;/machines/name=mailhost&#34;);</font>
+
+<p><font face="Times" size="+1">Since the default is to search through the name property, you could also use these searches:</font>
+
+<p><font face="Courier">/* search by name &#34;ranger&#34; */</font><br>
+<font face="Courier">ret = ni_pathsearch(dom, &amp;dir, &#34;/machines/ranger&#34;);</font>
+
+<p><font face="Courier">/* search by name &#34;mailhost&#34; */</font><br>
+<font face="Courier">ret = ni_pathsearch(dom, &amp;dir, &#34;/machines/mailhost&#34;);</font>
+
+<p><font face="Times" size="+1">To search for a set of subdirectories of some given directory that all have a certain value for some property, you can use <b>ni_lookup()</b>. You give it a directory, a property key, and a property value. It gives you an ni_idlist of all the child directories that have that value for that property.</font>
+
+<p><font face="Times" size="+1">For example, if you wanted to find all users that have the group with the GID 20 as their default group, you could use:</font>
+
+<p><font face="Courier">/* find the directory &#34;/users&#34; */</font><br>
+<font face="Courier">ret = ni_pathsearch(dom, &amp;usersdir, &#34;/users&#34;);</font><br>
+<font face="Courier">...</font><br>
+<font face="Courier">/* get an ni_idlist containing all users with gid=20 */</font><br>
+<font face="Courier">ret = ni_lookup(dom, &amp;usersdir, &#34;gid&#34;, &#34;20&#34;, &amp;ilist);</font>
+
+<p><font face="Times" size="+1"><b>ni_lookupread()</b> is a useful shortcut for a call to <b>ni_lookup()</b> followed by a call to <b>ni_read()</b> for the first directory in the ni_idlist of directories found by <b>ni_lookup()</b>. However, if <b>ni_lookup() </b>finds several matches, it returns only the first one found.</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1"><b>Finding directories with NetInfo Kit</b></font>
+
+<p><font face="Times" size="+1">The NetInfo Kit supports only one way to locate a directory programmatically. The NIDomain class supports a method very similar to <b>ni_list().</b> The method is described in Figure 8.</font>
+
+<p><font face="Times"><b>Figure 8:</b>&nbsp; <i>The <b>findDirectory:withProperty:</b> method</i></font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="+1">-</font></td>
+
+<td><font face="Times" size="+1">(ni_entrylist *)<b>findDirectory:</b>(const char *)<i>parentDirectory</i></font><br>
+<img src="../../Images/sp.gif" width=11 height=1><font face="Times" size="+1"><b>withProperty:</b>(const char *)<i>property</i></font></td></tr>
+
+</table>
+
+<p><font face="Times" size="+1">You can also use an instance of the NIOpenPanel class to allow the user to select a directory. The panel is modal. Its directory method returns the pathname of the selected directory.</font>
+
+<p><br><br><br>
+
+<p><font face="Times" size="+3"><b>Reading Directory Properties</b></font>
+
+<p><font face="Times" size="+1">Once you've located a directory in the database and have an ni_id structure to represent it, you'll probably want to read all or some of its properties. There are five routines that provide various types of access to directory properties.</font>
+
+<p><font face="Times" size="+1">The most basic access routine for properties is <b>ni_read()</b>. It returns the entire property list for a directory:</font>
+
+<p><font face="Courier">ni_proplist&nbsp; props;</font><br>
+<font face="Courier">ret = ni_read(dom, &amp;dir, &amp;props);</font>
+
+<p><font face="Times" size="+1">If you just want to get a list of property keys for a directory but don't need to know their values, you can get them in the form of an ni_namelist with a call to <b>ni_listprops()</b>.&nbsp; This saves memory and time over an <b>ni_read()</b> call, because the server does less work and sends you less data.</font>
+
+<p><font face="Courier">ni_namelist keys;</font><br>
+<font face="Courier">ret = ni_listprops(dom, &amp;dir, &amp;keys);</font>
+
+<p><font face="Times" size="+1">On the other hand, if you're just interested in a single property, you can fetch it by giving its property key to <b>ni_lookupprop()</b>. For example, if you wanted to get all the values of the <b>trusted_networks</b> property in the root directory of a domain:</font>
+
+<p><font face="Courier">ni_namelist&nbsp; nets;</font><br>
+<font face="Courier">ret = ni_lookupprop(dom, &amp;rootdir, &#34;trusted_networks&#34;, &amp;nets);</font>
+
+<p><font face="Times" size="+1">You might want to refer to a property in a directory's property list by its position rather than</font><br>
+<font face="Times" size="+1">by its property key. If so, you can use an index number--the list position, where the first element in the list has index 0--to fetch a property's values. <b>ni_readprop()</b> takes a domain, a directory, and an index number, and returns the property list found at that index number in the directory. For example, to fetch the values of the third property in a directory:</font>
+
+<p><font face="Courier">ni_namelist vals;</font><br>
+<font face="Courier">ret = ni_readprop(dom, &amp;dir, 3, &amp;vals);</font>
+
+<p><font face="Times" size="+1">Finally, if you want to fetch a single value from a property and you know both the property's index and the index number of the value you want, you can use <b>ni_readname()</b>. For example, to fetch the first value of the third property--index number 2--in a directory:</font>
+
+<p><font face="Courier">ni_name value;</font><br>
+<font face="Courier">ret = ni_readname(dom, &amp;dir, 2, 1,&amp;value);</font>
+
+<p><br><br><br>
+
+<p><font face="Times" size="+3"><b>Authentication</b></font>
+
+<p><font face="Times" size="+1">To modify a database, a program must authenticate itself as an authorized user. In general, only the user <b>root</b> can modify a NetInfo database. Each database may have a definition for <b>root</b> stored in its own <b>/users/root</b> directory. The <b>/users/root</b> directory must have a <b>uid</b> property with the value 0 and a <b>passwd</b> property. To authenticate itself to a server, a client may set its user name with the <b>ni_setuser()</b> routine and provide the correct password to the server with <b>ni_setpassword()</b>. For example:</font>
+
+<p><font face="Courier">char *pw = getpass(&#34;root password? &#34;);</font><br>
+<font face="Courier">ret = ni_setuser(dom, &#34;root&#34;);</font><br>
+<font face="Courier">ret = ni_setpassword(dom, pw);</font>
+
+<p><font face="Times" size="+1">The NetInfo Kit includes the NILoginPanel class, which you can use to collect a name and password.</font>
+
+<p><font face="Times" size="+1">If a domain doesn't contain a definition for <b>/users/root</b>, then only processes with uid 0 running on the same host as the master for a domain can modify that domain's database.</font>
+
+<p><font face="Times" size="+1">Another access control mechanism makes some directories writable by users other than <b>root</b>. Any directory may contain a property with the key <b>_writers</b>. This property may have any number of values, each of which should be a user name defined in the same domain. If a user's name is listed in a <b>_writers</b> property, then your client program can authenticate itself as that user and provide that user's password.</font>
+
+<p><font face="Times" size="+1">In this case, your program can modify that directory's property list or child directory list. That is, you can edit that directory and add and remove subdirectories. However, this write access doesn't extend to the subdirectories. Although you can add and remove subdirectories, you won't be able to modify them because of their parent directory's <b>_writers</b> property.</font>
+
+<p><font face="Times" size="+1">Finally, a single property may be writable by a set of users if there is a <b>_writers_</b><i>propertykey </i>property in that directory, with a list of users' names as values. For example, every user's directory--every subdirectory of <b>/users</b>--contains a <b>_writers_passwd</b> property with the user's name as a value. Once again, your program must authenticate itself with that user's name and password. Only the selected property can be modified.</font>
+
+<p><br><br>
+
+<p><font face="Times"><i>See the library documentation for <b>netinfo</b>(3) in the UNIX manual pages for details on these routines and macros.</i></font>
+
+<p><br><br>
+
+<p><font face="Times" size="+3"><b>Modifying Existing Directories</b></font>
+
+<p><font face="Times" size="+1">There are a variety of routines available to modify the property list in a directory. The most basic is <b>ni_write()</b>, which just replaces the existing property list in a directory with a new one that you supply.</font>
+
+<p><font face="Courier">ni_proplist newprops;</font><br>
+<font face="Courier">...</font><br>
+<font face="Courier">ret = ni_write(dom, &amp;dir, newprops);</font>
+
+<p><font face="Times" size="+1">The library defines a number of routines and macros you can use to initialize and manipulate property lists, properties, and namelists.</font>
+
+<p><font face="Times" size="+1"><b>Creating, changing, and destroying directories</b></font>
+
+<p><font face="Times" size="+1">An entirely new directory can be created with <b>ni_create()</b>. You need to supply the ni_id of its parent directory, a property list for the new directory, and an index in the parent's ni_idlist of subdirectories to indicate where you'd like to insert the new directory in the list. You can use the index value NI_INDEX_NULL to append the new directory at the end of the list. The routine passes back the ni_id of the new directory:</font>
+
+<p><font face="Courier">ni_proplist newprops;</font><br>
+<font face="Courier">...</font><br>
+<font face="Courier">ret = ni_create(dom, &amp;parentdir, newprops, &amp;childdir, NI_INDEX_NULL);</font>
+
+<p><font face="Times" size="+1">You destroy a directory with <b>ni_destroy()</b>:</font>
+
+<p><font face="Courier">ret = ni_destroy(dom, &amp;parentdir, &amp;childdir)</font>
+
+<p><font face="Times" size="+1"><b>Creating, changing, and destroying single properties</b></font>
+
+<p><font face="Times" size="+1">Three routines are available to create, modify, and destroy a single property in a directory. <b>ni_createprop()</b> inserts a new property at a specified index in the directory's property list.</font>
+
+<p><font face="Times" size="+1">You can use the value NI_INDEX_NULL to append it as the last property:</font>
+
+<p><font face="Courier">ni_property newprop;</font><br>
+<font face="Courier">...</font><br>
+<font face="Courier">ret = ni_createprop(dom, &amp;dir, newprop, NI_INDEX_NULL);</font>
+
+<p><font face="Times" size="+1"><b>ni_writeprop()</b> overwrites the values of the property at a given index in a directory's property list. The <b>ni_namelist_match(</b>) and <b>ni_proplist_match()</b> routines described in the <b>netinfo</b>(3) UNIX manual page can help you find the index of a property.</font>
+
+<p><font face="Times" size="+1">For example, to write a new list of values to the <b>users</b> property of the <b>/groups/staff directory</b>:</font>
+
+<p><font face="Courier">ni_namelist&nbsp; newvals, propkeys;</font><br>
+<font face="Courier">int&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; usersindex;</font><br>
+<font face="Courier">ni_id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; staffdir;</font><br>
+<font face="Courier">...</font><br>
+<font face="Courier">ret = ni_pathsearch(dom, &amp;staffdir, &#34;/groups/staff&#34;);</font><br>
+<font face="Courier">ret = ni_listprops(dom, &amp;staffdir, &amp;propkeys);</font><br>
+<font face="Courier">usersindex = ni_namelist_match(propkeys, &#34;users&#34;);</font><br>
+<font face="Courier">ret = ni_writeprop(dom, &amp;staffdir, usersindex, newvals);</font>
+
+<p><font face="Times" size="+1"><b>ni_destroyprop()</b> removes a property at a given index:</font>
+
+<p><font face="Courier">int propindex;</font><br>
+<font face="Courier">...</font><br>
+<font face="Courier">ret = ni_destroyprop(dom, &amp;dir, propindex);</font>
+
+<p><font face="Times" size="+1">You can change the property key for a property with <b>ni_renameprop()</b>. You must supply a new name and the index of the property:</font>
+
+<p><font face="Courier">int propindex;</font><br>
+<font face="Courier">...</font><br>
+<font face="Courier">ret = ni_renameprop(dom, &amp;dir, propindex, &#34;newkey&#34;);</font>
+
+<p><font face="Times" size="+1"><b>Changing a property value</b></font>
+
+<p><font face="Times" size="+1">There are three routines available to modify a value in a property.</font>
+
+<p><font face="Times" size="+1"><b>ni_createname()</b> inserts a new value into a property specified by an index into the property list, at a position in the property's namelist of values specified by another index. For example, to append the user <b>sarah</b> to the <b>wheel</b> group in some domain:</font>
+
+<p><font face="Courier">ni_namelist&nbsp; propkeys;</font><br>
+<font face="Courier">int&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; usersindex;</font><br>
+<font face="Courier">ni_id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; wheeldir;</font><br>
+<font face="Courier">...</font><br>
+<font face="Courier">ret = ni_pathsearch(dom, &amp;wheeldir, &#34;/groups/wheel&#34;);</font><br>
+<font face="Courier">ret = ni_listprops(dom, &amp;wheeldir, &amp;propkeys);</font><br>
+<font face="Courier">usersindex = ni_namelist_match(propkeys, &#34;users&#34;);</font><br>
+<font face="Courier">ret = ni_createname(dom, &amp;wheeldir, usersindex, &#34;sarah&#34;, NI_INDEX_NULL);</font>
+
+<p><font face="Times" size="+1"><b>ni_writename()</b> overwrites the value at a specified index with a new value, while <b>ni_destroyname()</b> removes a value from a property's namelist of values.</font>
+
+<p><br><br><br>
+
+<p><font face="Times" size="+3"><b>Utility Routines</b></font>
+
+<p><font face="Times" size="+1">Two utility routines are defined in the library. <b>ni_resync()</b> causes the master server for a domain to attempt to resynchronize all the clone servers. This will fail if the master is unavailable. If the master is available, all clones compare their database checksums with the master's database checksum. Any clone that discovers a discrepancy requests a new copy of the database from the master.</font>
+
+<p><font face="Times" size="+1">You can ask a server for its database checksum using the <b>ni_statistics()</b> routine. It returns a property list, which in theory could contain several properties describing a server's state. In the current implementation of NetInfo, only one property is returned, the server's database checksum.</font>
+
+<p><br><br><br>
+
+<p><font face="Times" size="+3"><b>Where To Go From Here</b></font>
+
+<p><font face="Times" size="+1">Rome wasn't built in a day, and great programs may take some time to write as well. Included with the on-line version of this article are the C sources for several simple programs that access NetInfo. Take some time to study these programs, and write some small programs of your own--see the sidebar for suggestions.</font>
+
+<p><br><br>
+
+<p><font face="Times"><i>Marc Majka is the software engineer responsible for network and system administration tools. He's a frequent contributor to NEXTSTEP In Focus. You can reach him by e-mail at <b>Marc_Majka@next.com</b></i></font>
+
+<p><br><br><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>NetInfo Programs to Try</b></font>
+
+<p><font face="Times" size="+1">Here are some suggestions for small but interesting programs you can write for practice.</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1"><b>nisearch</b></font>
+
+<p><font face="Times" size="+1">Create a program similar to <b>niread</b>, but search for the directory in the local domain. If the directory isn't in the local domain, try the parent domain. Keep climbing the domain hierarchy until you reach the root domain. For example:</font>
+
+<p><font face="Courier"><b>&gt; nisearch /users/greg</b></font><br>
+<font face="Courier">searching local</font><br>
+<font face="Courier">searching parent</font><br>
+<font face="Courier">searching parent</font><br>
+<font face="Courier">top of NetInfo hierarchy</font><br>
+<font face="Courier">/users/greg not found</font>
+
+<p><font face="Courier"><b>&gt; nisearch /machines/mailhost</b></font><br>
+<font face="Courier">searching local</font><br>
+<font face="Courier">searching parent</font><br>
+<font face="Courier">/machines/mailhost found</font><br>
+<font face="Courier">name: scout mailhost</font><br>
+<font face="Courier">ip_address: 192.42.172.34</font><br>
+<font face="Courier">serves: ./network scout/local</font>
+
+<p><font face="Times" size="+1"><b>Hint:</b> If you try to <b>ni_open()</b> the root domain's parent domain, you'll get an error.</font>
+
+<p><font face="Times" size="+1">Then, add an option that forces a search to climb to the root domain, even if the target was found in a subdomain:</font>
+
+<p><font face="Courier"><b>&gt; nisearch -a /users/uid=117</b></font><br>
+<font face="Courier">searching local</font><br>
+<font face="Courier">/users/uid=117 found</font><br>
+<font face="Courier">name: joan</font><br>
+<font face="Courier">uid: 117</font><br>
+<font face="Courier">gid: 20</font><br>
+<font face="Courier">...</font><br>
+<font face="Courier">shell: /bin/csh</font><br>
+<font face="Courier">_writers_passwd: joan</font><br>
+<font face="Courier">searching parent</font><br>
+<font face="Courier">searching parent</font><br>
+<font face="Courier">/users/uid=117 found</font><br>
+<font face="Courier">name: sarah</font><br>
+<font face="Courier">uid: 117</font><br>
+<font face="Courier">...</font><br>
+<font face="Courier">_writers_passwd: sarah</font><br>
+<font face="Courier">top of NetInfo hierarchy</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1"><b>nireport</b></font>
+
+<p><font face="Times" size="+1">Create a program similar to <b>nilist</b>, but print the values for a list of property keys supplied on the command line.</font>
+
+<p><font face="Times" size="+1">For example:</font>
+
+<p><font face="Courier"><b>&gt; nireport / /users name uid gid</b></font><br>
+<font face="Courier">greg&nbsp;&nbsp;&nbsp; 102&nbsp; 25</font><br>
+<font face="Courier">sarah&nbsp;&nbsp; 117&nbsp; 20</font><br>
+<font face="Courier">joan&nbsp;&nbsp;&nbsp; 103&nbsp; 0</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1"><b>nialias</b></font>
+
+<p><font face="Times" size="+1">Create a program that creates an email alias. For example:</font>
+
+<p><font face="Courier">1# <b>nialias / mktg sam sue tom</b></font><br>
+<font face="Courier">2# <b>niutil -read / /aliases/mktg</b></font><br>
+<font face="Courier">name: mktg</font><br>
+<font face="Courier">members: sam sue tom</font>
+
+<p><font face="Times" size="+1">If the alias already exists, print an error message. Add options to append and delete members:</font>
+
+<p><font face="Courier">1# <b>nialias / ski alice</b></font><br>
+<font face="Courier">nialias: &#34;ski&#34; already exists</font><br>
+<font face="Courier">2# <b>nialias -a / ski alice</b></font><br>
+<font face="Courier">3# <b>nialias -d / sales joe</b></font>
+
+<p><font face="Times" size="+1">If you want to make this program work from any computer and have it work for any user, you'll need to prompt for the domain's root password if the process isn't running as root on the computer that hosts the domain's master server.</font>
+
+<p><font face="Times" size="+1"><b>Hint:</b> You can try to write to the database and check the return status code.-<i>MM</i></font>
+
+
+
+<p>
+
+</body>
+</html>

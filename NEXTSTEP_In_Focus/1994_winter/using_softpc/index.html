@@ -1,0 +1,434 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NEXTSTEP_In_Focus/1994Winter/Using_SoftPC_for_Intel.rtfd -->
+<!-- Date: Sun Jan  1 15:46:21 2023 -->
+<head>
+<title>Using_SoftPC_for_Intel</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times"><i>NEXTSTEP In Focus</i>, Winter 1994 (Volume 4, Issue 1).</font><br>
+<font face="Times">Copyright</font> &copy;<font face="Times">1994 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+4">Using SoftPC for Intel</font><br>
+<img src="../../Images/sp.gif" width=3 height=1><font face="Times" size="+1">Joe Hollowood</font>
+
+<p><font face="Times" size="+1"><i>To get the most out of Insignia Solutions' SoftPC for NEXTSTEP on Intel-based computers, you should set its preferences appropriately and ensure that your system is configured properly. In addition, you can use a number of tricks and troubleshooting tips to optimize its performance.</i></font>
+
+<p><br><br><br>
+
+<p><font face="Times" size="+3"><b>Best of Both Worlds</b></font>
+
+<p><font face="Times" size="+1">SoftPC performs quite well in comparison with 486-class PCs running DOS and Microsoft Windows. However, to get the best performance from it and make the most of its features, it helps to understand a few concepts about setting it up and keeping it running.</font>
+
+<p><br><br><br>
+
+<p><font face="Times" size="+3"><b>SoftPC Compatibility</b></font>
+
+<p><font face="Times" size="+1">SoftPC for NEXTSTEP for Intel processors runs most real and protected mode DOS and standard mode Windows programs that comply with the DOS protected mode interface (DPMI) specification.</font>
+
+<p><font face="Times" size="+1"><b>Note:</b> Applications that require Windows enhanced mode won't work with the current version of SoftPC. Some such applications include FrameMaker</font><font size="-1"><sup>&reg;</sup></font> <font face="Times" size="+1">and WordPerfect</font><font size="-1"><sup>&reg;</sup></font> <font face="Times" size="+1">6.0. A future version of SoftPC will run these apps.</font>
+
+<p><br><br><br>
+
+<p><font face="Times" size="+3"><b>Setting Preferences</b></font>
+
+<p><font face="Times" size="+1">Although the default SoftPC preference settings are adequate for running a DOS or Windows session, you need to set some preferences explicitly to enable various features, such as access to floppy disks and serial ports. You can also set other preferences to modify the video and memory, for example. Here's how to set the basic preferences.</font>
+
+<p><font face="Times" size="+1"><b>Setting the SoftPC drives</b></font>
+
+<p><font face="Times" size="+1">Instead of requiring a dedicated DOS or Windows partition on your hard drive, SoftPC uses special files called <i>container files</i>. Container files are regular UNIX</font><font size="-1"><sup>&reg;</sup></font> <font face="Times" size="+1">files that act as virtual DOS disk drives. DOS and Windows system files are stored in them, as are your own</font><br>
+<font face="Times" size="+1">applications and data files. Container files use the <b>.hdf</b> file name extension.</font>
+
+<p><font face="Times" size="+1">The first time you run SoftPC, it prompts you to create a container file. You can choose the size of the file as well as whether or not to install Windows. There is a minimum file size, and using Windows increases the minimum size requirement. You should plan ahead and choose a size that will allow you to install all of the software you will be using and allow some room for growth--once you create a container file, you can't modify its size.</font>
+
+<p><br><br>
+
+<p><img src="F0.gif" width=482 height=592><br>
+<font face="Times"><b>Figure 1:</b></font>&nbsp; <font face="Times" size="+1"><i>Creating a container file for Windows</i></font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">After naming the container file and choosing its location, SoftPC de-archives the necessary system files and sets the new container file as the default boot drive, or the <b>C:</b> drive.&nbsp; A SoftPC session allows simultaneous access for up to two DOS container files, <b>C:</b> and <b>D:</b>.</font>
+
+<p><font face="Times" size="+1">You can create as many container files as you need and use preferences to select which files to use for <b>C:</b> and <b>D:</b> in the current session. You can also create container files that don't contain any DOS or Windows system files, to use just as application and data partitions. See the SoftPC on-line help to find out how to create new container files.</font>
+
+<p><font face="Times" size="+1">Putting the DOS and Windows system files in a separate container file from applications and data allows you to update the system in the primary container file without affecting user data. It also allows users on a network to share the primary container file while keeping their personal data separate.</font>
+
+<p><font face="Times"><i>You can't boot SoftPC from a native DOS partition on your hard drive, even if DOS is installed on it. You can boot SoftPC only from a container file containing DOS system files.</i></font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1"><b>FSA drive</b></font>
+
+<p><font face="Times" size="+1">In addition to container files, SoftPC also provides access to a <i>file sharing architecture</i> (FSA) drive, specified by the <b>E:</b> drive. The FSA drive provides DOS and Windows access to any NEXTSTEP folder or file system. For example, suppose you set the FSA drive to <b>~jholly</b>, the home directory of user <b>jholly</b>. You can then access files and folders in that directory from within SoftPC by using the <b>E:</b> partition. You set the FSA drive using preferences, and you can change it during a SoftPC session.</font>
+
+<p><font face="Times" size="+1">An FSA drive is particularly useful in a networked environment because it can act as a central location for applications or company data. For example, suppose you create a folder called <b>DOSApps</b> on the file server <b>bigserver</b>. When you set up a SoftPC client, set its FSA drive to be <b>/Net/bigserver/DOSApps</b>. Now SoftPC users can access this central data repository as their drive <b>E:</b>.</font>
+
+<p><font face="Times" size="+1">You can also use an FSA drive to access a CD-ROM. Instead of loading the CD-ROM drivers under DOS or Windows, set the FSA drive to the name under which the CD-ROM mounts in the workspace. You can then read the files from the CD-ROM from the <b>E:</b> drive.</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1"><b>Floppy disk drives</b></font>
+
+<p><font face="Times" size="+1">Although NEXTSTEP allows you to use only one floppy disk drive, SoftPC allows you to configure it as either Floppy Drive <b>A:</b> or <b>B:</b>. If you configure preferences to use Floppy <b>A:</b>, SoftPC looks for a bootable DOS floppy in your drive each time you restart. If you are going to be restarting SoftPC often and don't want to boot from a floppy, using Floppy <b>B:</b> is more convenient.</font>
+
+<p><font face="Times" size="+1">You can set either Floppy <b>A:</b> or Floppy <b>B:</b> to these configurations:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b>None</b> No floppy disk drive</font></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b>Internal</b> The internal 3.5&#34; floppy disk drive, <b>/dev/rfd0b</b></font></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b>External</b>&nbsp; An optional external 3.5&#34; SCSI floppy disk drive, <b>/dev/rsd1h</b></font></td></tr>
+
+</table>
+
+<p><font face="Times" size="+1">If you want to be able to boot from a floppy disk, configure Floppy <b>A:</b> to be either Internal or External and restart SoftPC by choosing Restart from the Actions menu. Make sure to insert a bootable DOS floppy in the drive.</font>
+
+<p><font face="Times" size="+1">Although Floppy <b>B:</b> has the same configurations as Floppy <b>A:</b>, it's not bootable. If Floppy <b>B:</b> is configured to Internal or External, SoftPC will still boot from drive <b>C:</b>, even if you insert a bootable floppy disk.</font>
+
+<p><font face="Times" size="+1"><b>Note:</b> Don't configure SoftPC to use both Floppy A: and Floppy B:.</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1"><b>Communication and printer ports</b></font>
+
+<p><font face="Times" size="+1">SoftPC allows you to configure two communication ports and two printer ports.</font>
+
+<p><font face="Times" size="+1">The communication ports are identical to each other and have several output options:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b>None</b> No access to the serial ports.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b>Postscript</b> Redirects all communications to the UNIX command <b>lpr</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b>Laserjet</b> Sends output to the program <b>lj2ps</b>, which converts HP</font><font size="-1"><sup>&reg;</sup></font> <font face="Times" size="+1">LaserJet</font><font size="-1"><sup>&reg;</sup></font> <font face="Times" size="+1">codes to PostScript</font><font size="-1"><sup>&reg;</sup></font> <font face="Times" size="+1">codes, then sends the PostScript code to <b>lpr</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b>File</b> Sends output to <b>/tmp/SoftPC.tmp</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b>Pipe</b> Sends output to any UNIX command you specify; the default is <b>lpr</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b>Serial A</b> Sets the port to <b>/dev/ttya</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b>Serial B</b> Sets the port to <b>/dev/ttyb</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b>Printer A</b> Same as Serial A.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b>Printer B</b> Same as Serial B.</font></td></tr>
+
+</table>
+
+<p><font face="Times" size="+1">You can configure the communication ports to be available simultaneously. Data transfer through the two communication ports is reliable up to 9600 baud. If you need faster speeds, you should enable hardware or software error correction.</font>
+
+<p><font face="Times" size="+1">The options for configuring printer ports are the same as those for communication ports except that there's no Serial A or Serial B option. The most common setting to use is Postscript.</font>
+
+<p><font face="Times" size="+1">When you choose the Postscript option for Com1, Com2, LPT1, or LPT2, all output is sent to a program called <b>PS</b>. <b>PS</b> handles PostScript code more intelligently than <b>lpr</b>, which simply dumps the code to the printer.</font>
+
+<p><font face="Times" size="+1"><b>Autoflush</b></font>
+
+<p><font face="Times" size="+1">When data is sent to the communication or printer ports, SoftPC first stores it in a buffer. When it flushes a buffer, it sends the data in the buffer to the specified modem, printer, or other device. You can use the Autoflush preference to specify how often all ports are flushed. The range is from 1 to 50 seconds. The default is 10 seconds, but you can experiment to find the ideal flush time.</font>
+
+<p><font face="Times" size="+1">If the load on SoftPC is heavy, you can usually increase Autoflush to get better performance.</font>
+
+<p><font face="Times" size="+1"><b>Memory</b></font>
+
+<p><font face="Times" size="+1">PC applications can use two different types of memory, extended and expanded memory. When you use DOS and Windows applications with SoftPC, you need to consider how much extended or expanded memory they require. Although you can use any combination of extended and expanded memory, SoftPC's performance degrades if you set both too high.</font>
+
+<p><br><br>
+
+<p><img src="../../Images/sp.gif" width=9 height=1><img src="Memory.gif" width=412 height=414>
+
+<p><font face="Times"><b>Figure 2:</b></font>&nbsp; <font face="Times" size="+1"><i>The Extended Memory and Expanded Memory preferences in SoftPC</i></font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">On a PC running native DOS, you would modify <b>CONFIG.SYS</b> to set extended and expanded memory. With SoftPC you set them through SoftPC's Preferences.</font>
+
+<p><font face="Times"><b><i>Extended memory</i></b></font>
+
+<p><font face="Times" size="+1">Extended memory or extended memory specification (XMS) is used by protected mode PC applications. You can allocate from 1 to 16 megabytes to be extended memory.</font>
+
+<p><font face="Times" size="+1">Although the default setting is 4 megabytes of extended memory, assigning more through preferences may provide better performance for certain applications. Using more than 8 megabytes of extended memory doesn't seem to increase performance significantly and may, in fact, degrade SoftPC's performance. Use the optimal setting for your application.</font>
+
+<p><font face="Times"><b><i>Expanded memory</i></b></font>
+
+<p><font face="Times" size="+1">Expanded memory, or Lotus</font><font size="-1"><sup>&reg;</sup></font><font face="Times" size="+1">-Intel</font><font size="-1"><sup>&reg;</sup></font><font face="Times" size="+1">-Microsoft</font><font size="-1"><sup>&reg;</sup></font> <font face="Times" size="+1">(LIM) expanded memory specification, is used by older real-mode PC applications. You can allocate from 0 to 32 megabytes as expanded memory. In addition, you can replace between 512 and 640 kilobytes of conventional memory with expanded memory. This isn't a widely used memory model. It's provided by SoftPC to ensure compatibility with applications that need it.</font>
+
+<p><font face="Times" size="+1"><b>Displays</b></font>
+
+<p><font face="Times" size="+1">You specify your display with the Video preferences; see Figure 3. SoftPC supports two display types. The first is VGA, which gives you high resolution and many colors. The other video mode, Color Graphics Adapter (CGA), is provided for certain older applications that require this mode. Many games use CGA graphics mode.</font>
+
+<p><font face="Times" size="+1">If a PC application you use requires SuperVGA, VGA, or EGA mode, choose the VGA mode from SoftPC Preferences.</font>
+
+<p><font face="Times" size="+1">The Display Size preference provides the option to magnify the SoftPC display area. To represent the standard PC pixel proportions, use the1.0x setting. You can choose the 1.5x setting to reduce eyestrain, especially when viewing text-only applications.</font>
+
+<p><font face="Times" size="+1">If you're running NEXTSTEP in grayscale mode, you can set a third option, Display Grays. This option lets you select either 4-Gray or 256-Gray mode. 256-Gray mode is very sharp and provides much more detail than 4-Gray mode.</font>
+
+<p><font face="Times" size="+1"><b>Note:</b> If the Display Grays option is available, window mode in SoftPC runs much more slowly because there's no monochrome Interceptor driver. See &quot;Using Full-Screen and Window Modes&quot; for details.</font>
+
+<p><br><br>
+
+<p><img src="Video.gif" width=412 height=414>
+
+<p><font face="Times"><b>Figure 3:</b>&nbsp; <i>Choosing display type and size</i></font>
+
+<p><br><br><br>
+
+<p><font face="Times" size="+3"><b>Using Full-Screen and Window Modes</b></font>
+
+<p><font face="Times" size="+1">SoftPC for NEXTSTEP for Intel processors can run in either of two modes, window or full-screen. Which you choose depends on what you need to do and which applications you use.</font>
+
+<p><font face="Times" size="+1"><b>Window mode</b></font>
+
+<p><font face="Times" size="+1">In window mode, the DOS or Windows environment appears in a NEXTSTEP window. This mode allows you to share data between DOS/Windows and NEXTSTEP applications. This mode also makes switching between SoftPC and NEXTSTEP apps easier and quicker. You can run multiple active SoftPC sessions in window mode.</font>
+
+<p><font face="Times" size="+1">In many applications, good drawing performance is crucial. To improve the performance of SoftPC in window mode, Insignia used NeXT's Interceptor technology. Interceptor allows applications to bypass NEXTSTEP's standard drawing technology, Display PostScript</font><font size="-1"><sup>&reg;</sup></font><font face="Times" size="+1">, and directly access the screen. Because it uses Interceptor, SoftPC in window mode provides 486-class graphics performance.</font>
+
+<p><font face="Times" size="+1">To take advantage of Interceptor and get maximum graphics performance, make sure that the SoftPC window isn't at all obscured by any NEXTSTEP elements, including windows, menus, panels, or the dock. The reason is that the Interceptor relies on the window server's clipping mechanism to limit drawing to visible areas. When the SoftPC window is partially obscured, window contents are passed to the window server and clipped before being displayed. Transferring all this data to the window server slows down SoftPC's drawing.&nbsp; This may change in the future.</font>
+
+<p><font face="Times" size="+1"><b>Full-screen mode</b></font>
+
+<p><font face="Times" size="+1">If window mode doesn't provide the graphics performance you want, you can run SoftPC in full-screen mode. In this mode, the whole screen is taken over by SoftPC; NEXTSTEP is still running. SoftPC directly accesses the native VGA hardware, bypassing completely any NEXTSTEP drawing routines. This provides near-native graphics performance for applications that need it. In SoftPC's current implementation, full-screen mode is limited to a screen resolution of 640 x 480 pixels.</font>
+
+<p><font face="Times" size="+1"><b>Switching between window and full-screen</b></font>
+
+<p><font face="Times" size="+1">If SoftPC is in DOS, you can toggle between window and full-screen modes by typing <b>Command-Shift-f</b>.</font>
+
+<p><font face="Times" size="+1">If you're running Microsoft Windows in full-screen mode, typing <b>Command-Shift-f</b> toggles back to window mode but freezes the Windows environment while you work in NEXTSTEP. Choosing Full Screen from the SoftPC panel returns you to full-screen mode.</font>
+
+<p><font face="Times" size="+1">If you start Windows while SoftPC is in window mode, you can't switch to running Windows in full-screen mode. Instead, you must first quit Windows and then switch to full-screen mode.</font>
+
+<p><font face="Times" size="+3"><b>Choosing and Using Graphics Adapters</b></font>
+
+<p><font face="Times" size="+1">In general, any graphics adapter that NEXTSTEP supports runs SoftPC in both window mode and full-screen mode.</font>
+
+<p><font face="Times"><i>The notable exception is a Compaq QVision adapter used in a Compaq system. SoftPC will run only in window mode on this combination.</i></font>
+
+<p><font face="Times" size="+1">Any SuperVGA adapter that NEXTSTEP supports is slower in window mode due to the lack of a grayscale Interceptor driver. If you use a SuperVGA adapter, run SoftPC in full-screen mode only. This is not only faster, but it also gives you color. Because SoftPC running in full-screen mode accesses the graphics adapter directly, you get a color image even though NEXTSTEP on a SuperVGA adapter normally runs in grayscale.</font>
+
+<p><font face="Times" size="+1">Standard VGA allows SoftPC to run in window mode only. Again, due to the lack of a grayscale Interceptor driver, performance is slower. These constraints make running SoftPC in Standard VGA mode less than ideal.</font>
+
+<p><br><br><br>
+
+<p><font face="Times" size="+3"><b>Making It All Work</b></font>
+
+<p><font face="Times" size="+1">This section describes some real-world situations you may encounter when using SoftPC.</font><br>
+<font face="Times" size="+1">It briefly describes how to configure SoftPC to print, access CD-ROMs, network, and copy and paste information between SoftPC and NEXTSTEP.</font>
+
+<p><font face="Times" size="+1"><b>Printing</b></font>
+
+<p><font face="Times" size="+1">To print from SoftPC, you need to take several steps. First, configure the printer in NEXTSTEP by selecting the appropriate printer in Print Manager. Next, configure the printer in SoftPC. Finally, configure the printer in the DOS or Windows application you're using.</font>
+
+<p><font face="Times" size="+1">For example, suppose you want to print on a printer named <b>HPLaserjet4</b>. First, select <b>HPLaserjet4</b> in Print Manager. Next, in SoftPC's Preferences, set LPT1 to <b>Laserjet</b>. Finally, select HP Laserjet from the Windows Print Manager. SoftPC is now ready to print.</font>
+
+<p><font face="Times" size="+1">You can now print as usual from DOS and Windows applications. You can also use the Print command in SoftPC to print screen shots of the SoftPC window, if you<b>'</b>re running in window mode.</font>
+
+<p><font face="Times" size="+1"><b>Using CD-ROMs</b></font>
+
+<p><font face="Times" size="+1">To access a CD-ROM from SoftPC, first mount the CD-ROM in Workspace Manager</font><font size="-1"><sup><sup>TM</sup></sup></font><font face="Times" size="+1">. After it's mounted, you need to load the CD-ROM drivers into SoftPC. Do this by running the command <b>USE_CD</b> from the DOS prompt. This runs a DOS batch file that installs the MSCDEX CD-ROM driver software and then assigns the CD-ROM to drive <b>F:</b>.</font>
+
+<p><font face="Times" size="+1">If you need to use a CD-ROM only briefly, you can use the trick described in &quot;FSA Drive.&quot;</font>
+
+<p><font face="Times" size="+1"><b>Networking</b></font>
+
+<p><font face="Times" size="+1">SoftNode, an integrated product in SoftPC for Intel, provides client access to Novell NetWare</font><font size="-1"><sup>&reg; </sup></font><font face="Times" size="+1">networks. This provides a single out-of-the-box solution for NetWare connectivity.</font>
+
+<p><font face="Times"><i>You use NetWare Manager to attach NEXTSTEP to a Novell</i></font><font size="-1"><sup>&reg;</sup></font> <font face="Times"><i>network. For details, see the NEXTSTEP Network and System Administration book.</i></font>
+
+<p><font face="Times" size="+1">Attaching SoftPC to a NetWare network is simple. First, use NetWare Manager to enable NEXTSTEP's NetWare software and reboot. To make SoftPC recognize the NetWare network, run the command <b>USE_IPX</b> at the DOS prompt. This loads SoftNode and makes the SoftPC session a client on the NetWare network. After you've run <b>USE_IPX</b>, you can log into the NetWare server. The program <b>LOGIN.EXE</b>, which is located on the <b>L:</b> drive by default, logs into the NetWare server.</font>
+
+<p><font face="Times" size="+1">Once on the network, SoftPC can act as an independent client from the NEXTSTEP client. This provides abilities like having one SoftPC session running Novell NetWare and another running NFS</font><font size="-1"><sup>&reg;</sup></font><font face="Times" size="+1">. You can use products like PC/NFS and PC/TCP/IP to allow SoftPC to access NFS and TCP/IP, respectively.</font>
+
+<p><font face="Times" size="+1"><b>Copying and pasting between NEXTSTEP and SoftPC</b></font>
+
+<p><font face="Times" size="+1">If you run Windows in SoftPC's window mode, Insignia's SmartCopy application allows you</font><br>
+<font face="Times" size="+1">to copy and paste between NEXTSTEP and Windows applications.</font>
+
+<p><font face="Times" size="+1">Within SoftPC, use the Cut, Copy, and Paste commands from the menu of the application you are using, not SoftPC's Edit menu. For example, if you want to copy an image from the Windows PaintBrush accessory to the Edit application in NEXTSTEP, make a selection and choose the Copy command from PaintBrush's Edit menu (not SoftPC's), then select Paste from within Edit.</font>
+
+<p><font face="Times"><i>SmartCopy currently doesn't work in full-screen mode.</i></font>
+
+<p><br><br><br>
+
+<p><font face="Times" size="+3"><b>Troubleshooting</b></font>
+
+<p><font face="Times" size="+1">The time you're most likely to run into trouble with SoftPC is during initial configuration. Once SoftPC is up and running properly, you'll find it acts just like a real PC. However, there are some common problems you might encounter after configuration. Here's how to handle them.</font>
+
+<p><font face="Times" size="+1"><b>No permission to change the hard drive</b></font>
+
+<p><font face="Times" size="+1">When you launch SoftPC, if you see a panel telling you that SoftPC is mounting the hard drive as read-only, you don't have permission to make changes to the hard drive. However, you always need to mount the drive as read-write, because Windows has to modify some configuration files when it launches.</font>
+
+<p><font face="Times" size="+1">To mount the drive as read-write, you must change the permissions on the hard disk file</font><br>
+<font face="Times" size="+1">to allow all users to read and write it. You do this with the <b>chmod</b> command. For example, if the container file is <b>/SoftPC.app/disk.hdf</b>, you'd run the following command as <b>root</b>.</font>
+
+<p><font face="Courier">chmod a+rw /SoftPC.app/disk.hdf</font>
+
+<p><font face="Times" size="+1"><b>Poor performance in window mode</b></font>
+
+<p><font face="Times" size="+1">If you notice that drawing and scrolling performance seems slow, chances are SoftPC isn't using Interceptor to its full potential.</font>
+
+<p><font face="Times" size="+1">Make sure that no windows, menus, icons, or the dock are covering the main SoftPC window. This will give dramatically better graphics performance. Also make sure that the WinIdle program is in the Startup application group in Windows' Program Manager, and that it's running.</font>
+
+<p><font face="Times" size="+1"><b>Stuck cursor in the SoftPC window</b></font>
+
+<p><font face="Times" size="+1">Sometimes SoftPC can trap your cursor in its window. When you try to move the cursor out of the window, it just stops at the edge of the SoftPC window.</font>
+
+<p><font face="Times" size="+1">To fix this, type <b>Command-m</b> to detach the mouse from SoftPC. If that doesn't work, type <b>Command-h</b> to hide SoftPC. This should at the same time free your mouse. Click in another NEXTSTEP application's window before unhiding SoftPC or the problem will persist.</font>
+
+<p><font face="Times" size="+1"><b>Colored square under the mouse cursor</b></font>
+
+<p><font face="Times" size="+1">This is a known bug. The square goes away as soon as the SoftPC window is updated. If you can't wait for that, you can move the mouse off of and then back over the square to get rid of it.</font>
+
+<p><font face="Times" size="+1"><b>Can't switch to full-screen mode</b></font>
+
+<p><font face="Times" size="+1">If, when you're trying to go to full-screen mode, SoftPC says that full-screen mode isn't supported in this session, you probably haven't set the Video preference to VGA.</font>
+
+<p><font face="Times" size="+1">To fix this problem, set SoftPC's Video preference to VGA before you switch to full-screen mode. The first time you set this preference, you must quit SoftPC, saving your preferences, and then restart it.</font>
+
+<p><font face="Times" size="+1">In some rare cases, SoftPC will let you go to full-screen mode, but the first keystroke will cause SoftPC to crash. In this case, your hardware combination is incompatible.</font>
+
+<p><font face="Times" size="+1"><b>Can't use floppies in full-screen mode</b></font>
+
+<p><font face="Times" size="+1">If SoftPC isn't recognizing Floppy <b>A:</b> in full-screen mode, you don't have the preferences set properly. Because there's no status bar in full-screen mode, this is very easy to overlook.</font>
+
+<p><font face="Times" size="+1">Be sure you've set the floppy drive permissions correctly in window mode. When you're in full-screen mode, type <b>Command-f</b> to attach or detach the floppy drive. And as always, choose the Eject command from Workspace Manager <i>before</i> ejecting the floppy.</font>
+
+<p><font face="Times" size="+1"><b>Full-screen isn't supported in this session</b></font>
+
+<p><font face="Times" size="+1">This error generally indicates that your graphics adapter isn't capable of running in full-screen mode. Check the <i>Hardware Compatibility Guide</i> to see which graphics adapters support full-screen mode. If your graphics adapter supports full-screen mode and you still have this problem, make sure you set the Video preference to VGA.</font>
+
+<p><font face="Times" size="+1"><b>SoftPC can't initialize the hardware</b></font>
+
+<p><font face="Times" size="+1">This rare error indicates that SoftPC wasn't installed by <b>root</b>. Delete SoftPC, log in as <b>root</b>, and reinstall SoftPC.</font>
+
+<p><font face="Times" size="+1"><b>NetWare seems very slow under SoftPC</b></font>
+
+<p><font face="Times" size="+1">All NetWare functions should behave properly, but some operations will be slower than they are under NEXTSTEP. A future version of SoftPC will address this problem.</font>
+
+<p><font face="Times" size="+1"><b>Keys repeat in DOS in full-screen mode</b></font>
+
+<p><font face="Times" size="+1">If you're only typing a few things, type slowly. If you need to do a lot of typing, run the application in window mode instead.</font>
+
+<p><font face="Times" size="+1"><b>SoftPC locked up</b></font>
+
+<p><font face="Times" size="+1">When all else fails and you find that SoftPC has locked up on you, you can run the command <b>dread -o SoftPC | dremove</b>, as <b>root</b> from Terminal. This removes all of your SoftPC preferences and allows you to reconfigure SoftPC from scratch.</font>
+
+<p><br><br><br>
+
+<p><font face="Times" size="+3"><b>Conclusion</b></font>
+
+<p><font face="Times" size="+1">I hope this article has provided a good range of concepts and troubleshooting techniques. If you run into situations that aren't covered in this article, refer to the SoftPC on-line help. In addition, licensed users can call Insignia's technical support group--the number is listed in the on-line help.</font>
+
+<p><font face="Times" size="+1">Oh, and I highly recommend the game Alone In the Dark from Interplay.</font>
+
+<p><br><br>
+
+<p><font face="Times"><i>Joe Hollowood is the Lab Supervisor for NeXT's Software Quality Assurance group. He has worked closely with Insignia Solutions on SoftPC for NEXTSTEP for Intel processors. You can reach him by e-mail at <b>Joe_Hollowood@next.com</b>.</i></font>
+
+<p><font face="Times"><i>Special thanks to Amir Gharaat and Insignia Solutions for their help with this article.</i></font>
+
+<p><br><br><br><br><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Why Can't I Run My Own Version of Windows?</b></font>
+
+<p><font face="Times">Although you can install your own version of DOS 6.x, Microsoft Windows is a different story.&nbsp; Insignia has licensed the Microsoft Windows source code and made some modifications to optimize its performance in window mode and full-screen mode. Insignia uses a similar approach for Microsoft Windows NT.</font>
+
+<p><font face="Times">As a result, some of the standard video drivers and system configuration files shipped with an off-the-shelf copy of Windows won't work.<i>-JH</i></font>
+
+
+
+</body>
+</html>

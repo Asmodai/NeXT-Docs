@@ -1,0 +1,400 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NEXTSTEP_In_Focus/1993Summer/Before_NetInfo_Starts.rtf -->
+<!-- Date: Sun Jan  1 15:46:17 2023 -->
+<head>
+<title>Before_NetInfo_Starts</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times"><i>NEXTSTEP In Focus</i>, Summer 1993 (Volume 3, Issue 3).</font><br>
+<font face="Times">Copyright</font> &copy;<font face="Times">1993 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+4"><b>Before NetInfo Starts</b></font>
+
+<p><font face="Helvetica">Alan M. Marcum</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">A NEXTSTEP computer needs four critical pieces of network-related information when it starts up: its Internet address, network mask, broadcast address, and host name. Each piece of information can be hard-coded, so that a change requires changing information stored on the computer's hard disk, or can be obtained dynamically when the computer starts up.</font>
+
+<p><font face="Times" size="+1">This article describes how a booting computer gets these important pieces of information, and gives you some tips for making sure that configuration works properly. For information on startup steps omitted here, see the NEXTSTEP files <b>/etc/rc.boot</b>, <b>/etc/rc</b>, and <b>/etc/rc.net</b>.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>MANUAL OR AUTOMATIC</b></font>
+
+<p><font face="Times" size="+1">You can set up a NEXTSTEP computer so that its network configuration information--host name, Internet address, network mask (or <i>netmask</i>), and broadcast address--are determined from information on the computer itself. Specifically, you can use the HostManager application to set this information, which is then stored in the file <b> /etc/hostconfig</b>. Once you've done this, though, changing this information is cumbersome, and replacing hardware becomes awkward too.</font>
+
+<p><font face="Times" size="+1">Alternatively, a NEXTSTEP computer can get this network configuration information automatically from the network. This is usually easier and more efficient than configuring manually. Automatic configuration often allows you to maintain this information in one central &quot;location&quot;--NetInfo.</font>
+
+<p><font face="Times" size="+1"><b>Warning:</b> One type of automatic configuration, automatic host addition, doesn't work correctly under NEXTSTEP Release 3.1 when the configuration server runs on an Intel-based computer. If you can't have a NeXT computer act as the configuration server for each domain, keep automatic host addition turned off and add computers manually using HostManager. See the <i>NEXTSTEP Network and System Administration</i> manual to find out about automatic host addition.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>INTERNET ADDRESS CONFIGURATION</b></font>
+
+<p><font face="Times" size="+1">A computer that's booting can determine its Internet address using the BOOTP protocol, which is built on top of UDP. Using this protocol, the booting computer (which we call the <i>client computer</i>) broadcasts its hardware network address, such as its Ethernet or token ring address. A <i>configuration server</i> somewhere on the local network--a BOOTP daemon called <b>bootpd</b>--receives the message and sends a reply. The information in the reply it sends depends on whether the configuration server's BOOTP database contains information about the client computer.</font>
+
+<p><font face="Times" size="+1">Usually the configuration server's database contains information about the client computer. The database is made up of information from the <b>/machines</b> directories in its immediate domain hierarchy--local domain, second-level domain, and so on through the root domain. The configuration server's <b>/machines</b> directories contain a directory for each client computer in the domain. In each such directory, the <b>en_address</b> property contains the hardware network address of the client computer. For example, at Rhino, in the <b>/machines/pfm</b> directory in the <b>/info</b> domain there's an <b>en_address</b> property containing the address 0:0:f:1:48:91, which is <b>pfm</b>'s Ethernet address. If the configuration server has an appropriate <b>/machines</b> NetInfo subdirectory with an <b>en_address</b> that matches the client computer's hardware network address, then the configuration server returns the client computer's Internet address in the BOOTP reply.</font>
+
+<p><font face="Times" size="+1">If the client computer has just been added to the network, though, the configuration server won't recognize the new computer's hardware address. If the NetInfo domain is configured to add computers automatically, then the configuration server invokes automatic host addition. It sends a reply to the client computer, containing a temporary Internet address and information indicating that it's invoking automatic host addition. The temporary address is based on the <b>configuration_ipaddr</b> property in <b>/machines</b> of the NetInfo domain. Other information in the reply includes a prompt that the client computer then poses to the user, such as &quot;Network doesn't recognize computer. Enter host name:&quot;.</font>
+
+<p><font face="Times" size="+1">On the other hand, if the client computer is new and the domain <i>isn't</i> configured to add computers automatically, the configuration server sends no reply. If the client computer gets no replies, it can't boot. You have to add the computer manually using a computer that's already on the network, then reboot the new computer.</font>
+
+<p><font face="Times" size="+1">To find out more about adding computers to a network, both with and without automatic host addition, see the <i>NEXTSTEP Network and System Administration</i> manual.</font>
+
+<p><font face="Helvetica" size="+1"><b>Multiple domains on one subnet</b></font>
+
+<p><font face="Times" size="+1">What if a single network or subnet has two domains on it, one of which (domain A) has automatic host addition enabled but doesn't have the client computer's host information, and the other of which (domain B) <i>does</i> have the client computer's host information? It's possible that a configuration server in domain A might respond before one in domain B!</font>
+
+<p><font face="Times" size="+1">When a client computer receives a BOOTP reply indicating that the configuration server doesn't recognize the client, it waits and retries the BOOTP request before acting on that reply. Even this isn't foolproof: if domain B's configuration server is slow and doesn't get a reply back to the client computer in time, the client computer might receive only the automatic host addition replies, despite delays and retries. If this occurs, reboot the client computer; if it occurs frequently, examine the communication between the client computers and the configuration servers, and the load on the configuration servers.</font>
+
+<p><font face="Times" size="+1">If both domain A and domain B have automatic host addition enabled and the client computer really is new to the network, there's no way to specify which domain should automatically add the new computer. In a case like this, enable automatic host addition for only one of the two domains, and add new computers to the other domain manually.</font>
+
+<p><font face="Helvetica" size="+1"><b>Reverse ARP (RARP)</b></font>
+
+<p><font face="Times" size="+1">NEXTSTEP doesn't provide support for the Reverse Address Resolution Protocol (RevARP or RARP). BOOTP is a newer protocol with greater flexibility. If a device on your network requires RARP support, you'll have to provide it either through third-party software or through a different piece of hardware.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>NETMASK AND BROADCAST ADDRESS CONFIGURATION</b></font>
+
+<p><font face="Times" size="+1">Like the Internet address, the netmask for a computer can be hard-coded or obtained from the network. Similarly, the broadcast address can be hard-coded or computed based on the netmask.</font>
+
+<p><font face="Helvetica" size="+1"><b>Netmask configuration</b></font>
+
+<p><font face="Times" size="+1">There are three classes of netmask values you can set using HostManager, which writes the information to <b>/etc/hostconfig</b>:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">A specific netmask, such as 255.255.255.0, 255.255.240.0, or 0xffffff80.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The default netmask, according to the Class (A, B, or C) of the network number</font></td></tr>
+
+<tr valign=top>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">portion of the Internet address. For a Class A network, this is 0xff000000 (255.0.0.0);</font></td></tr>
+
+<tr valign=top>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">for Class B, 0xffff0000 (255.255.0.0); and for Class C, 0xffffff00 (255.255.255.0); see</font></td></tr>
+
+<tr valign=top>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">Marcum 1991. The netmask corresponds to an empty value in <b>/etc/hostconfig</b>. A</font></td></tr>
+
+<tr valign=top>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">new NEXTSTEP system has this setting.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">A directive to acquire the netmask from the network, as described below. This is</font></td></tr>
+
+<tr valign=top>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">specified in <b>/etc/hostconfig</b> by the value <b>-AUTOMATIC</b>-.</font></td></tr>
+
+</table>
+
+<p><font face="Times" size="+1">The ICMP protocols include provisions for getting the network mask from &quot;the network.&quot; The booting computer sends a broadcast message, this time requesting the netmask, using an ICMP Netmask Request packet. Computers that receive the broadcast reply with their netmasks, using an ICMP Netmask Reply packet. The booting computer uses the mask in the first ICMP Netmask Reply packet that it receives.</font>
+
+<p><font face="Helvetica"><b><i>The hazards of a bad netmask</i></b></font>
+
+<p><font face="Times" size="+1">There's an interesting caveat to automatic netmask configuration. If a computer on the network has an incorrect netmask, that wrong netmask can be propagated around the network. This can lead to apparently intermittent boot-up problems. If you suspect this as the cause of some of your troubles, you can diagnose it with the following steps:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Run the command <b>ifconfigen0</b> on the computer where you're having troubles. The</font></td></tr>
+
+<tr valign=top>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">output will be similar to:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=18 height=1><font face="Courier">en0: flags=63&lt;UP,BROADCAST,NOTRAILERS,RUNNING&gt;</font><br>
+<img src="../../Images/sp.gif" width=18 height=1><font face="Courier">inet 129.18.1.2 netmask ffffff00 broadcast 129.18.1.255</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Examine the netmask field. The value displayed is in hexadecimal. If it's incorrect for</font></td></tr>
+
+<tr valign=top>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">your network, then either the value set using HostManager is incorrect or some</font></td></tr>
+
+<tr valign=top>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">device on your network--on that local subnet, if you're using subnets--is propagating</font></td></tr>
+
+<tr valign=top>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">an incorrect netmask.</font></td></tr>
+
+</table>
+
+<p><font face="Times" size="+1">Once a computer is up and running, it's usually impossible to determine which computer provided the incorrect netmask. Sometimes, you might be able to see the message sent to the console by <b>ifconfig</b> if you exit <b>loginwindow</b> to the console. During a verbose boot, though, a message like the following is sent to the console:</font>
+
+<p><font face="Courier">en0: setting netmask to 0xffffff00 received from 192.42.172.1</font>
+
+<p><font face="Times" size="+1">In this case, the node at address 192.42.172.1 provided the netmask 0xffffff00, which is equivalent to 255.255.255.0.</font>
+
+<p><font face="Times" size="+1">Other nodes might also have incorrect netmasks. If you have a network analyzer, check the replies to an ICMP Netmask Request to locate the node or nodes replying with an incorrect netmask. If you have no network analyzer, you'll have to examine the source of the netmask on each computer on that network or subnet to find which are incorrect.</font>
+
+<p><font face="Helvetica" size="+1"><b>Broadcast address configuration</b></font>
+
+<p><font face="Times" size="+1">Using HostManager, you can use two sorts of broadcast address specifications--an explicit broadcast address, and an automatically computed broadcast address. Usually, you'll use the automatically computed broadcast address, which is based on the computer's Internet address and netmask.</font>
+
+<p><font face="Times" size="+1">Automatic computation generates a broadcast address with the computer's network number in the network number portion of the address, and all <b>1</b> bits in the host number portion. The following table shows some examples.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica"><b>Internet address</b></font></td>
+
+<td nowrap><font face="Helvetica"><b>Netmask</b></font></td>
+
+<td><font face="Helvetica"><b>Default broadcast address</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Times">129.18.1.2</font></td>
+
+<td nowrap><font face="Times">255.255.0.0</font></td>
+
+<td><font face="Times">129.18.255.255</font></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Times">129.18.1.2</font></td>
+
+<td nowrap><font face="Times">255.255.255.0</font></td>
+
+<td><font face="Times">129.18.1.255</font></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Times">129.18.1.2</font></td>
+
+<td nowrap><font face="Times">255.255.255.240</font></td>
+
+<td><font face="Times">129.18.1.15</font></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Times">129.18.1.195</font></td>
+
+<td nowrap><font face="Times">255.255.255.240</font></td>
+
+<td><font face="Times">129.18.1.207</font></td></tr>
+
+</table>
+
+<p><font face="Times" size="+1">It's sometimes easier to understand unusual netmasks like the last two in the table if you see them in hexadecimal format, so here are the same addresses in hexadecimal:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica"><b>Internet address</b></font></td>
+
+<td nowrap><font face="Helvetica"><b>Netmask</b></font></td>
+
+<td><font face="Helvetica"><b>Default broadcast address</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Times">0x81120102</font></td>
+
+<td nowrap><font face="Times">0xffff0000</font></td>
+
+<td><font face="Times">0x8112ffff</font></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Times">0x81120102</font></td>
+
+<td nowrap><font face="Times">0xffffff00</font></td>
+
+<td><font face="Times">0x811201ff</font></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Times">0x81120102</font></td>
+
+<td nowrap><font face="Times">0xfffffff0</font></td>
+
+<td><font face="Times">0x8112010f</font></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Times">0x811001c3</font></td>
+
+<td nowrap><font face="Times">0xfffffff0</font></td>
+
+<td><font face="Times">0x811201cf</font></td></tr>
+
+</table>
+
+<p><font face="Times" size="+1">For the first three example addresses, the Internet address remains the same and the netmask changes, masking different bits. The default broadcast address changes accordingly. For the fourth example, the last byte in the Internet address changed from 02 to c3. The netmask indicates that the low-order four bits are in the host number portion. The default broadcast address is calculated appropriately.</font>
+
+<p><font face="Times" size="+1">The formula for computing a broadcast address is:</font>
+
+<p><img src="../../Images/sp.gif" width=15 height=1><font face="Times" size="+1">broadcast_address = Internet_address | (~netmask)</font>
+
+<p><font face="Times" size="+1">The broadcast address is the Internet address logically ORed with the logical NOT of the netmask.</font>
+
+<p><font face="Times" size="+1">The alternative to automatically computing the broadcast address is to hard-code it. If you do this, you specify an Internet address using either hexadecimal or dotted-decimal notation.</font>
+
+<p><font face="Times" size="+1">Unless you have very specific reasons for changing the broadcast address, and you understand what you're doing and why, NeXT Computer <i>strongly</i> recommends against hard-coding a broadcast address. An incorrect broadcast address can cause big problems.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>HOST NAME CONFIGURATION</b></font>
+
+<p><font face="Times" size="+1">As with the Internet address, you configure the host name using HostManager; the information is stored in <b>/etc/hostconfig</b>. You can either hard-code the host name by specifying it explicitly, or you can have the computer get it from the network during startup. And also as with the Internet address, NeXT Computer recommends that you have the computer obtain its name from the network.</font>
+
+<p><font face="Times" size="+1">Automatic host name configuration uses a SunRPC-based protocol, BOOTPARAM. This protocol is similar to the BOOTP protocol, although it's built using SunRPC on top of UDP rather than using ICMP. A booting computer broadcasts a BOOTPARAM WHOAMI request, noting its Internet address and asking for the host name corresponding to that address. If multiple servers reply to the request, the computer uses the information from the first response it receives.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>WHEN NOT TO USE AUTOMATIC CONFIGURATION</b></font>
+
+<p><font face="Times" size="+1">If a computer provides networkwide NetInfo services, hard-code that computer's Internet address and host name, and consider hard-coding its netmask as well. If a computer provides configuration services, hard-code its Internet address and host name also. Normally, a computer providing networkwide NetInfo services also provides configuration services to the network.</font>
+
+<p><font face="Times" size="+1">Hard-coding the information on these particular computers ensures that the computers providing NetInfo and configuration services don't themselves need a configuration server to boot. This is important, because if no configuration server is running and all configuration servers need to ask for their names, there's no way for any of them to start, and then no computers in the domain can start.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>THE ENVIRONMENT BEFORE NETINFO STARTS</b></font>
+
+<p><font face="Times" size="+1">There's one very important thing to remember when working in single-user mode or when configuring services such as syslog, local file systems, and routing that are invoked during the boot process before NetInfo is started--NetInfo isn't running.</font>
+
+<p><font face="Times" size="+1">Since NetInfo isn't running, the services provided by NetInfo and the information stored in its databases aren't available. The system reverts to using the UNIX flat file databases, such as <b>/etc/hosts</b>.</font>
+
+<p><font face="Times" size="+1">For example, when you configure routing using SimpleNetworkStarter or HostManager, you can specify &quot;None&quot; for no routing, &quot;Dynamic&quot; to run <b>routed</b>, or a specific Internet address that indicates a default route. If you choose the last option, you must use the <i>address</i> of the router, not the host name--routing starts before NetInfo, so normal name translation services aren't available.</font>
+
+<p><font face="Times" size="+1">If you sometimes need to perform administrative tasks in single-user mode when NetInfo isn't running, you'll need to set up the UNIX flat file databases. For example, put host names in <b>/etc/hosts</b> and list network services you need in <b>/etc/services</b>. (See &quot;The NetInfo Lookup Server--<b>lookupd</b>&quot; to find out how these files are used by NIS once NetInfo is running.)</font>
+
+<p><font face="Times" size="+1">What if you're in single-user mode and you want to start NetInfo? See &quot;The Tough Stuff.&quot;</font>
+
+<p><font face="Times" size="+1"><b>Note:</b> The document references in this and other articles in this issue refer to the books and articles listed in &quot;NEXTSTEP Networking References.&quot;</font>
+
+<p><br><br><br><br><br>
+
+<p><font face="Helvetica" size="+3">NETWORKING TERMS AND PROTOCOLS</font>
+
+<p><font face="Helvetica"><b>ARP (Address Resolution Protocol)</b>&nbsp; The part of IP that translates a high-level Internet address to a low-level physical hardware address (such as an Ethernet address).</font>
+
+<p><font face="Helvetica"><b>BOOTP (Bootstrap Protocol)</b>&nbsp; An IP protocol that allows a computer to acquire start-up information from the network, including its Internet address.</font>
+
+<p><font face="Helvetica"><b>broadcast address</b>&nbsp; A special reserved address that broadcasts messages to all computers in a network. All hosts with the same network address receive information sent to that network's broadcast address. The special address 255.255.255.255 is the broadcast address of the current network.</font>
+
+<p><font face="Helvetica"><b>host number</b> A computer's identification number within</font><br>
+<font face="Helvetica">a network.</font>
+
+<p><font face="Helvetica"><b>ICMP (Internet Control Message Protocol)</b>&nbsp; An integral part of IP that handles error and control messages.</font>
+
+<p><font face="Helvetica"><b>Internet address (IP address)</b>&nbsp; A computer's high level address, comprised of a network number and a host number. Internet addresses must be unique within a network.</font>
+
+<p><font face="Helvetica"><b>IP (Internet Protocol)</b>&nbsp; A basic connectionless data encapsulation and transmission protocol. The IP protocol suite is described fully in some of the sources listed later in this issue, and especially in Computer Systems Research Group 1986.</font>
+
+<p><font face="Helvetica"><b>network number</b>&nbsp; A network's ID number. All computers on the same logical network have the same network number. Without a router, computers can send messages only to other computers on the same network.</font>
+
+<p><font face="Helvetica"><b>subnet mask (netmask)</b>&nbsp; A bit mask (consisting of a 32-bit integer) that determines which bits of an Internet address are used as the network number, and which as the host number. This allows you to extend the network portion of an Internet address, effectively providing multiple logical networks within a single physical network.</font>
+
+<p><font face="Helvetica"><b>SunRPC (Sun Microsystems Remote Procedure Call)</b>&nbsp; A UDP-based or TCP-based protocol for executing procedures, including those on remote computers.</font>
+
+<p><font face="Helvetica"><b>TCP (Transmission Control Protocol)</b>&nbsp; A reliable, full duplex, stream- and connection-based data transmission service.</font>
+
+<p><font face="Helvetica"><b>UDP (User Datagram Protocol)</b>&nbsp; A datagram-based protocol built on top of IP that provides, in addition to IP's basics, a checksum and a destination port.</font>
+
+
+
+<p><br><br><br>
+
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NEXTSTEP_In_Focus/1994Winter/FAQ.rtf -->
+<!-- Date: Sun Jan  1 15:46:20 2023 -->
+<head>
+<title>FAQ</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times"><i>NEXTSTEP In Focus</i>, Winter 1994 (Volume 4, Issue 1).</font><br>
+<font face="Times">Copyright</font> &copy;<font face="Times">1994 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>FAQ</b></font>
+
+<p><font face="Times"><i>This regular department features some of the questions asked most often of NeXT Support.&nbsp; For a more current list, see NeXTanswers document 1470, &quot;Tech Support Frequently Asked Questions.&quot;</i></font>
+
+<p><br><br><br>
+
+<p><font face="Times" size="+3"><b>Broken Mouse After Install</b></font>
+
+<p><font face="Times" size="+1"><b>When I reboot my computer and the login window is displayed, everything appears fine except that I can't use the mouse--the cursor seems to be frozen or not responding.&nbsp; I can still type, though.</b></font>
+
+<p><font face="Times" size="+1">When you install NEXTSTEP, you tell the operating system about your system's specific hardware, like its mouse, graphics adapters, and SCSI adapters. This tells the system which drivers to use. For example, if you have a serial mouse, you should select and install the serial mouse driver.&nbsp; If you forget to do this during the installation, when you restart NEXTSTEP after the installation the mouse won't work.</font>
+
+<p><font face="Times" size="+1">To fix this problem, you first need to restart the computer using the default configuration.&nbsp; At the <b>boot: </b>prompt, type this command:</font>
+
+<p><font face="Courier">boot: <b>config=Default</b></font>
+
+<p><font face="Times" size="+1">This starts up NEXTSTEP with all of the mouse drivers loaded.&nbsp; Log in as <b>root</b> and start up Configure, which is in <b>/NextAdmin</b>.&nbsp; Select the mouse and configure it according to your hardware setup.</font>
+
+<p><font face="Times" size="+1"><b>Note:</b> You can use the boot command <b>config=Default</b> whenever you have a specific hardware-related failure. It causes the computer to start up with a basic default configuration, so that you can modify the hardware configuration with Configure.</font>
+
+<p><font face="Times" size="+1"><b>See also:</b> NeXTanswers document 1360, &quot;Mouse Support.&quot;</font>
+
+<p><br><br><br>
+
+<p><font face="Times" size="+3"><b>Removing NEXTSTEP Boot Sector</b></font>
+
+<p><font face="Times" size="+1"><b>How can I remove the NEXTSTEP boot sector?&nbsp; I installed NEXTSTEP on my hard drive and removed it, but I still get &quot;Boot Next: v1.17&quot; when starting up.</b></font>
+
+<p><font face="Times" size="+1">NEXTSTEP provides two boot sectors: <b>boot0</b>, which boots a DOS-partitioned disk that might have NEXTSTEP or another operating system on it, and <b>boot1</b>, which boots a virtual NEXTSTEP disk.&nbsp; If you install a disk that has only NEXTSTEP on it, NEXTSTEP writes only the <b>boot1</b> sector at the beginning of the disk.&nbsp; If you then go back and reinstall DOS, DOS finds executable code in the boot sector and doesn't replace it, even though the code it found can't boot DOS.</font>
+
+<p><font face="Times" size="+1">The solution is either to remove the boot sector before installing DOS or to rewrite the boot sector from DOS after installing DOS.</font>
+
+<p><font face="Times" size="+1">To remove the boot sector before installing DOS, in NEXTSTEP type the command</font><br>
+<font face="Times" size="+1"><b>fdisk /dev/rsd0h -removePartitioning</b>.</font>
+
+<p><font face="Times" size="+1">To rewrite the boot sector, type <b>fdisk /mbr</b>.</font>
+
+<p><font face="Times" size="+1"><b>Note:</b> These techniques are useful only if you're adding a DOS partition to a NEXTSTEP-only disk. The NEXTSTEP installation software always writes the boot sectors required for NEXTSTEP, so if you created partitions for other operating systems when you first installed NEXTSTEP,</font><br>
+<font face="Times" size="+1">you don't need to follow this procedure.&nbsp; NEXTSTEP's <b>boot0</b> sector is fully compatible with DOS's and can boot any operating system it finds on a partition.</font>
+
+<p><font face="Times" size="+1"><b>See also:</b> The <b>fdisk</b> UNIX manual page in NEXTSTEP, and &quot;Surviving DOS,&quot; <i>NEXTSTEP In Focus</i> 3 (Spring 1993), also available as NeXTanswers document 1130.</font>
+
+<p><br><br><br>
+
+<p><font face="Times" size="+3"><b>Installing DOS 6 with NEXTSTEP</b></font>
+
+<p><font face="Times" size="+1"><b>I'm having problems installing DOS 6.x on a disk that has the NEXTSTEP boot sector already installed.</b></font>
+
+<p><font face="Times" size="+1">DOS 6.x apparently has a version of <b>fdisk</b> that's incompatible with the <b>fdisk</b>s in both DOS 5.0 and NEXTSTEP. If you run into this problem while running DOS 6.x, use <b>fdisk</b> to change the active partition. Or, reformat the drive with DOS 6.x's <b>fdisk</b> and then reinstall NEXTSTEP. You can then use the boot sector as usual.</font>
+
+<p><font face="Times" size="+1"><b>See also:</b> The <b>fdisk</b> UNIX manual page in NEXTSTEP, and &quot;Surviving DOS,&quot;</font><br>
+<font face="Times" size="+1"><i>NEXTSTEP In Focus</i> 3 (Spring 1993), also available as NeXTanswers document 1130.</font>
+
+<p><br><br><br>
+
+<p><font face="Times" size="+3"><b>Can't Connect to Network</b></font>
+
+<p><font face="Times" size="+1"><b>When I start up NEXTSTEP, I get a message indicating &quot;cannot connect to network, press Control-C to continue.&quot;&nbsp; I believe this is because NetInfo is improperly configured or corrupted.</b></font>
+
+<p><font face="Times" size="+1">This problem can have a variety of causes.&nbsp; Two possibilities are that the NetInfo database has been corrupted or the network interface controller has been removed.</font>
+
+<p><font face="Times" size="+1">If the network interface controller has been removed, you can fix the problem by replacing the controller. If the controller is in place, you'll have to take more steps.</font>
+
+<p><font face="Times" size="+1">One solution is to rebuild the NetInfo database to a default configuration. However, creating a new NetInfo database is generally a drastic measure. If you've invested a lot of time configuring a NetInfo database, you probably would rebuild it from scratch only as a last resort. If this is your situation, ask NeXT's Support group for help before replacing the NetInfo database.</font>
+
+<p><font face="Times" size="+1">A better option is to restore the <b>/etc/hostconfig</b> file and the contents of <b>/etc/netinfo</b> from backups made when the network was functioning properly. (You did make backups, didn't you?)</font>
+
+<p><font face="Times" size="+1"><b>See also:</b> <i>NEXTSTEP Network and System Administration</i>, page 89, and NeXTanswers document 1295, &quot;Restoring to Default NetInfo Configuration.&quot;</font>
+
+<p><br><br><br>
+
+<p><font face="Times" size="+3"><b>CD-ROM Drives and CD Player</b></font>
+
+<p><font face="Times" size="+1"><b>How do I get the CD Player application to work with my CD-ROM Drive?</b></font>
+
+<p><font face="Times" size="+1">CD Player is a demo application, so it isn't officially supported by NeXT.</font>
+
+<p><font face="Times" size="+1">To allow CD Player to launch automatically when you insert a music CD in the CD-ROM drive, you need to turn on the Public Window Server in the Preferences application.</font>
+
+<p><font face="Times" size="+1"><b>Note:</b>&nbsp; Not all CD-ROM drives work with the CD Player application. NeXT doesn't maintain a list of compatable players.&nbsp; However, we do know that CD Player is incompatable with the Toshiba 3401 CD-ROM Drive.</font>
+
+<p><br><br><br>
+
+<p><font face="Times" size="+3"><b>Installing the Developer CD-ROM</b></font>
+
+<p><font face="Times" size="+1"><b>I've installed the User Version of NEXTSTEP.&nbsp; When I try to install the Developer disk, I get</b></font><br>
+<font face="Times" size="+1"><b>a &quot;permission denied&quot; error.</b></font>
+
+<p><font face="Times" size="+1">You need to be logged in as the user <b>root</b> to install the Developer disk.&nbsp; If you're logged in as the user <b>me</b>, set a password for <b>me</b> and log back in as <b>root</b> to continue the installation.</font>
+
+<p><font face="Times" size="+1"><b>See also:</b> The <i>Here's How</i> book.</font>
+
+<p><br><br><br>
+
+<p><font face="Times" size="+3"><b>PCI Bus Compatibility</b></font>
+
+<p><font face="Times" size="+1"><b>Is the PCI bus architecture supported by NEXTSTEP?&nbsp; If so, which peripherals are supported?</b></font>
+
+<p><font face="Times" size="+1">PCI is supported by NEXTSTEP.&nbsp; Currently, however, there are no supported PCI peripherals, because specific drivers need to be written for each peripheral.</font>
+
+<p><font face="Times" size="+1"><b>See also:</b> <i>NEXTSTEP Hardware Compatibility Guide</i>, NeXTanswers documents 1002</font><br>
+<font face="Times" size="+1">and 1157.</font>
+
+<p><br><br><br>
+
+<p><font face="Times" size="+3"><b>Cleanly Rebooting</b></font>
+
+<p><font face="Times" size="+1"><b>When something goes wrong with my computer--for example, when the cursor is frozen on screen or Workspace Manager doesn't start up--how can I restart my computer without performing a hard reset and potentially damaging the disk's file system?</b></font>
+
+<p><font face="Times" size="+1">Hold down the right Alternate key and press Num Lock. NEXTSTEP then asks whether you want to halt the computer or restart it.</font>
+
+<p><font face="Times" size="+1">This is an easy way to bypass the normal shutdown and logout procedures and ensure that the disk's file system isn't damaged.</font>
+
+<p><br><br><br>
+
+<p><font face="Times" size="+3"><b>Faxing in NEXTSTEP</b></font>
+
+<p><font face="Times" size="+1"><b>What do I need to fax from NEXTSTEP?&nbsp; I've installed a modem and tried to fax, but it's</b></font><br>
+<font face="Times" size="+1"><b>not faxing.</b></font>
+
+<p><font face="Times" size="+1">NEXTSTEP requires an additional fax driver specifically written for your fax modem.&nbsp; NeXT knows of two products that support a variety of common fax modems, including ZyXEL, SupraFAXmodem, Telebit, and Prometheus. The products are these:</font>
+
+<p><font face="Times" size="+1"><b>NXFax</b></font><br>
+<font face="Times" size="+1">Supplier: Black &amp; White Software, Inc.</font><br>
+<font face="Times" size="+1">Phone: (802) 496-8500</font><br>
+<font face="Times" size="+1">Fax: (802) 496-5112</font><br>
+<font face="Times" size="+1">E-mail: <b>nxfax@bandw.com</b></font>
+
+<p><font face="Times" size="+1"><b>DFax</b></font><br>
+<font face="Times" size="+1">Supplier: Alembic Systems, Inc.</font><br>
+<font face="Times" size="+1">Phone: 1-800-452-7608 (within the U.S. only)</font><br>
+<font face="Times" size="+1">Fax: (303) 799-1435</font><br>
+<font face="Times" size="+1">E-mail: <b>robbie@alembic.com</b></font>
+
+<p><font face="Times" size="+1"><b>See also:</b> <i>Third-Party Products Guide.</i></font>
+
+<p><br><br><br>
+
+<p><font face="Times" size="+3"><b>Macintosh Networking and NEXTSTEP</b></font>
+
+<p><font face="Times" size="+1"><b>I want to connect a computer running NEXTSTEP with a Macintosh or Macintosh network. What tools are available to help me do this?</b></font>
+
+<p><font face="Times" size="+1">Several third-party products are available for doing NEXTSTEP to AppleTalk or Mac to TCP/IP networking, including printer sharing.&nbsp; Here are two companies that provide such products:</font>
+
+<p><font face="Times" size="+1"><b>Information PresentationTechnologies, Inc.</b></font><br>
+<font face="Times" size="+1">Products: Partner, uShare</font><br>
+<font face="Times" size="+1">Phone: 1-800-233-9993 (within the U.S.)</font><br>
+<font face="Times" size="+1">or (805) 541-3000</font><br>
+<font face="Times" size="+1">Fax: (805) 541-3037</font><br>
+<font face="Times" size="+1">Address: 555 Chorro Street, Suite A,</font><br>
+<font face="Times" size="+1">San Luis Obispo, CA 93405</font>
+
+<p><font face="Times" size="+1"><b>InterCon Systems Corporation</b></font><br>
+<font face="Times" size="+1">Products: NFS/Share, InterPrint, Planet X</font><br>
+<font face="Times" size="+1">Phone: (703) 709-5500 or (703) 709-5555</font><br>
+<font face="Times" size="+1">E-mail: <b>info@intercon.com</b></font><br>
+<font face="Times" size="+1">Address: 950 Herndon Parkway, Suite 420, Herndon, VA 22070</font>
+
+<p><font face="Times" size="+1"><b>See also:</b> <i>Third-Party Products Guide.</i></font>
+
+
+
+<p><br><br>
+
+</body>
+</html>

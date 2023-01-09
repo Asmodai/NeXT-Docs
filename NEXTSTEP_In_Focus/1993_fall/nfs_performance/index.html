@@ -1,0 +1,477 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NEXTSTEP_In_Focus/1993Fall/NFS_Performance_Tuning.rtfd -->
+<!-- Date: Sun Jan  1 15:46:14 2023 -->
+<head>
+<title>NFS_Performance_Tuning</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times"><i>NEXTSTEP In Focus</i>, Fall 1993 (Volume 3, Issue 4).</font><br>
+<font face="Times">Copyright</font> &copy;<font face="Times">1993 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+4">NFS Performance Tuning</font>
+
+<p><font face="Times" size="+1">Wayde Schroeder</font>
+
+<p><font face="Times" size="+1"><i>Tuning NFS to work efficiently can both increase the speed at which you access NFS-mounted files and decrease the load on your network. This article explains the NFS tuning parameters you can set and shows you how to optimize the performance of Ethernet adapters on Intel-based PCs.</i></font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Overview</b></font>
+
+<p><font face="Times" size="+1">The Network File System (NFS) allows a local computer to access files on another computer, as if the files were on the local computer's disk. Because most home directories and applications reside on NFS-mounted file systems, improving NFS performance on a network can make a big difference in user productivity.</font>
+
+<p><font face="Times" size="+1">This article explains how to tune two basic NFS operations. It also compares the performance of the three Ethernet adapters currently available for use with NEXTSTEP, and shows how to get the best performance from each.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>NFS tuning parameters</b></font>
+
+<p><font face="Times" size="+1">You can tune two aspects of NFS operation: How an NFS server is mounted and how the client and server communicate. All tuning parameters must be specified by the initial mount command.</font>
+
+<p><font face="Times" size="+1">The most important tuning parameters are <b>rsize</b> and <b>wsize</b>. They control the sizes of the NFS read and write buffers, and therefore directly affect how long reading and writing take. For some networks, <b>timeo</b> and <b>retrans</b> are also important. The other parameters give you finer control over how to initiate mounts, what to do if communication fails, and what information to cache.</font>
+
+<p><font face="Times" size="+1">Here's how to tune both NFS mounting and client/server communication.</font>
+
+<p><font face="Helvetica" size="+1"><b>Mounting the server</b></font>
+
+<p><font face="Times" size="+1">There are three ways to initiate an NFS mount: The client can request a mount when its host computer starts up, the client can request a mount automatically with the <b>autonfsmount</b> command when the remote file system is needed, or you can mount a remote file system by hand using the <b>mount</b> command.</font>
+
+<p><font face="Times" size="+1">When and how to use each method are covered in detail in &quot;Techniques for Using the Network File System&quot; (<i>support bulletin 1</i>, Summer 1991), so I won't explain it all here. What's important for this article is the fact that you tune NFS mounting the same way, no matter which mount method you use.</font>
+
+<p><font face="Times" size="+1">The mount tuning parameters affect how the communication between the NFS client and the server is initiated. To initiate a mount, the client sends a request to a server. The server checks the access rights of the directory that the client wants to mount and the access rights of the client itself. If the server's NetInfo</font><font size="-1"><sup><sup>TM</sup></sup></font> <font face="Times" size="+1">database shows that the client is allowed access, the server sends the client an NFS file handle, which points to the mounted directory.</font>
+
+<p><font face="Times"><i>Note: To find out more about NFS access rights, see the UNIX manual page on <b>exportfs</b>.</i></font>
+
+<p><br><br>
+
+<p><font face="Helvetica"><b><i>Mounting options</i></b></font>
+
+<p><font face="Times" size="+1">You tune the mounting process by setting how long the client waits for the server to reply and how many times the client retries. You can also specify whether the client should run the retry process in the background or foreground. Retrying in the background allows the client to run other tasks while waiting; retrying in the foreground causes it to just wait for a response. Foreground retries are only useful if the client can't operate without the mount.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica"><b>Parameter</b></font></td>
+
+<td><font face="Helvetica"><b>Use</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica"><b>fg</b> or <b>bg</b></font></td>
+
+<td><font face="Helvetica">Determines whether retries run in the foreground or background. Default is <b>fg</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica"><b>mnttimeo</b></font></td>
+
+<td><font face="Helvetica">Sets how many seconds the client waits for a response for the server before retrying. Default is 20 seconds.</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica"><b>retry</b></font></td>
+
+<td><font face="Helvetica">Sets the number of times the client retries a mount request before giving up. Default is 1 time.</font></td></tr>
+
+</table>
+
+<p><font face="Helvetica"><b>Figure 1:</b></font>&nbsp; <font face="Times"><i>Parameters for tuning NFS mounts</i></font>
+
+<p><font face="Times" size="+1">For example, Figure 2 shows settings for mounting a directory on client <b>eng</b>. The client waits 30 seconds for a response from the NFS server. If it doesn't get a response, it retries in the background up to three times.</font>
+
+<p><img src="tune_mount_options.gif" width=539 height=402>
+
+<p><font face="Helvetica"><b>Figure 2:</b></font>&nbsp; <font face="Times"><i>Using NFS Manager to set NFS parameters</i></font>
+
+<p><font face="Helvetica"><b><i>Rules of thumb</i></b></font>
+
+<p><font face="Times" size="+1">Normally you should specify the <b>bg</b> option, so your system can retry mount requests in the background. Use the <b>fg</b> option if the mount provides applications or data that the client needs to operate.</font>
+
+<p><font face="Times" size="+1">The default values for <b>mnttimeo</b> and <b>retry</b> are normally fine. If the client accesses the server across a slow line--like a 56K-baud line or SLIP connection--or is overloaded, you can increase <b>mnttimeo</b> or <b>retry</b> to give the client a better chance of succeeding. Waiting longer for the server to respond doesn't cause big problems if the mount request is in the background. However, don't set these values higher than about 60 seconds--if the server doesn't respond in that time it's probably down and the client may as well give up the request.</font>
+
+<p><font face="Helvetica" size="+1"><b>NFS client/server communication</b></font>
+
+<p><font face="Times" size="+1">Once a directory is mounted, a different set of parameters takes effect. They determine how the client and server communicate. The parameters you can set are listed in Figure 3.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica"><b>Parameter</b></font></td>
+
+<td><font face="Helvetica"><b>Use</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica"><b>rsize</b></font></td>
+
+<td><font face="Helvetica">Sets the size of the buffer for reading data from the server. Default is 8192 bytes.</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica"><b>wsize</b></font></td>
+
+<td><font face="Helvetica">Sets the size of the buffer for writing data to the server. Default is 8192 bytes.</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica"><b>timeo</b></font></td>
+
+<td><font face="Helvetica">Determines how long the client waits after making an NFS request before retransmitting the request. If there is no response after this time, the client multiplies <b>timeo</b> by 2, waits that long, and retransmits. Default is 7 tenths of a second.</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica"><b>retrans</b></font></td>
+
+<td><font face="Helvetica">Determines how many times the client retransmits a request before a soft mount reports an error and gives up, or a hard mount reports an error and continues trying. Default is 3 times.</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica"><b>soft</b> or <b>hard</b></font></td>
+
+<td><font face="Helvetica">Determines what a client should do if the server doesn't respond after the <b>retrans </b>number is exceeded: Soft mounts give up, while hard mounts keep trying. Default is hard.</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica"><b>rw</b> or <b>ro</b></font></td>
+
+<td><font face="Helvetica">Determines whether the server can both read and write (<b>rw</b>) or read-only (<b>ro</b>). Home directories and source code servers should be read-write so users can save their updates. LocalApps servers can be mounted read-only. Default is <b>rw</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica"><b>acregmin</b></font></td>
+
+<td><font face="Helvetica">Sets the minimum time file entries remain cached, in seconds. Default is 3 seconds.</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica"><b>acregmax</b></font></td>
+
+<td><font face="Helvetica">Sets the maximum time file entries remain cached, in seconds. Default is 60 seconds.</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica"><b>acdirmin</b></font></td>
+
+<td><font face="Helvetica">Sets the minimum time directory entries stay cached, in seconds. Default is 30 seconds.</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica"><b>acdirmax</b></font></td>
+
+<td><font face="Helvetica">Sets the maximum time directory entries stay cached, in seconds. Default is 60 seconds.</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica"><b>noac</b></font></td>
+
+<td><font face="Helvetica">Turns file attribute caching off; omitting this parameter leaves caching on.</font></td></tr>
+
+</table>
+
+<p><font face="Helvetica"><b>Figure 3:</b></font>&nbsp; <font face="Times"><i>Parameters for tuning NFS communication</i></font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">You set these parameters the same way you set the mount parameters. For example, Figure 2 also shows how to set communication parameters with NFS Manager.</font>
+
+<p><font face="Helvetica"><b><i>Reading and writing</i></b></font>
+
+<p><font face="Times" size="+1">The most important parameters are <b>rsize</b> and <b>wsize</b>. Set them to the largest sizes your network can handle with a minimum number of time-outs. Don't bother setting them higher than 8192--there's no added benefit.</font>
+
+<p><font face="Helvetica"><b><i>Timing out and retrying</i></b></font>
+
+<p><font face="Times" size="+1">Set <b>timeo</b> to maximize efficiency when the server doesn't respond to a request. Setting it too high causes the client to wait too long to retransmit when a server drops a request, and therefore increases access times. Setting it too low may cause the client to retransmit when the server didn't drop a request but was just slow to respond. These unnecessary retransmit requests increase network traffic and slow things down even more.</font>
+
+<p><font face="Times" size="+1">Setting <b>retrans</b> can stop a client from hanging when a server of a read-only, soft-mounted partition fails. For hard mounts this parameter only determines when an &quot;NFS server</font><br>
+<font face="Times" size="+1"><i>server_name</i> not responding, still trying&quot; message will be displayed. You don't normally need to change this parameter.</font>
+
+<p><font face="Helvetica"><b><i>Soft and hard mounts</i></b></font>
+
+<p><font face="Times" size="+1">Always use the <b>hard</b> parameter with read-write mounts. A server must be stateless, which means it has to be able to restart at any time. When it comes back up, it reestablishes communication with its clients, and continues where it left off. When a client writes to a server, the server always sends a reply saying that the data has been written to a non-volatile media, like a hard disk, so the client knows exactly which data was received successfully. Using the <b>hard</b> setting ensures that the client of a failed server keeps trying until the server comes back up. After a server reestablishes communication, the client can continue where it left off with no data corruption.</font>
+
+<p><font face="Times" size="+1">In contrast, if a server is mounted read-write with the <b>soft</b> parameter and the server goes down while a client is writing data, the client can give up without finishing the write operation. This leaves the server with incomplete, corrupted data.</font>
+
+<p><font face="Helvetica"><b><i>Attribute caching</i></b></font>
+
+<p><font face="Times" size="+1">You can use the parameters <b>acregmin</b>, <b>acregmax</b>, <b>acdirmin</b>, <b>acdirmax</b>, and <b>noac</b> to cache attributes of files and directories. The minimum and maximum parameters control whether the client caches directory entries about files and subdirectories, and how long information stays in the cache. Caching this data reduces the number of messages sent across the network. In addition, the mapped file system (MFS) interacts with NFS--if NFS is caching a file's attributes, MFS tries to keep pages of that file in memory as well. This improves performance further.</font>
+
+<p><font face="Times" size="+1">You may notice the effects of read caching if you compile source code from an NFS server: The first compile you run is relatively slow compared to later compilations. This is because the header files are read in from the server and information about them is cached on the client. Since these files don't normally change between compilations, the information about them is held in the client's cache indefinitely, until it's swapped out to make room for other information.</font>
+
+<p><font face="Times" size="+1">A side effect of caching is that a client may not always have the most recent information about a file. For example, if a user on one client computer changes a file on a server, a user on another client computer may not detect the change until the client's attribute caching time expires. If you're using an application that needs to know immediately when a remote file changes, use the <b>noac</b> parameter to turn off caching.</font>
+
+<p><font face="Times" size="+1">Another reason to set the <b>noac</b> parameter is testing. For example, one of the tests described later in this article times a read request from the server. The data is read ten times and the average time is measured. If attribute caching had been turned on, the file's information would have been read just once from the server and cached on the client. So the next nine read requests would have gotten data not from the server but from the client's cache, giving incorrect test results.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Tuning tests</b></font>
+
+<p><font face="Times" size="+1">Three Ethernet adapters are now supported for NEXTSTEP for Intel Processors: The 3Com EtherLink</font><font size="-1"><sup>&reg;</sup></font> <font face="Times" size="+1">III, SMC EtherCard PLUS Elite 16</font><font size="-1"><sup><sup>TM</sup></sup></font><font face="Times" size="+1">, and Intel EtherExpress</font><font size="-1"><sup><sup>TM</sup></sup></font><font face="Times" size="+1">. Each gives you a choice of external connector--BNC, AUI, or twisted pair. (Not all connectors are available on all adapters.) The type of external connection you use doesn't affect performance or tuning of NFS on the adapter, but each adapter has different levels of performance and must be tuned differently.</font>
+
+<p><font face="Times" size="+1">I ran the adapters through two tests. The first was reading a one-megabyte file from an NFS server, with the Ethernet adapter in the client computer. The second test was writing a one-megabyte file to an NFS server, with the Ethernet adapter in the server.</font>
+
+<p><font face="Times" size="+1">To perform the read or write I copied a file. I varied the values of the <b>rsize</b>, <b>wsize</b>, and <b>timeo </b>parameters one at a time, measuring the time it took to read or write and the number of time-outs that occurred. I repeated each test ten times and took the average time as the result. The better performing adapter has shorter copy time and fewer timeouts.</font>
+
+<p><font face="Times" size="+1">The PC I used was an ALR</font><font size="-1"><sup>&reg;</sup></font> <font face="Times" size="+1">Evolution IV</font><font size="-1"><sup><sup>TM</sup></sup></font> <font face="Times" size="+1">DX-2/166 EISA, with a Conner</font><font size="-1"><sup>&reg;</sup></font> <font face="Times" size="+1">1.3-gigabyte disk and a DPT</font><font size="-1"><sup>&reg;</sup></font> <font face="Times" size="+1">2022 SCSI controller with 4 megabytes of cache set for read and write caching. I used a 25-megahertz, 68040-based NeXTstation as the second system in all the tests. I also ran the tests between two 25-megahertz, 68040-based NeXTstation computers, to show the effects of changing the parameters for existing NeXT computers on a network.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>3Com EtherLink III</b></font>
+
+<p><font face="Times" size="+1">This adapter has the smallest input buffer of the three: It's just two kilobytes. For this adapter, NFS read and write performance goes up and the number of time-outs drops dramatically when <b>rsize</b> and <b>wsize</b> are 1024 bytes. With larger values the buffer fills up and the adapter misses packets. Decreasing the values further decreases performance while reducing time-outs only slightly, and so isn't worthwhile.</font>
+
+<p><br><br>
+
+<p><img src="3ComElink3_Rsize.gif" width=197 height=223>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="3ComElink3_Wsize.gif" width=197 height=223>
+
+<p><font face="Helvetica"><b>Figure 4:</b></font>&nbsp; <font face="Times"><i>3Com EtherLink III read test</i></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font face="Helvetica"><b>Figure 5:</b></font>&nbsp; <font face="Times"><i>3Com EtherLink III write test</i></font>
+
+<p><font face="Times" size="+1">Changing the <b>timeo</b> value affects speed only if a significant number of time-outs occur, as the next two graphs show. I plotted the results of changing it only for this adapter, because it didn't affect other adapters.</font>
+
+<p><br><br>
+
+<p><img src="3ComElink3_Rtimeo.gif" width=299 height=223>
+
+<p><font face="Helvetica"><b>Figure 6:</b></font>&nbsp; <font face="Times"><i>3Com EtherLink III read test, varying <b>timeo</b></i></font>
+
+<p><br><br>
+
+<p><img src="3ComElink3_Wtimeo.gif" width=298 height=223>
+
+<p><font face="Helvetica"><b>Figure 7:</b></font>&nbsp; <font face="Times"><i>3Com EtherLink III write test, varying <b>timeo</b></i></font>
+
+<p><font face="Times" size="+1">Reducing <b>timeo</b> increases speed because a retransmit request is sent sooner for a dropped packet. With the default <b>timeo</b> of 7, there are 13.2 time-outs and a write time of 24.8 seconds. By decreasing <b>timeo</b> to 3, you get about the same number of time-outs, but the write speed increases almost 50 percent to 12.7 seconds.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>SMC EtherCard PLUS Elite 16</b></font>
+
+<p><font face="Times" size="+1">This is the mid-range adapter, with a larger receive buffer than the 3Com adapter.</font>
+
+<p><br><br>
+
+<p><img src="SMCeCard16_Rsize.gif" width=197 height=223>
+
+<p><font face="Helvetica"><b>Figure 8:</b></font>&nbsp; <font face="Times"><i>SMC EtherCard PLUS Elite 16 read test
+
+<p><br><br>
+
+<p></i></font><font face="Times" size="+1">The changes in read performance are small compared to those in write performance, as the next graph shows.</font>
+
+<p><br><br>
+
+<p><img src="SMCeCard16_Wsize.gif" width=197 height=223>
+
+<p><font face="Helvetica"><b>Figure 9:</b></font>&nbsp; <font face="Times"><i>SMC EtherCard PLUS Elite 16 write test</i></font>
+
+<p><font face="Times" size="+1">An <b>rsize</b> and <b>wsize</b> of 4096 provide the best performance on this adapter.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Intel EtherExpress</b></font>
+
+<p><font face="Times" size="+1">This adapter has the largest receive buffer of the three and provides the best performance.</font>
+
+<p><br><br>
+
+<p><img src="IntelEtherExp_Rsize.gif" width=197 height=223>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="IntelEtherExp_Wsize.gif" width=197 height=223>
+
+<p><font face="Helvetica"><b>Figure 10:</b></font>&nbsp; <font face="Times"><i>Intel EtherExpress read test</i></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font face="Helvetica"><b>Figure 11:</b></font>&nbsp; <font face="Times"><i>Intel EtherExpress write test</i></font>
+
+<p><font face="Times" size="+1">The large buffer means there are no time-outs, no matter how you set the tuning parameters. Performance drops as <b>rsize</b> and <b>wsize</b> decrease, so keep them as large a possible.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>NeXTstation</b></font>
+
+<p><font face="Times" size="+1">The data for a NeXTstation provide relative data and highlight some problems you may have in mixed networks. In particular, the NeXTstations slow as <b>rsize</b> and <b>wsize</b> decrease. If you're using NeXTstations as NFS servers and have 3Com EtherLink III adapters on the same network--or to a lesser extent, SMC EtherCard PLUS Elite 16 adapters--changing <b>rsize</b> and <b>wsize</b> will affect each adversely.</font>
+
+<p><br><br><br><br>
+
+<p><img src="NS040_Rsize.gif" width=196 height=223>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="NS040_Wsize.gif" width=197 height=223>
+
+<p><font face="Helvetica"><b>Figure 12:</b></font>&nbsp; <font face="Times"><i>NeXTstation read test</i></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font face="Helvetica"><b>Figure 13:</b></font>&nbsp; <font face="Times"><i>NeXTstation write test</i></font>
+
+<p><font face="Times" size="+1">Decreasing the buffer size to 1024 significantly reduces the performance of NeXTstations. Reducing <b>timeo</b> can increase the speed of the 3Com adapter when setting <b>rsize</b> and <b>wsize</b> to 8192, which keeps the performance of the NeXTstations at its best. However, you will still have many time-outs--and therefore retransmissions--on your network. This will increase the network traffic and slow things down as network load goes up, and isn't the best solution.</font>
+
+<p><font face="Times" size="+1">A better choice is to set <b>rsize</b> and <b>wsize</b> to 1024 for the computers using 3Com adapters. This reduces the number of time-outs and retransmissions on the network. The optimal but not necessarily most practical thing to do is to put the different hardware in different NetInfo domains, so you can use different NFS mount parameters.</font>
+
+<p><font face="Helvetica" size="+1"><b>Result summary</b></font>
+
+<p><font face="Times" size="+1">For PC networking, the Intel EtherExpress adapter provides the best performance of the three currently compatible adapters, so it's the best choice for performance.</font>
+
+<p><font face="Times" size="+1">If you must use a different adapter, you can still tune NFS to get optimal performance.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica"><b>Adapter</b></font></td>
+
+<td nowrap><font face="Helvetica"><b>wsize</b></font></td>
+
+<td nowrap><font face="Helvetica"><b>rsize</b></font></td>
+
+<td><font face="Helvetica"><b>timeo</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica">3Com EtherLink III</font></td>
+
+<td nowrap><font face="Helvetica">1024</font></td>
+
+<td nowrap><font face="Helvetica">1024</font></td>
+
+<td><font face="Helvetica">3</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica">SMC EtherCard PLUS Elite16</font></td>
+
+<td nowrap><font face="Helvetica">4096</font></td>
+
+<td nowrap><font face="Helvetica">4096</font></td>
+
+<td><font face="Helvetica">-</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=10></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica">Intel EtherExpress</font></td>
+
+<td nowrap><font face="Helvetica">8192</font></td>
+
+<td nowrap><font face="Helvetica">8192</font></td>
+
+<td><font face="Helvetica">-</font></td></tr>
+
+</table>
+
+<p><font face="Helvetica"><b>Figure 14:</b></font>&nbsp; <font face="Times"><b><i>wsize</i></b><i>, <b>rsize</b>, and <b>timeo</b> settings for highest performance</i></font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Conclusions</b></font>
+
+<p><font face="Times" size="+1">In most cases, tuning NFS performance can make a big difference in overall network performance, and thereby in system usability. To fine-tune your system, you can run tests like these. Be sure to turn off caching while testing, so you get accurate results.</font>
+
+<p><font face="Times" size="+1">Your Ethernet media also affect how you tune NFS parameters. In future articles I'll cover tuning NFS across T1 lines, 56K-baud lines, routers, and SLIP connections.</font> <font face="Times" size="-1">n</font>
+
+<p><font face="Times"><i>Wayde Schroeder is a Premium Support Engineer. He's been at NeXT for three years. You can reach him by e-mail at <b>Wayde_Schroeder@next.com</b>.</i></font>
+
+
+
+<p>
+
+</body>
+</html>

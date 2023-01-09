@@ -1,0 +1,532 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NEXTSTEP_In_Focus/1993Fall/Tips.rtf -->
+<!-- Date: Sun Jan  1 15:46:14 2023 -->
+<head>
+<title>Tips</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times"><i>NEXTSTEP In Focus</i>, Fall 1993 (Volume 3, Issue 4).</font><br>
+<font face="Times">Copyright</font> &copy;<font face="Times">1993 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>TIPS &amp; TECHNIQUES</b></font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Fun with booting</b></font>
+
+<p><font face="Times" size="+1">When you start up a PC with NEXTSTEP, you get the boot prompt, <b>boot</b>: This is your chance to send commands to the booter and change how the system starts. For example, you can select a different boot disk than the computer normally uses or load special drivers. Here's how to do it.</font>
+
+<p><font face="Helvetica" size="+1"><b>Booter syntax</b></font>
+
+<p><font face="Times" size="+1">The booter syntax for NEXTSTEP for Intel Processors is this:</font>
+
+<p><img src="../../Images/sp.gif" width=12 height=1><font face="Courier"><i>xx</i>[(<i>d</i>[,<i>p</i>])]<i>kernel</i> [-s] [<i>options</i>]</font>
+
+<p><font face="Times" size="+1">Items in square brackets are optional. There must be no spaces in the command, except within options. The command is not case-sensitive. (For a quick summary of the options while you're booting, type <b>?</b> at the prompt.)</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><i>xx</i> is either <b>hd</b> for an IDE disk or <b>sd</b> for a SCSI disk.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><i>d</i> is the drive number, like <b>0</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><i>p</i> is the partition letter, like <b>a</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><i>kernel</i> is the name of the kernel you want to load; usually you'll use <b>mach_kernel</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b>-s</b> starts NEXTSTEP in single-user mode.</font></td></tr>
+
+</table>
+
+<p><font face="Times" size="+1">At the end of the command, you can specify additional options of the form <i>keyword</i><b>=</b><i>value</i>. Keywords that are made up of more than one word must be enclosed in quotation marks, and there can be no spaces between the keyword, the equals sign, and the value. The keywords are these:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b>config</b> Specifies the configuration data to use to start up the computer. <b>Instance0</b> selects the</font></td></tr>
+
+<tr valign=top>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">current configuration you created with Configure; <b>Default</b> selects the configuration from the</font></td></tr>
+
+<tr valign=top>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">installation CD-ROM, plus any drivers you loaded during installation.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b>maxmem</b> Indicates the amount of memory in your computer in kilobytes. For example, for a</font></td></tr>
+
+<tr valign=top>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">computer with 20 megabytes of memory, use <b>maxmem=20480</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b>rootdev</b> Specifies the device containing the root file system. For example, if the root device is</font></td></tr>
+
+<tr valign=top>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">on partition <b>a</b> of SCSI disk number 1, use <b>rootdev=sd1a</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b>&quot;Boot Drivers&quot;</b> Specifies the drivers the computer should load when booting. Enclose the list</font></td></tr>
+
+<tr valign=top>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">in quotation marks, with no space between the <b>=</b> and the quotation mark. For example:</font><br>
+<font face="Times" size="+1"><b>&quot;Boot Drivers&quot;= &quot;Adaptec1542B PS2Keyboard PS2Mouse&quot;</b></font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b>&quot;Active Drivers&quot;</b> Specifies the drivers to load during system initialization. These drivers can't</font></td></tr>
+
+<tr valign=top>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">operate a boot device, such as the hard disk containing the computer's root filesystem. The list</font></td></tr>
+
+<tr valign=top>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">must be in quotation marks, just like <b>&quot;Boot Drivers&quot;</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b>&quot;Ask For Drivers&quot;</b> Indicates whether the booter should ask while it's booting which</font></td></tr>
+
+<tr valign=top>
+
+<td nowrap></td>
+
+<td><font face="Times" size="+1">additional device drivers it should load. The default is <b>No</b>. For example:</font><br>
+<font face="Times" size="+1"><b>&quot;Ask For Drivers&quot;=Yes</b></font></td></tr>
+
+</table>
+
+<p><font face="Helvetica" size="+1"><b>Booting from an external SCSI drive</b></font>
+
+<p><font face="Times" size="+1">One common boot option is booting the computer from an external SCSI hard disk drive. How you do this depends on what other drives your computer uses.</font>
+
+<p><font face="Times" size="+1">If you have two SCSI disk drives with IDs 0 and 1 and want to boot from the SCSI drive 1, type this at the <b>boot:</b> prompt:</font>
+
+<p><img src="../../Images/sp.gif" width=12 height=1><font face="Courier">sd(1,a)mach_kernel rootdev=sd1a</font>
+
+<p><font face="Times" size="+1">If you have an internal IDE drive but want to boot from a SCSI drive, you have two options:</font>
+
+<p><font face="Helvetica"><b><i>Use the floppy disk that comes with NEXTSTEP</i></b></font>
+
+<p><font face="Times" size="+1">Normally, the computer boots from the IDE disk, usually drive <b>C</b>. However, if there's a disk in the floppy disk drive (DOS drive <b>A</b>), and the floppy controller isn't disabled, the computer boots from the floppy disk drive.</font>
+
+<p><font face="Times" size="+1">Insert the NEXTSTEP boot floppy (labelled, <i>CD-ROM Installation Disk</i>) in the floppy disk drive and restart the computer. At the <b>boot:</b> prompt, type:</font>
+
+<p><img src="../../Images/sp.gif" width=12 height=1><font face="Courier">sd()mach_kernel</font>
+
+<p><font face="Times" size="+1">The computer boots the Mach kernel and the rest of NEXTSTEP from the SCSI disk.</font>
+
+<p><font face="Helvetica"><b><i>Install a mini NEXTSTEP partition on the IDE disk</i></b></font>
+
+<p><font face="Times" size="+1">You can install a miniature NEXTSTEP partition on your IDE disk, one that your computer can boot from but that leaves plenty of space on the disk. However, following this procedure erases anything already on the disk:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica" size="-1"><b>1</b></font></td>
+
+<td><font face="Times" size="+1">Boot NEXTSTEP from the SCSI disk as described above.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica" size="-1"><b>2</b></font></td>
+
+<td><font face="Times" size="+1">Log in as <b>root</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica" size="-1"><b>3</b></font></td>
+
+<td><font face="Times" size="+1">Start up the Terminal application and use <b>fdisk</b> to create a non-DOS partition on the IDE drive for NEXTSTEP:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=17 height=1><font face="Courier">/usr/etc/fdisk /dev/rhd0h</font>
+
+<p><font face="Times" size="+1"><b>Note:</b> It's <b>rhd0h</b>, not <b>rhd0a</b>!</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica" size="-1"><b>4</b></font></td>
+
+<td><font face="Times" size="+1">Create a NEXTSTEP file system for this partition:</font></td></tr>
+
+</table>
+
+<p><img src="../../Images/sp.gif" width=12 height=1><font face="Courier">/usr/etc/disk -i /dev/rhd0h</font>
+
+<p><font face="Times" size="+1">This also creates the necessary NEXTSTEP boot blocks for the IDE drive. (See the UNIX manual page for <b>disk</b>.)</font>
+
+<p><font face="Times" size="+1">Now when you boot the computer, the NEXTSTEP boot manager on the IDE disk presents the <b>boot:</b> prompt. At the prompt, type this command:</font>
+
+<p><img src="../../Images/sp.gif" width=12 height=1><font face="Courier">sd()mach_kernel</font>
+
+<p><font face="Times" size="+1">As above, the computer boots the Mach kernel and NEXTSTEP from the SCSI disk.</font>
+
+<p><br><br><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>New NeXTanswers e-mail commands</b></font>
+
+<p><font face="Times" size="+1">NeXTanswers keeps growing and growing. We've added new commands so you can search for files based on keywords, split large files so they're easier to mail, and more.</font>
+
+<p><font face="Times" size="+1">An e-mail message to NeXTanswers (<b>NeXTanswers@next.com</b>) can contain more than one command. The current commands are these:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b>ascii</b> Tells NeXTanswers to send all mail as plain Internet mail, not NeXTmail, and to try to convert all files into ASCII.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b>help</b> Requests the help file.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b>index</b> Requests the current file index.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b>index by date</b> Requests the current index, sorted newest item to oldest item.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b>reply-to <i>address</i></b> Causes NeXTanswers to send replies to <i>address</i>, rather than to the address in the request message's From or Reply-To lines.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b>search [<i>keywords</i>]</b> Requests all the files that contain all the keywords.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b>split</b> Splits any large outgoing e-mail into 95- kilobyte chunks. Mail is split and tagged according to the MIME Message/Partial specification. The NeXTmail application doesn't automatically rejoin these messages, but some other mail programs do.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b><i>number</i></b> Sends file <i>number</i> as NeXTmail.&nbsp;&nbsp; Remember to include the <b>ascii</b> command if you don't use NeXTmail.</font></td></tr>
+
+</table>
+
+<p><font face="Helvetica" size="+1"><b>By the way: Using the right return address</b></font>
+
+<p><font face="Times" size="+1">NeXTanswers sends mail to the address in the From line of your request message. If your From line isn't correct, NeXTanswers can't reply to you. If you have this problem, you should set your Reply To line to an address NeXTanswers can use.</font>
+
+<p><font face="Times" size="+1"><b>Soon to come:</b> The NeXTanswers BBS!</font>
+
+<p><br><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Filling your NEXTSTEP library</b></font>
+
+<p><font face="Times" size="+1">If you're looking to add to your library of system administration references, or are just starting to acquire one, here's a list of excellent texts to consider. The list was compiled by Bob O'Connor, an independent consultant--he's included comments on many of the books.</font>
+
+<p><font face="Times" size="+1">Anderson, Gail, and Paul Anderson. <i>The UNIX C Shell Field Guide</i>. Englewood Cliffs, NJ: Prentice-Hall, 1986. ISBN 0-13-937468-X.</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td><font face="Times" size="+1"><i>An excellent step-by-step tutorial on scripting.</i></font></td></tr>
+
+</table>
+
+<p><font face="Times" size="+1">Comer, Douglas. <i>Internetworking with TCP/IP, Volume I: Protocol and Architecture</i>, 2nd edition. Englewood Cliffs, NJ: Prentice Hall, 1991. ISBN 0-13-468505-9.</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td><font face="Times" size="+1"><i>A good conceptual overview; useful for non-programmers.</i></font></td></tr>
+
+</table>
+
+<p><font face="Times" size="+1">Comer, Douglas. <i>Internetworking with TCP/IP Volume III: Client-Server Programming and Applications.</i> Englewood Cliffs, NJ: Prentice Hall, 1991. ISBN 0-13-474222-2</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td><font face="Times" size="+1"><i>A more advanced discussion of these topics than is in Volume I.</i></font></td></tr>
+
+</table>
+
+<p><font face="Times" size="+1">Garfinkel, Simson, and Gene Spafford. <i>Practical UNIX Securit</i>y. Sebastopol, CA: O'Reilly &amp; Associates, 1991. ISBN 0-937175-72-2.</font>
+
+<p><font face="Times" size="+1">Hunt, Craig. <i>TCP/IP Network Administration</i>. Sebastopol, CA: O'Reilly &amp; Associates, 1992. ISBN 0-937175-82-X.</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td><font face="Times" size="+1"><i>Includes a discussion of <b>sendmail</b> files.</i></font></td></tr>
+
+</table>
+
+<p><font face="Times" size="+1">Krol, Ed. <i>The Whole Internet: User's Guide and Catalog</i>.&nbsp;&nbsp;&nbsp; Sebastopol, CA: O'Reilly &amp; Associates, 1992. ISBN 1-56592-025-2.</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td><font face="Times" size="+1"><i>Provides both an excellent big-picture understanding of the Internet and a great discussion of tools and resources to be productive.</i></font></td></tr>
+
+</table>
+
+<p><font face="Times" size="+1">Lamb, Linda. <i>Learning the vi Editor</i>.&nbsp;&nbsp;&nbsp; Sebastopol, CA: O'Reilly &amp; Associates, 1990. ISBN 0-937175-67-6<i>.</i></font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td><font face="Times" size="+1"><i>Part of the &quot;Nutshell Handbook&quot; series. Short and concise, an excellent reference. Includes a useful quick reference card.</i></font></td></tr>
+
+</table>
+
+<p><font face="Times" size="+1">Nemeth, Evi, Garth Snyder, and Scott Seebass. <i>UNIX System Administration Handbook</i>. Englewood Cliffs, NJ: Prentice-Hall, 1989. ISBN 0-13-933441-6.</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td><font face="Times" size="+1"><i>An excellent introduction for beginners</i>.</font></td></tr>
+
+</table>
+
+<p><font face="Times" size="+1">Specialized Systems Consultants. <i>UNIX System Command Summary for Berkeley 4.2 and 4.3 BSD</i>. Seattle, WA: Specialized Systems Consultants, 1986. ISBN 0-916151-17-4.</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td><font face="Times" size="+1"><i>A very useful quick reference guide.</i></font></td></tr>
+
+</table>
+
+<p><font face="Times" size="+1">Stern, Hal. <i>Managing NFS and NIS</i>.&nbsp;&nbsp;&nbsp; Sebastopol, CA: O'Reilly &amp; Associates, 1992. ISBN 0-937175-75-7.</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td><font face="Times" size="+1"><i>Describes how NFS works and is loaded with diagnostic and problem-solving tips.</i></font></td></tr>
+
+</table>
+
+<p><font face="Times" size="+1">Todino, Grace, and Dale Dougherty. <i>Managing UUCP and Usenet</i>. Sebastopol, CA: O'Reilly &amp; Associates, 1992. ISBN 0-937175-93-5.</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td><font face="Times" size="+1"><i>Another in the &quot;Nutshell Handbook&quot; series. Choppy, but informative as a reference.</i></font></td></tr>
+
+</table>
+
+<p><font face="Times" size="+1">Todino, Grace, and Dale Dougherty. <i>Using UUCP and Usenet</i>. Sebastopol, CA: O'Reilly &amp; Associates, 1991. ISBN 0-937175-10-2.</font>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td><font face="Times" size="+1"><i>Part of the &quot;Nutshell Handbook&quot; series. Choppy, but an informative reference.</i></font></td></tr>
+
+</table>
+
+<p><font face="Helvetica" size="+1"><b>Other lists of books</b></font>
+
+<p><font face="Times" size="+1">Others have compiled lists of useful texts as well. One to check out is Samuel Ko's <i>A Concise Guide to UNIX Books</i>. To get it, contact him at <b>sko@wimsey.bc.ca</b>.</font>
+
+<p><font face="Times" size="+1">For another extensive list of more general UNIX and C books, see <i>YABL--</i>Yet Another Book List. It's available via anonymous ftp at <b>ftp.rahul.net:pub/mitch/YABL/yabl.Z</b>.</font>
+
+<p><font face="Times"><i>Special thanks to Bob O'Connor for this list and the accompanying comments! Bob is an independent consultant specializing in a variety of operating systems. He welcomes comments and additions to this list and can be reached at <b>justbob@andi.org</b>.</i></font>
+
+
+
+<p><br>
+
+</body>
+</html>

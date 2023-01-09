@@ -1,0 +1,608 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NEXTSTEP_In_Focus/1993Fall/Advanced_Networking_Tools.rtfd -->
+<!-- Date: Sun Jan  1 15:46:13 2023 -->
+<head>
+<title>Advanced_Networking_Tools</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times"><i>NEXTSTEP In Focus</i>, Fall 1993 (Volume 3, Issue 4).</font><br>
+<font face="Times">Copyright</font> &copy;<font face="Times">1993 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+4">Advanced Networking Tools</font>
+
+<p><font face="Times" size="+1">Dan Peknik</font>
+
+<p><font face="Times" size="+1"><i>In managing a large Ethernet network, you need to assess your network's performance and understand how it affects servers and clients. Several programs based on NEXTSTEP's system administration tools can help you collect diagnostic data. You can also use third-party tools to design and manage networks effectively.</i></font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Dealing with unplanned growth</b></font>
+
+<p><font face="Times" size="+1">A network can grow in many ways. For instance, if a department in your organization expands into several departments, you might use routers, concentrators, and more servers to add computers. If your network has grown without much planning, how well is it running? What are the major sources of network traffic, and are they impeding performance? How does the network's structure affect both users and hardware?</font>
+
+<p><font face="Times" size="+1">Fortunately, several network administration tools are at your disposal to help you answer these questions and plan future network expansion. NEXTSTEP provides a set of software tools to help you diagnose networking pitfalls. Many third-party products on the market can provide more detail.</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Map out what's where</b></font>
+
+<p><font face="Times" size="+1">A great way to start understanding your network is to map it out accurately. When you have a graphical view of the physical topology of your network and a history of the changes you've made, you'll find it easier to track and plan network expansion.</font>
+
+<p><font face="Times" size="+1">Some network management systems can automatically diagram the network for you. However, you can make a map of your network with anything from pencil and paper to a complicated illustration application--the most effective tool is the one you find easiest to use. Figure 1 shows an example of a high-level network topology diagram.</font>
+
+<p><br><br>
+
+<p><img src="Network.gif" width=584 height=465>
+
+<p><font face="Helvetica"><b>Figure 1:</b></font>&nbsp; <font face="Times" size="+1"><i>A network topology diagram for a typical company, Grunge Inc.</i></font>
+
+<p><font face="Times" size="+1">If your network is very complex, use several diagrams. For example, Grunge Inc. could use additional diagrams to show the topology of each subnet.</font>
+
+<p><font face="Times" size="+1">In your diagram, include all the meaningful, accurate reference information about the network that you can think of. The more complete the diagram, the easier it is to trace and correct problems.</font>
+
+<p><font face="Times" size="+1">For example, label routers and important cable segments and indicate their types, such as fiber or twisted pair. Use line style or color to indicate cable type. If a cable splits, show what device splits it--include its name, so you can query it remotely. You might even highlight hardware that's not connected to an uninterruptable power source (UPS) to note problem areas in the event of power failure. Most important, include a key that says what the symbols and colors mean, so that later you or someone else can easily understand the diagram.</font>
+
+<p><font face="Times" size="+1">If you're not sure whether to include a piece of information, throw it in just in case. You can decide over time which information is unnecessary. Better to have too much information than too little, especially when you have to fix the network fast!</font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Detect congestion</b></font>
+
+<p><font face="Times" size="+1">Packet collisions can be a major cause of network inefficiency. A collision occurs when two or more computers on the network try to transmit data at the same time. The packets collide and become deformed, losing headers, destination addresses, and the data they were meant to carry.</font>
+
+<p><font face="Times" size="+1">Because collisions are a normal part of Ethernet operations, controllers are designed to handle them properly. When a network interface detects a collision, it waits for activity on the network to stop and then tries to retransmit its data. It uses a &quot;binary exponential back-off&quot; policy, which works something like this: If a network interface detects a collision, it waits a random amount of time and tries to retransmit. If collisions continue, it repeats waiting a random amount of time and retrying the transmission. The algorithm it uses to choose the wait time ensures that on average, the delay time doubles with each retry attempt. This is a very effective method of handling collisions.</font>
+
+<p><font face="Times" size="+1">A correctly engineered network shouldn't have enough collisions to degrade network performance. However, when a network is overloaded with traffic or when it contains improperly configured systems, lots of collisions can result, causing a network &quot;traffic jam.&quot;</font>
+
+<p><font face="Helvetica" size="+1"><b>Measuring collisions with netstat</b></font>
+
+<p><font face="Times" size="+1">One way to monitor collisions is to use the <b>netstat</b> command. <b>netstat</b> has several parameters to isolate different types of network traffic.</font>
+
+<p><font face="Times"><i>See the <b>netstat</b> UNIX manual page for a list of all the parameters you can use.</i></font>
+
+<p><font face="Times" size="+1">Figure 2 shows an example of <b>netstat</b> output for all interfaces on the computer <b>grunge</b>. The <b>-i</b> option shows statistics on all interfaces that were automatically configured at boot time.</font>
+
+<p><br><br>
+
+<p><font face="Courier">grunge&gt; <b>netstat -i</b></font><br>
+<font face="Courier">Name&nbsp;&nbsp; Mtu&nbsp;&nbsp;&nbsp; Network&nbsp;&nbsp;&nbsp; Address&nbsp;&nbsp;&nbsp;&nbsp; Ipkts&nbsp;&nbsp;&nbsp;&nbsp; Ierrs&nbsp;&nbsp; Opkts&nbsp;&nbsp;&nbsp;&nbsp; Oerrs&nbsp;&nbsp; Coll</font><br>
+<font face="Courier">en0&nbsp;&nbsp;&nbsp; 1500&nbsp;&nbsp; mynet&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; grunge&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 6976827&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 8133029&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0</font><br>
+<font face="Courier">lo0&nbsp;&nbsp;&nbsp; 1536&nbsp;&nbsp; loopback&nbsp;&nbsp; localhost&nbsp;&nbsp; 318631&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 318631&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0</font><br>
+<font face="Courier">en0&nbsp;&nbsp;&nbsp; 1500&nbsp;&nbsp; none&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; none&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 7023624&nbsp;&nbsp; 217&nbsp;&nbsp;&nbsp;&nbsp; 8133029&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 74821</font>
+
+<p><font face="Helvetica"><b>Figure 2:</b></font>&nbsp; <font face="Times" size="+1"><i>Sample output from <b>netstat -i</b></i></font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">The statistics displayed by <b>netstat -i</b> are these:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b>Name</b> The name of the Ethernet interface. For example, en0 is the physical Ethernet adapter in your computer. lo0 is the loopback interface--the reserved loopback address is 127.0.0.1.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b>MTU</b> The maximum transmission unit, which is the fixed upper limit on the amount of data that can be transferred in one physical frame. The MTU for Ethernet is 1500.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b>Network</b> The logical name of the network the interface connects to. The name comes from the <b>/networks</b> NetInfo property.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b>Ipkts</b> The number of packets received on this interface.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b>Ierrs</b> The number of errors that occurred as packets entered this interface.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b>Opkts</b> The number of packets sent out from this interface.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b>Oerrs</b> The number of errors that occurred as packets left this interface.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b>Coll</b> The number of collisions that have occurred on this interface.</font></td></tr>
+
+</table>
+
+<p><font face="Times" size="+1">A simple test is to check the Coll value of the <i>last</i> Ethernet interface. It should be less than about ten percent of the total number of packets--in the example, the collision rate is well within tolerance. While this is a good quick-and-dirty test for problems, it's just a statistic--you'll need to collect more data to pinpoint exact problems. For instance, if Opkts is very small, you can't rely on the collision count to give an accurate picture of performance. Use other tools to collect data to support the values you find with <b>netstat</b>.</font>
+
+<p><font face="Times" size="+1">To gather more information, run <b>netstat -i</b> at various times of day to see if your network has higher collision rates at specific times. Focus on the peak times and match them to specific occurrences, like everyone logging in first thing in the morning or many people running some application right after lunch. Also collect more information from other computers, both clients and servers, for comparison and greater depth of data.</font>
+
+<p><font face="Times" size="+1">Study the average of the numbers--if the average number of collisions is high, some reorganization via routers and subnets may help, or perhaps further investigation is needed.</font>
+
+<p><font face="Times" size="+1">Keep in mind too that using long cables can increase the likelihood of collisions. Use shorter Ethernet segments so that the network can handle increased traffic before collisions become a problem.</font>
+
+<p><font face="Helvetica" size="+1"><b>Counting connections</b></font>
+
+<p><font face="Times" size="+1">Another way to check network load and performance is to run <b>netstat</b> without options and count the number of protocol connections. Figure 3 shows an example.</font>
+
+<p><font face="Courier">grunge&gt; <b>netstat</b></font><br>
+<font face="Courier">Active Internet connections</font><br>
+<font face="Courier">Proto&nbsp;&nbsp; Recv-Q Send-Q Local Address Foreign Address (state)</font><br>
+<font face="Courier">tcp&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; grunge.2866&nbsp;&nbsp; server.2453&nbsp;&nbsp;&nbsp;&nbsp; ESTABLISHED</font><br>
+<font face="Courier">tcp&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; grunge.688&nbsp;&nbsp;&nbsp; grunge.736&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ESTABLISHED</font><br>
+<font face="Courier">tcp&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; grunge.736&nbsp;&nbsp;&nbsp; grunge.688&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ESTABLISHED</font><br>
+<font face="Courier">tcp&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; grunge.688&nbsp;&nbsp;&nbsp; grunge.719&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ESTABLISHED</font><br>
+<font face="Courier">tcp&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; grunge.719&nbsp;&nbsp;&nbsp; grunge.688&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ESTABLISHED</font><br>
+<font face="Courier">tcp&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; grunge.716&nbsp;&nbsp;&nbsp; server.714&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ESTABLISHED</font><br>
+<font face="Courier">tcp&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; grunge.709&nbsp;&nbsp;&nbsp; server.715&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ESTABLISHED</font><br>
+<font face="Courier">tcp&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; grunge.688&nbsp;&nbsp;&nbsp; grunge.707&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ESTABLISHED</font><br>
+<font face="Courier">tcp&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; grunge.707&nbsp;&nbsp;&nbsp; grunge.688&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ESTABLISHED</font><br>
+<font face="Courier">tcp&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; grunge.704&nbsp;&nbsp;&nbsp; server.714&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ESTABLISHED</font><br>
+<font face="Courier">tcp&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 32&nbsp;&nbsp;&nbsp;&nbsp; grunge.688&nbsp;&nbsp;&nbsp; grunge.702&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ESTABLISHED</font><br>
+<font face="Courier">tcp&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; grunge.702&nbsp;&nbsp;&nbsp; grunge.688&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ESTABLISHED</font><br>
+<font face="Courier">udp&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; localhost.ntp *.*</font><br>
+<font face="Courier">udp&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; grunge.ntp&nbsp;&nbsp;&nbsp; *.*</font>
+
+<p><font face="Helvetica"><b>Figure 3:</b></font>&nbsp; <font face="Times" size="+1"><i>Sample output from <b>netstat</b></i></font>
+
+<p><font face="Times" size="+1">The Send-Q column shows the number of entries waiting to be sent out. By checking the numbers in the Send-Q column, you can see whether the network is too congested. This number should be 0 for most of the connections when things are running smoothly. If it's higher than 0 for several connections, you might have too much traffic on the network.</font>
+
+<p><font face="Helvetica" size="+1"><b>Monitoring remotely</b></font>
+
+<p><font face="Times" size="+1">There's another special tool--<b>snmpnetstat</b>--for monitoring and diagnosing congestion and performance remotely, to make network administration easier. <b>snmpnetstat</b> is designed to run with Simple Network Management Protocol (SNMP) which is included with NEXTSTEP since Release 3.0. SNMP is a combination of host daemons and programs that can remotely and continuously monitor many network and system functions.</font>
+
+<p><font face="Times"><i>To find out how to install SNMP, see the NEXTSTEP Network and System Administration book.</i></font>
+
+<p><font face="Times"><i>For a NEXTSTEP interface to many SNMP queries, check out NetWatch</i></font><font size="-1"><sup><sup>TM</sup></sup></font><font face="Times"><i>, a set of applications based on SNMP from RidgeBack Solutions, Inc.</i></font>
+
+<p><font face="Times" size="+1">To monitor performance on a remote computer without <b>snmpnetstat</b>, you log in with <b>telnet</b> or <b>rsh</b> and then run <b>netstat</b>. With <b>snmpnetstat</b> you can query the host remotely. <b>snmpnetstat</b> continues collecting statistics until you stop it. For instance, you can remotely invoke the SNMP daemon on <b>grunge</b> and then monitor <b>grunge</b> for collisions and bad packets.</font>
+
+<p><font face="Times" size="+1">Figure 4 shows statistics on interface en0 on host <b>grunge</b>, collected at two-second intervals. You can use <b>snmpnetstat</b> to constantly monitor a host's performance, particularly to diagnose problems that are intermittent and therefore hard to catch. You can also use SNMP to make protocol-specific inquiries on a specified computer, as in Figure 5.</font>
+
+<p><font face="Courier">client&gt; <b>snmpnetstat -I en0 grunge 2</b></font><br>
+<img src="../../Images/sp.gif" width=14 height=1><font face="Courier">input (en0)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; output&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; input (Total)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; output</font><br>
+<img src="../../Images/sp.gif" width=7 height=1><font face="Courier">packets errs&nbsp; packets&nbsp; errs colls&nbsp; packets&nbsp; errs&nbsp; packets&nbsp; errs colls</font><br>
+<img src="../../Images/sp.gif" width=14 height=1><font face="Courier">206083&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp; 137452&nbsp;&nbsp;&nbsp;&nbsp; 2&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp; 618097&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp; 498223&nbsp;&nbsp;&nbsp;&nbsp; 2&nbsp;&nbsp;&nbsp;&nbsp; 0</font><br>
+<img src="../../Images/sp.gif" width=49 height=1><font face="Courier">0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 36&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 36&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp; 0</font><br>
+<img src="../../Images/sp.gif" width=42 height=1><font face="Courier">11&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 9&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 57&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 53&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp; 0</font><br>
+<img src="../../Images/sp.gif" width=49 height=1><font face="Courier">0&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 51&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 52&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp; 0</font><br>
+<img src="../../Images/sp.gif" width=49 height=1><font face="Courier">2&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 40&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 38&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp; 0</font><br>
+<img src="../../Images/sp.gif" width=42 height=1><font face="Courier">11&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 8&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 72&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 67&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp; 0</font><br>
+<img src="../../Images/sp.gif" width=49 height=1><font face="Courier">0&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 38&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 39&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp; 0</font><br>
+<img src="../../Images/sp.gif" width=42 height=1><font face="Courier">10&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 8&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 71&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 68&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp; 0</font><br>
+<img src="../../Images/sp.gif" width=49 height=1><font face="Courier">2&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 41&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 39&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp; 0</font><br>
+<img src="../../Images/sp.gif" width=49 height=1><font face="Courier">5&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 46&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 38&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp; 0</font><br>
+<img src="../../Images/sp.gif" width=42 height=1><font face="Courier">11&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 10&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 73&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 71&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp; 0</font><br>
+<img src="../../Images/sp.gif" width=49 height=1><font face="Courier">1&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 38&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 38&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp; 0</font><br>
+<img src="../../Images/sp.gif" width=49 height=1><font face="Courier">0&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 36&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 36&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp; 0</font><br>
+<img src="../../Images/sp.gif" width=6 height=1><font face="Times" size="-2">...</font><br>
+<font face="Helvetica"><b>Figure 4:</b></font>&nbsp; <font face="Times" size="+1"><i>Sample output from <b>snmpnetstat</b></i></font>
+
+<p><br><br>
+
+<p><font face="Courier">client1&gt; <b>snmp grunge</b></font><br>
+<font face="Courier">snmp&gt; <b>ip-status</b></font><br>
+<font face="Courier">The SNMP entity is acting as a host.</font><br>
+<font face="Courier">The default time-to-live for IP packets is 60 msec.</font><br>
+<font face="Courier">Datagrams received: 407020, forwarded: 0, consumed: 407024</font><br>
+<img src="../../Images/sp.gif" width=56 height=1><font face="Courier">format errors: 0, misdeliveries: 0, resource limitations: 0</font><br>
+<img src="../../Images/sp.gif" width=56 height=1><font face="Courier">destined for unknown protocols: 0</font><br>
+<font face="Courier">Datagrams req'd for transmission: 0, discarded due to no route: 0</font><br>
+<font face="Courier">Timeout value for reassembly queue: 60</font><br>
+<font face="Courier">Fragments created: 0, Fragments received needing reassembly: 12344</font><br>
+<font face="Courier">Datagrams successfully reassembled: 12344, successfully fragmented: 0</font><br>
+<font face="Courier">Datagrams needing fragmentation (but the IP flags field said not to): 0</font>
+
+<p><font face="Courier">snmp&gt; <b>tcp-status</b></font><br>
+<font face="Courier">The retransmission algorithm is vanj.</font><br>
+<font face="Courier">Min/max retransmission times are: 1000/64000 (msecs)</font><br>
+<font face="Courier">Max # of simultaneous TCP connections allowed: -1</font><br>
+<font face="Courier">Number of active opens: 358, passive opens: 266, current open connections: 21</font><br>
+<font face="Courier">Failed connection attempts: 0, connection resets: 0</font><br>
+<font face="Courier">Number of segents received: 144189, sent: 143194, retransmitted: 14</font>
+
+<p><font face="Helvetica"><b>Figure 5:</b></font>&nbsp; <font face="Times" size="+1"><i>Making an SMNP protocol query</i></font>
+
+<p><font face="Times" size="+1">The first query in the example in Figure 5 asks <b>grunge</b> for its IP statistics. These statistics include important information on network fragmentation and general protocol errors. The second query requests TCP statistics, such as the number of failed connection attempts.</font>
+
+<p><font face="Times"><i>UDP statistics aren't currently enabled in NEXTSTEP, so the SNMP command <b>udp-status</b> doesn't work.</i></font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Check out file system performance</b></font>
+
+<p><font face="Times" size="+1">The Network File System (NFS) protocol suite can account for a major part of network traffic. Computers use NFS to mount file systems from one computer to another. Copying and moving files, for example, are handled by NFS. Because NFS is usually very heavily used, its performance has a big effect on overall network performance.</font>
+
+<p><font face="Times" size="+1">One way to find NFS performance problems is to look at individual clients that import directories, and isolate any that are dropping packets or are being overloaded. In Figure 6, <b>nfsstat</b> shows the NFS statistics for <b>client1. nfsstat -c</b> reports statistics about NFS requests that this system created.</font>
+
+<p><font face="Courier">client1&gt; <b>nfsstat -c</b></font>
+
+<p><font face="Courier">Client rpc:</font><br>
+<font face="Courier">calls&nbsp;&nbsp;&nbsp; badcalls retrans badxid timeout wait newcred</font><br>
+<font face="Courier">4267683&nbsp; 54&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 529&nbsp;&nbsp;&nbsp;&nbsp; 2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 582&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp; 0</font>
+
+<p><font face="Helvetica"><b>Figure 6:</b></font>&nbsp; <font face="Times" size="+1"><i>Sample output from <b>nfsstat -c</b></i></font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">The statistics displayed are:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b>calls</b> Number of RPC calls initiated</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b>badcalls</b> Number of calls rejected</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b>retrans</b> Number of times a call was resent</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b>badxid</b> Number of packets that lost data</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b>timeout</b> Number of times a call timed out</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b>wait</b> Number of times a call had to wait on a busy client handle</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><b>newcred</b> Number of times authentication information had to be refreshed</font></td></tr>
+
+</table>
+
+<p><font face="Times" size="+1">The most important values are those for retrans, badxid, and calls. The retrans field (here a client RPC value) indicates the number of RPC requests the client had to retransmit while reading or writing files using NFS. If the number of retransmissions is larger than five percent, then the interface has needed to repeat RPC requests from a server a relatively high percentage of the time, and may be in trouble. If retrans is large and badxid and time-out are roughly equal, then one or more of your computers is dropping packets. This means it's too bogged down to handle all incoming requests and is refusing client RPC requests.</font>
+
+<p><font face="Times" size="+1">Because this data comes from the client RPC, it represents the NFS server's load more than the network hardware's load. To measure possible network problems with <b>netstat -c</b>, see if retrans is high and badxid is relatively close to zero. If so, retransmissions might be caused not by server slowness but by network data corruption. You'll need to use a network analyzer (see the next section) to look at the original network packets and check for data corruption.</font>
+
+<p><font face="Times"><i>To learn more about NFS, see the NEXTSTEP Network and System Administration book.</i></font>
+
+<p><font face="Times"><i>To find out how to tune NFS, see &quot;NFS Performance Tuning&quot; in this issue.</i></font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Go looking for trouble</b></font>
+
+<p><font face="Times" size="+1">An effective all-purpose networking tool is a network analyzer, usually a portable computer equipped with a special Ethernet adapter and software for network monitoring. You can connect it to the network at critical locations to test everything from the packets traversing two computers to the total statistics of an entire network. Figure 7 shows statistics from a Network General Sniffer.</font>
+
+<p><font face="Times" size="+1">With a network analyzer you can collect data to find peak network load and possible weaknesses in design. In addition to a complete suite of scripts and statistics, network analyzers can generate heavy network traffic on demand for testing, and also isolate and study the form and function of any message that traverses the net! While a network analyzer is a large investment, it's invaluable in solving problems and understanding the true nature of networking.</font>
+
+<p><img src="../../Images/sp.gif" width=112 height=1><font face="Courier">Network History</font>
+
+<p><img src="../../Images/sp.gif" width=28 height=1><font face="Courier">This report provides the error history for a specified length</font><br>
+<img src="../../Images/sp.gif" width=35 height=1><font face="Courier">of time.</font>
+
+<p><img src="../../Images/sp.gif" width=28 height=1><font face="Courier">Monitoring Started:&nbsp;&nbsp;&nbsp; Aug 30 14:27:39&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Total Stations:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 49</font><br>
+<img src="../../Images/sp.gif" width=28 height=1><font face="Courier">Monitoring Stopped:&nbsp;&nbsp;&nbsp; Aug 30 14:27:59</font><br>
+<img src="../../Images/sp.gif" width=28 height=1><font face="Courier">Elapsed Time:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 day(s) 00:00:20</font><br>
+<font face="Courier">-----------------------------------------------------------------------------</font><br>
+<img src="../../Images/sp.gif" width=42 height=1><font face="Courier">Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Frames&nbsp;&nbsp; Errs&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Bytes&nbsp;&nbsp; Size&nbsp;&nbsp; % Abs</font><br>
+<font face="Courier">-----------------------------------------------------------------------------</font><br>
+<font face="Courier">&#34;Aug 30 14:58:55&#34;,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 135,&nbsp;&nbsp;&nbsp;&nbsp; 0,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 34350,&nbsp;&nbsp; 254,&nbsp;&nbsp; 0.60</font><br>
+<font face="Courier">&#34;Aug 30 14:59:00&#34;,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 490,&nbsp;&nbsp;&nbsp;&nbsp; 0,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 154508,&nbsp;&nbsp; 315,&nbsp;&nbsp; 2.66</font><br>
+<font face="Courier">&#34;Aug 30 14:59:05&#34;,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 166,&nbsp;&nbsp;&nbsp;&nbsp; 0,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 68322,&nbsp;&nbsp; 411,&nbsp;&nbsp; 1.15</font><br>
+<font face="Courier">&#34;Aug 30 14:59:10&#34;,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 79,&nbsp;&nbsp;&nbsp;&nbsp; 0,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 20345,&nbsp;&nbsp; 257,&nbsp;&nbsp; 0.35</font><br>
+<font face="Courier">&#34;Aug 30 14:59:15&#34;,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 355,&nbsp;&nbsp;&nbsp;&nbsp; 0,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 228762,&nbsp;&nbsp; 644,&nbsp;&nbsp; 3.79</font><br>
+<font face="Courier">&#34;Aug 30 14:59:20&#34;,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 423,&nbsp;&nbsp;&nbsp;&nbsp; 0,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 160453,&nbsp;&nbsp; 379,&nbsp;&nbsp; 2.72</font><br>
+<font face="Courier">&#34;Aug 30 14:59:25&#34;,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 465,&nbsp;&nbsp;&nbsp;&nbsp; 0,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 195115,&nbsp;&nbsp; 419,&nbsp;&nbsp; 3.30</font><br>
+<font face="Courier">&#34;Aug 30 14:59:30&#34;,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 332,&nbsp;&nbsp;&nbsp;&nbsp; 0,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 87987,&nbsp;&nbsp; 265,&nbsp;&nbsp; 1.53</font><br>
+<font face="Courier">&#34;Aug 30 14:59:35&#34;,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 216,&nbsp;&nbsp;&nbsp;&nbsp; 0,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 55464,&nbsp;&nbsp; 256,&nbsp;&nbsp; 0.97</font><br>
+<font face="Courier">&#34;Aug 30 14:59:40&#34;,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 628,&nbsp;&nbsp;&nbsp;&nbsp; 0,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 100432,&nbsp;&nbsp; 159,&nbsp;&nbsp; 1.84</font><br>
+<font face="Courier">&#34;Aug 30 15:01:25&#34;,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 171,&nbsp;&nbsp;&nbsp;&nbsp; 0,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 65936,&nbsp;&nbsp; 385,&nbsp;&nbsp; 1.12</font><br>
+<font face="Courier">&#34;Aug 30 15:01:30&#34;,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 493,&nbsp;&nbsp;&nbsp;&nbsp; 0,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 342028,&nbsp;&nbsp; 693,&nbsp;&nbsp; 5.66</font><br>
+<font face="Courier">&#34;Aug 30 15:01:35&#34;,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 255,&nbsp;&nbsp;&nbsp;&nbsp; 0,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 65768,&nbsp;&nbsp; 257,&nbsp;&nbsp; 1.15</font><br>
+<font face="Courier">&#34;Aug 30 15:01:40&#34;,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 159,&nbsp;&nbsp;&nbsp;&nbsp; 0,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 36553,&nbsp;&nbsp; 229,&nbsp;&nbsp; 0.64</font><br>
+<font face="Courier">&#34;Aug 30 15:01:45&#34;,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1305,&nbsp;&nbsp;&nbsp;&nbsp; 0,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 270150,&nbsp;&nbsp; 207,&nbsp;&nbsp; 4.82</font><br>
+<font face="Courier">&#34;Aug 30 15:01:50&#34;,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1953,&nbsp;&nbsp;&nbsp;&nbsp; 0,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 458085,&nbsp;&nbsp; 234,&nbsp;&nbsp; 8.07</font><br>
+<font face="Courier">&#34;Aug 30 15:01:55&#34;,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1058,&nbsp;&nbsp;&nbsp;&nbsp; 1,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 222309,&nbsp;&nbsp; 210,&nbsp;&nbsp; 3.96</font><br>
+<font face="Courier">&#34;Aug 30 15:02:00&#34;,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 832,&nbsp;&nbsp;&nbsp;&nbsp; 0,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 147970,&nbsp;&nbsp; 177,&nbsp;&nbsp; 2.68</font><br>
+<font face="Courier">&#34;Aug 30 15:02:05&#34;,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 400,&nbsp;&nbsp;&nbsp;&nbsp; 0,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 162994,&nbsp;&nbsp; 407,&nbsp;&nbsp; 2.76</font><br>
+<font face="Courier">&#34;Aug 30 15:02:10&#34;,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 996,&nbsp;&nbsp;&nbsp;&nbsp; 0,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 506630,&nbsp;&nbsp; 508,&nbsp;&nbsp; 8.48</font><br>
+<font face="Courier">&#34;Aug 30 15:02:15&#34;,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 740,&nbsp;&nbsp;&nbsp;&nbsp; 0,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 647642,&nbsp;&nbsp; 875,&nbsp; 10.64</font>
+
+<p><font face="Helvetica"><b>Figure 7:</b></font>&nbsp; <font face="Times" size="+1"><i>Sample output from a network analyzer</i></font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Improve network performance</b></font>
+
+<p><font face="Times" size="+1">To maintain performance as your network grows, you may need to partition it into smaller segments that isolate traffic. Partitioning a network separates it into sections and allows you to optimize the performance of each section--divide and conquer! For example, you can isolate groups of computers that are high traffic systems from other groups.</font>
+
+<p><font face="Times" size="+1">There are two basic ways to partition a network: Bridging and routing. You can choose one or the other, or use a combination.</font>
+
+<p><font face="Helvetica" size="+1"><b>Bridging</b></font>
+
+<p><font face="Times" size="+1">You can use a bridge to connect two or more Local Area Network (LAN) segments. Bridges use Ethernet addresses to determine where to send packets. Adaptive or &quot;learning&quot; bridges can automatically tell where a packet is being sent, where it should be forwarded, and what's the best path for it to follow. They use a combination of hardware and software to study your network and make accurate decisions based on packet source information.</font>
+
+<p><font face="Times" size="+1">Bridges tend to be &quot;plug-and-play&quot; solutions. Because they operate independently of the higher level protocols used on your network, they have a small performance cost. The disadvantage of using bridges is that they provide less traffic isolation than a router.</font>
+
+<p><font face="Times" size="+1">For instance, when a packet is broadcast, a bridge usually passes the broadcast message to all segments of the network. You can configure some bridges to disable forwarding broadcast traffic, but doing so also prevents some related network operations between computers on opposite sides of the bridge. In contrast, a router can safely isolate broadcasts to specific segments. If broadcast traffic is a major part of your network, then maybe a bridge won't help.</font>
+
+<p><font face="Times" size="+1">Bridges are often used in smaller networks, and many vendors now package multiport bridges into 10-base-T hubs, called &quot;switching hubs.&quot; Bridges can also increase throughput of individual subnets that use routers.</font>
+
+<p><font face="Helvetica" size="+1"><b>Routing</b></font>
+
+<p><font face="Times" size="+1">Alternatively, you can use routers to split a large network into sections, or subnets. A router uses the network address (IP address) in the packet to determine which subnet to forward a packet to. Some routers can even collect diagnostic data.</font>
+
+<p><font face="Times"><i>To find out how to create subnets, see the NEXTSTEP Network and System Administration book.</i></font>
+
+<p><font face="Times" size="+1">Routers take more time to configure than bridges, because they have lots of configuration options. For example, you can configure</font><br>
+<font face="Times" size="+1">a router to lock out certain types of network protocols and traffic, for security or optimization. Routers are also better able to isolate broadcast traffic than bridges and are therefore more effective in insulating traffic between subnets. And they can connect LANs that are of different types, like FDDI and Ethernet. Furthermore, to connect a network to the Internet you must use a router. They're suited for connecting Wide Area Networks (WANs) over great distances with leased lines or even public data services.</font>
+
+<p><font face="Times" size="+1">Unlike bridges, which don't care what protocols they're transporting, routers need specific software for each protocol they route. You need to be sure that the router you choose supports the protocols you need. When you compare performance claims from different router vendors, be sure that the numbers refer to the protocols you'll use. One model of router may be the fastest at handling routing of IPX--Novell's networking protocol--while a different model may be the best at handling the IP protocol--native to NEXTSTEP.</font>
+
+<p><font face="Helvetica" size="+1"><b>Strengthening signals with repeaters</b></font>
+
+<p><font face="Times" size="+1">Some network problems, particularly intermittent problems, are caused by using network cabling that's too long, so that signal strength is weak. You can use a repeater to enhance and even correct a network's signal strength.</font>
+
+<p><font face="Times" size="+1">The advantage of a repeater is that it's a low-cost way to extend an Ethernet network. The disadvantage is that in the same way that a repeater enhances good signals, it enhances bad ones, too! Therefore, test how well repeaters work in your network before buying them.</font>
+
+<p><font face="Times" size="+1">Both bridges and repeaters can extend a network, but in different ways. Here are some trade-offs to consider in choosing which to use:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1">Repeaters are less expensive.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1">Repeaters can extend a network only so far; bridges can extend it an arbitrary distance.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1">Both bridges and repeaters can regenerate electrical signals and remove noise from moderately degraded signals.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1">Bridges won't transmit packets that are too damaged to fix, while repeaters will transmit corrupted data.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1">Repeaters don't enhance throughput of a network; they simply extend its length somewhat. A bridge can partially improve network performance.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1">A packet can traverse a repeater faster than it can a bridge. So if the traffic on the network is light enough that few collisions occur, a repeater provides better performance.</font></td></tr>
+
+</table>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+3"><b>Conclusions</b></font>
+
+<p><font face="Times" size="+1">As your network grows more complex, you need specialized tools to analyze it. Hopefully, this article has given you sufficient information about studying your network. A future article will explore more administrative tools.</font>
+
+<p><font face="Times" size="+1">Reading about and hacking on your network can be both educational and intriguing. Here are my personal choices of several excellent reference books:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1">Comer, Douglas E. <i>Internetworking with TCP/IP</i>. Englewood Cliffs, NJ: Prentice Hall, 1991. ISBN 0-13-468505-9.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><i>Managing NFS and NIS</i>. Sebastopol, CA: O'Reilly and Associates, 1991. ISBN 0-937175-75-7.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1"><i>System Performance Tuning</i>. Sebastopol, CA: O'Reilly and Associates, 1991. ISBN 0-937175-60-9.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1">Miller, Mark. <i>Troubleshooting TCP/IP Analyzing the Protocols of the Internet</i>. San Mateo, CA: M &amp; T Books, 1992. ISBN 1-55851-268-3.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="-2"><sup>n</sup></font></td>
+
+<td><font face="Times" size="+1">NeXT Computer, Inc. <i>NEXTSTEP Network and System Administration.</i> Menlo Park, CA: Addison Wesley, 1992. ISBN 0-201-63254-3.</font> <font face="Times" size="-1">n</font></td></tr>
+
+</table>
+
+<p><font face="Times"><i>Dan Peknik is a System and Network Support Engineer in the Customer Support Team. You can reach him by e-mail at <b>Dan_Peknik@next.com.</b></i></font>
+
+<p><br><br><br><br><br>
+
+<p><font face="Helvetica" size="+3">The NetInfo <b>networks</b> property</font>
+
+<p><font face="Helvetica">When you run <b>netstat</b> with the <b>-i</b> option, among the information displayed is the name of each computer's subnet, if the subnet has a name in NetInfo. An appropriate name is usually easier to remember and work with than a network address, particularly if you have many subnets. So, it's a good idea to create a <b>networks </b>directory in NetInfo and give each subnet a name.</font>
+
+<p><font face="Helvetica">For example, the default subnet number that comes with a NEXTSTEP system is <b>192.42.172</b> and its name is <b>next-default</b>.</font>
+
+<p><br><br>
+
+<p><img src="CopyOfnetinfo1.gif" width=529 height=267>
+
+<p><font face="Helvetica"><i>Each new NEXTSTEP system has the <b>next-default</b> subnet built in.</i></font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica">The address property of <b>next-default</b> contains the subnet number for the network:</font>
+
+<p><img src="CopyOfnetinfo2.gif" width=343 height=289>
+
+<p><font face="Helvetica"><i>Each subnet has a unique number within the network.</i></font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica">The <b>name</b> property contains the name, which is what <b>netstat -i</b> displays:</font>
+
+<p><img src="CopyOfnetinfo3.gif" width=343 height=289>
+
+<p><font face="Helvetica"><i>You can choose any subnet name.</i></font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica">When you run <b>netstat -i</b>, any computer in the 192.42.172 subnet has the name <b>next-default</b> in the Network column. (For example, see Figure 2 in the main article.)</font>
+
+<p><font face="Helvetica">So the subnet name makes it easier to figure out which subnet a computer is in.<i>-DP</i></font>
+
+
+
+<p>
+
+</body>
+</html>

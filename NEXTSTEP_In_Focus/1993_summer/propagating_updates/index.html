@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NEXTSTEP_In_Focus/1993Summer/Propagating_Updates.rtf -->
+<!-- Date: Sun Jan  1 15:46:19 2023 -->
+<head>
+<title>Propagating_Updates</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times"><i>NEXTSTEP In Focus</i>, Summer 1993 (Volume 3, Issue 3).</font><br>
+<font face="Times">Copyright</font> &copy;<font face="Times">1993 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+4"><b>Propagating Updates</b></font>
+
+<p><font face="Helvetica">Alan M. Marcum and Garth Snyder</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">The only database that a NetInfo client can modify is the master database. Clones in a domain can only be read, not written, by clients. If a writing client happens to be connected to a clone server, it reconnects to the master before it writes new information.</font>
+
+<p><font face="Times" size="+1">So, how do modifications to the master's database reach the clones? Through an operation called <i>update propagation</i>. This article explains how update propagation works, including its performance optimizations and how it handles tricky updates.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>WHEN THE DATABASE CHANGES</b></font>
+
+<p><font face="Times" size="+1">When the master executes a write request, it makes the change in its database. Then it sends the update along to all the clones of the domain. This update propagation is automatic. System and network administrators don't need to manually intervene or tune the system.</font>
+
+<p><font face="Times" size="+1">Yet, although the update process sounds simple, it has subtleties that are interesting to explore.</font>
+
+<p><font face="Helvetica" size="+1"><b>What is sent to the clones</b></font>
+
+<p><font face="Times" size="+1">In general there are a few different ways to inform copies of any database, including clones in NetInfo, about changes to the database. One possibility is to send the entire database to the copies. Another way is to send only the data that changed. A third is to send a portion of the database, smaller than the entire database but greater than only the changed information. And a final option is to send some sort of transaction log that allows the copies to reconstruct the changes.</font>
+
+<p><font face="Times" size="+1">NetInfo usually uses a modified version of the final option of propagating updates--the NetInfo master server sends the transactions to the clones. For example, if the client that made the change used an <b>NI_WRITE</b> operation, which writes all of a directory's properties, the master also uses an <b>NI_WRITE</b> operation. If the client used an <b>NI_WRITEPROP</b> operation, which writes only one property, so does the master.</font>
+
+<p><font face="Times" size="+1">(Under special circumstances, the master sends the entire database to individual clones. See &quot;When a Clone Misses an Update,&quot; later in this article)</font>
+
+<p><font face="Helvetica" size="+1"><b>Updating immediately</b></font>
+
+<p><font face="Times" size="+1">When the master receives and executes a write request, it notifies the clones of the change to the domain immediately. This quick response helps ensure that all copies of the database are in sync with the master with minimal effort from an administrator, and with minimal chance for errors. The master sends the update to each clone in turn.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>KEEPING UPDATE PERFORMANCE HIGH</b></font>
+
+<p><font face="Times" size="+1">When there are many clones or many changes, the master server uses multi-threaded propagation and update coalescing to keep update propagation performance high.</font>
+
+<p><font face="Helvetica" size="+1"><b>Multi-threaded update propagation</b></font>
+
+<p><font face="Times" size="+1">If there are lots of updates, as is typically the case with a large network, the master server takes steps to decrease the delay between when the master gets the write request from the client and when it begins to propagate the update. When a client makes an update, the master begins propagating the update in a separate thread. If another update request arrives while the first is being propagated, the master starts a new thread to propagate the second update.</font>
+
+<p><font face="Times" size="+1">Multi-threaded update propagation is new in Release 3. In both Release 3.0 and Release 3.1, a single master can handle up to five update threads at one time.</font>
+
+<p><font face="Helvetica" size="+1"><b>Update coalescing</b></font>
+
+<p><font face="Times" size="+1">Another performance optimization NetInfo uses is <i>update coalescing</i>. When a master starts an update thread, it combines all pending updates--those that no threads are currently propagating--and sends them to each clone using a single connection. Multiple messages are sent through the connection--one message per update transaction. However, establishing the connection only once requires less overhead than sending each update through a separate connection.</font>
+
+<p><font face="Times" size="+1">When an update arrives while another update is being propagated, it isn't coalesced with the other update. Once an update thread begins running, the updates it propagates don't change. But, if all five update threads are running and a new update arrives, the new update waits in the work queue until a thread becomes available. Once a thread is available, the master coalesces all the updates waiting in the work queue, so they are all handled by the freed thread.</font>
+
+<p><font face="Times" size="+1">Update coalescing improves update performance in networks whose domains change frequently. There's a small price to pay, though: there's a two second delay between when the master receives a write request and when it begins propagating the change. This delay allows the master to coalesce changes whenever possible.</font>
+
+<p><font face="Times" size="+1">Update coalescing was also first implemented in Release 3.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>WHEN A CLONE MISSES AN UPDATE</b></font>
+
+<p><font face="Times" size="+1">What if a clone is down when an update is sent, or if the master cannot reach the clone because of a network failure? Sure, the master tries hard: it waits for a 60-second timeout period before giving up on sending an update to a clone. Still, failures can occur.</font>
+
+<p><font face="Times" size="+1">As an example, assume a network problem causes a clone to be inaccessible to the master for a while, although the clone server's computer continues running. While the clone is inaccessible, a client process makes a change to the domain. When the master propagates the update, the inaccessible clone doesn't receive it.</font>
+
+<p><font face="Times" size="+1">So, when the network problems are fixed, how will the clone's database be updated? Once the clone comes up, it'll begin getting updates, but what about updates sent while the clone isn't reachable?</font>
+
+<p><font face="Helvetica" size="+1"><b>Updates at startup time</b></font>
+
+<p><font face="Times" size="+1">When either a clone or the master starts up or is restarted, the clone's database is updated. When the master starts up, it tells all the clones that it has started, and sends its database checksum with the notice. If a clone is out of date, the clone requests a new copy of the current database.</font>
+
+<p><font face="Times" size="+1">Similarly, when a clone starts up it checks in with the master, sending the clone's checksum. Again, if the two checksums differ, the master sends the clone the entire database.</font>
+
+<p><font face="Helvetica" size="+1"><b>Updates after startup</b></font>
+
+<p><font face="Times" size="+1">It's possible, though, that both the master and clone could run for a long time without being restarted. This would seem to allow the clone's database to remain obsolete for quite a while.</font>
+
+<p><font face="Times" size="+1">However, every 30 minutes the master and the clones verify that all copies of the database are current, by verifying that the clones' checksums agree with the master's. So, a clone can't stay out of date for long.</font>
+
+<p><font face="Helvetica" size="+1"><b>Updates on the way</b></font>
+
+<p><font face="Times" size="+1">There's one instance, though, when the master won't send an out of date clone a copy of the database. If an update is being propagated that hasn't yet been sent to the clone, the master tells the clone that an update propagation is in progress. The clone <b>netinfod</b> then sends a message to its syslog:</font>
+
+<p><font face="Courier">transfer failed at Master server is busy: id=-1</font>
+
+<p><font face="Times" size="+1">The clone will be current once it receives the update.</font>
+
+
+
+<p>
+
+</body>
+</html>

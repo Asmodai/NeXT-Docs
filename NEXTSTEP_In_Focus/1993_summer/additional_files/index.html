@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NEXTSTEP_In_Focus/1993Summer/Additional_Files/ReadMe.rtf -->
+<!-- Date: Sun Jan  1 15:46:16 2023 -->
+<head>
+<title>ReadMe</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p align=center><font face="Times" size="+1"><b>Using ni_connections</b></font>
+
+<p><font face="Times" size="+1">It's sometimes useful to be able to determine the active NetInfo connections on a machine. Alhough this information is available, it's difficult to get and sometimes hard to understand.</font>
+
+<p><font face="Times" size="+1">The shell script <b>ni_connections</b> examines the existing network connections and determines whether each one is a connection to a <b>netinfod</b>.&nbsp; If it is, the script determines the tag of the database being served for the connection.&nbsp; The output reports the extant connections.&nbsp; Here's some sample output:</font>
+
+<p><img src="../../Images/sp.gif" width=28 height=1><font face="Courier">nescorna [~]-204% <b>ni_connections</b></font><br>
+<img src="../../Images/sp.gif" width=28 height=1><font face="Courier">connected to network on cadet via tcp port 696</font><br>
+<img src="../../Images/sp.gif" width=28 height=1><font face="Courier">connected to network on cadet via tcp port 696</font><br>
+<img src="../../Images/sp.gif" width=28 height=1><font face="Courier">connected to network on cadet via tcp port 696</font><br>
+<img src="../../Images/sp.gif" width=28 height=1><font face="Courier">connected to network on cadet via tcp port 696</font><br>
+<img src="../../Images/sp.gif" width=28 height=1><font face="Courier">connected to network on cadet via tcp port 696</font><br>
+<img src="../../Images/sp.gif" width=28 height=1><font face="Courier">connected to Rhino on exec via tcp port 697</font><br>
+<img src="../../Images/sp.gif" width=28 height=1><font face="Courier">connected to Rhino on exec via tcp port 697</font><br>
+<img src="../../Images/sp.gif" width=28 height=1><font face="Courier">connected to Rhino on exec via tcp port 697</font><br>
+<img src="../../Images/sp.gif" width=28 height=1><font face="Courier">connected to network on exec via tcp port 678</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">The output shows six connections to <b>netinfod network</b> (five on <b>cadet</b>, one on <b>exec</b>), and three connections to <b>netinfod Rhino</b> (all on <b>exec</b>).</font>
+
+<p><font face="Times" size="+1">The command has two options, as described in the following help message:</font>
+
+<p><img src="../../Images/sp.gif" width=28 height=1><font face="Courier">nescorna [~]-205% <b>ni_connections -help</b></font><br>
+<img src="../../Images/sp.gif" width=28 height=1><font face="Courier">Usage: ni_connections [-l] [-n] [host]</font><br>
+<img src="../../Images/sp.gif" width=84 height=1><font face="Courier">Use ni_connections -help for details</font><br>
+<img src="../../Images/sp.gif" width=28 height=1><font face="Courier">Arguments:</font><br>
+<img src="../../Images/sp.gif" width=84 height=1><font face="Courier">-l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Show connections to the local domain</font><br>
+<img src="../../Images/sp.gif" width=84 height=1><font face="Courier">-n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Use and show numeric addresses, instead of names</font><br>
+<img src="../../Images/sp.gif" width=84 height=1><font face="Courier">host&nbsp;&nbsp;&nbsp; Name of host whose connections should be checked</font>
+
+<p><img src="../../Images/sp.gif" width=28 height=1><font face="Courier">Defaults: localhost</font><br>
+<img src="../../Images/sp.gif" width=28 height=1><font face="Courier">Examples: ni_connections</font><br>
+<img src="../../Images/sp.gif" width=28 height=1><font face="Courier">ni_connections -l rhino</font>
+
+<p><font face="Times" size="+1">Use <b>-n</b> either to save time (translating names into addresses takes some time), to find out what host is involved if a host name is being truncated, and to connect to a <b>netinfod</b> somewhere outside your domain.</font>
+
+<p><font face="Times" size="+1"><b>ni_connections</b> uses <b>netstat</b> to obtain information about the active connections on a machine.&nbsp; If you use the optional <i>host</i> argument, <b>ni_connections</b> uses <b>snmpnetstat</b> to obtain the connection information from the remote machine, using the default SNMP community.</font>
+
+<p><font face="Times" size="+1">To install <b>ni_connections</b>, copy the file to an appropriate place on your system.&nbsp; We recommend using some place like <b>/usr/local/bin</b>; ideally, it should be in a directory in your UNIX search path.</font>
+
+<p><font face="Times" size="+1">Note: This software is unsupported by NeXT Computer, Inc.</font>
+
+<p><a href="ni_connections" target="mainFrame">ni_connections script.</a></p>
+
+</body>
+</html>

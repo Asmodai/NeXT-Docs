@@ -1,0 +1,215 @@
+#! /bin/sh -u
+#
+# @(#)ni_connections $Revision: 1.2 $ $Date: 93/07/23 19:18:13 $
+# $Author: amm $, $Locker:  $: $State: Rel1 $
+# $Source: /Users/amm/ni_connections/RCS/ni_connections.sh,v $
+#
+# Update log at end of file
+#
+# ni_connections: show extant NetInfo connections
+#
+# Copyright 1993 by NeXT Computer, Inc.  All rights reserved.
+
+PATH=/usr/bin:/bin:/usr/ucb:/usr/etc:/etc
+readonly PATH
+
+ECHO=echo
+ERROR=$ECHO
+WARNING=$ECHO
+DEBUG=$ECHO
+TRUE=true
+FALSE=false
+BASENAME=basename
+RM=rm
+CAT=cat
+readonly ECHO ERROR WARNING DEBUG TRUE FALSE BASENAME RM CAT
+
+AWK=awk
+NIDOMAIN=nidomain
+BM=bm
+NETSTAT=netstat
+SNMPNETSTAT=snmpnetstat
+SORT=sort
+HOSTNAME=hostname
+SED=sed
+readonly AWK NIDOMAIN BM NETSTAT SNMPNETSTAT SORT HOSTNAME SED
+
+LOCALTAG="tag=local"
+TEMP=/tmp/Bindings-$$
+readonly LOCALTAG TEMP
+
+# General return codes
+E_OK=0
+E_ShellError=1
+E_BadSyntax=2
+E_Intr=3
+E_Quit=4
+E_Term=5
+readonly E_OK E_ShellError E_BadSyntax E_Intr E_Quit E_Term
+
+E_NStat=6
+readonly E_NStat
+
+D_ArgV=localhost
+D_SkipLocal=$TRUE
+D_NumericInfo=$FALSE
+D_NumericFlag=
+readonly D_ArgV D_SkipLocal D_NumericInfo D_NumericFlag
+
+cleanup=$TRUE
+
+PGMNAME=`$BASENAME ${0} .sh`
+USAGE=\
+"Usage: ${PGMNAME} [-l] [-n] [host]
+	Use ${PGMNAME} -help for details"
+EXPLANATION="Arguments:
+	-l	Show connections to the local domain
+	-n	Use and show numeric addresses, instead of names
+	host	Name of host whose connections should be checked
+
+Defaults: $D_ArgV"
+EXAMPLES="${PGMNAME}
+${PGMNAME} -l rhino"
+readonly PGMNAME USAGE EXPLANATION EXAMPLES
+
+case ${1-NotHelp} in
+-help | -HELP | -Help)	# User wants more info
+    $ERROR 1>&2 "${USAGE}"
+    # For proper formatting, ${EXPLANATION} *MUST* be double-quoted, below
+    # If you remove the double-quotes, add '\n's to the end of each line
+    # in the definition of EXPLANATION, above.
+    $ERROR 1>&2 "${EXPLANATION}"
+    $ERROR 1>&2 "Examples: ${EXAMPLES}"
+    exit ${E_OK}
+    ;;
+esac
+
+# Assume all will be well.
+exitcode=$E_OK
+
+# Signal handlers
+# Normal termination handler; helps ensure clean exit
+trap \
+	"if \$cleanup; then
+	    $RM -f $TEMP;
+	 fi
+	    exit \$exitcode" \
+    0
+# Handler for SIGHUP and SIGINT.  Print a message and clean up.
+trap \
+	"$ERROR 1>&2 'Interrupted; cleaning up.';
+	    exitcode=$E_Intr; exit" \
+    1 2
+# Handler for SIGQUIT.  Leave the temp files for autopsy.
+trap \
+	"$ERROR 1>&2 'QUIT received; temp file $TEMP remains.';
+	    cleanup = $FALSE;
+	    exitcode=$E_Quit; exit" \
+    3
+# Handler for SIGTERM.  Clean up.
+trap \
+	"$ERROR 1>&2 'Terminated; cleaning up.';
+	    exitcode=$E_Term; exit" \
+    15
+
+while [ $# -gt 0 ]; do
+    case ${1} in
+    -l ) # Show the local domain
+	SkipLocal=$FALSE
+	;;
+    -n ) # Numeric information
+	NumericInfo=$TRUE
+	NumericFlag=-n
+	;;
+    -* ) # Unknown flag
+	$ERROR 1>&2 "${PGMNAME}: unknown flag ${1}"
+	$ERROR 1>&2 "${USAGE}"
+	exitcode=${E_BadSyntax}; exit
+	;;
+    *)	# Arguments follow
+	break
+	;;
+    esac
+    shift
+done
+
+host=${@-$D_ArgV}
+SkipLocal=${SkipLocal-$D_SkipLocal}
+NumericInfo=${NumericInfo-$D_NumericInfo}
+NumericFlag=${NumericFlag-$D_NumericFlag}
+
+is_local=$FALSE
+
+if [ "$host" != "localhost" ]; then
+    for h in `$HOSTNAME`; do
+	if [ "$h" = "$host" ]; then
+	    is_local=$TRUE
+	    break
+	fi
+    done
+else
+    is_local=$TRUE
+fi
+
+if $is_local; then
+    NSTAT="$NETSTAT $NumericFlag"
+    args=""
+else
+    NSTAT="$SNMPNETSTAT $NumericFlag"
+    args=$host
+fi
+
+$NSTAT $args | $SORT +4 > $TEMP
+status=$?
+if [ 0 -ne $status ]; then
+    $ERROR 1>&2 "Cannot get connection information; $NSTAT status $status"
+    exitcode=$E_NStat
+    exit $exitcode
+fi
+
+# $TEMP now has netstat sorted by remote port.  There's some garbage in
+# there, though; e.g. (note that this has been sorted, and isn't in the
+# order netstat prints it):
+#
+#Active Internet connections
+#udp        0      0  localhost.ntp          *.*                   
+#udp        0      0  nescorna.ntp           *.*                   
+#Proto Recv-Q Send-Q  Local Address          Foreign Address        (state)
+#
+# We'll get rid of it by filtering in awk for tcp or udp and not *.*
+
+for port in `$AWK \
+	'/^[tu][cd]p/ && $5 !~ /\*\.\*/	{printf "%s.%s\n", $5, $1}' $TEMP`; do
+    if $NumericInfo; then
+        # port has REMOTEIP.PORTNUM.TYPE, e.g., 192.42.172.5.666.tcp
+	# We want the IP Address in $1, the port in $2, and the type in $3
+	set `$ECHO "$port" | $SED 's/^\(..*\)\.\(..*\)\.\(..*\)$/\1 \2 \3/'`
+    else
+	# port has REMOTEHOST.PORTNUM.TYPE, e.g., rhino.666.tcp
+	# We want the hostname in $1, port in $2, and type in $3
+    	set `$ECHO "$port" | $AWK -f. '{printf "%s %s %s", $1, $2, $3}'`
+    fi
+    line=`$NIDOMAIN -l $1 | $BM "$3=$2"`
+    if [ -n "$line" ]; then
+	case "$line" in
+	${LOCALTAG}* ) # This line refers to the local domain
+	    if $SkipLocal; then
+		continue
+	    fi
+	    ;;
+	esac
+	$ECHO "$line" | $AWK '{print $1}' | \
+	    $AWK -F= '{printf "connected to %s on ", $2}'
+	$ECHO "$1 via $3 port $2"
+    fi
+done
+
+exit $exitcode
+
+# $Log:	ni_connections.sh,v $
+# Revision 1.2  93/07/23  19:18:13  amm
+# Modifications for numeric option, and for release with NSiF.
+# 
+# Revision 1.1  93/03/30  17:49:36  amm
+# Initial revision
+# 

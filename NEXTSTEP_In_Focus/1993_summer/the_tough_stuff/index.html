@@ -1,0 +1,637 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NEXTSTEP_In_Focus/1993Summer/The_Tough_Stuff.rtf -->
+<!-- Date: Sun Jan  1 15:46:19 2023 -->
+<head>
+<title>The_Tough_Stuff</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times"><i>NEXTSTEP In Focus</i>, Summer 1993 (Volume 3, Issue 3).</font><br>
+<font face="Times">Copyright</font> &copy;<font face="Times">1993 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+4"><b>The Tough Stuff</b></font>
+
+<p><font face="Helvetica">Alan M. Marcum and Marc Majka</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">Some things in NetInfo aren't obvious, even with the information we've presented so far. Other things have a subtlety that is critically important. This article addresses some of those issues: making changes that aren't as simple as you'd think, fixing mistakes in <b>trusted_networks</b>, starting NetInfo by hand, figuring out where client processes are bound, understanding console messages, backing up the NetInfo database, and recovering from disasters.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>MAKING &quot;SIMPLE&quot; CHANGES THAT AREN'T SO SIMPLE</b></font>
+
+<p><font face="Times" size="+1">A few changes to a NetInfo domain that seem simple and straightforward really aren't. Fouling up some of these changes can render a database or an entire domain unusable. Here's how to make these changes correctly.</font>
+
+<p><font face="Helvetica" size="+1"><b>Changing the master server for a domain</b></font>
+
+<p><font face="Times" size="+1">To change a master server of a domain you must make sure that all clones in the domain reference the new master. The name of the master server is stored in the domain's root directory, as the value of the <b>master</b> property. The format of this value is <i>machine</i>/<i>tag</i>, where <i>machine</i> is the name of the computer running the master server for the domain, and <i>tag</i> is that server's database tag.</font>
+
+<p><font face="Times" size="+1">For example, at Rhino Aviation, to change the</font><br>
+<font face="Times" size="+1">root domain master from <b>super21/Rhino</b> to <b>sabre/Rhino</b>, you'd need to follow these steps:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1">Ensure that a clone of the domain is running on <b>sabre</b>. At Rhino, there is an appropriate clone. If there weren't, you'd create a clone with, for example, NetInfoManager.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1">Make certain that all the server processes for the domain are up and running.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1">If you created a new clone in Step 1, ensure that the new clone has all the data from the domain. In Release 3, a newly built clone database usually isn't completely filled until about 30 minutes after it's initially built, or until the computer running the clone is rebooted.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1">Change the value of the <b>master</b> property from <b>super21/Rhino</b> to <b>sabre/Rhino</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1">Wait for the change of the <b>master</b> property's value to propagate to all the clones. Typically, this takes only a few minutes. To verify that the change has been propagated, examine the root directory of each database in the domain, using tagged domain specifications to reference the specific database.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1">Reboot all computers in the domain.</font></td></tr>
+
+</table>
+
+<p><font face="Times" size="+1">This procedure ensures that all the clones of the domain have the correct notion of the master. If you don't wait for the change to propagate, clones with the old information never receive new updates.</font>
+
+<p><font face="Helvetica" size="+1"><b>Changing any computer's name</b></font>
+
+<p><font face="Times" size="+1">By convention, each local domain in the domain hierarchy has the same name as the server computer for the domain. This is because of the value of the <b>serves</b> property in the parent of the computer's local domain. If you want to change a computer's name, it's helpful to make the computer name and the domain name match.</font>
+
+<p><font face="Times" size="+1">For example, assume you want to change the name of the computer <b>chaparral</b> to <b>chap</b>. <b>chaparral</b>'s local domain is a child of <b>/info</b>. (See Figure 2 in &quot;A Typical NetInfo Setup.&quot;) Before the change, <b>/info</b> has a <b>/machines/chaparral</b> directory, which in turn has a <b>serves</b> property containing <b>chaparral/local</b>. If you change just the value of that directory's <b>name</b>, the computer and domain names won't match--the computer will be <b>cha</b>p and the domain name will be <b>/info/chaparral</b>. While this isn't technically an error, it can be confusing.</font>
+
+<p><font face="Times" size="+1">So, when you change a computer name, also change the <b>serves</b> property in the parent domain. Also change the name in all domains it appears in and places it's used, like <b>/mounts</b> and <b>/locations/ntp</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>Changing a server computer's Internet address</b></font>
+
+<p><font face="Times" size="+1">Unless you have a two-level domain hierarchy, the computers providing NetInfo services are known both in the domain whose services are provided and in that domain's parent domain. So, if you change the Internet address of such a server computer, follow the guidelines for changing a computer's name, and be sure to change the Internet address in <i>all</i> the domains referencing the computer.</font>
+
+<p><font face="Helvetica" size="+1"><b>Changing the Internet address of the master server's computer</b></font>
+
+<p><font face="Times" size="+1">Changing the Internet address of the master server's computer requires a procedure nearly identical to that for changing the domain's master. You must make the change, wait for the change to propagate to all the clones of the domain, then reboot all the computers in the domain. Follow the guidelines for changing a computer's name and Internet address.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>FIXING TRUSTED_NETWORKS MISTAKES</b></font>
+
+<p><font face="Times" size="+1">The <b>trusted_networks</b> property in the root directory of a domain restricts access to the information in a domain based on the requesting computer's Internet address (see the <i>NEXTSTEP Network and System Administration</i> manual). If you mistype the value of the <b>trusted_networks</b> property, it's possible that almost no computer on the network will be able to access the affected domain.</font>
+
+<p><font face="Times" size="+1">However, the <b>root</b> user on the computer running the master server for a domain can always access and modify the domain. So if you mistype the value for a <b>trusted_networks</b> property and can't access the domain, you can fix the problem as <b>root </b>on the computer running the master server for the domain.</font>
+
+<p><font face="Times" size="+1">You might need to reference the domain by tag, to ensure that you're communicating with the master server. The best way to do this is to use the loopback Internet address, 127.0.0.1. From the command line, this looks something like:</font>
+
+<p><font face="Courier"># niutil -read -t 127.0.0.1/network /</font>
+
+<p><font face="Times" size="+1">If you're using NetInfoManager, choose the Open by Tag command in the Domain menu, specifying <b>127.0.0.1</b> as the host and <b>network</b> as the tag. Using the Internet address instead of the name of the computer ensures that your request won't fail when NetInfo Manager tries to find the name.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>STARTING NETINFO BY HAND</b></font>
+
+<p><font face="Times" size="+1">Sometimes when you encounter problems during system startup, you can fix them by booting in single-user mode and starting NetInfo by hand. The simplest way to do this is to run this command:</font>
+
+<p><font face="Courier">sh /etc/rc</font>
+
+<p><font face="Times" size="+1">Sometimes this hangs, though, and you must execute each step yourself. Here's how.</font>
+
+<p><font face="Helvetica" size="+1"><b>Starting, step-by-step</b></font>
+
+<p><font face="Times" size="+1">The sequence for starting NetInfo is different in NEXTSTEP Release 3.0 from Release 3.1. Here are the commands for starting NetInfo (including <b>lookupd</b>) under 3.0:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1"><b>mount -vat 4.3</b></font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1"><b>mach_swapon -av</b></font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1"><b>syslogd</b></font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1"><b>nmserver &amp;</b></font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1"><b>portmap</b></font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1"><b>nibindd</b></font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1"><b>lookupd</b></font></td></tr>
+
+</table>
+
+<p><font face="Times" size="+1">Note the ampersand (&amp;) in Step 4. It causes the command to run in the background.</font>
+
+<p><font face="Times" size="+1">Here's the sequence for Release 3.1. Include Step 2 only on Intel-based computers.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><b>1.</b></font></td>
+
+<td><font face="Times" size="+1"><b>nmserver -nonet</b></font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><b>2.</b></font></td>
+
+<td><font face="Times" size="+1"><b>driverLoader a</b></font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><b>3.</b></font></td>
+
+<td><font face="Times" size="+1"><b>sh /etc/rc.net -h</b></font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><b>4.</b></font></td>
+
+<td><font face="Times" size="+1"><b>mount -vat 4.3</b></font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><b>5.</b></font></td>
+
+<td><font face="Times" size="+1"><b>mach_swapon -av</b></font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><b>6.</b></font></td>
+
+<td><font face="Times" size="+1"><b>syslogd</b></font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><b>7.</b></font></td>
+
+<td><font face="Times" size="+1"><b>portmap</b></font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><b>8.</b></font></td>
+
+<td><font face="Times" size="+1"><b>nibindd</b></font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><b>9.</b></font></td>
+
+<td><font face="Times" size="+1"><b>lookupd</b></font></td></tr>
+
+</table>
+
+<p><font face="Helvetica" size="+1"><b>Invoking routing</b></font>
+
+<p><font face="Times" size="+1">One thing is missing from both of these sequences: enabling routing. If you need to enable routing to accomplish what you need to do--for example, if a needed server runs on a computer on another network--invoke it just before running <b>nibindd</b> in either sequence.</font>
+
+<p><font face="Times" size="+1">How you invoke routing depends on how you configured it using HostManager. If you chose dynamic routing, run the command <b>routed -q</b>. If you chose a specific route, also known as a <i>static route</i>, use the following command:</font>
+
+<p><font face="Courier">route add default <i>address</i> 1</font>
+
+<p><font face="Times" size="+1">Replace <i>address</i> with the Internet address you specified in HostManager.</font>
+
+<p><font face="Helvetica" size="+1"><b>Modifying the command sequence</b></font>
+
+<p><font face="Times" size="+1">Sometimes you have to modify the startup procedure, so that you stop short of starting <b>lookupd</b>. You should do this if certain problems appear, such as if <b>lookupd</b> seems to hang. Other times you'll want to run <b>nibindd</b> in the background, so that you can retain control of the system if you have problems running <b>nibindd</b>. For more information on handling problems like these, see the articles on NetInfo startup and <b>lookupd</b> in this issue, the troubleshooting information in <i>NEXTSTEP Network and System Administration</i>, Majka 1992, and Cottle, &quot;The Crash of the Master NetInfo Server,&quot; 1993.</font>
+
+<p><font face="Times" size="+1">Run the last step in either sequence, <b>lookupd</b>, only if you'll be using <b>lookupd</b>'s services. Frequently, you start NetInfo by hand to fix a NetInfo problem, and in these cases running <b>lookupd</b> can cause the system to hang.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>DETERMINING WHAT'S BOUND WHERE</b></font>
+
+<p><font face="Times" size="+1">An interesting question that's asked frequently regarding NetInfo is, &quot;To which server is a particular computer bound?&quot; Unfortunately, this question can't really be answered, since <i>computers</i> aren't bound to NetInfo servers. Rather, <i>processes</i> communicate with NetInfo servers, and different processes on the same computer can communicate with different NetInfo server processes for a given domain.</font>
+
+<p><font face="Times" size="+1">When a <b>netinfod</b> process binds, it remembers the address and tag of its parent, but doesn't keep a connection with its parent. Only when a NetInfo client process asks the <b>netinfod</b> for its parent's address and tag does the <b>netinfod</b> probe to check if its parent is running. It rebinds the same way it did when it started up, if the probe fails.</font>
+
+<p><font face="Times" size="+1">You could write a program to ask a <b>netinfod</b> for its parent, but just asking the question can cause the daemon to rebind. Once binding is complete there are no network connections left, so it can be difficult to determine the current bindings.</font>
+
+<p><font face="Times" size="+1">When a process first connects to a NetInfo server, it starts with the local domain and climbs the hierarchy by asking for the address and tag of parent servers on the way up. If it needs to contact a server for a child domain at some point, it collects a list of all the servers for the child from the child's parent and connects to the first one that it finds running. There's no telling which it might contact. But remember that this contact is established using TCP, which is a connection-oriented protocol. So, the connection remains in place until the processes involved shut it down, either voluntarily or forcibly.</font>
+
+<p><font face="Times" size="+1">By the way: If a client process makes a change to a domain, it automatically reconnects to the master.</font>
+
+<p><font face="Helvetica" size="+1"><b>Servers sometimes crash</b></font>
+
+<p><font face="Times" size="+1">Another reason it's difficult to know what bindings are in place is that bindings are dynamic. Even if you're the best system and network administrator, sometimes a NetInfo server process that's being used by a client process crashes, or appears to have crashed. Perhaps the server process is running on a computer on a distant subnet and a backhoe operator chops the telecommunications cable in two. Perhaps the server's computer fails. Perhaps a router's power supply blows up. You get the idea.</font>
+
+<p><font face="Times" size="+1">When this happens, the client process won't get an answer to its next request. Eventually, the client will try to find a new server.</font>
+
+<p><font face="Times" size="+1">When the client first connected to the server, it created a list of all the servers of the domain by looking through the domain's <b>/machines</b> directory to find hosts with a <b>serves </b>property of <b>./</b><i>tag</i>. The client saves this list for when its request to its current server times out.The client uses the list to connect to a server--the same one as before or a new one, depending on the reasons behind the timeout and the results of the rebinding.</font>
+
+<p><font face="Helvetica"><b><i>The NetInfo library</i></b></font>
+
+<p><font face="Times" size="+1">You might think all this contingency planning makes writing NetInfo clients horribly complicated. And, you'd be right--if it weren't for the NetInfo library. The library takes care of establishing a client's connection, maintaining that connection, and reconnecting after a timeout.</font>
+
+<p><font face="Times" size="+1"><i>(Editor's note: An article in a future issue of NEXTSTEP in Focus will describe the NetInfo library in detail.)</i></font>
+
+<p><font face="Helvetica"><b><i>Reconnecting to a server</i></b></font>
+
+<p><font face="Times" size="+1">If a client needs to reconnect to a server, it sends a message using the manycast technique described in &quot;NetInfo Binding and Connecting.&quot; The reconnecting client sends a SunRPC request to each server it discovered in the initial binding process. The client connects to the first server that responds.</font>
+
+<p><font face="Helvetica" size="+1"><b>Where's the nibindd?</b></font>
+
+<p><font face="Times" size="+1">Recall that the first step in the binding process is to contact the <b>nibindd</b>s running on all the computers with potential parent servers. The client makes contact by sending a UDP broadcast of a SunRPC request to the portmapper. The portmapper forwards the request to the <b>nibindd</b>. Subsequently, the child domain's <b>netinfod</b> requests the port number for the <b>nibindd</b> running on the chosen parent computer.</font>
+
+<p><font face="Times" size="+1">You can examine the information the portmapper has regarding the SunRPC programs running on a computer, their program numbers and names, and the ports associated with each program. You use the <b>rpcinfo</b> command to do this. Here's an example:</font>
+
+<p><font face="Courier">sabre [~]-40% <b>rpcinfo -p</b></font><br>
+<img src="../../Images/sp.gif" width=21 height=1><font face="Courier">program vers proto&nbsp;&nbsp; port</font><br>
+<img src="../../Images/sp.gif" width=28 height=1><font face="Courier">100000&nbsp;&nbsp;&nbsp; 2&nbsp;&nbsp; tcp&nbsp;&nbsp;&nbsp; 111&nbsp; portmapper</font><br>
+<img src="../../Images/sp.gif" width=28 height=1><font face="Courier">100000&nbsp;&nbsp;&nbsp; 2&nbsp;&nbsp; udp&nbsp;&nbsp;&nbsp; 111&nbsp; portmapper</font><br>
+<img src="../../Images/sp.gif" width=7 height=1><font face="Courier">200100001&nbsp;&nbsp;&nbsp; 1&nbsp;&nbsp; udp&nbsp;&nbsp;&nbsp; 755&nbsp; netinfobind</font><br>
+<img src="../../Images/sp.gif" width=7 height=1><font face="Courier">200100001&nbsp;&nbsp;&nbsp; 1&nbsp;&nbsp; tcp&nbsp;&nbsp;&nbsp; 757&nbsp; netinfobind</font><br>
+<img src="../../Images/sp.gif" width=28 height=1><font face="Courier">100011&nbsp;&nbsp;&nbsp; 1&nbsp;&nbsp; udp&nbsp;&nbsp; 2606&nbsp; rquotad</font><br>
+<img src="../../Images/sp.gif" width=28 height=1><font face="Courier">100001&nbsp;&nbsp;&nbsp; 1&nbsp;&nbsp; udp&nbsp;&nbsp; 2607&nbsp; rstat_svc</font><br>
+<img src="../../Images/sp.gif" width=28 height=1><font face="Courier">100001&nbsp;&nbsp;&nbsp; 2&nbsp;&nbsp; udp&nbsp;&nbsp; 2607&nbsp; rstat_svc</font><br>
+<img src="../../Images/sp.gif" width=28 height=1><font face="Courier">100001&nbsp;&nbsp;&nbsp; 3&nbsp;&nbsp; udp&nbsp;&nbsp; 2607&nbsp; rstat_svc</font><br>
+<img src="../../Images/sp.gif" width=28 height=1><font face="Courier">100008&nbsp;&nbsp;&nbsp; 1&nbsp;&nbsp; udp&nbsp;&nbsp; 2610&nbsp; walld</font><br>
+<img src="../../Images/sp.gif" width=7 height=1><font face="Courier">200100002&nbsp;&nbsp;&nbsp; 1&nbsp;&nbsp; udp&nbsp;&nbsp; 2611&nbsp; renderd</font>
+
+<p><font face="Times" size="+1">(For usage information, see the <b>rpcinfo</b>(8) UNIX manual page.)</font>
+
+<p><font face="Times" size="+1">In the example above, version 1 of the <b>netinfobind</b> SunRPC program, program number 200100001, is registered with the portmapper and is using TCP port 757 and UDP port 755.</font>
+
+<p><font face="Helvetica" size="+1"><b>Where's the netinfod?</b></font>
+
+<p><font face="Times" size="+1"><b>nidomain -l</b> <i>host</i> reports the NetInfo servers running on the specified computer (see &quot;NetInfo Binding and Connecting&quot;). Furthermore, it reports the TCP and UDP port numbers used by each <b>netinfod</b> process. For example:</font>
+
+<p><font face="Courier">sabre-41% <b>nidomain -l mite</b></font><br>
+<font face="Courier">tag=local udp=660 tcp=662</font><br>
+<font face="Courier">tag=network udp=664 tcp=666</font>
+
+<p><font face="Helvetica" size="+1"><b>Who's talking to whom?</b></font>
+
+<p><font face="Times" size="+1">Some clients, such as NetInfoManager, display the address and tag of the current server. In general, though, there's no way to ask a client about its connections. We need one more command to determine which connections are in use: <b>netstat</b>. This command shows the active sockets for each protocol in use. Figure 1 shows an excerpt from its output.</font>
+
+<p><font face="Courier">ranger-103% <b>netstat</b></font><br>
+<font face="Courier">Active Internet connections</font><br>
+<font face="Courier">Proto Recv-Q Send-Q Local Address Foreign Address (state)</font><br>
+<font face="Courier">tcp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 ranger.3126 Tute.EDU.ftp ESTABLISHED</font><br>
+<font face="Courier">tcp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 ranger.1023 sabre.login ESTABLISHED</font><br>
+<font face="Courier">tcp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp; 96 ranger.758 ranger.780 ESTABLISHED</font><br>
+<font face="Courier">tcp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 ranger.780 ranger.758 ESTABLISHED</font><br>
+<font face="Courier">tcp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 ranger.758 ranger.2720 ESTABLISHED</font><br>
+<font face="Courier">tcp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 ranger.2720 ranger.758 ESTABLISHED</font><br>
+<font face="Courier">tcp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 nescorna.3204 mustang.2453 ESTABLISHED</font><br>
+<font face="Courier">tcp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 ranger.758 ranger.2671 ESTABLISHED</font><br>
+<font face="Courier">tcp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 ranger.2671 ranger.758 ESTABLISHED</font><br>
+<font face="Courier">tcp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 ranger.775 cadet.696 ESTABLISHED</font><br>
+<font face="Courier">tcp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 ranger.3156 cadet.696 ESTABLISHED</font><br>
+<font face="Courier">tcp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 ranger.768 exec.679 ESTABLISHED</font><br>
+<font face="Courier">tcp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 ranger.763 cadet.696 ESTABLISHED</font><br>
+<font face="Courier">udp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 localhost.ntp *.*</font><br>
+<font face="Courier">udp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 ranger.ntp *.*</font>
+
+<p><font face="Helvetica" size="+1"><b>Figure 1:</b></font> <font face="Times" size="+1"><i>Sample netstat output</i></font>
+
+<p><font face="Times" size="+1">In the <b>netstat</b> output, three columns are most important: &quot;Proto,&quot; &quot;Local Address,&quot; and &quot;Foreign Address.&quot; &quot;Proto&quot; is the protocol used for the connection. &quot;Local Address&quot; is the address of the local side of the connection; the format is <i>hostname.port</i>. &quot;Foreign Address&quot; is the address of the remote side of the connection, using the same format as &quot;Local Address.&quot; If a port is referenced by number instead of name, it's because no translation from port number to service name was available; generally this means the port isn't well-known.</font>
+
+<p><font face="Helvetica" size="+1"><b>Which port for which service?</b></font>
+
+<p><font face="Times" size="+1">In the example in Figure 1 there are multiple connections to <b>ranger</b>'s port 758 and <b>cadet</b>'s port 696. That means multiple processes are communicating with some server on those computers over that remote port.</font>
+
+<p><font face="Times" size="+1">With ports that aren't well-known, it's pretty much impossible to determine which service is using the port. In some instances, portmapper has the information and you can use <b>rpcinfo</b> to obtain it. In other instances, the port might be used by a <b>netinfod</b>. The question is, how do you know?</font>
+
+<p><font face="Times" size="+1">The output from <b>nidomain -l</b> tells you which databases are being served on a computer, and the port numbers for contacting each server. For example, here's the output for <b>ranger</b>, <b>cadet</b>, and <b>exec</b>:</font>
+
+<p><font face="Courier">ranger [~]-104% <b>nidomain -l</b></font><br>
+<font face="Courier">tag=local udp=756 tcp=758</font><br>
+<font face="Courier">ranger [~]-105% <b>nidomain -l cadet</b></font><br>
+<font face="Courier">tag=network udp=694 tcp=696</font><br>
+<font face="Courier">tag=local udp=693 tcp=695</font><br>
+<font face="Courier">ranger [~]-106% <b>nidomain -l exec</b></font><br>
+<font face="Courier">tag=network udp=676 tcp=678</font><br>
+<font face="Courier">tag=local udp=675 tcp=677</font><br>
+<font face="Courier">tag=Rhino udp=677 tcp=679</font>
+
+<p><font face="Times" size="+1">In the fourth line after the headings in Figure 1, LocalAddress is ranger.780 and Foreign Address is ranger.758. The output from the first <b>nidomain -l</b> shows that <b>netinfod local </b>on <b>ranger</b> can be reached over TCP port 758. These two pieces of information--<b>netstat</b>'s indication of a connection to <b>ranger's</b> TCP port 758 and <b>nidomain</b>'s output showing that <b>netinfod local</b> is using TCP port 758 on <b>ranger</b>--show that some process on <b>ranger</b> has a connection to the local NetInfo server. However, in general there's no way to know which process it is.</font>
+
+<p><font face="Helvetica" size="+1"><b>Tools for examining connections</b></font>
+
+<p><font face="Times" size="+1">The floppy disk that accompanies printed copies of <i>NEXTSTEP In Focus</i> contains a program called <b>ni_connections</b>. It's a shell script that displays the connection information shown above. See the documentation files on the disk for more information on how to use it.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>UNDERSTANDING NETINFO FAILURE AND SLEEPING MESSAGES</b></font>
+
+<p><font face="Times" size="+1">When a NetInfo server that some client is using goes down, and the client then attempts to get data from the server, you might see any of a number of messages on the console or in the system log. The table in Figure 2 shows what they mean.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><b>Message</b></font></td>
+
+<td><font face="Helvetica"><b>Meaning</b></font></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">netinfo timeout, sleeping</font></td>
+
+<td><font face="Helvetica">The first possibility is that the client attempted to build its</font><br>
+<font face="Helvetica">first connection and <b>netinfod local</b> didn't respond. The</font><br>
+<font face="Helvetica">second is that the client was already connected to the server</font><br>
+<font face="Helvetica">when it failed. When the client requested data from the</font><br>
+<font face="Helvetica">server, it waited for two 5-second timeout periods and didn't</font><br>
+<font face="Helvetica">get an answer. Either way, once the local NetInfo server</font><br>
+<font face="Helvetica">responds, you'll see the &#34;netinfo waking&#34; message.</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">netinfo failure, sleeping</font></td>
+
+<td><font face="Helvetica">The client of a failed server timed out and has been sleeping</font><br>
+<font face="Helvetica">for some time. The client is attempting to connect to a new</font><br>
+<font face="Helvetica">server.</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">netinfo failure, aborting</font></td>
+
+<td><font face="Helvetica">A server failure occurred during writing. As a result, the client</font><br>
+<font face="Helvetica">aborted the operation, rather than sleeping and retrying.</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">netinfo sleeping</font></td>
+
+<td><font face="Helvetica">The client attempted to reconnect to a server and failed.</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">multi_call timeout, sleeping</font></td>
+
+<td><font face="Helvetica">The client attempted to reconnect to a server, and none of</font><br>
+<font face="Helvetica">the messages to the potential servers received a response.</font><br>
+<font face="Helvetica">(The terminology here is inconsistent--the request was sent</font><br>
+<font face="Helvetica">by manycasting, but the message says &#34;multi_call.&#34;) Once</font><br>
+<font face="Helvetica">the client receives a response, it displays the &#34;netinfo</font><br>
+<font face="Helvetica">waking&#34; message.</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">netinfo waking</font></td>
+
+<td><font face="Helvetica">The client established a connection after a failure.</font></td></tr>
+
+</table>
+
+<p><font face="Helvetica" size="+1"><b>Figure 2:</b></font> <font face="Times" size="+1"><i>Common NetInfo sleeping and timeout messages</i></font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>BACKING UP THE NETINFO DATABASE</b></font>
+
+<p><font face="Times" size="+1">A NetInfo database can be made up of more than one file. For example, in the <b>network.nidb</b> directory is a file called <b>Collection</b> (or possibly <b>collection</b> if you're using a release prior to 3.0), and zero or more &quot;extension&quot; files called <b>extension_</b><i>n</i>, where <i>n</i> is an integer. The NetInfo database is made up of <i>all</i> of these files.</font>
+
+<p><font face="Times" size="+1">This is very important to remember when you make backups of a NetInfo database. If you use an incremental backup technique, the backup created might be incomplete--it might not contain all the extension files, for example. This complicates restoring the database from the backup. A common mistake is to restore an <b>.nidb</b> from incremental dump tapes. <b>dump</b> doesn't know how to delete old files, so you can end up with extra <b>extension_</b><i>n</i> files. These extra files confuse <b>netinfod</b>.</font>
+
+<p><font face="Times" size="+1">If you use incremental backups, we recommend backing up the NetInfo databases separately using, for example, <b>tar</b> or <b>cpio</b>.</font>
+
+<p><font face="Times" size="+1">Besides using <b>tar</b> or <b>cpio</b> to copy a <b>.nidb</b> directory, you <i>can</i> use a new feature of <b>nidump</b>, first available in Release 3.0: raw <b>nidump</b>. This feature allows you to obtain the contents of a NetInfo directory hierarchy in ASCII text format. Here's an example:</font>
+
+<p><font face="Courier">sabre-26% <b>nidump -r /localconfig .</b></font><br>
+<font face="Courier">name = localconfig;</font><br>
+<font face="Courier">CHILDREN = ({</font><br>
+<img src="../../Images/sp.gif" width=28 height=1><font face="Courier">name = NetWare;</font><br>
+<img src="../../Images/sp.gif" width=28 height=1><font face="Courier">enable = YES;</font><br>
+<font face="Courier">}, {</font><br>
+<img src="../../Images/sp.gif" width=28 height=1><font face="Courier">name = keyboard;</font><br>
+<img src="../../Images/sp.gif" width=28 height=1><font face="Courier">keymap = /NextLibrary/Keyboards/USA;</font><br>
+<font face="Courier">}, {</font><br>
+<img src="../../Images/sp.gif" width=28 height=1><font face="Courier">name = language;</font><br>
+<img src="../../Images/sp.gif" width=28 height=1><font face="Courier">language = English;</font><br>
+<font face="Courier">}, {</font><br>
+<img src="../../Images/sp.gif" width=28 height=1><font face="Courier">name = screens;</font><br>
+<img src="../../Images/sp.gif" width=28 height=1><font face="Courier">_writers = (smarco, hkabir);</font><br>
+<img src="../../Images/sp.gif" width=28 height=1><font face="Courier">CHILDREN = ({</font><br>
+<img src="../../Images/sp.gif" width=56 height=1><font face="Courier">name = NeXTdimension;</font><br>
+<img src="../../Images/sp.gif" width=56 height=1><font face="Courier">active = 1;</font><br>
+<img src="../../Images/sp.gif" width=56 height=1><font face="Courier">bounds = &#34;0 1120 0 832&#34;;</font><br>
+<img src="../../Images/sp.gif" width=56 height=1><font face="Courier">slot = 2;</font><br>
+<img src="../../Images/sp.gif" width=56 height=1><font face="Courier">unit = 0;</font><br>
+<img src="../../Images/sp.gif" width=28 height=1><font face="Courier">}, {</font><br>
+<img src="../../Images/sp.gif" width=56 height=1><font face="Courier">name = MegaPixel;</font><br>
+<img src="../../Images/sp.gif" width=56 height=1><font face="Courier">active = 1;</font><br>
+<img src="../../Images/sp.gif" width=56 height=1><font face="Courier">bounds = &#34;1120 2240 0 832&#34;;</font><br>
+<img src="../../Images/sp.gif" width=56 height=1><font face="Courier">slot = 0;</font><br>
+<img src="../../Images/sp.gif" width=56 height=1><font face="Courier">unit = 0;</font><br>
+<img src="../../Images/sp.gif" width=28 height=1><font face="Courier">});</font><br>
+<font face="Courier">});</font>
+
+<p><font face="Times" size="+1">This output shows four directories in <b>/localconfig</b>: <b>NetWare</b>, <b>keyboard</b>, <b>language</b>, and <b>screens</b>. The <b>/localconfig/screens</b> directory, for example, has two properties, <b>name</b> and <b>_writer</b>s. The <b>_writers</b> property in turn has two values, <b>smarco</b> and <b>hkabir</b>.</font>
+
+<p><font face="Times" size="+1">Because <b>nidump -r</b> provides information for a directory and all contained directories, you could conceivably use it as a backup tool. Be very careful, though, when reloading using <b>niload -r</b>. Experiment on a small directory in a test domain first so you understand fully what will happen. (Explaining exactly what happens under all circumstances is beyond the scope of this article.)</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>RECOVERING FROM DISASTERS</b></font>
+
+<p><font face="Times" size="+1">There are three types of disasters to discuss:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">A NetInfo database is destroyed.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The only clone of a domain on a given subnet becomes unavailable for a long time, perhaps because its host computer's power supply fails.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The master NetInfo server's computer fails catastrophically.</font></td></tr>
+
+</table>
+
+<p><font face="Times" size="+1">In the first case, a destroyed database, the easiest thing to do is to restore the database from your backups. Be sure to do this in single-user mode</font><br>
+<font face="Times" size="+1">with NetInfo shut down.</font>
+
+<p><font face="Times" size="+1">If restoring in single-user mode is impossible, remove any vestiges of the <b>.nidb</b> directory you're going to restore, start up the computer, restore the database, and reboot the computer. This procedure ensures there's no <b>netinfod</b> trying to work with a corrupted or partial database.</font>
+
+<p><font face="Times" size="+1">In the second scenario, if a clone fails, the easiest thing to do is to build a new clone. See the <i>NEXTSTEP Networking and System Administration</i> manual for details.</font>
+
+<p><font face="Times" size="+1">For the third case, failure of the master server computer, see Cottle, &quot;The Crash of the Master NetInfo Server,&quot; 1993.</font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1"><b>Note:</b> The document references in this and other articles in this issue refer to the books and articles listed in &quot;NEXTSTEP Networking References.&quot;</font>
+
+
+
+<p>
+
+</body>
+</html>

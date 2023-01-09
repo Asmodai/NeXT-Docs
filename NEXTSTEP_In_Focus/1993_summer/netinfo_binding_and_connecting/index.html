@@ -1,0 +1,1604 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NEXTSTEP_In_Focus/1993Summer/NetInfo_Binding_and_Connecting.rtf -->
+<!-- Date: Sun Jan  1 15:46:17 2023 -->
+<head>
+<title>NetInfo_Binding_and_Connecting</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times"><i>NEXTSTEP In Focus</i>, Summer 1993 (Volume 3, Issue 3).</font><br>
+<font face="Times">Copyright</font> &copy;<font face="Times">1993 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><font face="Helvetica" size="+4"><b>NetInfo Binding and Connecting</b></font>
+
+<p><font face="Helvetica">Alan M. Marcum and Marc Majka</font>
+
+<p><font face="Times" size="+1">To get information from NetInfo, a client process must communicate with a server process. There are two ways to contact a NetInfo server: through the domain hierarchy, or directly. For example, NetInfoManager allows you to open a domain using the Open command or the Open by Tag command (both in the Domain menu), and command-line utilities such as <b>niutil</b> allow you to specify a domain by path or by tag.</font>
+
+<p><font face="Times" size="+1">To contact a server directly, all a client needs is the address of the computer running the server and the tag of the database the server is using. contacting the server through the hierarchy is conceptually more complicated, though: The hierarchy must first be built, and then the client must get information about the hierarchy.</font>
+
+<p><font face="Times" size="+1">This article explains how domains find their parents, how clients find NetInfo servers, and the difference between the two processes.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>WHAT IS BINDING?</b></font>
+
+<p><font face="Times" size="+1">The NetInfo domain hierarchy is built dynamically, based on the structure of the hierarchy specified in the <b>serves</b> properties in the directories in a domain's <b>/machines </b>directory. The hierarchy is built from the bottom up--that is, from the local domains to their parents, and so on until the root domain is found. (More on this later.)</font>
+
+<p><font face="Times" size="+1">If there are more than two domains in a NetInfo domain hierarchy, no one process determines the entire hierarchy. Rather, the hierarchy is based on the collected information of <i>all</i> the <b>netinfod</b>s.</font>
+
+<p><font face="Times" size="+1">When a <b>netinfod</b> locates a server for its parent domain, it's said to <i>bind</i> to that server. Exactly how it finds such a server is described below.</font>
+
+<p><font face="Helvetica" size="+1"><b>Binding and nibindd</b></font>
+
+<p><font face="Times" size="+1">Each domain uses binding to find its place in the domain hierarchy. The process that handles binding requests is <b>nibindd</b>. This daemon also automatically starts up NetInfo when a computer starts up, by starting the <b>netinfod</b> processes that run locally on the computer.</font>
+
+<p><font face="Times" size="+1">If a domain has a parent domain, the domain's <b>netinfod</b> finds a server for the parent by communicating with an appropriate <b>nibindd</b>. (If the domain doesn't have a parent, then it's the root domain of the hierarchy.)</font>
+
+<p><font face="Helvetica" size="+1"><b>Starting netinfod</b></font>
+
+<p><font face="Times" size="+1">When a computer starts up, <b>/etc/rc</b> invokes <b>nibindd</b> to start up NetInfo. As noted above, one of <b>nibindd</b>'s tasks is to start the <b>netinfod</b> processes that run on a computer. At startup, <b>nibindd</b> looks in the directory <b>/etc/netinfo</b> for directories that end with the extension <b>.nidb</b>, such as <b>local.nidb</b>. It starts a <b>netinfod</b> daemon for each <b>.nidb</b> directory it finds.</font>
+
+<p><font face="Times" size="+1">When each <b>netinfod</b> daemon starts, it checks the consistency of its database. If the database contains a <b>checksum</b> file, that means <b>netinfod</b> shut down cleanly the last time it ran, and no consistency check is needed. If the file isn't there, though, the daemon examines the database, repairing any damage it finds. This consistency checking can take a long time, up to 20 minutes or even longer for extremely large databases.</font>
+
+<p><font face="Times" size="+1">Once the database's consistency is verified, the daemon determines whether it's a clone or the master. Then, if the daemon is running the database tagged <b>local</b>, it binds to its parent. If <b>netinfod</b> is using a database tagged anything other than <b>local</b>, it won't bind to its parent yet.</font>
+
+<p><font face="Times" size="+1">Next, <b>netinfod</b> registers itself with <b>nibindd</b>. The last step in preparing to provide services depends on whether the server is the master or a clone. If it's the master server of the domain, it informs all the clones that the master just restarted; if it's a clone, it contacts the master to determine if its database is up to date.</font>
+
+<p><font face="Times" size="+1">When does a non-<b>local netinfod</b> bind to its parent domain? Only when a client process asks for the address and tag of its parent server; see &quot;Contacting the third-level domain&quot; later in this article.</font>
+
+<p><font face="Helvetica" size="+1"><b>Finding the parent domain</b></font>
+
+<p><font face="Times" size="+1">To find its parent domain, <b>netinfod</b> examines its database's <b>/machines</b> directory, looking for directories with <b>serves</b> properties containing the value <b>../</b><i>SomeTag</i>. Each subdirectory of <b>/machines</b> represents a computer, and each computer that has this property and value is a host of one of the parent domain's servers. Once <b>netinfod</b> has identified the parent server computer--or server computers, if there are clones--it sends a message to the <b>nibindd</b> on it asking to bind to it.</font>
+
+<p><font face="Helvetica"><b><i>Are you my mother?</i></b></font>
+
+<p><font face="Times" size="+1">In the simplest binding case, the parent domain's computer is explicitly named in the child domain's database. For example:</font>
+
+<p><font face="Courier">name: cadet</font><br>
+<font face="Courier">ip_address: 192.42.172.6</font><br>
+<font face="Courier">serves: ../network</font>
+
+<p><font face="Times" size="+1">In this case, the local computer sends a message to the parent's computer, asking to bind to the parent domain's server. Here, the parent's computer is 192.42.172.6.</font>
+
+<p><font face="Times" size="+1">The request to bind to a potential parent server is actually a sequence of these &quot;Are you my mother?&quot; requests&nbsp; (with apologies to P. D. Eastman (Eastman 1988)), one to each potential parent. The child daemon sends a message to <b>nibindd</b> at each potential parent, asking if that computer has a <b>netinfod</b> that serves its parent domain. It contacts all the potential parent server machines at the same time, rather than contacting one potential parent, awaiting a request, and then contacting another if necessary.</font>
+
+<p><font face="Times" size="+1">For example, suppose some database is tagged <b>local</b>, its parent's database is tagged <b>network</b>, and the child daemon is running on <b>ranger</b> whose Internet address is 192.42.172.34. The &quot;Are you my mother?&quot; message says something like:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td><font face="Times" size="+1">I'm a <b>netinfod</b>, on computer <b>ranger</b> [192.42.172.34] running with a database tagged <b>local</b>. I'm looking for a <b>netinfod</b> serving a domain tagged <b>network</b> of which my domain is a child. Are you my mother?</font></td></tr>
+
+</table>
+
+<p><font face="Times" size="+1">The abbreviated version is:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td><font face="Times" size="+1"><b>local</b> on 192.42.172.34 binding to <b>network</b>; are you my mother?</font></td></tr>
+
+</table>
+
+<p><font face="Times" size="+1">This request is in the form of a SunRPC to <b>nibindd</b>. It's officially called the <b>NIBIND_BIND</b> procedure in the NIBIND SunRPC protocol definition.</font>
+
+<p><font face="Helvetica"><b><i>A brief diversion: protocols and nomenclature</i></b></font>
+
+<p><font face="Times" size="+1">There are two different protocols used by the NetInfo system: the NetInfo Binder Protocol, NIBIND, and the NetInfo Data Protocol, NI. Only messages in the binder protocol are sent to <b>nibindd</b>, and only messages in the data protocol are sent to <b>netinfod</b>. Both of these protocols use the SunRPC protocol, which can run over either TCP or UDP, depending on which the implementor chose.</font>
+
+<p><font face="Times" size="+1">Each of the messages in the NetInfo protocols, NIBIND and NI, has a name. As implied above, the &quot;Are you my mother?&quot; message is the BIND message in the NIBIND protocol. As you might expect in a data access protocol, two of the messages in the NI protocol are <b>READ</b> and <b>WRITE</b>, performing the expected operations. These messages are <b>NIBIND_BIND</b>, <b>NI_READ</b>, and <b>NI_WRITE</b>, to give you some examples. This nomenclature allows us to distinguish between similar messages for the two different protocols, when those exist.</font>
+
+<p><font face="Times" size="+1">End of diversion.</font>
+
+<p><font face="Helvetica"><b><i>Serving binding requests</i></b></font>
+
+<p><font face="Times" size="+1">When an <b>nibindd</b> receives an <b>NIBIND_BIND</b> request, it first checks to determine whether it has a <b>netinfod</b> registered with that tag running on its computer. If there's no appropriate <b>netinfod</b>, the receiving <b>nibindd</b> ignores the request--it never replies &quot;no,&quot; only, when appropriate, &quot;yes.&quot; If instead <b>nibindd</b> finds an appropriate <b>netinfod</b>, it forwards the binding request along to the <b>netinfod</b> process, using the NetInfo protocol's <b>BIND</b> request, <b>NI_BIND</b>.</font>
+
+<p><font face="Times" size="+1">The receiving <b>netinfod</b> process then checks its <b>/machines</b> directory, looking for a directory with the appropriate value of <b>ip_address</b> with a <b>serves</b> property that includes the value <i>SomeDomain/tag</i>. Here, it looks for <b>/machines/ip_address = 192.42.172.34</b>, and then looks for a <b>serves</b> property value of <i>SomeDomain</i><b>/local</b>. As with <b>NIBIND_BIND</b>, if it doesn't find an appropriate directory, it doesn't send an answer.</font>
+
+<p><font face="Times" size="+1">If <b>netinfod</b> finds the appropriate information in the <b>/machines</b> directory, it sends a &quot;yes&quot; answer back to the caller, which in this case is the <b>nibindd</b> on the same computer. The <b>nibindd</b> forwards that answer to the child <b>netinfod</b> that sent the original request.</font>
+
+<p><font face="Helvetica" size="+1"><b>When broadcasthost has the serves property</b></font>
+
+<p><font face="Times" size="+1">One interesting variation on binding to the parent domain's server is the case where the parent domain is served by <b>broadcasthost</b>. The NetInfo directory <b> /machines/broadcasthost</b> in a local NetInfo domain normally contains a <b>serves </b>property whose value is <b>../network</b>. This configuration would appear to indicate that a server with the tag <b>network</b> is part of the parent domain of the local domain, and that it runs on the computer named <b>broadcasthost</b>. So, does every NetInfo network need to have a computer called <b>broadcasthost</b>?</font>
+
+<p><font face="Times" size="+1">Actually, <b>broadcasthost</b> represents not a specific computer, but rather the generic local network broadcast address, 255.255.255.255. This address is used to contact all the computers on the local network or subnet, regardless of their network numbers. When <b>broadcasthost</b> is specified as serving the parent domain, the child domain's <b>netinfod </b>sends an <b>NIBIND_BIND</b> to the <b>nibindd</b>s on all computers on the local network implicitly, by sending one message as a broadcast. The message is the usual, &quot;Are you my mother?&quot; It gets an answer from every computer that's running a parent <b>netinfod.</b></font>
+
+<p><font face="Times" size="+1">This means that the child <b>netinfod</b> might get multiple responses, even many responses. However, the network won't be flooded with &quot;no&quot; answers from computers that don't have appropriate parent domain daemons. The child domain chooses the first reply to arrive.</font>
+
+<p><font face="Helvetica" size="+1"><b>Multiple explicit parent servers</b></font>
+
+<p><font face="Times" size="+1">Another variation on binding to the parent domain is that where a domain has more than one <b>/machines</b> subdirectory with a <b>serves</b> property indicating a parent domain server. This would be the case when a domain has clone servers. For example, at Rhino Aviation the root domain is served by processes on <b>super21</b>, <b>exec</b>, <b>mustang</b>, <b>sabre</b>, and <b>chaparral</b>; in the <b>/mktg</b> domain, <b>netinfod</b>s on both <b>super21</b> and <b>mustang</b> are listed as parent domain servers.</font>
+
+<p><font face="Times" size="+1">When <b>netinfod network</b> looks for its parent, it sends the &quot;Are you my mother?&quot; message to each computer with the appropriate <b>serves</b> property. This technique--transmitting the same message to several different computers--is called <i>manycasting</i>. As with broadcasting, the first reply to the binding request wins. (Manycasting is different from <i>multicasting</i>, a technique used to address a specific, defined group of computers; see Comer 1991.)</font>
+
+<p><font face="Times" size="+1">Incidentally, to optimize performance <b>netinfod</b> always tries to bind to a local parent if there is one before binding to a remote parent. That is, if the local computer is listed as serving the parent, <b>netinfod</b> binds to the parent domain server on the local computer rather than trying to bind to a parent on another computer.</font>
+
+<p><font face="Helvetica" size="+1"><b>An example of locating the parent domain</b></font>
+
+<p><font face="Times" size="+1">Here's what happens when a computer at Rhino Aviation starts up. <b>ranger</b> is host to only a server of its local domain. It has the defaults for the <b>serves</b> properties and <b>ip_address </b>properties set in <b>/machines</b>. Both its Internet address and host name are configured automatically.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><b>Packet</b></font></td>
+
+<td nowrap><font face="Helvetica"><b>Source</b></font></td>
+
+<td nowrap><font face="Helvetica"><b>Destination</b></font></td>
+
+<td nowrap><font face="Helvetica"><b>Protocol</b></font></td>
+
+<td><font face="Helvetica"><b>Message</b></font></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">1</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">broadcast</font></td>
+
+<td nowrap><font face="Helvetica">portmap RPC</font></td>
+
+<td><font face="Helvetica">Indirect call:</font><br>
+<font face="Helvetica">nibind(192.42.172.34, local, network).</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">2</font></td>
+
+<td nowrap><font face="Helvetica">cadet</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">nibind reply</font></td>
+
+<td><font face="Helvetica">I'm your mother; my nibindd is on</font><br>
+<font face="Helvetica">UDP port 644.</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">3</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">nibind reply</font></td>
+
+<td><font face="Helvetica">I'm your mother; my nibindd is on</font><br>
+<font face="Helvetica">UDP port 706.</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">4</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">broadcast</font></td>
+
+<td nowrap><font face="Helvetica">ARP request</font></td>
+
+<td><font face="Helvetica">What's Ethernet address for Internet</font><br>
+<font face="Helvetica">address 192.42.172.4?</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">5</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">ARP reply</font></td>
+
+<td><font face="Helvetica">Ethernet address for IP 192.42.172.4</font><br>
+<font face="Helvetica">is 0:aa:0:18:83:2a.</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">6</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">ICMP</font></td>
+
+<td><font face="Helvetica">Destination port unreachable.</font></td></tr>
+
+</table>
+
+<p><font face="Helvetica" size="+1"><b>Figure 1:</b></font>&nbsp; <font face="Times" size="+1"><i>Simple binding of netinfod local to a parent</i></font>
+
+<p><font face="Times" size="+1">Figure 1 shows the messages exchanged when <b>ranger</b>'s <b>netinfod local</b> binds to its parent domain server. First, <b>ranger</b> broadcasts a message to all the computers on the local network looking for a parent NetInfo server for the <b>local</b> domain (packet 1). In packets 2 and 3, two computers answer: <b>cadet</b> and <b>exec</b>. Since <b>cadet</b> was the first computer to answer, its <b>netinfod network</b> becomes the parent domain server to <b>ranger</b>'s <b>netinfod local</b>.</font>
+
+<p><font face="Times" size="+1">When <b>exec</b> and <b>cadet</b> reply to the binding request, each sends a message to the same port on <b>ranger</b>. Once <b>ranger</b> receives the first response in packet 2, it closes its reply port. When subsequent replies arrive, <b>ranger</b> sends an &quot;error&quot; message (ICMP Destination port unreachable) back, as shown in packet 6. This message is ignored by <b>exec</b>'s <b>nibindd</b> at this stage of operation in the NetInfo binding protocol. To send the ICMP message to <b>exec</b>, <b>ranger</b> needs to know <b>exec</b>'s Ethernet address. This is why it sends the ARP message in packet 4, with subsequent ARP reply in packet 5.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>BINDING THE REST OF THE HIERARCHY</b></font>
+
+<p><font face="Times" size="+1">Now, <b>netinfod</b> for the local domain has found a server for its parent domain--it's <i>bound </i>to its parent server. But, it has exchanged no messages with domains other than <b>local</b>'s parent, so the rest of the hierarchy remains, in a sense, unknown. Indeed, though there's a binding to <b>local</b>'s parent, there's no <i>connection</i> yet from a NetInfo client process to that parent. Only the existence of the parent and the Internet address of its computer have been determined, not even how to contact the parent.</font>
+
+<p><font face="Times" size="+1">However, each <b>netinfod</b> in its turn binds to a parent domain. So, collectively the hierarchy is known. This information is then used when a client needs to <i>connect</i> to one of the higher-level domains to obtain information.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>CONNECTING TO A DOMAIN</b></font>
+
+<p><font face="Times" size="+1">A NetInfo server locates a server for its parent domain by binding. A NetInfo client then <i>connects</i> to a server for a domain. When a client connects to a second-level or higher domain, it inherits the bindings of the <b>netinfod</b>s.</font>
+
+<p><font face="Times" size="+1">Figure 2 shows what happens when a client requests a piece of information that isn't available from the local domain. In this example, the account information for the user <b>eng</b> has been requested. This example assumes the binding shown in Figure 1 has completed.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><b>Packet</b></font></td>
+
+<td nowrap><font face="Helvetica"><b>Source</b></font></td>
+
+<td nowrap><font face="Helvetica"><b>Destination</b></font></td>
+
+<td nowrap><font face="Helvetica"><b>Protocol</b></font></td>
+
+<td><font face="Helvetica"><b>Message</b></font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">1</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">broadcast</font></td>
+
+<td nowrap><font face="Helvetica">ARP request</font></td>
+
+<td><font face="Helvetica">What is the Ethernet address for</font><br>
+<font face="Helvetica">Internet address 192.42.172.6?</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">2</font></td>
+
+<td nowrap><font face="Helvetica">cadet</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">ARP reply</font></td>
+
+<td><font face="Helvetica">Ethernet address for IP 192.42.172.6</font><br>
+<font face="Helvetica">is 0:0:f:0:59:82.</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">3</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">cadet</font></td>
+
+<td nowrap><font face="Helvetica">Portmap RPC</font></td>
+
+<td><font face="Helvetica">What is the UDP port for the netinfobind</font><br>
+<font face="Helvetica">program, version 1?</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">4</font></td>
+
+<td nowrap><font face="Helvetica">cadet</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">RPC reply</font></td>
+
+<td><font face="Helvetica">Port 722.</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">5</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">cadet</font></td>
+
+<td nowrap><font face="Helvetica">netinfobind RPC</font></td>
+
+<td><font face="Helvetica">getregister(&#34;network&#34;)</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">6</font></td>
+
+<td nowrap><font face="Helvetica">cadet</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">RPC reply</font></td>
+
+<td><font face="Helvetica">UDP port 724, TCP port 726.</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">7</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">cadet</font></td>
+
+<td nowrap><font face="Helvetica">TCP</font></td>
+
+<td><font face="Helvetica">Window size 4096?</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">8</font></td>
+
+<td nowrap><font face="Helvetica">cadet</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">TCP</font></td>
+
+<td><font face="Helvetica">OK; window size 4096?</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">9</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">cadet</font></td>
+
+<td nowrap><font face="Helvetica">TCP</font></td>
+
+<td><font face="Helvetica">Window size 4096 OK.</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">10</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">cadet</font></td>
+
+<td nowrap><font face="Helvetica">netinfo RPC</font></td>
+
+<td><font face="Helvetica">root_directory()</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">11</font></td>
+
+<td nowrap><font face="Helvetica">cadet</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">RPC reply</font></td>
+
+<td><font face="Helvetica">root directory's handle is {0,36}</font><br>
+<font face="Helvetica">(directory 0, instance 36).</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">12</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">cadet</font></td>
+
+<td nowrap><font face="Helvetica">netinfo RPC</font></td>
+
+<td><font face="Helvetica">lookup({0, 36}, &#34;name&#34;, &#34;machines&#34;)</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">13</font></td>
+
+<td nowrap><font face="Helvetica">cadet</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">RPC reply</font></td>
+
+<td><font face="Helvetica"><b>/machines</b> is [1,{0,36}]</font><br>
+<font face="Helvetica">(directory 1 in {0,36}).</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">14</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">cadet</font></td>
+
+<td nowrap><font face="Helvetica">netinfo RPC</font></td>
+
+<td><font face="Helvetica">list(<b>/machines</b>, &#34;serves&#34;)</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">15</font></td>
+
+<td nowrap><font face="Helvetica">cadet</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">RPC reply</font></td>
+
+<td><font face="Helvetica">Each directory's ID number and</font><br>
+<font face="Helvetica">serves property values.</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">16</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">cadet</font></td>
+
+<td nowrap><font face="Helvetica">netinfo RPC</font></td>
+
+<td><font face="Helvetica">listprops(<b>/machines/cadet</b>)</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">17</font></td>
+
+<td nowrap><font face="Helvetica">cadet</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">RPC reply</font></td>
+
+<td><font face="Helvetica">The properties in <b>/machines/cadet</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">18</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">cadet</font></td>
+
+<td nowrap><font face="Helvetica">netinfo RPC</font></td>
+
+<td><font face="Helvetica">readprop(<b>/machines/cadet</b>, <b>ip_address</b>)</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">19</font></td>
+
+<td nowrap><font face="Helvetica">cadet</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">RPC reply</font></td>
+
+<td><font face="Helvetica">192.42.172.6</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">20</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">cadet</font></td>
+
+<td nowrap><font face="Helvetica">netinfo RPC</font></td>
+
+<td><font face="Helvetica">listprops(<b>/machines/exec</b>)</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">21</font></td>
+
+<td nowrap><font face="Helvetica">cadet</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">RPC reply</font></td>
+
+<td><font face="Helvetica">The properties in <b>/machines/exec</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">22</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">cadet</font></td>
+
+<td nowrap><font face="Helvetica">netinfo RPC</font></td>
+
+<td><font face="Helvetica">readprop(<b>/machines/exec</b>, <b>ip_address</b>)</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">23</font></td>
+
+<td nowrap><font face="Helvetica">cadet</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">RPC reply</font></td>
+
+<td><font face="Helvetica">192.42.172.4</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">24</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">cadet</font></td>
+
+<td nowrap><font face="Helvetica">netinfo RPC</font></td>
+
+<td><font face="Helvetica">root_directory()</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">25</font></td>
+
+<td nowrap><font face="Helvetica">cadet</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">RPC reply</font></td>
+
+<td><font face="Helvetica">{0,36}</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">26</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">cadet</font></td>
+
+<td nowrap><font face="Helvetica">netinfo RPC</font></td>
+
+<td><font face="Helvetica">lookup({0,36}, &#34;name&#34;, &#34;users&#34;)</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">27</font></td>
+
+<td nowrap><font face="Helvetica">cadet</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">RPC reply</font></td>
+
+<td><font face="Helvetica">[158, {0,36}]</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">28</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">cadet</font></td>
+
+<td nowrap><font face="Helvetica">netinfo RPC</font></td>
+
+<td><font face="Helvetica">lookup_read(<b>/users</b>, &#34;name&#34;, &#34;eng&#34;)</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">29</font></td>
+
+<td nowrap><font face="Helvetica">cadet</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">RPC reply</font></td>
+
+<td><font face="Helvetica">Contents of <b>/users/eng</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">30</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">cadet</font></td>
+
+<td nowrap><font face="Helvetica">TCP</font></td>
+
+<td><font face="Helvetica">Receipt acknowledged.</font></td></tr>
+
+</table>
+
+<p><font face="Helvetica" size="+1"><b>Figure 2:</b></font>&nbsp; <font face="Times" size="+1"><i>Fetching information from a parent domain</i></font>
+
+<p><font face="Times" size="+1">First, the client process needs to contact the server for the second-level domain. Packets 1 through 4 obtain the address information for the <b>nibindd</b> running on <b>cadet</b>--recall that <b>cadet</b> is where the chosen <b>netinfod network</b> is running. Packets 5 and 6 get the addresses of the <b>netinfod network</b> running on <b>cadet</b>. Packets 7 through 9 are TCP protocol overhead, setting up a TCP connection to <b>cadet</b>'s <b>netinfod network</b> on TCP port 726.</font>
+
+<p><font face="Times" size="+1">The client process now has a connection established to the chosen server.</font>
+
+<p><font face="Times" size="+1">After establishing the connection, the client obtains a list of the known servers of the domain, in case the chosen server for the domain fails and a new server must be contacted. Packets 10 through 13 obtain the &quot;handle&quot; for the <b>/machines</b> directory--a handle is how directories are referenced within NetInfo. First, it gets the handle for the root directory, then the handle for the directory <b>machines</b> within that root directory. Next, in packets 14 and 15 the client acquires the values for the <b>serves</b> properties in each subdirectory of <b>/machines</b>. From these, the client can determine which computers provide services for a parent <b>netinfod</b>, by finding <b>serves</b> properties with a dot (<b>.</b>) in the domain portion of the value. Then, in packets 16 through 23, the client on <b>ranger </b>requests the Internet address of each of the computers with a server for the parent domain. In this case, those servers are running on machines with Internet addresses 192.42.172.6 (<b>cadet</b>) and 192.42.172.4 (<b>exec</b>).</font>
+
+<p><font face="Times" size="+1">Finally, packets 24 through 29 read the properties in <b>/users/eng</b>. Again, the client requests the handle for the root directory. It then gets the handle for <b>/users</b>, and finally gets the actual data. Packet 30 is TCP overhead acknowledging receipt of the answer. Other TCP acknowledgments were piggybacked on top of request or reply packets (see Comer 1991).</font>
+
+<p><font face="Times" size="+1">Notice that the actual data lookup required only the last three packets, which include one packet of TCP overhead. Packets 1-23 establish the connection, and 24-27 get the handle for <b>/users</b>. In the case of <b>lookupd</b>, the primary NetInfo client, the connection is usually already established, and the handles for the root and the <b>/users</b> directories are usually cached. In the example in Figure 2, when a client on <b>ranger</b> needs to contact <b>local</b>'s parent, it inherits the binding between <b>netinfod local</b> on <b>ranger</b> and the <b>netinfod network</b> running on <b>cadet</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>Contacting the third-level domain</b></font>
+
+<p><font face="Times" size="+1">When a client requests information that's in neither the first-level nor the second-level domain, the third level is contacted. Figure 3 shows the sequence of messages that get the account information for the user <b>sandy</b>, this time from the root domain.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica"><b>Packet</b></font></td>
+
+<td nowrap><font face="Helvetica"><b>Source</b></font></td>
+
+<td nowrap><font face="Helvetica"><b>Destination</b></font></td>
+
+<td nowrap><font face="Helvetica"><b>Protocol</b></font></td>
+
+<td><font face="Helvetica"><b>Message</b></font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">1</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">cadet</font></td>
+
+<td nowrap><font face="Helvetica">netinfo RPC</font></td>
+
+<td><font face="Helvetica">remote_parent</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">2</font></td>
+
+<td nowrap><font face="Helvetica">cadet</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">RPC reply</font></td>
+
+<td><font face="Helvetica">[&#34;Rhino&#34;, 192.42.172.4]</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">3</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">Portmap RPC</font></td>
+
+<td><font face="Helvetica">getport(UDP, netinfobind, 1)</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">4</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">RPC reply</font></td>
+
+<td><font face="Helvetica">Port 658.</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">5</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">netinfobind RPC</font></td>
+
+<td><font face="Helvetica">getregister(&#34;Rhino&#34;)</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">6</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">RPC reply</font></td>
+
+<td><font face="Helvetica">UDP port 660, TCP port 662.</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">7</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">TCP</font></td>
+
+<td><font face="Helvetica">Window size 4096?</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">8</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">TCP</font></td>
+
+<td><font face="Helvetica">OK; window size 4096?</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">9</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">TCP</font></td>
+
+<td><font face="Helvetica">Window size 4096 OK.</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">10</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">netinfo RPC</font></td>
+
+<td><font face="Helvetica">root_directory()</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">11</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">RPC reply</font></td>
+
+<td><font face="Helvetica">{0,69}</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">12</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">netinfo RPC</font></td>
+
+<td><font face="Helvetica">lookup({0,69}, &#34;name&#34;, &#34;machines&#34;)</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">13</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">RPC reply</font></td>
+
+<td><font face="Helvetica">[3,{0,69}]</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">14</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">netinfo RPC</font></td>
+
+<td><font face="Helvetica">list(<b>/machines</b>, &#34;serves&#34;)</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">15</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">RPC reply</font></td>
+
+<td><font face="Helvetica">Each directory's ID number and</font><br>
+<font face="Helvetica"><b>serves</b> property values.</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">16</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">netinfo RPC</font></td>
+
+<td><font face="Helvetica">listprops(<b>/machines/super21</b>)</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">17</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">RPC reply</font></td>
+
+<td><font face="Helvetica">The properties in <b>/machines/super21</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">18</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">netinfo RPC</font></td>
+
+<td><font face="Helvetica">readprop(<b>/machines/super21</b>,</font><br>
+<font face="Helvetica"><b>ip_address</b>)</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">19</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">RPC reply</font></td>
+
+<td><font face="Helvetica">192.42.172.2</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">20</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">netinfo RPC</font></td>
+
+<td><font face="Helvetica">listprops(<b>/machines/exec</b>)</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">21</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">RPC reply</font></td>
+
+<td><font face="Helvetica">The properties in <b>/machines/exec</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">22</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">netinfo RPC</font></td>
+
+<td><font face="Helvetica">readprop(<b>/machines/exec</b>, <b>ip_address</b>)</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">23</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">RPC reply</font></td>
+
+<td><font face="Helvetica">192.42.172.4</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">24</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">netinfo RPC</font></td>
+
+<td><font face="Helvetica">listprops(<b>/machines/mustang</b>)</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">25</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">RPC reply</font></td>
+
+<td><font face="Helvetica">The properties in <b>/machines/mustang</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">26</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">netinfo RPC</font></td>
+
+<td><font face="Helvetica">readprop(<b>/machines/mustang</b>,</font><br>
+<font face="Helvetica"><b>ip_address</b>)</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">27</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">RPC reply</font></td>
+
+<td><font face="Helvetica">192.42.172.5</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">28</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">netinfo RPC</font></td>
+
+<td><font face="Helvetica">listprops(<b>/machines/sabre</b>)</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">29</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">RPC reply</font></td>
+
+<td><font face="Helvetica">The properties in <b>/machines/sabre</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">30</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">netinfo RPC</font></td>
+
+<td><font face="Helvetica">readprop(<b>/machines/sabre</b>, <b>ip_address</b>)</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">31</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">RPC reply</font></td>
+
+<td><font face="Helvetica">192.42.172.66</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">32</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">netinfo RPC</font></td>
+
+<td><font face="Helvetica">listprops(<b>/machines/chaparral</b>)</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">33</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">RPC reply</font></td>
+
+<td><font face="Helvetica">The properties in <b>/machines/chaparral</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">34</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">netinfo RPC</font></td>
+
+<td><font face="Helvetica">readprop(<b>/machines/chaparral</b>,</font><br>
+<font face="Helvetica"><b>ip_address</b>)</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">35</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">RPC reply</font></td>
+
+<td><font face="Helvetica">192.42.172.98</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">36</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">netinfo RPC</font></td>
+
+<td><font face="Helvetica">root_directory()</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">37</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">RPC reply</font></td>
+
+<td><font face="Helvetica">{0,69}</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">38</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">netinfo RPC</font></td>
+
+<td><font face="Helvetica">lookup({0,69}, &#34;name&#34;, &#34;users&#34;)</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">39</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">RPC reply</font></td>
+
+<td><font face="Helvetica">[308, {0,69}]</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">40</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">netinfo RPC</font></td>
+
+<td><font face="Helvetica">lookup_read(<b>/users</b>, &#34;name&#34;, &#34;sandy&#34;)</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">41</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">RPC reply</font></td>
+
+<td><font face="Helvetica">Contents of <b>/users/sandy</b>.</font></td></tr>
+
+<tr valign=top>
+
+<td height=5></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Helvetica">42</font></td>
+
+<td nowrap><font face="Helvetica">ranger</font></td>
+
+<td nowrap><font face="Helvetica">exec</font></td>
+
+<td nowrap><font face="Helvetica">TCP</font></td>
+
+<td><font face="Helvetica">Receipt acknowledged.</font></td></tr>
+
+</table>
+
+<p><font face="Helvetica" size="+1"><b>Figure 3:</b></font>&nbsp; <font face="Times" size="+1"><i>Fetching information from a parent's parent</i></font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">The sequence actually begins with a failure to find the requested information in the second-level domain. If the client already has a connection to the second-level domain, the exchange includes an analog to packet 29 from Figure 2, requesting the properties in <b>/users/sandy</b>, and a reply stating the information wasn't found. Operations continue with the conversation as shown in Figure 3.</font>
+
+<p><font face="Times" size="+1">Figure 3 is very similar to Figure 2. Indeed, packets 3 through 27 are exactly the initial connection process, although because the connection is to a different domain and different servers, the packets themselves are slightly different. Packets 28 through 34 repeat the acquisition of the properties in the <b>/users</b> subdirectory--<b>/users/sandy</b> in this case.</font>
+
+<p><font face="Times" size="+1">The new packets here are 1 and 2. These packets are the <i>remote parent</i> request and reply. When a NetInfo client communicates with a domain higher than the local domain's parent, it inherits the parent-to-grandparent binding.</font>
+
+<p><font face="Times" size="+1">If the NetInfo client on <b>ranger</b> needs to contact <b>cadet/network</b>'s parent, it inherits the binding between <b>cadet/network</b> and <b>netinfod Rhino</b>, to which <b>cadet/network</b> is bound. It obtains this information using the NetInfo Remote Parent, or <b>NI_RPARENT</b>, request. <b>NI_RPARENT</b> requests the tag and the Internet address of the server of the parent of the receiving <b>netinfod</b>.</font>
+
+<p><font face="Times" size="+1">In this example, <b>local</b>'s parent, <b>cadet/network</b>, is bound to the <b>netinfod Rhino</b> on <b>exec </b>(Internet address 192.42.172.4), <b>exec/Rhino</b>.</font>
+
+<p><font face="Times" size="+1">If the client had already obtained the binding to the third level, and if that domain's root and <b>/users</b> directories had already been referenced and cached, then the sequence would have been much simpler, involving only a failed attempt to read <b>/users/sandy</b> from the second-level domain and a successful attempt to read it from the third-level domain.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>BINDING AND CONNECTING FAILURES</b></font>
+
+<p><font face="Times" size="+1">Two problems that can come up in regard to binding and connecting are that there might be no servers available for a particular domain, or that a server to which a client had been connected could go down.</font>
+
+<p><font face="Helvetica" size="+1"><b>Failure binding netinfod local to a parent</b></font>
+
+<p><font face="Times" size="+1">When <b>netinfod local</b> starts, it tries to contact a parent domain server if it believes one exists and the network is enabled. If the request for a parent times out, the child displays a message on its console:</font>
+
+<p><font face="Courier">Still searching for parent network</font><br>
+<font face="Courier">administration (NetInfo) server.</font><br>
+<font face="Courier">Please wait, or press 'c' to continue without network user accounts.</font>
+
+<p><font face="Courier">See your system administrator if you</font><br>
+<font face="Courier">need help.</font>
+
+<p><font face="Times" size="+1">The timeout period prior to printing this warning is 30 seconds. This message is displayed only when the initial binding of <b>netinfod local</b> fails. It's <i>not</i> displayed for other domains binding to their parents, nor is it displayed during rebinding or reconnecting.</font>
+
+<p><font face="Times" size="+1"><b>netinfod local</b> continues to look for a parent domain server after displaying this message. It continues searching until either it finds a parent, you press <b>c</b>, or you shut down the computer.</font>
+
+<p><font face="Times" size="+1">It's because of this special treatment of the database tagged <b>local</b> that this tag is reserved for the local NetInfo domain and the first-level domain should be tagged <b>local</b>.</font>
+
+<p><font face="Times" size="+1">Incidentally, you can customize the searching message by modifying the file <b>NetInfo.strings</b> in <b>/usr/lib/NextStep/Resources/English.lproj</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>Failure binding to a parent's parent</b></font>
+
+<p><font face="Times" size="+1">Only <b>netinfod local</b> waits for a parent server to respond before continuing. Back in the beginning of this article, we said that servers other than that for <b>local</b> only bind to their parent servers when a client requests this binding information. So, what happens if when a client asks a server for its parent (using <b>NI_RPARENT</b>), the server hasn't yet bound to a parent, and no parent server responds?</font>
+
+<p><font face="Times" size="+1">A message is sent to the system log (<i>syslog</i>) noting that a NetInfo timeout occurred. As with <b>local</b> binding to its parent, the <b>netinfod</b> here--<b>netinfod network</b>, for example--continues sending out <b>NIBIND_BIND</b> requests, looking for a parent. &quot;The Tough Stuff&quot; describes these messages and their causes in more detail.</font>
+
+<p><font face="Times" size="+1">A higher-level binding problem is likely to manifest itself first when a third- or higher-level domain is accessed during a request for data. This might happen when a computer starting up tries to mount a remote file system. Again, unlike binding of the first-level domain to the second-level domain, no message noting the binding failure is displayed.</font>
+
+<p><font face="Helvetica" size="+1"><b>Failures after initial binding</b></font>
+
+<p><font face="Times" size="+1">If, after a client connects to a server, a request to that server times out, you might see messages like this:</font>
+
+<p><font face="Courier">netinfo timeout, sleeping</font>
+
+<p><font face="Times" size="+1">If the condition persists, you'll see this message:</font>
+
+<p><font face="Courier">netinfo failure, sleeping</font>
+
+<p><font face="Times" size="+1">Once this message is displayed on syslog, which is normally sent to the console, the NetInfo client attempts to find a server for the domain again.</font>
+
+<p><font face="Times" size="+1">Remember the packets sent and received when a client first obtains data from a NetInfo server in Figure 2? Some of the communication included the client getting a list of all the servers for the contacted domain. Here's where that list of servers is used. The client attempts to reconnect to the domain by sending a message to each of the machines in that list. Just like when a domain binds to its parent during or after start-up, this request is in the form of a manycast.</font>
+
+<p><font face="Times" size="+1">The <b>NIBIND_GETREGISTER</b> message is sent, just as in the initial connection conversation. And, just like the initial binding or connection, the first reply to the manycast that's received is the winner, and that server is chosen for the connection.</font>
+
+<p><font face="Times" size="+1"><b>Note:</b> The document references in this and other articles in this issue refer to the books and articles listed in &quot;NEXTSTEP Networking References.&quot;</font>
+
+<p><br><br><br><br><br>
+
+<p><font face="Helvetica" size="+3">FINDING SERVER PROCESSES</font>
+
+<p><font face="Helvetica">Processes communicate over TCP and UDP using ports, which are abstract source and destination points (Comer 1991). How does a client process find the port for a NetInfo daemon? It must either already know the port number, or contact a process that finds port numbers.</font>
+
+<p><font face="Helvetica"><b>Well-known ports</b></font><br>
+<font face="Helvetica">Ports are numbered, and some port numbers are well-known--they're reserved for use by certain services or particular functions. As an analog, the telephone numbers for directory assistance throughout the U.S.--411 for local information, 555-1212 in all area codes for long distance information--are reserved. Dialing one of them always reaches the directory assistance service. In networking, ports with numbers less than 256 are reserved and can become well-known.</font>
+
+<p><font face="Helvetica">One well-known port, port 111 for both TCP and UDP, allows a client to contact a service called the portmapper. The portmapper is like directory assistance, only instead of matching names to telephone numbers, it translates SunRPC program numbers into port numbers. In portmapper parlance, this is the operation PMAPPROC_GETPORT. The portmapper allows clients to find many SunRPC programs without having to reserve a well-known port for each one.</font>
+
+<p><font face="Helvetica"><b>NetInfo and the portmapper</b></font><br>
+<font face="Helvetica">The NetInfo binding daemon, <b>nibindd</b>, checks in with the portmapper when it starts up. To determine the port for contacting nibindd, a client first sends a message to the portmapper on port 111 requesting the port number for <b>nibindd</b>. In fact, if you examine the information from the portmapper using the UNIX <b>rpcinfo</b> program, you'll see that <b>netinfobind</b>, SunRPC program number 200100001, can be found on different ports on different computers. (See the UNIX manual pages to find out about <b>rpcinfo</b>.)</font>
+
+<p><font face="Helvetica">When a NetInfo client--whether it's a <b>netinfod</b> or some other client, like <b>lookupd</b>--begins to communicate with a NetInfo server, it has to determine that server's port number. It does this by asking the <b>nibindd</b> running on that server's computer for the port number of the <b>netinfod </b>serving that tag. It finds the <b>nibindd</b>'s port number by asking the portmapper for it.</font>
+
+<p><font face="Helvetica"><b>An example</b></font><br>
+<font face="Helvetica">For example, to see which daemons are running on a host you would run the <b>nidomain -l </b>command:</font>
+
+<p><img src="../../Images/sp.gif" width=18 height=1><font face="Courier">mite-23% <b>nidomain -l</b></font><br>
+<img src="../../Images/sp.gif" width=18 height=1><font face="Courier">tag=local udp=660 tcp=664</font><br>
+<img src="../../Images/sp.gif" width=18 height=1><font face="Courier">tag=network udp=664 tcp=666</font>
+
+<p><font face="Helvetica"><b>nidomain -l</b> communicates with <b>nibindd</b> to determine which <b>netinfod</b> daemons are running on a computer. In this instance, <b>mite</b> has two <b>netinfod</b>s running, or more precisely two that have registered with <b>nibindd</b>. The first, serving a database tagged <b>local</b>, can be contacted over UDP on UDP port number 660, and over TCP on TCP port number 664. The second, serving a database tagged <b>network</b>, can be reached on UDP port 664 and TCP port 666.</font>
+
+<p><font face="Helvetica"><b>Communicating with many portmappers</b></font><br>
+<font face="Helvetica">A child <b>netinfod</b> binding to a parent might communicate with scores or hundreds of computers, depending on how many parent servers are listed and whether it's using a broadcast address. How does <b>netinfod</b> keep track of all those different port numbers from the portmappers? Sure, one broadcast message can be sent to all the portmappers: portmapper uses a single well-known port. But isn't there an awful lot of bookkeeping needed to track all the answers from all the portmappers?</font>
+
+<p><font face="Helvetica">It turns out that the portmapper can do a little magic. In addition to translating SunRPC program numbers into port numbers, it can invoke a SunRPC indirectly. This operation is PMAPPROC_CALLIT.</font>
+
+<p><font face="Helvetica">The child <b>netinfod</b>, when trying to bind, sends the portmapper a request to run the NIBIND_BIND procedure of the <b>netinfobind</b> SunRPC program; portmapper then returns the results to the child. The lack of a &#34;no&#34; answer in the NetInfo binding protocol applies to this method of invocation, too.--<i>AMM</i></font>
+
+<p><br><br><br><br>
+
+<p><font face="Helvetica" size="+3">TEMPORARY NETINFO DIRECTORIES</font>
+
+<p><font face="Helvetica">You know about the directories in <b>/etc/netinfo</b> with an <b>.nidb</b> suffix, which contain NetInfo databases. Sometimes though, you might see directories with two other suffixes: <b>.temp</b> and <b>.move</b>.</font>
+
+<p><font face="Helvetica">A <b>.temp</b> directory holds a temporary database that's being loaded from the master server's database, and will become the actual database. A <b>.move</b> directory holds a <b>.nidb</b> directory that's moved aside during conversion of a <b>.temp</b> directory to a <b>.nidb</b> directory. After this conversion is complete, the <b>.move</b> directory is deleted. The <b>.move</b> directory is created only after the <b>.temp</b> directory is completely filled.</font>
+
+<p><font face="Helvetica">These directories are examined during NetInfo startup. If <b>netinfod</b> finds a <b>.temp</b> directory without a <b>.move</b> directory, then it knows the <b>.temp</b> directory was incomplete, and it discards the directory since it will get a new database from the master shortly anyway. If <b>netinfod</b> finds a <b>.temp</b> directory and a <b>.move</b> directory, it knows the <b>.temp</b> directory is complete and renames it to the <b>.nidb</b> directory; it deletes the <b>.move</b> directory. If it finds a <b>.move</b> directory without a <b>.temp</b> directory, it discards the directory.</font>
+
+<p><font face="Helvetica">You can find <b>.move</b> and .temp directories only while downloading a new database from the master server. If a download is interrupted, <b>netinfod</b> cleans up the mess.<i>--AMM</i></font>
+
+
+
+<p>
+
+</body>
+</html>

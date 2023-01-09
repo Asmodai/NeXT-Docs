@@ -1,0 +1,479 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/NEXTSTEP_In_Focus/1993Summer/Getting_Acquainted_With_NetInfo.rtfd -->
+<!-- Date: Sun Jan  1 15:46:17 2023 -->
+<head>
+<title>Getting_Acquainted_With_NetInfo</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times"><i>NEXTSTEP In Focus</i>, Summer 1993 (Volume 3, Issue 3).</font><br>
+<font face="Times">Copyright</font> &copy;<font face="Times">1993 by NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+4"><b>Getting Acquainted with NetInfo</b></font>
+
+<p><font face="Helvetica">Marc Majka</font>
+
+<p><font face="Times" size="+1">If you're just starting to administer NEXTSTEP systems and networks, you need to get acquainted with NetInfo. Because NetInfo is central to NEXTSTEP configuration and networking, it's useful for you to know what NetInfo does, how it's organized, and how you can use it to make your system administration tasks easier.</font>
+
+<p><font face="Times" size="+1">You don't have to be a NetInfo expert to set up a NEXTSTEP network, and you can continue to learn as you go. This article introduces the basic concepts of NetInfo and gives you a roadmap to follow so you can learn more on your own.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>WHAT IS NETINFO?</b></font>
+
+<p><font face="Times" size="+1">NetInfo is a database system for information about computer and network configuration. It stores all kinds of information, including computer names and network addresses, e-mail system configuration settings, printer and fax modem names and locations, file server and client configuration settings, user account records, and so on. NetInfo doesn't provide those resources itself--it just describes how things are set up on your network. Processes that need that information can look it up in NetInfo. It's designed to be flexible and extensible, so that new kinds of information can be added at any time.</font>
+
+<p><font face="Helvetica" size="+1"><b>Information systems</b></font>
+
+<p><font face="Times" size="+1">Every computer system has some information system. With some systems, you have to set up each computer on your network individually, putting a copy of all the information into a local database or set of files. These systems are tedious and difficult to maintain. Every time you change the network, you have to update each computer's database!</font>
+
+<p><font face="Times" size="+1">Other information systems let you to set up a central database that contains common information. Every computer still has a local database for information that applies to just that computer, but it also consults the central database. It's easier to maintain a single copy of all the common information than a copy on every computer. This type of system works for small networks, but it doesn't work when you need to manage groups of computers, like departments or divisions of your company.</font>
+
+<p><font face="Times" size="+1">NetInfo lets you set up databases for individual computers and groups of computers. For example, if you want to set up a printer for the Marketing Department you just put a record for the printer in the Marketing Department's database.</font>
+
+<p><font face="Times" size="+1">These databases are arranged in a hierarchy. At the bottom of the hierarchy are the local databases, one for each computer. You can set up intermediate-level databases for different parts of your organization. The top-level database contains information that's available to all computers. Having NetInfo match your organization's structure makes your information management tasks easier.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Information lookup</b></font>
+
+<p><font face="Times" size="+1">Whenever a process running on one of your computers needs some information, it sends a request to a process named <b>lookupd</b>. Every computer has a <b>lookupd</b> that acts as an information clearinghouse for other processes running on that computer. <b>lookupd</b> consults the local NetInfo database first, then checks the next level up. It keeps going up levels until it has found what it's looking for or until it has climbed to the top-level database and its search has failed.</font>
+
+<p><font face="Times" size="+1">Every database contains information that identifies the next higher level. NetInfo database server processes use this information to contact the servers for the next level up in the hierarchy. The server processes give this contact information to <b>lookupd</b>, so that it can find its way from level to level.</font>
+
+<p><font face="Times" size="+1">It's up to you to decide how many databases there are, how many levels there are to search through, and how they're organized. For example, if you're managing the network for a large company, you might want to set up databases for every department, branch, and division in your organization. If your network is smaller, you might decide that it's enough to have just a local database for each computer and one central database for information that's common to your whole network.</font>
+
+<p><font face="Times" size="+1">In the example shown in Figure 1, the local database servers for the computers named <b>exec</b>, <b>ranger</b>, and <b>cadet</b> tell <b>lookupd</b> that the next level up is a server for the Engineering database. Servers for both the Engineering and Marketing databases tell <b>lookupd</b> that the next level up is a server for the companywide database.</font>
+
+<p><br><br>
+
+<p><img src="Fig1_Intro.gif" width=460 height=314>
+
+<p><font face="Helvetica" size="+1"><b>Figure 1:</b></font> <font face="Times" size="+1"><i>lookupd starts its search with the local database server and works its way up.</i></font>
+
+<p><br><br>
+
+<p><font face="Times" size="+1">When <b>lookupd</b> searches for information, it always climbs up the hierarchy and never looks down side branches. This means that information in the Marketing database is never accessed by a process running on a computer in the Engineering Department. If the Marketing database contains information about a printer, then everyone in the Marketing Department can use the printer, but no one in the Engineering Department can. Likewise, a file server set up for Engineering isn't accessible to other departments. To make a resource available to the whole company, put a record describing it in the top-level database.</font>
+
+<p><font face="Helvetica" size="+1"><b>Reliability</b></font>
+
+<p><font face="Times" size="+1">There's one problem with a database full of important information: There's only one copy! If the computer that runs the server process for that database crashes, or if the database files are damaged, then you've got big problems. Even if the computer that runs the database server just gets heavily loaded with other tasks for a while, you still have the problem of poor performance.</font>
+
+<p><font face="Times" size="+1">NetInfo's solution to this problem is to let you have several copies of the database, with a server process for each copy. The first copy of a database that you set up is the <i>master</i> copy. Additional copies are called <i>clones</i>. You can put a clone database and a database server process for the clone on any computer on your network. Clones provide reliability, since they can continue providing database information even if the master is not running. They also provide redundancy, since every clone is a backup copy, and load balancing, since all the clones provide information lookup services and share the load with the master.</font>
+
+<p><font face="Times" size="+1">The collection of all the server processes that have a copy of a database--the master and all its clones--is called a <i>domain</i>. What's central to a domain is its database. Sometimes it's useful to think of a domain as being the information in the database. At other times, you might find it useful to think of a domain as a set of cooperating server processes that each have an identical copy of a database. Both definitions are correct.</font>
+
+<p><font face="Helvetica" size="+1"><b>What's a server? What's a client?</b></font>
+
+<p><font face="Times" size="+1">A <i>server</i> is a process. As mentioned above, the master of a domain is a database server process that maintains the master copy of the database. A clone is a database server process that maintains a clone copy of a domain's database. You can have several databases on a single disk and several database server processes running on a single computer, so it's never true that a computer is a server. A computer is just a machine that runs a bunch of processes. One or more of those processes may be server processes.</font>
+
+<p><font face="Times" size="+1">A <i>client</i> is any process that contacts a server process to obtain a service, such as access to a shared resource like a printer or network file system, or to communicate data like e-mail. There are several processes that are regular NetInfo clients. <b>lookupd</b> is a good example. The tools that you use to manage NetInfo, like NetInfoManager and UserManager, are also NetInfo clients.</font>
+
+<p><font face="Times" size="+1">When a client needs information from a domain's database, it has a choice of connecting to either the master or a clone. In general, it maintains a connection to the server that responds most quickly to a connection request. (To find out how clients create and maintain connections to servers, see &quot;NetInfo Binding and Connecting.&quot;)</font>
+
+<p><font face="Helvetica" size="+1"><b>Database updates</b></font>
+
+<p><font face="Times" size="+1">When you make a change to a database, NetInfo software automatically sends the change to the master server process. The master incorporates the change into its copy of the database, then sends updates to all its clone server processes. A list of clones is kept in the database itself, as are the name of the master server process and the network address of the computer that runs the master server.</font>
+
+<p><font face="Times" size="+1">Whenever a clone server process starts up, it looks in its own copy of the database to get the name of the master and the network address of the computer that runs the master. It contacts the master to make sure it's up to date before it starts providing lookup services using its own copy of the database. The master updates the clone if it's out of date.</font>
+
+<p><font face="Helvetica" size="+1"><b>Databases and servers</b></font>
+
+<p><font face="Times" size="+1">Any computer can have any number of NetInfo server processes running on it, each with its own database. It always has its own local database, and it can have others as well. For example, a computer might have its local database, the master copy of the Engineering department database, and a clone copy of the companywide database.</font>
+
+<p><font face="Times" size="+1">The databases are all stored in the UNIX file system, in the directory <b>/etc/netinfo</b>. Every database is stored in a directory of its own. The directory names all have the extension <b>.nidb</b>, standing for &quot;<b>N</b>et<b>I</b>nfo <b>d</b>ata<b>b</b>ase.&quot; The local database is always called <b>local.nidb</b>. The directory names for other databases are arbitrary--you make them up. However, although it's arbitrary, it's best to use the default name, <b>network.nidb</b>, for the second-level database in the NetInfo hierarchy.</font>
+
+<p><img src="F0.gif" width=465 height=363>
+
+<p><font face="Helvetica" size="+1"><b>Figure 2:</b></font>&nbsp; <font face="Times" size="+1"><i>A computer named exec with three Netinfo databases stored in /etc/netinfo</i></font>
+
+<p><font face="Times" size="+1">When your computer starts up, a separate NetInfo database server process named <b>netinfod</b> starts up for each database in <b>/etc/netinfo</b>. You can use the UNIX <b>ps -ax</b> command to find them.</font>
+
+<p><font face="Courier" size="-1">exe</font><font face="Courier">c# <b>ps -ax</b></font><br>
+<img src="../../Images/sp.gif" width=7 height=1><font face="Courier">PID TT STAT TIME COMMAND</font><br>
+<img src="../../Images/sp.gif" width=7 height=1><font face="Courier">...</font><br>
+<img src="../../Images/sp.gif" width=7 height=1><font face="Courier">105 ? SW&nbsp; 0:00 (nibindd)</font><br>
+<img src="../../Images/sp.gif" width=7 height=1><font face="Courier">106 ? SW&nbsp; 0:06 /usr/etc/netinfod local</font><br>
+<img src="../../Images/sp.gif" width=7 height=1><font face="Courier">107 ? SW&nbsp; 0:05 /usr/etc/netinfod network</font><br>
+<img src="../../Images/sp.gif" width=7 height=1><font face="Courier">108 ? SW&nbsp; 0:02 /usr/etc/netinfod Rhino</font><br>
+<img src="../../Images/sp.gif" width=7 height=1><font face="Courier">114 ? SW&nbsp; 0:12 (lookupd)</font><br>
+<img src="../../Images/sp.gif" width=7 height=1><font face="Courier">...</font>
+
+<p><font face="Times" size="+1">In this example, three NetInfo database server processes are running on the computer named <b>exec</b>. They are named <b>netinfod local</b>, <b>netinfod network</b>, and <b>netinfod Rhino</b>.</font>
+
+<p><font face="Helvetica" size="+1"><b>Tags</b></font>
+
+<p><font face="Times" size="+1">The subdirectory names, like <b>local</b>, <b>network</b>, and <b>Rhino</b>, are called the <i>database tags</i>. A tag identifies a specific database on a particular computer. Tags are used to establish communications. For example, you might identify a particular server as &quot;<b>netinfod network</b> on the computer named <b>exec</b>.&quot; In fact, that's how the database records the location of the master and all the clones.</font>
+
+<p><font face="Times" size="+1">NetInfo servers are identified by the combination of the address of the computer that runs the server and the tag of the server's database. Since there might be several servers on a computer, the tag identifies a particular server and its database on that computer.</font>
+
+<p><font face="Helvetica" size="+1"><b>Parents and children</b></font>
+
+<p><font face="Times" size="+1">As well as keeping a list of the network addresses and tags of the master and clones of a single domain, NetInfo databases also record the addresses and tags of servers for the domain one level up, called the parent domain. When a server starts up, it binds to a server for its parent domain. (See &quot;NetInfo Binding and Connecting.&quot;)</font>
+
+<p><font face="Times" size="+1">In general, a server sends out a bind request for every parent address and tag listed in its database, and binds to the first one to respond. It rebinds the same way if its connection ever fails. Servers that receive these bind requests respond only if the address and tag of the sender are listed in their database as a child.</font>
+
+<p><font face="Times" size="+1">If a <b>netinfod</b> examines its database and finds no tags and addresses listed for parent domain servers, it realizes that it must be a server for the top-level domain. It then doesn't send out any bind requests.</font>
+
+<p><font face="Times" size="+1">Binding lets every server determine where it fits into the NetInfo domain hierarchy. A server provides the address and tag of its current parent server to <b>lookupd</b>, so that <b>lookupd</b> can climb from level to level when it's searching. Domains only keep track of their parent domain and their child domains, never grandparents or grandchildren.</font>
+
+<p><font face="Helvetica" size="+1"><b>Domain names</b></font>
+
+<p><font face="Times" size="+1">It's fine for the NetInfo software to identify a domain as a collection of all the network addresses and tags of all the servers that have a copy of the database for that domain. However, people like to give names to things. NetInfo lets you give easy-to-understand symbolic names to domains. It uses the same notation for naming things that are organized as a hierarchy as the UNIX file system does. That is, the top-level domain is always called the <i>root</i> domain, and is written as &quot;/&quot;.</font>
+
+<p><font face="Times" size="+1">Every domain below the root domain has a name. You can assign any names you like. Subdomains are separated by &quot;/&quot; characters. By default, local domains get the same names as the computers they're on. Figure 3 shows an example.</font>
+
+<p><img src="Fig3_Intro.gif" width=460 height=248>
+
+<p><font face="Helvetica" size="+1"><b>Figure 3:</b></font> <font face="Times" size="+1"><i>A NetInfo hierarchy showing domain names</i></font>
+
+<p><font face="Times" size="+1">You assign a name to a domain in its parent domain. A name is recorded with the entry for each server for the child domain. For example, if <b>mite</b> and <b>super21</b> both have a copy of the Marketing department domain, both with the tag <b>network</b>, then the top-level domain would give the name <b>mktg</b> to <b>mite</b>'s network and to <b>super21</b>'s network.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>NETINFO DATABASE FORMAT</b></font>
+
+<p><font face="Times" size="+1">Every NetInfo domain has a database, possibly replicated and maintained by the master and any number of clones. The database format of every NetInfo domain is identical, although you might have different information stored in the different domains in your NetInfo hierarchy. In general, you keep the same types of things in every domain: user account records, printer and fax modem descriptions, NFS</font><font size="-1"><sup>&reg;</sup></font> <font face="Times" size="+1">configuration details, and so on. You chose a domain to determine how widely a piece of information is distributed.</font>
+
+<p><font face="Helvetica" size="+1"><b>Properties, keys, and values</b></font>
+
+<p><font face="Times" size="+1">Inside any database, you'll find a collection of objects that are described by a list of <i>properties</i>. Every property is identified by a <i>property key</i>, and may have any number of <i>values</i>. For example, Figure 4 shows the property keys and values in a user account record.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica"><b>Property</b></font></td>
+
+<td><font face="Helvetica"><b>Values</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica">name</font></td>
+
+<td><font face="Helvetica">majka</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica">realname</font></td>
+
+<td><font face="Helvetica">Marc Majka</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica">home</font></td>
+
+<td><font face="Helvetica">/Net/server1/Users/majka</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica">passwd</font></td>
+
+<td><font face="Helvetica">NX/eNqxMtOib</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica">uid</font></td>
+
+<td><font face="Helvetica">170</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica">gid</font></td>
+
+<td><font face="Helvetica">0</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica">shell</font></td>
+
+<td><font face="Helvetica">/bin/csh</font></td></tr>
+
+</table>
+
+<p><font face="Helvetica" size="+1"><b>Figure 4:</b></font>&nbsp; <font face="Times" size="+1"><i>A user account record from NetInfo</i></font>
+
+<p><font face="Times" size="+1">Sometimes it's useful to have no values at all, or to have many values associated with a key. For example, Figure 5 shows an e-mail distribution list that has two properties. The <b>members </b>property has several values.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica"><b>Property</b></font></td>
+
+<td><font face="Helvetica"><b>Values</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica">name</font></td>
+
+<td><font face="Helvetica">sales_dept</font></td></tr>
+
+<tr valign=top>
+
+<td width=18 height=5></td></tr>
+
+<tr valign=top>
+
+<td width=18></td>
+
+<td nowrap><font face="Helvetica">members</font></td>
+
+<td><font face="Helvetica">janet</font><br>
+<font face="Helvetica">susan</font><br>
+<font face="Helvetica">marty</font><br>
+<font face="Helvetica">scott</font><br>
+<font face="Helvetica">cathy</font><br>
+<font face="Helvetica">frank</font></td></tr>
+
+</table>
+
+<p><font face="Helvetica" size="+1"><b>Figure 5:</b></font>&nbsp; <font face="Times" size="+1"><i>An e-mail distribution list, including a property with several values</i></font>
+
+<p><br><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Directory hierarchy</b></font>
+
+<p><font face="Times" size="+1">All the objects in a NetInfo database are called <i>directories</i>, and they're organized into a hierarchy. There's no connection between NetInfo directories and the file system, although they're organized similarly and use similar terms. Every object in NetInfo is a directory with a set of properties. It can contain other directories that have their own properties.</font>
+
+<p><font face="Times" size="+1">NetInfo directories are internally identified by an ID number. The top-level or <i>root</i> directory always has the ID 0. Other directories get ID numbers in sequence as they are created. Although ID numbers work perfectly well for NetInfo software to identify directories, it's easier for people to use names. NetInfo directories are named using the same kind of notation that you use for the file system and for NetInfo domains: the root directory is named &quot;/&quot;, and additional &quot;/&quot; characters separate names. Most directories have a property with the key <b>name</b> that records that directory's name as a value. For example, see the <b>name</b> property in Figures 4 and 5.</font>
+
+<p><font face="Times" size="+1">In most cases you use a directory's path name when you're dealing with NetInfo software. For example, the directories shown in Figures 4 and 5 might be <b>/users/majka</b> and <b>/aliases/sales_dept</b>. Likewise, the software displays directory path names for you. In many cases you can instead use directory ID numbers if you'd like, and sometimes the software uses them as well.</font>
+
+<p><font face="Times" size="+1">If for some reason a directory doesn't have a value for its name property, or doesn't have a <b>name </b>property, NetInfo uses the ID number rather than a name. (This situation is usually caused by a typographic error made while you were changing the name of a directory, and can easily be fixed so you can again use the name.)</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>NETINFO TOOLS</b></font>
+
+<p><font face="Times" size="+1">NEXTSTEP provides a set of programs for managing NetInfo. There's also a software library available for programmers who need to access NetInfo from their own programs.</font>
+
+<p><font face="Helvetica" size="+1"><b>Manager applications</b></font>
+
+<p><font face="Times" size="+1">A number of &quot;Manager&quot; applications, mostly stored in <b>/NextAdmin</b>, give you a graphical way to manage various components of your network and systems. All of these tools interact with NetInfo, storing and managing the configuration and resource information that's contained in your domain hierarchy. Here's a brief description of each tool:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><i>SimpleNetworkStarter</i> sets up a new network. It builds master and clone servers for the second level on a two-level NetInfo domain hierarchy. It also provides you with a menu of services that you can configure any computer to provide. Most of the services you enable have some configuration information stored in NetInfo. If you have a small network, you may be able to configure every service you need using SimpleNetworkStarter. Even if you have more elaborate requirements, you can use SimpleNetworkStarter to configure all your basic services first.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><i>NFSManager</i> configures file-sharing services. You use it to set up file server, and to configure client access to those file servers. It stores server and client configuration information in NetInfo. This information is consulted by file server and client software whenever a system starts up.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><i>UserManager</i> adds, changes, and deletes user accounts and user groups. It manages user account records, like the one shown in Figure 4, that are stored in NetInfo. It also creates and deletes home directories in the file system.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><i>PrintManager</i> (in <b>/NextApps</b>) manages printers and fax modems on a network. Every printer and fax modem has configuration information stored in the local NetInfo domain of the computer that has the printer or fax modem directly attached. PrintManager lets you make printers and fax modems available to groups of computers on your network by placing a record describing them in various NetInfo domains.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><i>HostManager</i> manages names, addresses, and other networking information for the computers on your network. It also manages networkwide clock synchronization.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><i>NetWareManager</i> manages access to file servers and printers on a NetWare network.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><i>NetInfoManager</i> is a general-purpose program that displays and modifies the contents of NetInfo. You can use it to inspect any domain, even connecting to specific servers for a domain to examine a specific copy of a database. You can then inspect the directory hierarchy within a specific database, changing property keys and values if necessary. Since NetInfoManager can make arbitrary changes, it's best to use the other Manager applications instead to administer the configuration information that's stored in NetInfo. NetInfoManager also creates and destroys clones of any domain except the local domain and creates master servers for entirely new domains. This lets you build additional levels in your NetInfo hierarchy.</font></td></tr>
+
+</table>
+
+<p><font face="Times" size="+1">You can find more information about these applications in the <i>NEXTSTEP Network and System Administration</i> manual. PrintManager is described in the <i>NEXTSTEP User's Guide</i>.</font>
+
+<p><font face="Helvetica" size="+1"><b>NetInfo UNIX Utilities</b></font>
+
+<p><font face="Times" size="+1">A number of UNIX programs access and maintain information in NetInfo. The main ones are briefly described here:</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>niutil</b> provides nearly all the same functionality as NetInfoManager from a UNIX shell. You can use it to inspect and modify directories, property keys, and values in any directory in any domain. You can also direct it to make a connection to a specific server if you need to inspect that server's copy of a database.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>nidomain</b> creates and deletes clone servers and creates master servers for new domains. It also provides a list of all database tags that correspond to active servers on computers in your network.</font></td></tr>
+
+<tr valign=top>
+
+<td height=10></td></tr>
+
+<tr valign=top>
+
+<td nowrap><font face="Times" size="+1"><img src="../../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>niload</b> and <b>nidump</b> upload and download information from NetInfo databases into ASCII files. They support several file formats, most of which provide limited translation between NetInfo and various UNIX ASCII-file (<i>flat file</i>) database formats. They also provide a raw format that preserves all the information found in NetInfo.</font></td></tr>
+
+</table>
+
+<p><font face="Times" size="+1">For more information on using these utilities, see their UNIX manual pages.</font>
+
+<p><font face="Helvetica" size="+1"><b>NetInfo application program interfaces</b></font>
+
+<p><font face="Times" size="+1">Two libraries exist for programs that must access NetInfo. The netinfo subroutine library contains a complete set of access tools. Several NetInfo-related objects also are provided in the NetInfo Kit. You can find more information on the netinfo library in the <b>netinfo</b>(3) UNIX manual page. NetInfo Kit is documented in the <i>NEXTSTEP General Reference</i>.</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+2"><b>HOW TO LEARN MORE</b></font>
+
+<p><font face="Times" size="+1">There are many resources to help you learn more about NetInfo. You can start with the <i>NEXTSTEP Network and System Administration</i> manual.</font>
+
+<p><font face="Times" size="+1">For example, to build your network, start with a plan. See Chapter 1, &quot;Using This Manual to Plan Your Network.&quot; Then use SimpleNetworkStarter to build the network, following the steps in Chapter 2, &quot;Setting Up a NetInfo Network.&quot;</font>
+
+<p><font face="Times" size="+1">Next, you need to create user accounts so people can use the network. Follow the steps in Chapter 5, &quot;Managing User Accounts and User Groups.&quot;</font>
+
+<p><font face="Times" size="+1">From there, you might want to set up file sharing using NFS. See Chapter 4, &quot;Setting Up the Network File System.&quot;</font>
+
+<p><font face="Times" size="+1">Then, to learn more about NetInfo in general and to see how to accomplish many other administrative tasks, see Chapter 3, &quot;NetInfo Networking.&quot;</font>
+
+<p><font face="Times" size="+1">After you've mastered the basics of NetInfo, you may find that you need to gain some deeper knowledge so that you can manage larger and more elaborate networks. The remaining chapters and appendices in the <i>NEXTSTEP Network and System Administration</i> manual explain more advanced concepts. Also, NeXTanswers has information on networking, including articles from past <i>support bulletin</i> issues. And of course, you should read the remaining articles in this issue of <i>NEXTSTEP In Focus</i> for much more information about NetInfo!</font>
+
+<p><br><br><br><br><br>
+
+<p><font face="Helvetica" size="+3">SOME BASIC NETWORKING TERMS</font>
+
+<p><font face="Helvetica"><b>client</b>&nbsp; A process that requests a service from another process. A single process can be both a client and a server at different times.</font>
+
+<p><font face="Helvetica"><b>host</b>&nbsp; A computer that a process runs on. A host can have many processes running on it.</font>
+
+<p><font face="Helvetica"><b>process</b>&nbsp; A running instance of a program. Many processes on a computer can run (execute) the same program.</font>
+
+<p><font face="Helvetica"><b>program</b>&nbsp; The code, or steps, that a process executes.</font>
+
+<p><font face="Helvetica"><b>server</b>&nbsp; A process that provides a service, such as printing, looking up information, or faxing, to other processes.</font>
+
+<p><br><br><br><br><br>
+
+<p><font face="Helvetica" size="+3">SPECIAL PROPERTIES</font>
+
+<p><font face="Helvetica"><i>For the most part, the contents of a NetInfo directory-the properties and values in the directory-are simply raw data to NetInfo itself. A few properties, though, have special meaning. In particular, they're used by netinfod. Here are the important properties.</i></font>
+
+<p><font face="Helvetica"><b>master</b>&nbsp; Describes the host where the master server for the domain runs and the tag of the database used by that server. The syntax of the master property is <i>hostname</i>/<i>tag</i>.</font>
+
+<p><font face="Helvetica"><b>name</b>&nbsp; Describes, in a shorthand way that people can understand, the purpose of the directory. It's also the default property listed and searched by niutil. Though the <b>name</b> property is normally present in a directory, it isn't required.</font>
+
+<p><font face="Helvetica"><b>serves</b>&nbsp; Describes the NetInfo domain hierarchy. serves properties reside in the immediate subdirectories of <b>/machines</b>. If a computer runs a server for a given domain, a domain's parent, or a child domain, then the computer has an appropriate value for the <b>serves</b> property in that domain.</font>
+
+<p><font face="Helvetica"><b>trusted_networks</b>&nbsp; Specifies whether extra security checks are made on requests to <b>netinfod</b>. If <b>trusted_networks</b> has one or more values in the root directory of a domain, each request received by a <b>netinfod</b> is checked for acceptability. If the high-order bytes of the client's address match some value of <b>trusted_networks</b>, the request is processed further; otherwise, it isn't. If <b>trusted_networks</b> isn't defined, all requests automatically pass this test.</font>
+
+<p><font face="Helvetica"><b>_writers</b>&nbsp; Allows non-<b>root</b> users to modify the NetInfo database. Normally, only <b>root</b> can modify the NetInfo database. A non-<b>root</b> user whose user name is listed as a value of <b>_writers</b> can modify the directory containing the property. If the value of <b>_writers</b> in a directory is <b>*</b> (an asterisk), all users can modify the directory. You can allow non-<b>root</b> write access to a directory for a particular property by setting <b>_writers_property</b>. For example, to allow the user <b>randy</b> to modify only the <b>passwd</b> property of a NetInfo directory, set the property <b>_writers_passwd</b> to the value <b>randy</b> in the appropriate directory.</font>
+
+<p><font face="Helvetica"><i>-Alan M. Marcum</i></font>
+
+
+
+<p>
+
+</body>
+</html>

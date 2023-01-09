@@ -1,0 +1,51 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+  <!-- Created with LatinByrd III -->
+  <!-- File: /NextLibrary/Documentation/NEXTSTEP_In_Focus/1993Spring/Additional_Files/SecureSingleUser/README.rtf -->
+  <!-- Date: Sun Jan  1 15:46:14 2023 -->
+  <!-- Hacked up by me because, meh, plain text as an RTF. -->
+  <head>
+    <title>README</title>
+  </head>
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+    <basefont size=3 face="Helvetica">
+    <h1>ENHACING SINGLE USER MODE SECURITY</h1>
+    <p>The ability to boot a UNIX system in single-user mode is a security concern, since single-user mode provides a root shell without requiring a password.  A solution is to force the user to supply a password before /bin/sh starts in single user mode.  You can accomplish this by running a password checking program in the shell's startup file for root, /.profile.</p>
+    <hr size="1" />
+    <h2>Disclaimer</h2>
+    <p>This system has been tested for security holes, and appears to resist concerted efforts to defeat it.  However, NeXT Computer Inc. disclaims any warranty of any kind, expressed or implied, as to its fitness for any particular use.</p>
+    <hr size="1" />
+    <h2>Directory Contents</h2>
+    <p>This directory contains a sample password checking program called pw_check, and a sample /.profile that runs the pw_check program, to ask for a root password. The program allows three attempts, then halts the processor if the correct password isn't entered.</p>
+    <p>NOTE: NetInfo does not run in UNIX single user mode, so you must set the password in /etc/passwd.</p>
+    <p>This directory also contains a Makefile for the &#34;make&#34; utility, which will automatically install the pw_check program and /.profile, and will protect your /etc/rc.boot file so that the startup sequence cannot be interrupted from the keyboard.</p>
+    <h2>How to Use These Files</h2>
+    <p>To install the pw_check program and the /.profile file, update your rc.boot file, and place your local NetInfo domain's root password in the /etc/password file automatically, start a root UNIX shell, change to this directory, and type &#34;make&#34;.&nbsp; For example:
+      <font face="Courier"><code><pre>
+            cd &lt;&lt;this directory&gt;&gt;
+            make</pre></code></font></p>
+    <p>A backup copy of /etc/passwd is placed in /etc/passwd.orig, a backup copy of /etc/rc.boot is placed in /etc/rc.boot.orig, and a backup copy of /.profile is placed in /.profile.orig.</p>
+    <p>To install these changes manually instead, follow these steps:<p>
+      <ol>
+        <li>Compile the pw_check program with the command: <code>cc -o pw_check pw_check.c</code></li>
+        <li>
+          Edit /.profile, and insert the following line as close as possible to the beginning of the file:
+          <code>&lt;&lt;name of directory&gt;&gt;/pw_check root</code>
+          <p>If you want correct tty setup, place this line just after <code>&#34;stty erase &#34;^?&#34; intr &#34;^C&#34; kill &#34;^U&#34; -decctlq&#34;</code>.</p>
+          <p>You can use another user account instead of root. root is assumed if no user name is given on the command-line</p></li>
+        <li>Edit your /etc/rc.boot file, and add the following as the second line: <code>trap &#34;&#34; 2 3</code>
+          <p>This prevents the rc.boot file from being interrupted during startup, which would circumvent the shell that runs /.profile.</p></li>
+        <li>Finally, set the password for the user root (or whichever user account you gave as an option to pw_check). You can use nidump to generate a /etc/password format file from NetInfo and replace the appropriate line in your /etc/passwd file.</li>
+      </ol>
+    </p>
+    <h2>Comments and Questions</h2>
+    <p>Send comments, questions, and problem reports to the author:Marc Majka &lt;Marc_Majka@next.com&gt;<br/>NeXT Computer Inc.<br/>900 Chesapeake Drive<br/>Redwood City, CA 94063</p>
+    <hr size="1" />
+    <h1>FILES</h1>
+    <ul>
+      <li><a href="pw_check.c" target="mainFrame">pw_check.c</a></li>
+      <li><a href="makefile" target="mainFrame">makefile</a></li>
+      <li><a href="sample_profile" target="mainFrame">sample_profile</a></li>
+    </ul>
+  </body>
+</html>
