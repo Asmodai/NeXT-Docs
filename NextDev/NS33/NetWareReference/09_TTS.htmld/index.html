@@ -1,0 +1,4190 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/Novell/NetWareReference/09_TTS.rtf -->
+<!-- Date: Mon Jan  9 04:04:06 2023 -->
+<head>
+<title>09_TTS</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Copyright</font> &copy;<font face="Times">1993 by Novell, Inc. and NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Times" size="+4">Transaction Tracking System APIs</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Introduction to Transaction Tracking</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NetWare file servers that include the Transaction Tracking System (TTS) can track transactions and ensure file integrity by backing out (or erasing) interrupted or partially completed transactions.&nbsp; TTS only affects transactional files.&nbsp; A file becomes transactional when the file's Transactional extended file attribute is set.</font>
+
+<p><font face="Times" size="+1">For example, a banking database application frequently performs a transaction that includes the following three writes to database files:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">A debit to one account</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">A credit to another account</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">A note to a log</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">The application must complete all three of these writes to maintain database integrity.&nbsp; Transaction tracking is implemented in two ways, implicit and explicit.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>Implicit transaction tracking</b> requires no coding on the part of an application developer.&nbsp; If TTS is installed and enabled on a file server, TTS tracks all transactions to all transactional files (including transactions made by NetWare to bindery files).</font></td></tr>
+
+<tr valign=top>
+
+<td width=55 height=16></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1"><b>Explicit transaction tracking</b> has two calls: NWTTSBeginTransaction and NWTTSEndTransaction. Explicit Transaction Tracking requires applications to make TTS calls and allows applications to neatly bracket file update sequences with locking and TTS calls.&nbsp; An application would most likely use logical or physical record locks with TTS calls (see &#34;Synchronization Services&quot;).</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">The following steps describe how TTS tracks each write within a transaction.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">1)</font></td>
+
+<td><font face="Times" size="+1">An application writes new data to a file on a file server.</font></td></tr>
+
+<tr valign=top>
+
+<td width=55 height=16></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">2)</font></td>
+
+<td><font face="Times" size="+1">The file server stores the new data in cache memory.&nbsp; The target file on the file server hard disk remains unchanged.</font></td></tr>
+
+<tr valign=top>
+
+<td width=55 height=16></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">3)</font></td>
+
+<td><font face="Times" size="+1">The file server scans the target file on the file server hard disk, finds the data to be changed (old data), and copies the old data to cache memory. The file server also records the name and directory path of the target file and the location and length of the old data (record) within the file.&nbsp; The target file on the file server hard disk still remains unchanged.</font></td></tr>
+
+<tr valign=top>
+
+<td width=55 height=16></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">4)</font></td>
+
+<td><font face="Times" size="+1">The file server writes the old data in cache memory to a transaction work file on the file server hard disk.&nbsp; The transaction work file resides at the root level of volume SYS on the file server.&nbsp; The file is flagged System and Hidden.&nbsp; The target file on the file server hard disk still remains unchanged.</font></td></tr>
+
+<tr valign=top>
+
+<td width=55 height=16></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">5)</font></td>
+
+<td><font face="Times" size="+1">The file server writes the new data in cache memory to the target file on the file server hard disk.&nbsp; The target file is now changed.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">The file server repeats these steps for each write within a transaction.&nbsp; The transaction work file grows to accommodate the old data for each write.&nbsp; If the transaction is interrupted, the file server writes the contents of the transaction work file to the target file, thereby restoring the file to its pretransaction condition.&nbsp; In effect, the file server backs out the transaction.</font>
+
+<p><font face="Times" size="+1">A file server can monitor from 100 to 10,000 transactions at a time.&nbsp; (The maximum value can be configured with SET for NetWare v3.x.)&nbsp; A file server can track only one transaction at a time for each session.&nbsp; If a session sends several transactions to a file server rapidly, the file server queues the transactions and services them one at a time.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWTTSAbortTransaction</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function aborts all transactions, explicit and implicit, on a file that has been flagged transactional.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &#34;netware/nwapi.h&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWTTSAbortTransaction</b>( serverConnID );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> passes the file server connection ID.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful.&nbsp; One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFE</font></td>
+
+<td><font face="Times" size="+1">Transaction Restart</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFD</font></td>
+
+<td><font face="Times" size="+1">Transaction Tracking Disabled</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Lock Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">No Explicit Transaction Active</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=54></td>
+
+<td nowrap><font face="Times" size="+1"><b>Note:</b></font></td>
+
+<td><font face="Times" size="+1">A return value in NWErrno of 0xFE indicates that more than the threshold number of logical or physical records are still locked by the application.&nbsp; However, the transaction is still finished and any locks being held are released.&nbsp; In this case, the file server automatically starts a new implicit transaction.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a complete listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function releases the following record locks:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Physical record locks generated by the file server when an application tried to write an unlocked record.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Physical or logical locks that have not been released because of a file write.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">When this function is complete, all transactions will have been successfully backed out.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Notes</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">If a transaction is aborted, all writes made since the beginning of a transaction are cancelled, and all files are returned to the state they were in before the transaction began.</font>
+
+<p><font face="Times" size="+1">Files can be flagged transactional with NWCreateFile and NWSetFileAttributes.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWCreateFile</font><br>
+<font face="Times" size="+1">NWSetFileAttributes</font><br>
+<font face="Times" size="+1">NWTTSBeginTransaction</font><br>
+<font face="Times" size="+1">NWTTSEndTransaction</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWTTSBeginTransaction</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function begins an explicit transaction on a file that has been flagged transactional.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &#34;netware/nwapi.h&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWTTSBeginTransaction</b>( serverConnID );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> passes the file server connection ID.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful.&nbsp;&nbsp; One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFE</font></td>
+
+<td><font face="Times" size="+1">Transaction Restart</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFD</font></td>
+
+<td><font face="Times" size="+1">Transaction Tracking Disabled</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Lock Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">No Explicit Transaction Active</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a complete listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function tracks all transactional files that are currently open and all those that are opened during the transaction.</font>
+
+<p><font face="Times" size="+1">When data is written to a transactional file during a transaction, the file server automatically generates a physical record lock for the region being written.&nbsp; If a lock already exists, no additional lock is generated.&nbsp; This automatic locking can be disabled using the NWTTSSetControlFlags function.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Notes</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">Any closing and unlocking of transactional files is delayed until an</font><br>
+<font face="Times" size="+1">NWTTSEndTransaction or NWTTSAbortTransaction is executed.&nbsp; Logical and physical records are not unlocked until the end of the transaction if file writes are performed while the lock is in force. Use NWCreateFile or NWSetFileAttributes to flag a file transactional.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWCreateFile</font><br>
+<font face="Times" size="+1">NWSetFileAttributes</font><br>
+<font face="Times" size="+1">NWTTSAbortTransaction</font><br>
+<font face="Times" size="+1">NWTTSSetControlFlags</font><br>
+<font face="Times" size="+1">NWTTSEndTransaction</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWTTSDisableTransactionTracking</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function disables transaction tracking services on the specified file server.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &#34;netware/nwapi.h&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWTTSDisableTransactionTracking</b>( serverConnID );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> passes the file server connection ID.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful.&nbsp; One of the following error codes is placed in NWErrno.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFE</font></td>
+
+<td><font face="Times" size="+1">Transaction Restart</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFD</font></td>
+
+<td><font face="Times" size="+1">Transaction Tracking Disabled</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Lock Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">No Explicit Transaction Active</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xC6</font></td>
+
+<td><font face="Times" size="+1">No Console Privileges</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=54></td>
+
+<td nowrap><font face="Times" size="+1"><b>Note:</b></font></td>
+
+<td><font face="Times" size="+1">A return value in NWErrno of 0xFE indicates that more than the threshold number of logical or physical records are still locked by the application.&nbsp; However, the transaction is still finished and any locks being held are released.&nbsp; In this case, the file server automatically starts a new implicit transaction.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a complete listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function call should be used after transaction services are no longer being used.</font>
+
+<p><font face="Times" size="+1">The client making this call must be supervisor or have equivalent rights.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWTTSEnableTransactionTracking</font><br>
+<font face="Times" size="+1">NWTTSBeginTransaction</font><br>
+<font face="Times" size="+1">NWTTSIsTransactionWritten</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWTTSEnableTransactionTracking</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function enables transaction tracking services on the specified file server.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &#34;netware/nwapi.h&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWTTSEnableTransactionTracking</b>( serverConnID );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> passes the file server connection ID.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful.&nbsp; One of the following error codes is placed in NWErrno.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFE</font></td>
+
+<td><font face="Times" size="+1">Transaction Restart</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFD</font></td>
+
+<td><font face="Times" size="+1">Transaction Tracking Disabled</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Lock Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">No Explicit Transaction Active</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xC6</font></td>
+
+<td><font face="Times" size="+1">No Console Privileges</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=54></td>
+
+<td nowrap><font face="Times" size="+1"><b>Note:</b></font></td>
+
+<td><font face="Times" size="+1">A return value in NWErrno of 0xFE indicates that more than the threshold number of logical or physical records are still locked by the application.&nbsp; However, the transaction is still finished and any locks being held are released.&nbsp; In this case, the file server automatically starts a new implicit transaction.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a complete listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function call will enable TTS if the server has it available.&nbsp; However, the version of NetWare that the file server is running determines the information the call returns.</font>
+
+<p><font face="Times" size="+1">For NetWare v3.<i>x</i>, this call enables TTS.&nbsp; Use NWTTSIsAvailable to check whether TTS has been disabled.</font>
+
+<p><font face="Times" size="+1">For NetWare v2.<i>x</i>, this call enables TTS if TTS has been installed on the file server.&nbsp; If TTS has not been installed, the call will not fail.&nbsp; On file servers running NetWare v2.<i>x</i>, you should always use NWTTSIsAvailable before making this call.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Notes</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">The application making this call must be supervisor or have equivalent rights.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWTTSDisableTransactionTracking</font><br>
+<font face="Times" size="+1">NWTTSBeginTransaction</font><br>
+<font face="Times" size="+1">NWTTSIsAvailable</font><br>
+<font face="Times" size="+1">NWTTSIsTransactionWritten</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWTTSEndTransaction</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function ends an explicit transaction on a file that has been flagged transactional.&nbsp; The function also returns a transaction reference number.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &#34;netware/nwapi.h&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint32</font></td>
+
+<td><font face="Times" size="+1">transactionReferenceNumber;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWTTSEndTransaction</b>( serverConnID,</font><br>
+<font face="Times" size="+1">&amp;transactionReferenceNumber );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> passes the file server connection ID.</font>
+
+<p><font face="Times" size="+1"><i>transactionReferenceNumber</i> passes a pointer to the space allocated for the transaction reference number for the transaction being ended.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>transactionReferenceNumber</i> receives the transaction reference number for the transaction being ended.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful.&nbsp; One of the following error codes is placed in NWErrno.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFE</font></td>
+
+<td><font face="Times" size="+1">Transaction Restart</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFD</font></td>
+
+<td><font face="Times" size="+1">Transaction Tracking Disabled</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Lock Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">No Explicit Transaction Active</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=54></td>
+
+<td nowrap><font face="Times" size="+1"><b>Note:</b></font></td>
+
+<td><font face="Times" size="+1">A return value in NWErrno of 0xFE indicates that more than the threshold number of logical or physical records are still locked by the application.&nbsp; However, the transaction is still finished and any locks being held are released.&nbsp; In this case, the file server automatically starts a new implicit transaction.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a complete listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">The transaction is not necessarily written to disk when the reference number is returned; a client must use the NWTTSIsTransactionWritten function to verify that a transaction has been written to disk.&nbsp; If the file server fails before all updates contained within the transaction have been written to disk, the transaction will be backed out when the file server is rebooted.</font>
+
+<p><font face="Times" size="+1">If transaction tracking is disabled, the reference number can still be used to determine when the transaction has been completely written to disk.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Notes</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function releases all physical record locks generated by the file server when a write is made to an unlocked record.&nbsp; In addition, physical or logical locks that have not been released because of a file write are unlocked at this time.</font>
+
+<p><font face="Times" size="+1">Files can be flagged transactional with NWCreateFile and with</font><br>
+<font face="Times" size="+1">NWSetFileAttributes.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWCreateFile</font><br>
+<font face="Times" size="+1">NWSetFileAttributes</font><br>
+<font face="Times" size="+1">NWTTSAbortTransaction</font><br>
+<font face="Times" size="+1">NWTTSBeginTransaction</font><br>
+<font face="Times" size="+1">NWTTSIsTransactionWritten</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWTTSGetConnectionThresholds</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function returns the number of logical and physical record locks allowed for implicit transactions.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &#34;netware/nwapi.h&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint8</font></td>
+
+<td><font face="Times" size="+1">logicalRecordLockThreshold;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint8</font></td>
+
+<td><font face="Times" size="+1">physicalRecordLockThreshold;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWTTSGetConnectionThresholds</b>( serverConnID,</font><br>
+<font face="Times" size="+1">&amp;logicalRecordLockThreshold, &amp;physicalRecordLockThreshold );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> passes the file server connection ID.</font>
+
+<p><font face="Times" size="+1"><i>logicalRecordLockThreshold</i> passes a pointer to the space allocated for the number of logical record locks allowed before implicit transactions begin (0 to 255).</font>
+
+<p><font face="Times" size="+1"><i>physicalRecordLockThreshold</i> passes a pointer to the space allocated for the number of physical record locks allowed before implicit transactions begin (0 to 255).</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>logicalRecordLockThreshold</i> receives the number of logical record locks allowed before implicit transactions begin (0 to 255).</font>
+
+<p><font face="Times" size="+1"><i>physicalRecordLockThreshold</i> receives the number of physical record locks allowed before implicit transactions begin (0 to 255).</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful.&nbsp; One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFE</font></td>
+
+<td><font face="Times" size="+1">Transaction Restart</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFD</font></td>
+
+<td><font face="Times" size="+1">Transaction Tracking Disabled</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Lock Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">No Explicit Transaction Active</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a complete listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function allows an application to get the number of logical and physical record locks allowed before implicit transactions begin.</font>
+
+<p><font face="Times" size="+1">The NWTTSSetConnectionThresholds function and this function are useful for applications that change the implicit application thresholds and later want to restore them.&nbsp; For example, NWTTSGetConnectionThresholds can get the number of logical and physical locks, and NWTTSSetConnectionThresholds can do one of the following:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Turn off implicit transactions. (Applications that use only explicit transactions, but sometimes generate unnecessary implicit transactions, need to turn off all implicit transactions.)</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Set implicit thresholds for applications that always keep one or more records locked.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Notes</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">The default threshold for logical and physical locks is 0.&nbsp; A threshold of 255 means implicit transactions for that lock type have been completed.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWTTSSetConnectionThresholds</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWTTSGetControlFlags</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function returns the control flags byte for files flagged as transactional.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &#34;netware/nwapi.h&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint8</font></td>
+
+<td><font face="Times" size="+1">TTSControlFlags;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWTTSGetControlFlags</b>( serverConnID, &amp;TTSControlFlags );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> passes the file server connection ID.</font>
+
+<p><font face="Times" size="+1"><i>TTSControlFlags</i> passes a pointer to the space allocated for the Transaction Tracking Control flags.&nbsp; (See &quot;Description&quot; below.)</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>TTSControlFlags</i> receives a Transaction Tracking Control flag.&nbsp; (See &#34;Description&#34; below.)</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful.&nbsp; One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFE</font></td>
+
+<td><font face="Times" size="+1">Transaction Restart</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFD</font></td>
+
+<td><font face="Times" size="+1">Transaction Tracking Disabled</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Lock Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">No Explicit Transaction Active</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a complete listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">Transaction tracking control flags are only valid for files flagged as TTS (transactional).&nbsp; These control flags are defined as follows:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0x00</font></td>
+
+<td><font face="Times" size="+1">Automatic record locking is disabled</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0x01</font></td>
+
+<td><font face="Times" size="+1">Automatic record locking is enabled</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWTTSSetControlFlags</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWTTSGetProcessThresholds</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function returns the number of explicit physical and logical record locks that can be done before implicit locking begins.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &#34;netware/nwapi.h&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint8</font></td>
+
+<td><font face="Times" size="+1">logicalRecordLockThreshold;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint8</font></td>
+
+<td><font face="Times" size="+1">physicalRecordLockThreshold;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWTTSGetProcessThresholds</b>( serverConnID,</font><br>
+<font face="Times" size="+1">&amp;logicalRecordLockThreshold, &amp;physicalRecordLockThreshold );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> passes the file server connection ID.</font>
+
+<p><font face="Times" size="+1"><i>logicalRecordLockThreshold</i> passes a pointer to space allocated for the number of explicit logical record locks allowed before implicit transactions begin.</font>
+
+<p><font face="Times" size="+1"><i>physicalRecordLockThreshold</i> passes a pointer to the space allocated for the number of explicit physical record locks allowed before implicit transactions begin.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>logicalRecordLockThreshold</i> receives the number of explicit logical record locks allowed before implicit transactions begin.</font>
+
+<p><font face="Times" size="+1"><i>physicalRecordLockThreshold</i> receives the number of explicit physical record locks allowed before implicit transactions begin.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful.&nbsp; One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFE</font></td>
+
+<td><font face="Times" size="+1">Transaction Restart</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFD</font></td>
+
+<td><font face="Times" size="+1">Transaction Tracking Disabled</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Lock Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">No Explicit Transaction Active</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a complete listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function and the NWTTSSetProcessThresholds function are useful for applications that change the implicit process thresholds and later want to restore them.&nbsp; For example, NWTTSGetProcessThresholds can query an application for the number of logical and physical record locks allowed before an implicit transaction begins.&nbsp; NWTTSSetProcessThresholds can then do one of the following:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Turn off implicit transactions</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Set implicit thresholds for applications that always keep one or more records locked</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">The default threshold for logical and physical locks is 0.&nbsp; A threshold of 255 means there will be no implicit transactions allowed for that lock type.</font>
+
+<p><font face="Times" size="+1">The thresholds returned by this function are valid for the requesting application only.&nbsp; When the application terminates, the connection thresholds are restored.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Notes</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">Applications that intend to use only explicit transactions, but sometimes generate unnecessary implicit transactions, need to turn off all implicit transactions.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWTTSSetProcessThresholds</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWTTSIsAvailable</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function verifies that the file server supports transaction tracking.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &#34;netware/nwapi.h&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWBoolean_ts</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWTTSIsAvailable</b>( serverConnID );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> passes the file server connection ID.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">1</font></td>
+
+<td><font face="Times" size="+1">Transaction Tracking is available.&nbsp; (See &quot;Description&quot; below.)</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=54></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Transaction Tracking is not available.&nbsp; (See &quot;Description&quot; below.)&nbsp; If another problem exists, one of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFE</font></td>
+
+<td><font face="Times" size="+1">Transaction Restart</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFD</font></td>
+
+<td><font face="Times" size="+1">Transaction Tracking Disabled</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Lock Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">No Explicit Transaction Active</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a complete listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">The version of NetWare that the file server is running determines the information that this call returns.</font>
+
+<p><font face="Times" size="+1">For NetWare v2.<i>x</i>, this call allows the application to know whether the server has TTS installed.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">1</font></td>
+
+<td><font face="Times" size="+1">Indicates that TTS is installed.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Indicates that TTS is not installed.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">However, the API does not indicate whether TTS is currently enabled.&nbsp; To ensure that TTS is enabled, NWTTSEnableTransactionTracking should be called</font>
+
+<p><font face="Times" size="+1">For NetWare v3.<i>x</i>, this call indicates whether TTS is enabled.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">1</font></td>
+
+<td><font face="Times" size="+1">Indicates that TTS is enabled.</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Indicates that TTS has been disabled.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWTTSEnableTransactionTracking</font><br>
+<font face="Times" size="+1">NWTTSDisableTransactionTracking</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWTTSIsTransactionWritten</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function verifies whether a transaction has been written to disk.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &#34;netware/nwapi.h&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWBoolean_ts</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint32</font></td>
+
+<td><font face="Times" size="+1">transactionReferenceNumber;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWTTSIsTransactionWritten</b>( serverConnID,</font><br>
+<font face="Times" size="+1">transactionReferenceNumber );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> passes the file server connection ID.</font>
+
+<p><font face="Times" size="+1"><i>transactionReferenceNumber</i> passes the Transaction Reference number, obtained from the NWTTSEndTransaction function.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">1</font></td>
+
+<td><font face="Times" size="+1">Transaction written to disk</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Transaction not written to disk, and an error code is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFE</font></td>
+
+<td><font face="Times" size="+1">Transaction Restart</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFD</font></td>
+
+<td><font face="Times" size="+1">Transaction Tracking Disabled</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Lock Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">No Explicit Transaction Active</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a complete listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">Before using NWTTSIsTransactionWritten, use NWTTSEndTransaction to obtain a valid transactionReferenceNumber.&nbsp; If NWTTSEndTransaction fails, do not use NWTTSIsTransactionWritten. When NWTTSEndTransaction fails, it returns an invalid transactionReferenceNumber.&nbsp; When NWTTSIsTransactionWritten is passed an invalid transactionReferenceNumber, it returns an invalid response.</font>
+
+<p><font face="Times" size="+1">Applications should not wait for transactions to be written to disk unless it is absolutely necessary.&nbsp; Because of the file server caching algorithms, it may be 3 to 5 seconds (or longer) before they are actually written.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Notes</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">Transactions are written to disk in the order in which they terminate.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWTTSEndTransaction</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWTTSSetConnectionThresholds</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function informs NetWare of how many explicit physical and logical record locks to permit before invoking implicit transactions.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &#34;netware/nwapi.h&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint8</font></td>
+
+<td><font face="Times" size="+1">logicalRecordLockThreshold;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint8</font></td>
+
+<td><font face="Times" size="+1">physicalRecordLockThreshold;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWTTSSetConnectionThresholds</b>( serverConnID,</font><br>
+<font face="Times" size="+1">logicalRecordLockThreshold, physicalRecordLockThreshold );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> passes the file server connection ID.</font>
+
+<p><font face="Times" size="+1"><i>logicalRecordLockThreshold</i> passes the number of logical record locks to allow before implicit transactions begin.</font>
+
+<p><font face="Times" size="+1"><i>physicalRecordLockThreshold</i> passes the number of physical record locks to allow before implicit transactions begin.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful.&nbsp; One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFE</font></td>
+
+<td><font face="Times" size="+1">Transaction Restart</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFD</font></td>
+
+<td><font face="Times" size="+1">Transaction Tracking Disabled</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Lock Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">No Explicit Transaction Active</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a complete listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function and NWTTSGetConnectionThresholds are useful for applications that change the implicit application thresholds and later want to restore them.&nbsp; For example, NWTTSGetConnectionThresholds can obtain the current number of logical and physical locks and then NWTTSSetConnectionThresholds can do one of the following:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Turn off implicit transactions.&nbsp; (Applications that use only explicit transactions, but sometimes generate unnecessary implicit transactions, need to turn off all implicit transactions.)</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Set implicit thresholds for applications that always keep one or more records locked.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Notes</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">The default threshold for logical and physical locks is 0.&nbsp; A threshold of 255 means no implicit transactions for that lock type will be performed.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWTTSGetConnectionThresholds</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWTTSSetControlFlags</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function enables or disables automatic record locking on writes to transactional files.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &#34;netware/nwapi.h&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint8</font></td>
+
+<td><font face="Times" size="+1">TTSControlFlags;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWTTSSetControlFlags</b>( serverConnID, TTSControlFlags );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> passes the file server connection ID.</font>
+
+<p><font face="Times" size="+1"><i>TTSControlFlags</i> passes the Transaction Tracking Control flags.&nbsp; (See &#34;Description&#34; below.)</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful. One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFE</font></td>
+
+<td><font face="Times" size="+1">Transaction Restart</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFD</font></td>
+
+<td><font face="Times" size="+1">Transaction Tracking Disabled</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Lock Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">No Explicit Transaction Active</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a complete listing of possible NetWare errors.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">Transaction tracking control flags are only valid for files flagged as TTS (transactional). These flags are defined as follows:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0x00</font></td>
+
+<td><font face="Times" size="+1">Automatic record locking is disabled</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0x01</font></td>
+
+<td><font face="Times" size="+1">Automatic record locking is enabled</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWTTSGetControlFlags</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWTTSSetProcessThresholds</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function sets the number of logical and physical locks to perform before implicit locking begins.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &quot;nwapi.h&quot;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverconnID;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint8</font></td>
+
+<td><font face="Times" size="+1">logicalRecordLockThreshold;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint8</font></td>
+
+<td><font face="Times" size="+1">physicalRecordLockThreshold;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWTTSSetProcessThresholds</b> ( serverConnID,</font><br>
+<font face="Times" size="+1">logicalRecordLockThreshold, physicalRecordLockThreshold );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> passes the file server connection ID<i>.</i></font>
+
+<p><font face="Times" size="+1"><i>logicalRecordLockThreshold</i> passes the number of logical record locks to allow before implicit transactions begin.</font>
+
+<p><font face="Times" size="+1"><i>physicalRecordLockThreshold</i> passes the number of physical record locks to allow before implicit transactions begin.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful. One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFE</font></td>
+
+<td><font face="Times" size="+1">Transaction Restart</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFD</font></td>
+
+<td><font face="Times" size="+1">Transaction Tracking Disabled</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Lock Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">No Explicit Transaction Active</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a complete listing of possible NetWare errors.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">The thresholds set by this function are valid for the requesting application only. When the application terminates, the default workstation thresholds are restored.</font>
+
+<p><font face="Times" size="+1">This function is useful in either turning off implicit transactions or allowing applications that always keep one or more records locked to work. Applications that intend to use only explicit transactions, but sometimes generate unnecessary implicit transactions, can use this function to turn off all implicit transactions.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Notes</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">The default threshold for logical and physical locks is 0 unless this number has been changed using the NWTTSSetConnectionThresholds function. A threshold of 255 means no implicit transactions for that lock type are performed.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWTTSGetProcessThresholds</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

@@ -1,0 +1,1887 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/Novell/NetWareReference/05_Path.rtf -->
+<!-- Date: Mon Jan  9 04:04:03 2023 -->
+<head>
+<title>05_Path</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Copyright</font> &copy;<font face="Times">1993 by Novell, Inc. and NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Times" size="+4">Path Services APIs</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Introduction to Path Services</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">Path Services system calls provide developers with the necessary tools to do the following:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Allocate directory handles</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Deallocate directory handles</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Return information about directory paths</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">Path Services system calls operate through a series of tables maintained by both the file server and the client. Clients must maintain tables which keep track of the directory handles they create.&nbsp; Directory handles represent a full directory path name and can be used as a convenient method for pointing to a particular place level in the directory structure.&nbsp; Most calls in the File System Services allow you to use directory handles when specifying a file or directory.&nbsp; The calls usually accept the directory handle in the NWPath_t structure.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=30></td>
+
+<td><font face="Helvetica"><b>NWPath_t Structure</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">The following structure is used to specify the location of NetWare file or directory:</font>
+
+<p><font face="Times" size="+1">typedef struct {</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">NWDirHandle_ts</font></td>
+
+<td><font face="Times" size="+1">dirHandle;</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">char</font></td>
+
+<td><font face="Times" size="+1">*pathName;</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">} NWPath_t;</font>
+
+<p><font face="Times" size="+1"><i>dirHandle</i> represents the directory handle allocated by the client pointing to a particular place in the directory structure.</font>
+
+<p><font face="Times" size="+1"><i>serverConnID</i> represents the file server which contains the file system being accessed.</font>
+
+<p><font face="Times" size="+1"><i>pathName</i> is a pointer which points to a character string which the client must allocate and fill in with a path name.</font>
+
+<p><font face="Times" size="+1">In order to specify a particular directory, the client can pass in any one of the following:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">1)</font></td>
+
+<td><font face="Times" size="+1">A dirHandle which points to the directory, and a zero-value path name</font><br>
+<img src="../Images/sp.gif" width=3 height=1><font face="Times" size="+1">(pointed to by the pathName field).</font></td></tr>
+
+<tr valign=top>
+
+<td width=55 height=16></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">2)</font></td>
+
+<td><font face="Times" size="+1">A dirHandle which points to a particular place in the directory structure,</font><br>
+<font face="Times" size="+1">and then the path name (of sub-directories) beneath that place leading to</font><br>
+<font face="Times" size="+1">the desired directory (pointed to by the pathName field).</font></td></tr>
+
+<tr valign=top>
+
+<td width=55 height=16></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">3)</font></td>
+
+<td><font face="Times" size="+1">A zero-value dirHandle and a full path name (pointed to by the pathName</font><br>
+<img src="../Images/sp.gif" width=3 height=1><font face="Times" size="+1">field).</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">Files are specified by adding the file's name to the path name (pointed to by the path name field).</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWAllocPermanentDirHandle</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function assigns a permanent directory handle.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &#34;netware/netware/nwapi.h&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWPath_t</font></td>
+
+<td><font face="Times" size="+1">path;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">driveNum;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWDirHandle_ts</font></td>
+
+<td><font face="Times" size="+1">newDirHandle;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">effectiveRightsMask;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWAllocPermanentDirHandle</b>( &amp;path, driveNum, &amp;newDirHandle,&nbsp; &amp;effectiveRightsMask );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>path</i> passes a pointer to the NWPath_t structure created for the directory handle, the server connection ID, and a pointer to the directory path.</font>
+
+<p><font face="Times" size="+1"><i>driveNum</i> passes the drive number.</font>
+
+<p><font face="Times" size="+1"><i>newDirHandle</i> passes a pointer to the structure allocated for the new directory handle.</font>
+
+<p><font face="Times" size="+1"><i>effectiveRightsMask</i> passes a pointer to the space allocated for the client's effective rights to the directory connected via the newDirHandle parameter.&nbsp;&nbsp; See &#34;Trustee Rights and Inherited Rights Mask&#34; in Appendix A.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>newDirHandle</i> receives the new directory handle.</font>
+
+<p><font face="Times" size="+1"><i>effectiveRightsMask</i> receives the client's effective rights to the directory connected via the newDirHandle parameter.&nbsp; See &#34;Trustee Rights and Inherited Rights Mask&#34; in Appendix A.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful.&nbsp; One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0x98</font></td>
+
+<td><font face="Times" size="+1">Volume Does Not Exist</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0x9C</font></td>
+
+<td><font face="Times" size="+1">Invalid Path</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a complete listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">The directory handles allocated by this call are permanently allocated to the client's object ID by the file server unless deallocated by a call to</font><br>
+<font face="Times" size="+1">NWDeallocateDirHandle, or overwritten by allocating over the same dirHandle.&nbsp; The client must keep track of dirHandles and the directories they represent for use with other function calls.</font>
+
+<p><font face="Times" size="+1">The driveNum parameter should be a unique number between 1-32.&nbsp; This number is required by the server when allocating dirHandles.&nbsp; The number could be used by the client in a table to represent a particular dirHandle, although the actual dirHandle must always be used when sending requests to the server.</font>
+
+<p><font face="Times" size="+1">The effectiveRightsMask receives the client's effective rights to the directory as determined by ANDing the directory's Inherited Rights Mask and the client's trustee rights in that directory.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Notes</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">If a volume is specified in the path name, the volume must be represented by the volume name followed by a colon.&nbsp; You should pass a different drive number for each dirHandle allocated to avoid overwriting an existing dirHandle.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWAllocTemporaryDirHandle</font><br>
+<font face="Times" size="+1">NWDeallocateDirHandle</font><br>
+<font face="Times" size="+1">NWParseFullPath</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWAllocTemporaryDirHandle</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function assigns a temporary directory handle.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &#34;netware/netware/nwapi.h&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWPath_t</font></td>
+
+<td><font face="Times" size="+1">path;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">driveNum;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWDirHandle_ts</font></td>
+
+<td><font face="Times" size="+1">newDirHandle;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">effectiveRightsMask;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWAllocTemporaryDirHandle</b>( &amp;path, driveNum, &amp;newDirHandle, &amp;effectiveRightsMask );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>path</i> passes a pointer to the NWPath_t structure created for the directory handle, the server connection ID, and a pointer to the directory path.</font>
+
+<p><font face="Times" size="+1"><i>driveNum</i> passes the drive number.</font>
+
+<p><font face="Times" size="+1"><i>newDirHandle</i> passes a pointer to the structure allocated for the new directory handle.</font>
+
+<p><font face="Times" size="+1"><i>effectiveRightsMask</i> passes a pointer to the space allocated for the trustee's effective rights to the directory connected via the newDirHandle parameter.&nbsp; See &#34;Trustee Rights and Inherited Rights Mask&#34; in Appendix A.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>newDirHandle</i> receives the new directory handle.</font>
+
+<p><font face="Times" size="+1"><i>effectiveRightsMask</i> receives the client's effective rights to the directory connected via the newDirHandle parameter.&nbsp; See &#34;Trustee Rights and Inherited Rights Mask&#34; in Appendix A.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful.&nbsp; One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0x98</font></td>
+
+<td><font face="Times" size="+1">Volume Does Not Exist</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0x9C</font></td>
+
+<td><font face="Times" size="+1">Invalid Path</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a complete listing of possible NetWare errors.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">The directory handles allocated by this call are automatically deallocated when either the client logs out (or is somehow terminated), a call is made to NWDeallocateDirHandle or the dirHandle is overwritten by another allocation.&nbsp; The client should keep track of allocated directory handles and the directories they represent.</font>
+
+<p><font face="Times" size="+1">The driveNum parameter should be a unique number between 1-32.&nbsp; This number is required by the server when allocating dirHandles.&nbsp; The number could be used by the client in a table to represent a particular dirHandle, although the actual dirHandle must always be used when sending requests to the server.</font>
+
+<p><font face="Times" size="+1">The effectiveRightsMask receives the client's effective rights to the directory as determined by ANDing the directory's Inherited Rights Mask and the client's trustee rights in that directory.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Notes</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">If a volume is specified in the path name, the volume must be represented by the volume name followed by a colon.&nbsp; You should pass a different drive number for each dirHandle allocated to avoid overwriting an existing dirHandle.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWAllocPermanentDirHandle</font><br>
+<font face="Times" size="+1">NWDeallocateDirHandle</font><br>
+<font face="Times" size="+1">NWParseFullPath</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWDeallocateDirHandle</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function deallocates an allocated directory handle.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &#34;netware/nwapi.h&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWDirHandle_ts</font></td>
+
+<td><font face="Times" size="+1">dirHandle;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWDeallocateDirHandle</b>( serverConnID, dirHandle );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> passes the file server connection ID.</font>
+
+<p><font face="Times" size="+1"><i>dirHandle</i> passes the directory handle to be deallocated.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a complete listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Notes</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This API does not delete the directory handle.&nbsp; The API breaks the connection so that the directory handle does not point anywhere.</font>
+
+<p><font face="Times" size="+1">When a client terminates, logs out or somehow loses its connection, all directory handles for that workstation are deleted.&nbsp; An End-Of-Job also deallocates temporary directory handles.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWAllocPermanentDirHandle</font><br>
+<font face="Times" size="+1">NWAllocTemporaryDirHandle</font><br>
+<font face="Times" size="+1">NWGetDirPath</font><br>
+<font face="Times" size="+1">NWParseFullPath</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWGetDirPath</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function returns the path name of the directory to which the given directory handle is associated.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &#34;netware/nwapi.h&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWDirHandle_ts</font></td>
+
+<td><font face="Times" size="+1">dirHandle;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">char</font></td>
+
+<td><font face="Times" size="+1">dirPath</font><font face="Times" size="-1"><b>[NWMAX_DIR_PATH_LENGTH]</b></font><font face="Times" size="+1">;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWGetDirPath</b>( serverConnID, dirHandle, dirPath );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> passes the file server connection ID.</font>
+
+<p><font face="Times" size="+1"><i>dirHandle</i> passes the directory handle for the directory whose path is to be reported.</font>
+
+<p><font face="Times" size="+1"><i>dirPath</i> passes a pointer to the space allocated for the directory path name associated with the directory handle (above).</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>dirPath</i> receives the directory path name associated with the directory handle (above).</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful.&nbsp; One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0x9C</font></td>
+
+<td><font face="Times" size="+1">Invalid Path</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0x9B</font></td>
+
+<td><font face="Times" size="+1">Bad Directory Handle</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Path Not Locatable</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFB</font></td>
+
+<td><font face="Times" size="+1">Invalid Parameters</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a complete listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function returns the full path to the directory specified by the given directory handle.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWAllocTemporaryDirHandle</font><br>
+<font face="Times" size="+1">NWParseFullPath</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWParseFullPath</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function parses a directory path string.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &#34;netware/nwapi.h&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">char</font></td>
+
+<td><font face="Times" size="+1">path</font><font face="Times" size="-1"><b>[NWMAX_DIR_PATH_LENGTH]</b></font><font face="Times" size="+1">;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">char</font></td>
+
+<td><font face="Times" size="+1">server</font><font face="Times" size="-1"><b>[NWMAX_SERVER_NAME_LENGTH]</b></font><font face="Times" size="+1">;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">char</font></td>
+
+<td><font face="Times" size="+1">volName</font><font face="Times" size="-1"><b>[NWMAX_VOLUME_NAME_LENGTH]</b></font><font face="Times" size="+1">;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">char</font></td>
+
+<td><font face="Times" size="+1">directories</font><font face="Times" size="-1"><b>[NWMAX_DIR_PATH_LENGTH]</b></font><font face="Times" size="+1">;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWParseFullPath</b>( path, server, &amp;serverConnID, volName,</font><br>
+<font face="Times" size="+1">directories );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>path</i> passes a pointer to the string containing the path to be parsed.</font>
+
+<p><font face="Times" size="+1"><i>server</i> passes a pointer to a string allocated for the server name.</font>
+
+<p><font face="Times" size="+1"><i>serverConnID</i> passes a pointer to the structure containing the serverConnID.</font>
+
+<p><font face="Times" size="+1"><i>volName</i> passes a pointer to the string allocated for the name of the volume.</font>
+
+<p><font face="Times" size="+1"><i>directories</i> passes a pointer to the string allocated for the directory names.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>server</i> receives the server name.</font>
+
+<p><font face="Times" size="+1"><i>serverConnID</i> receives the file server connection ID.</font>
+
+<p><font face="Times" size="+1"><i>volName</i> receives the name of the volume.</font>
+
+<p><font face="Times" size="+1"><i>directories</i> receives the directory names.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful.&nbsp; One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0x9C</font></td>
+
+<td><font face="Times" size="+1">Invalid Path</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0x9B</font></td>
+
+<td><font face="Times" size="+1">Bad Directory Handle</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Path Not Locatable</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFB</font></td>
+
+<td><font face="Times" size="+1">Invalid Parameters</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a complete listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">The path parameter must contain a full path name.</font>
+
+<p><font face="Times" size="+1">If the path is on a local drive, an error is returned.&nbsp; If the path specifies a file server name and there are no connections to that file server, the</font><br>
+<font face="Times" size="+1">NO_CONNECTIONS error is returned.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWGetDirPath</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWSetDirHandle</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function sets the current directory for the specified directory handle.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &#34;netware/nwapi.h&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWPath_t</font></td>
+
+<td><font face="Times" size="+1">path;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWDirHandle_ts</font></td>
+
+<td><font face="Times" size="+1">targetDirHandle;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWSetDirHandle</b>( &amp;path, targetDirHandle );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>path</i> passes a pointer to the NWPath_t structure created for the directory handle, the server connection ID and a pointer to the directory path.</font>
+
+<p><font face="Times" size="+1"><i>targetDirHandle</i> passes the target directory handle that becomes the new directory handle for the specified directory.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a complete listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function assigns the target directory handle to a directory path defined by the combined source directory handle and the source directory path.</font>
+
+<p><font face="Times" size="+1">The dirHandle from the NWPath_t structure is an index number from 1 to 255.&nbsp; The dirHandle points to a volume or a directory on the file server.&nbsp; A file server maintains a Directory Handle table for each logged in client.&nbsp; If this call fails, the targetDirHandle parameter remains unchanged.</font>
+
+<p><font face="Times" size="+1">This call can only change dirHandles among directories on the same file server.&nbsp; In cases where multiple file servers are being used, the dirHandle and targetDirHandle parameter must have the same server connection ID.</font>
+
+<p><font face="Times" size="+1">The pathName parameter from the NWPath_t structure can identify a full or partial directory path.&nbsp; A full directory path defines a volume or a directory on a given file server in the format VOLUME:DIRECTORY/.../DIRECTORY.&nbsp; A partial directory path specifies at least a directory, and possibly one or more parent directories.</font>
+
+<p><font face="Times" size="+1">Applications frequently combine a directory handle and a directory path to specify a target directory.&nbsp; For example, if the specified directory handle points to SYS: and the specified directory path = PUBLIC/WORDP, then the specified directory is SYS:PUBLIC/WORDP.</font>
+
+<p><font face="Times" size="+1">When an application defines a target directory using only a directory handle, the application must pass a null string in the pathName parameter.&nbsp; When an application defines a directory using only a directory path, the application must set dirHandle to zero.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Notes</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">Directory handles must be kept track of separately for each file server connection.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWParseFullPath</font><br>
+<font face="Times" size="+1">NWGetDirPath</font></td></tr>
+
+</table>
+
+
+
+</body>
+</html>

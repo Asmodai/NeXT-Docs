@@ -1,0 +1,3846 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/Novell/NetWareReference/03_Connection.rtf -->
+<!-- Date: Mon Jan  9 04:04:00 2023 -->
+<head>
+<title>03_Connection</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Copyright</font> &copy;<font face="Times">1993 by Novell, Inc. and NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Times" size="+4">Connection Services APIs</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Introduction to Connection Services</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">The Connection Service calls allow developers to establish and destroy logical connections to a NetWare file server (creating utilities similar to the NetWare LOGIN, ATTACH and LOGOUT utilities), and return status information about those connections. Connection Services enable applications to do the following:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Log in or attach objects to file servers</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Log out or detach objects from file servers</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Return information about a connection</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Return a clientConnID or a serverConnID</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Connection Information</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">Connection information must be maintained by both the server and the connected client. The file server maintains two related tables:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The File Server Connection Table</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">The Password Table</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">The number of entries allowed in the table depends upon which version of the operating system the file server is running. Each entry in the File Server Connection table contains the network address of a client. The corresponding entry in the Password table contains the bindery object ID of the object type that established the connection between that client and the file server. The file server identifies a connection (both the connected client and the object attached through that client) by the connection's position (1 to 250) in these tables. This connection is known to the client as the clientConnID.</font>
+
+<p><font face="Times" size="+1">The following information is maintained in order to maintain a client connection:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">serverConnID</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">clientConnID</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">The serverConnID is a number which represents a server to a client. The serverConnID is returned to the client by the NWAttachToServerPlatform and the NWGetServerConnID function calls.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWAttachToServerPlatform</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function attaches the default client to the named file server.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &quot;netware/nwapi.h&quot;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">char</font></td>
+
+<td><font face="Times" size="+1">fileServerName</font><font face="Times" size="-1"><b>[NWMAX_SERVER_NAME_LENGTH]</b></font><font face="Times" size="+1">;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWAttachToServerPlatform</b>( fileServerName, &amp;serverConnID );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>fileServerName</i> passes a pointer to the name of the target file server.</font>
+
+<p><font face="Times" size="+1"><i>serverConnID</i> passes a pointer to the space allocated for the file server connection ID.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> receives the file server connection ID.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful. One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xF8</font></td>
+
+<td><font face="Times" size="+1">Already Attached to Server</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xF9</font></td>
+
+<td><font face="Times" size="+1">No Free Connection Slots</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFC</font></td>
+
+<td><font face="Times" size="+1">Unknown File Server</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">No Response From Server</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a complete listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function initializes and sets up a client connection to a server and allows the client to log in to the server by using the NWLoginToServerPlatform function. This function returns a file server connection ID (serverConnID) for the new connection and places the newly attached file server's connection information in the client's connection tables. After using this function, the client can now log in to the file server as an object.</font>
+
+<p><font face="Times" size="+1">The fileServerName array should contain either the name of the file server to attach to or an asterisk (*). If an asterisk is contained in the fileServerName array, the application will attach to the nearest file server. The asterisk may be used for utilities which do not require logging in.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Notes</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function will automatically open a transport.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWLoginToServerPlatform</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWClearClientConnID</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function clears a client connection number on the file server.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &quot;netware/nwapi.h&quot;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">clientConnID;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWClearClientConnID</b>( serverConnID, clientConnID );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> passes the file server connection ID.</font>
+
+<p><font face="Times" size="+1"><i>clientConnID</i> passes the client connection number to be cleared.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful. One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0x35</font></td>
+
+<td><font face="Times" size="+1">Server Connection Lost</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFC</font></td>
+
+<td><font face="Times" size="+1">No Such Object</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xEF</font></td>
+
+<td><font face="Times" size="+1">Illegal Name</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xC1</font></td>
+
+<td><font face="Times" size="+1">No Account Balance</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xC5</font></td>
+
+<td><font face="Times" size="+1">Login Lockout</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0x35</font></td>
+
+<td><font face="Times" size="+1">Server Connection Lost</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">Clearing a connection will log a client off the network. The client must then reattach and log in again to establish a new connection.</font>
+
+<p><font face="Times" size="+1">The calling application must be logged in as supervisor or have equivalent rights.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWGetObjectClientConnIDs</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWCloseTask</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function closes the process's task on the connection specified by</font><br>
+<font face="Times" size="+1">serverConnID.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &quot;netware/nwapi.h&quot;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWCloseTask</b>( serverConnID );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> passes the file server connection ID.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful. One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Connection Does Not Exist</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFC</font></td>
+
+<td><font face="Times" size="+1">Unknown File Server</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a complete listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">Closing a NetWare task will destroy process-specific context at the server and will free up a management portal device on the client. Generally it should be regarded as similar to closing a file. A new task will automatically be generated if another API call is made using that connection ID.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWDetachFromServerPlatform</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function breaks a client-file server connection.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &quot;netware/nwapi.h&quot;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWDetachFromServerPlatform</b>( serverConnID );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> passes the file server connection ID.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful. One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Connection Does Not Exist</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFC</font></td>
+
+<td><font face="Times" size="+1">Unknown File Server</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a complete listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">Detaching from a file server is not the same as logging out from a file server. Detaching relinquishes the connection number the client was using and breaks the connection. Before the client can send further requests to that file server, it must be reattached. Logging out from a file server preserves the connection ID and allows the client to log in again without reattaching.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=9></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWAttachToServerPlatform</font><br>
+<font face="Times" size="+1">NWLogoutFromServerPlatform</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWGetClientConnID</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function returns the connection number that the requesting client uses to communicate with the default file server.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &quot;netware/nwapi.h&quot;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">clientConnID;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWGetClientConnID</b>( serverConnID, &amp;clientConnID );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> passes the file server connection ID.</font>
+
+<p><font face="Times" size="+1"><i>clientConnID</i> passes a pointer to a location that will store the client connection number.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>clientConnID</i> receives the requesting client connection ID number.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful. One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFB</font></td>
+
+<td><font face="Times" size="+1">Invalid Parameters</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0x04</font></td>
+
+<td><font face="Times" size="+1">Not Connected To Server</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a complete listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">The clientConnID parameter is an index into the Connection Table maintained by the file server.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWAttachToServerPlatform</font><br>
+<font face="Times" size="+1">NWGetServerConnIDList</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWGetConnectionInformation</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function allows you to get information about a file server connection.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &quot;netware/nwapi.h&quot;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">clientConnID;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">char</font></td>
+
+<td><font face="Times" size="+1">clientObjectName</font><font face="Times" size="-1"><b>[NWMAX_OBJECT_</b></font><br>
+<img src="../Images/sp.gif" width=51 height=1><font face="Times" size="-1"><b>NAME_LENGTH]</b></font><font face="Times" size="+1">;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">clientObjectType;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint32</font></td>
+
+<td><font face="Times" size="+1">clientObjectID;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint8</font></td>
+
+<td><font face="Times" size="+1">clientLoginTime</font><font face="Times" size="-1"><b>[NWMAX_LOGIN_TIME_LENGTH]</b></font><font face="Times" size="+1">;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWGetConnectionInformation</b>( serverConnID, clientConnID,</font><br>
+<font face="Times" size="+1">clientObjectName, &amp;clientObjectType, &amp;clientObjectID, clientLoginTime );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> passes the file server connection ID.</font>
+
+<p><font face="Times" size="+1"><i>clientConnID</i> passes the client connection ID.</font>
+
+<p><font face="Times" size="+1"><i>clientObjectName</i> passes a pointer to the space allocated for the client's object name.</font>
+
+<p><font face="Times" size="+1"><i>clientObjectType</i> passes a pointer to the space allocated for the client's object type.</font>
+
+<p><font face="Times" size="+1"><i>clientObjectID</i> passes a pointer to the space allocated for the client's object ID.</font>
+
+<p><font face="Times" size="+1"><i>clientLoginTime</i> passes a pointer to the space allocated for the client's login time.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>clientObjectName</i> receives the client's object name.</font>
+
+<p><font face="Times" size="+1"><i>clientObjectType</i> receives the client's object type.</font>
+
+<p><font face="Times" size="+1"><i>clientObjectID</i> receives the client's object ID.</font>
+
+<p><font face="Times" size="+1"><i>clientLoginTime</i> receives the client's login time.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful. One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">No Response From Server</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFE</font></td>
+
+<td><font face="Times" size="+1">Server Bindery Locked</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFC</font></td>
+
+<td><font face="Times" size="+1">No Such Object</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a complete listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">The clientLoginTime is returned in an array of 7 uint8s. The array will be filled with the following:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">1st uint8=year</font></td>
+
+<td><font face="Times" size="+1">(0 through 99; for example: 90=1990 )</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">2nd uint8=month</font></td>
+
+<td><font face="Times" size="+1">(1 through 12)</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">3rd uint8=day</font></td>
+
+<td><font face="Times" size="+1">(1 through 31)</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">4th uint8=hour</font></td>
+
+<td><font face="Times" size="+1">(0 through 23)</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">5th uint8=minute</font></td>
+
+<td><font face="Times" size="+1">(0 through 59)</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">6th uint8=second</font></td>
+
+<td><font face="Times" size="+1">(0 through 59)</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">7th uint8=dayOfWeek</font></td>
+
+<td><font face="Times" size="+1">(0 through 6, 0 = Sunday)</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWGetInternetAddress</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function gets the internetwork address of any client on the network.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &quot;netware/nwapi.h&quot;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">clientConnID;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint8</font></td>
+
+<td><font face="Times" size="+1">internetAddress</font><font face="Times" size="-1"><b>[ NWMAX_INTERNET_ADDRESS_</b></font><br>
+<img src="../Images/sp.gif" width=51 height=1><font face="Times" size="-1"><b>LENGTH ]</b></font><font face="Times" size="+1">;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWGetInternetAddress</b>( serverConnID, clientConnID,</font><br>
+<font face="Times" size="+1">internetAddress );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> passes the file server connection ID.</font>
+
+<p><font face="Times" size="+1"><i>clientConnID</i> passes the client connection ID.</font>
+
+<p><font face="Times" size="+1"><i>internetAddress</i> passes a pointer to the space allocated for the internet address.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>internetAddress</i> receives the internet address.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful. One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0x01</font></td>
+
+<td><font face="Times" size="+1">Invalid Parameter Length</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0x04</font></td>
+
+<td><font face="Times" size="+1">Not Connected To Server</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a complete listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">An internetwork address is comprised of the networkNumber, the</font><br>
+<font face="Times" size="+1">physicalNodeAddress and the socketNumber. The internetwork address uniquely identifies a client throughout an internetwork. This address can be used to send packets directly to the client. The physicalNodeAddress is the address of the client's LAN board.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWGetObjectClientConnIDs</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function returns a list of server-maintained client connection ID numbers for a specified logged-in object.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &quot;netware/nwapi.h&quot;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">char</font></td>
+
+<td><font face="Times" size="+1">objectName</font><font face="Times" size="-1"><b>[NWMAX_OBJECT_NAME_LENGTH]</b></font><font face="Times" size="+1">;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">objectType;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">numberOfConnections;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">connectionList[n];</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">maxListElements;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWGetObjectClientConnIDs</b>( serverConnID, objectName, objectType, &amp;numberOfConnections, connectionList, maxListElements );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> passes the file server connection ID.</font>
+
+<p><font face="Times" size="+1"><i>objectName</i> passes a pointer to the bindery object name of the object whose file server connection numbers are being returned (wildcards not allowed).</font>
+
+<p><font face="Times" size="+1"><i>objectType</i> passes the bindery object type of the object whose file server connection numbers are being obtained. (See Appendix A, &quot;Bindery Object Types.&quot;)</font>
+
+<p><font face="Times" size="+1"><i>numberOfConnections</i> passes a pointer to the space allocated for the number of server connections found for the specified object.</font>
+
+<p><font face="Times" size="+1"><i>connectionList</i> passes a pointer to the array allocated for the object's server connection ID numbers.</font>
+
+<p><font face="Times" size="+1"><i>maxListElements</i> passes the number of connectionList elements that have been allocated (n).</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>numberOfConnections</i> receives the number of server connections found for the specified object.</font>
+
+<p><font face="Times" size="+1"><i>connectionList</i> receives the server connection numbers for the specified object.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful. One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFC</font></td>
+
+<td><font face="Times" size="+1">No Such Object</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xEF</font></td>
+
+<td><font face="Times" size="+1">Illegal Name</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xC1</font></td>
+
+<td><font face="Times" size="+1">No Account Balance</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xC5</font></td>
+
+<td><font face="Times" size="+1">Login Lockout</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">You should allocate as many elements as you think necessary for the connectionList parameter and then put that amount in the maxListElements parameter. This function will return less than or equal the amount that the application specifies. If fewer clientConnIDs were found than were requested, only the</font><br>
+<font face="Times" size="+1">numberOfConnections amount will be copied into connectionList.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWClearClientConnID</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWGetPrimaryConnectionID</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function returns the connection ID of the primary file server.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &quot;netware/nwapi.h&quot;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWGetPrimaryConnectionID</b>( &amp;serverConnID );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> passes a pointer to the space allocated for the primary server connection ID.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> receives the primary file server connection ID.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful. An error code will be placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a complete listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function gets the primary server connection ID (serverConnID), which is used in most other function calls to specify the server connection the client will access. The primary server connection ID is set with the NWSetPrimaryConnectionID call. This ID is the same for all processes with the same e_uid on a client. It can be set with the authenticator program. This call will only return a serverConnID if a connection has already been established and registered as the primary connection.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWSetPrimaryConnectionID</font><br>
+<font face="Times" size="+1">NWGetClientConnID</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWGetServerConnID</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function returns the file server connection ID.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &quot;netware/nwapi.h&quot;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">char</font></td>
+
+<td><font face="Times" size="+1">fileServerName</font><font face="Times" size="-1"><b>[NWMAX_SERVER_NAME_LENGTH]</b></font><font face="Times" size="+1">;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWGetServerConnID</b>( fileServerName, &amp;serverConnID );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>fileServerName</i> passes a pointer to the name of the target file server.</font>
+
+<p><font face="Times" size="+1"><i>serverConnID</i> passes a pointer to the space allocated for the server connection ID.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> receives the file server connection ID.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful. An error code will be placed in NWErrno.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a complete listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function gets the server connection ID (serverConnID), which is used in most other function calls to specify the server connection the client will access. This call will only return a serverConnID if a connection has already been established.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWAttachToServerPlatform</font><br>
+<font face="Times" size="+1">NWGetClientConnID</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWGetServerConnIDList</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function returns a list of all current server connection IDs for the requesting client.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">connectionListBuffer</font><font face="Times" size="-1"><b>[NWMAX_CONNECTION_</b></font><br>
+<img src="../Images/sp.gif" width=51 height=1><font face="Times" size="-1"><b>LIST_LENGTH]</b></font><font face="Times" size="+1">;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">bufferSize;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">numberOfConnsReturned;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWGetServerConnIDList</b>( connectionListBuffer, bufferSize,</font><br>
+<font face="Times" size="+1">&amp;numberOfConnsReturned );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>connectionListBuffer</i> passes a pointer to the buffer allocated for the connection list.</font>
+
+<p><font face="Times" size="+1"><i>bufferSize</i> passes the number of connectionListBuffer elements which were allocated.</font>
+
+<p><font face="Times" size="+1"><i>numberOfConnsReturned</i> passes a pointer to the buffer in which the number of connections is returned.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>connectionListBuffer</i> receives the connection list.</font>
+
+<p><font face="Times" size="+1"><i>numberOfConnsReturned</i> receives the number of connections that were actually placed in the connectionListBuffer.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful. One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFB</font></td>
+
+<td><font face="Times" size="+1">Invalid Parameters</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0x04</font></td>
+
+<td><font face="Times" size="+1">Not Connected To Server</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a complete listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">A client can be connected to a maximum of 15 servers. This value is the maximum size of the connectionListBuffer array.</font><br>
+<font face="Times" size="+1">NWMAX_ CONNECTION_LIST_LENGTH sets the limit.</font>
+
+<p><font face="Times" size="+1">The returned connection list contains all the server connection ID numbers in use by a client. This function will not return any more connection numbers than the number you specify with the bufferSize parameter. This function allows the application to control how many connections it is aware of.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWGetClientConnID</font><br>
+<font face="Times" size="+1">NWGetServerPlatformInformation</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWLoginToServerPlatform</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function logs an object in to a connected file server.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &quot;netware/nwapi.h&quot;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">char</font></td>
+
+<td><font face="Times" size="+1">name</font><font face="Times" size="-1"><b>[NWMAX_OBJECT_NAME_LENGTH]</b></font><font face="Times" size="+1">;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">objectType;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">char</font></td>
+
+<td><font face="Times" size="+1">password</font><font face="Times" size="-1"><b>[NWMAX_PROPERTY_NAME_LENGTH]</b></font><font face="Times" size="+1">;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWLoginToServerPlatform</b>( serverConnID, name, objectType,</font><br>
+<font face="Times" size="+1">password );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> passes the file server connection ID.</font>
+
+<p><font face="Times" size="+1"><i>name</i> passes the name of the client to be logged in.</font>
+
+<p><font face="Times" size="+1"><i>objectType</i> passes the client object type to be logged in. (See Appendix A, &quot;Bindery Object Types.&quot;)</font>
+
+<p><font face="Times" size="+1"><i>password</i> passes the object password.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful. One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFC</font></td>
+
+<td><font face="Times" size="+1">No Such Object</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xEF</font></td>
+
+<td><font face="Times" size="+1">Illegal Name</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xC1</font></td>
+
+<td><font face="Times" size="+1">No Account Balance</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xC5</font></td>
+
+<td><font face="Times" size="+1">Login Lockout</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xDE</font></td>
+
+<td><font face="Times" size="+1">Bad Password</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xDF</font></td>
+
+<td><font face="Times" size="+1">Old Password</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a complete listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This call enables a client to identify itself to a file server and thereby be cleared for access to the network's file system and resources. The requesting client must first use NWAttachToServerPlatform to establish a connection with the specified file server before logging in to the server.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Notes</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">If the object does not have a password, a null should be passed in place of the password parameter. Attaching to a file server is not the same as logging in. A client attaches to a file server to obtain a connection number (clientConnID). The client can then log in to the file server using that connection number.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWAttachToServerPlatform</font><br>
+<font face="Times" size="+1">NWGetClientConnID</font><br>
+<font face="Times" size="+1">NWGetServerConnID</font><br>
+<font face="Times" size="+1">NWLogoutFromServerPlatform</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWLogoutFromServerPlatform</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function logs out the requesting client from the specified server.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &quot;netware/nwapi.h&quot;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWLogoutFromServerPlatform</b>( serverConnID );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> passes the file server connection ID.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful. One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Hardware Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0x96</font></td>
+
+<td><font face="Times" size="+1">Server Out Of Memory</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a complete listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWLogoutFromServerPlatform removes the requesting client's clientConnID from the file server but does not relinquish the serverConnID. Therefore a connection still exists to that server.</font>
+
+<p><font face="Times" size="+1">Detaching from a file server relinquishes the connection ID and breaks the connection, forcing the client to reattach before sending any further requests to the server.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWDetachFromServerPlatform</font><br>
+<font face="Times" size="+1">NWLoginToServerPlatform</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWSetPrimaryConnectionID</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function sets the connection ID of the primary file server.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &quot;netware/nwapi.h&quot;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWSetPrimaryConnectionID</b>( serverConnID );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> passes the primary server connection ID.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful. An error code will be placed in NWErrno.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a complete listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function sets the primary server connection ID (serverConnID). The primary server connection ID is the ID that is returned by the</font><br>
+<font face="Times" size="+1">NWSetPrimaryConnID call. This ID is the same for all processes with the same e_uid on a client. It is the connection ID used as a default by programs that do not get a server name from the user.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWGetPrimaryConnectionID</font></td></tr>
+
+</table>
+
+
+
+<p><br>
+
+</body>
+</html>

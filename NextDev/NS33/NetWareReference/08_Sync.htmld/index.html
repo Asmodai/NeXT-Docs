@@ -1,0 +1,6512 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/Novell/NetWareReference/08_Sync.rtf -->
+<!-- Date: Mon Jan  9 04:04:05 2023 -->
+<head>
+<title>08_Sync</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Copyright</font> &copy;<font face="Times">1993 by Novell, Inc. and NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Times" size="+4">Synchronization Services APIs</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Introduction to Synchronization Services</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">Synchronization services calls enable applications to coordinate access to network files and other resources. These services are divided into two categories:&nbsp; Locking and Semaphores.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=30></td>
+
+<td><font face="Helvetica"><b>Locking and Semaphores</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NetWare provides calls that allow applications to lock files, physical records or logical records. The client must maintain tables which keep track of file and record locks.&nbsp; There are no APIs which can return this information.</font>
+
+<p><font face="Times" size="+1">Before locking a file/record, a client should also record the following information about the file/record in a File Log table residing on the file server:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Name (for files)</font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=4></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><img src="../Images/bullet1.gif" width=4 height=8 vspace=3></font></td>
+
+<td><font face="Times" size="+1">Location and size (for records)</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">There are two kinds of locks available to application developers</font><font size="+1"><img src="../Images/c2D.gif" width=8 height=4></font><font face="Times" size="+1">physical and logical.&nbsp; Unlike a physical record lock, a logical record lock does not actually lock bytes.&nbsp; Instead, a logical record lock acts somewhat like a semaphore.&nbsp; Applications cooperatively define a logical record name that represents a group of files, records, structures and so on.&nbsp; When an application locks a logical record, it only locks the logical record name, not the group of files, records or structures the name represents.&nbsp; Any uncooperative application can ignore a lock on the logical record name and directly lock the physical files or records.&nbsp; Therefore, applications using logical record locks should not use other locking techniques simultaneously on the same data.</font>
+
+<p><font face="Times" size="+1">NetWare also provides calls that enable applications to create, open, examine and close semaphores. Applications can also use semaphore calls to increment and decrement the value associated with a semaphore.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWClearFile</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function unlocks the specified file and removes it from the File Log table.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &#34;netware/nwapi.h&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWPath_t</font></td>
+
+<td><font face="Times" size="+1">path;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWClearFile</b>( &amp;path );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>path</i> passes a pointer to the name of the file whose file lock is being cleared.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful.&nbsp; One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFD</font></td>
+
+<td><font face="Times" size="+1">Lock Collision</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFE</font></td>
+
+<td><font face="Times" size="+1">Timeout Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Lock Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Unlock Error</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">If the file is open, this function closes it and invalidates the file handle.&nbsp; The file can then be accessed by other clients.&nbsp; If the calling client had the file open multiple times, it is closed as many times and all associated file handles are invalidated.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Notes</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">The fileName parameter can specify either a file's complete path name or a path relative to the default directory mapping.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWClearFileSet</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWClearFileSet</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function unlocks all the files logged for a specified client.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &#34;netware/nwapi.h&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWClearFileSet</b>( );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful.&nbsp; One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFD</font></td>
+
+<td><font face="Times" size="+1">Lock Collision</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFE</font></td>
+
+<td><font face="Times" size="+1">Timeout Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xF</font></td>
+
+<td><font face="Times" size="+1">FLock Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Unlock Error</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">All open files in the client's File Log table are closed and the file handles are cleared.&nbsp; This includes files logged across any servers that have been logged into the set.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function is ignored if the requesting client does not have logged files.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWClearFile</font><br>
+<font face="Times" size="+1">NWLockFileSet</font><br>
+<font face="Times" size="+1">NWLogFile</font><br>
+<font face="Times" size="+1">NWReleaseFile</font><br>
+<font face="Times" size="+1">NWReleaseFileSet</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWClearLogicalRecord</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function unlocks a logical record and removes it from the logical record log table.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &#34;netware/nwapi.h&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">char</font></td>
+
+<td><font face="Times" size="+1">logicalRecordName</font><font face="Times" size="-1"><b>[NWMAX_LOGICAL_</b></font><br>
+<img src="../Images/sp.gif" width=100 height=1><font face="Times" size="-1"><b>RECORD_NAME_LENGTH]</b></font><font face="Times" size="+1">;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWClearLogicalRecord</b>( serverConnID, logicalRecordName );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> passes the file server connection ID.</font>
+
+<p><font face="Times" size="+1"><i>logicalRecordName</i> passes a pointer to the name of the logical record being cleared (128 characters).</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful.&nbsp; One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFD</font></td>
+
+<td><font face="Times" size="+1">Lock Collision</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFE</font></td>
+
+<td><font face="Times" size="+1">Timeout Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Lock Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Unlock Error</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function clears a record residing in the Logical Record Log table associated exclusively with the requesting client.</font>
+
+<p><font face="Times" size="+1">Applications define logical record names.&nbsp; A logical record name represents a group of files, physical records, structures and so on.&nbsp; The NWLogLogicalRecord or NWLockLogicalRecordSet functions locks one or more logical record names, not the actual files, physical records or structures associated with each logical record name.&nbsp; Any uncooperative application can ignore a lock on the logical record name and directly lock physical files or records. Therefore, applications using logical record locks must not use other locking techniques simultaneously.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWClearLogicalRecordSet</font><br>
+<font face="Times" size="+1">NWLockLogicalRecordSet</font><br>
+<font face="Times" size="+1">NWLogLogicalRecord</font><br>
+<font face="Times" size="+1">NWReleaseLogicalRecord</font><br>
+<font face="Times" size="+1">NWReleaseLogicalRecordSet</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWClearLogicalRecordSet</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function unlocks and removes all logical records in the Logical Record Log table (on any of the servers you are attached to).</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &#34;netware/nwapi.h&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWClearLogicalRecordSet</b>( );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful.&nbsp; One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFD</font></td>
+
+<td><font face="Times" size="+1">Lock Collision</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFE</font></td>
+
+<td><font face="Times" size="+1">Timeout Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Lock Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Unlock Error</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function unlocks all of the logical records that are logged in the Logical Record Log table and removes them from the table.&nbsp; If the requesting process does not have logged logical records, this function is ignored.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWClearLogicalRecord</font><br>
+<font face="Times" size="+1">NWLockLogicalRecordSet</font><br>
+<font face="Times" size="+1">NWLogLogicalRecord</font><br>
+<font face="Times" size="+1">NWReleaseLogicalRecord</font><br>
+<font face="Times" size="+1">NWReleaseLogicalRecordSet</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWClearPhysicalRecord</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function unlocks the specified physical record and removes it from the Log&nbsp; table.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &#34;netware/nwapi.h&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWFileHandle_ta</font></td>
+
+<td><font face="Times" size="+1">fileHandle;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint32</font></td>
+
+<td><font face="Times" size="+1">recordStartOffset;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint32</font></td>
+
+<td><font face="Times" size="+1">recordLength;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWClearPhysicalRecord</b>( serverConnID, fileHandle, recordStartOffset, recordLength);</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> passes the file server connection ID.</font>
+
+<p><font face="Times" size="+1"><i>fileHandle</i> passes the file handle associated with the file containing the physical record being cleared.</font>
+
+<p><font face="Times" size="+1"><i>recordStartOffset</i> passes the offset, within the file, where the locked record begins.</font>
+
+<p><font face="Times" size="+1"><i>recordLength</i> passes the length, in bytes, of the locked record.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful.&nbsp; One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFD</font></td>
+
+<td><font face="Times" size="+1">Lock Collision</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFE</font></td>
+
+<td><font face="Times" size="+1">Timeout Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Lock Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Unlock Error</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">The Record Log table resides on the file server and is associated exclusively with the requesting task on the workstation.</font>
+
+<p><font face="Times" size="+1">The application locates the physical record within the specified file by passing the offset in the recordStartOffset parameter and the length in the recordLength parameter.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Notes</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function is ignored if the requesting workstation does not have logged physical records.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWClearPhysicalRecordSet</font><br>
+<font face="Times" size="+1">NWLockPhysicalRecordSet</font><br>
+<font face="Times" size="+1">NWLogPhysicalRecord</font><br>
+<font face="Times" size="+1">NWReleasePhysicalRecord</font><br>
+<font face="Times" size="+1">NWReleasePhysicalRecordSet</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWClearPhysicalRecordSet</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function unlocks and removes all physical records from the Physical Record Log table.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &#34;netware/nwapi.h&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWClearPhysicalRecordSet</b>( );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful.&nbsp; One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFD</font></td>
+
+<td><font face="Times" size="+1">Lock Collision</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFE</font></td>
+
+<td><font face="Times" size="+1">Timeout Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Lock Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Unlock Error</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function clears an entire set of physical records associated with the requesting client.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Notes</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function is ignored if the requesting workstation does not have logged physical records.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWClearPhysicalRecord</font><br>
+<font face="Times" size="+1">NWLockPhysicalRecordSet</font><br>
+<font face="Times" size="+1">NWLogPhysicalRecord</font><br>
+<font face="Times" size="+1">NWReleasePhysicalRecord</font><br>
+<font face="Times" size="+1">NWReleasePhysicalRecordSet</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWCloseSemaphore</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function closes a semaphore.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &#34;netware/nwapi.h&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint32</font></td>
+
+<td><font face="Times" size="+1">NetWareSemaphoreHandle;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWCloseSemaphore</b>( serverConnID, NetWareSemaphoreHandle );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> passes the file server connection ID.</font>
+
+<p><font face="Times" size="+1"><i>NetWareSemaphoreHandle</i> passes the semaphore handle obtained when the semaphore was opened (NWOpenSemaphore).</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful.&nbsp; One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFD</font></td>
+
+<td><font face="Times" size="+1">Lock Collision</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFE</font></td>
+
+<td><font face="Times" size="+1">Timeout Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Lock Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Unlock Error</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function decrements the open count of the semaphore, indicating that one less process is holding the semaphore open.&nbsp; If the requesting process is the last process to have this semaphore open, the semaphore is deleted.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWExamineSemaphore</font><br>
+<font face="Times" size="+1">NWOpenSemaphore</font><br>
+<font face="Times" size="+1">NWSignalSemaphore</font><br>
+<font face="Times" size="+1">NWWaitOnSemaphore</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWExamineSemaphore</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function returns the current value and open count for the specified semaphore.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &#34;netware/nwapi.h&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint32</font></td>
+
+<td><font face="Times" size="+1">semaphoreHandle;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">semaphoreValue;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">semaphoreOpenCount;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWExamineSemaphore</b>( serverConnID, semaphoreHandle,</font><br>
+<font face="Times" size="+1">&amp;semaphoreValue, &amp;semaphoreOpenCount );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> passes the file server connection ID.</font>
+
+<p><font face="Times" size="+1"><i>semaphoreHandle</i> passes the semaphore handle obtained when the semaphore was opened (NWOpenSemaphore).</font>
+
+<p><font face="Times" size="+1"><i>semaphoreValue</i> passes a pointer to the space allocated for the current semaphore value (optional).</font>
+
+<p><font face="Times" size="+1"><i>semaphoreOpenCount</i> passes a pointer to the space allocated for the number of stations that currently have this semaphore open.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>semaphoreValue</i> receives the current semaphore value (optional).</font>
+
+<p><font face="Times" size="+1"><i>semaphoreOpenCount</i> receives the number of stations that currently have this semaphore open.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful.&nbsp; One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFD</font></td>
+
+<td><font face="Times" size="+1">Lock Collision</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFE</font></td>
+
+<td><font face="Times" size="+1">Timeout Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Lock Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Unlock Error</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">The semaphore value is decremented for each NWWaitOnSemaphore function call and incremented for each NWSignalSemaphore function call.</font>
+
+<p><font face="Times" size="+1">A positive semaphore value indicates that the application can access the associated network resource.&nbsp; A negative value indicates the number of processes waiting to use the semaphore.&nbsp; If the semaphore value is negative, the application must either enter a waiting queue by calling the function NWWaitOnSemaphore or temporarily abandon its attempt to access the network resource.</font>
+
+<p><font face="Times" size="+1">The semaphoreOpenCount parameter indicates the number of processes holding the semaphore open.&nbsp; A call to NWOpenSemaphore increments this value.&nbsp; A call to NWCloseSemaphore decrements this value.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWCloseSemaphore</font><br>
+<font face="Times" size="+1">NWOpenSemaphore</font><br>
+<font face="Times" size="+1">NWSignalSemaphore</font><br>
+<font face="Times" size="+1">NWWaitOnSemaphore</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWLockFileSet</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function locks all files that are logged in the File Log table.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &#34;netware/nwapi.h&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">timeOutLimit;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWLockFileSet</b>( timeOutLimit );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>timeOutLimit</i> passes the length of time the file server waits.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful.&nbsp; One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFD</font></td>
+
+<td><font face="Times" size="+1">Lock Collision</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFE</font></td>
+
+<td><font face="Times" size="+1">Timeout Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Lock Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Unlock Error</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">The timeOutLimit indicates how long the file server will attempt to lock the set.&nbsp; This limit is specified in units of 1/18 of a second (0 = no wait).</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWClearFile</font><br>
+<font face="Times" size="+1">NWClearFileSet</font><br>
+<font face="Times" size="+1">NWLogFile</font><br>
+<font face="Times" size="+1">NWReleaseFile</font><br>
+<font face="Times" size="+1">NWReleaseFileSet</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWLockLogicalRecordSet</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function locks all logical records logged in the Logical Record Log table.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &#34;netware/nwapi.h&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint8</font></td>
+
+<td><font face="Times" size="+1">lockFlags;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">timeOutLimit;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWLockLogicalRecordSet</b>( lockFlags, timeOutLimit );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>lockFlags</i> passes one of the following lock flags:</font>
+
+<p><img src="../Images/sp.gif" width=50 height=1><font face="Times" size="+1">NWLS_EXCLUSIVE</font><br>
+<img src="../Images/sp.gif" width=50 height=1><font face="Times" size="+1">NWLS_SHAREABLE</font>
+
+<p><font face="Times" size="+1"><i>timeOutLimit</i> passes the length of time the file server attempts to lock the record set before timing out.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful.&nbsp; One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFD</font></td>
+
+<td><font face="Times" size="+1">Lock Collision</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFE</font></td>
+
+<td><font face="Times" size="+1">Timeout Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Lock Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Unlock Error</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">Applications define logical record names.&nbsp; A logical record name represents a group of files, physical records or data structures.&nbsp; NWLogLogicalRecord or NWLockLogicalRecordSet function affects one or more logical record names, not the actual files, physical records or data structures associated with each logical record name.&nbsp; Any uncooperative application can ignore a lock on the logical record name and directly lock physical files or records.&nbsp; Therefore, applications using logical record locks must not simultaneously use other locking techniques.</font>
+
+<p><font face="Times" size="+1">The timeOutLimit parameter indicates how long the file server will attempt to lock the logical record set.&nbsp; The timeOutLimit parameter is specified in units of</font><br>
+<font face="Times" size="+1">1/18 of a second (0 = no wait).</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWClearLogicalRecord</font><br>
+<font face="Times" size="+1">NWClearLogicalRecordSet</font><br>
+<font face="Times" size="+1">NWLogLogicalRecord</font><br>
+<font face="Times" size="+1">NWReleaseLogicalRecord</font><br>
+<font face="Times" size="+1">NWReleaseLogicalRecordSet</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWLockPhysicalRecordSet</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function locks all records logged in the Physical Record Log table.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &#34;netware/nwapi.h&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint8</font></td>
+
+<td><font face="Times" size="+1">lockFlags;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">timeOutLimit;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWLockPhysicalRecordSet</b>( lockFlags, timeOutLimit );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>lockFlags</i> passes one of the following lock flags:</font>
+
+<p><img src="../Images/sp.gif" width=50 height=1><font face="Times" size="+1">NWLS_EXCLUSIVE</font><br>
+<img src="../Images/sp.gif" width=50 height=1><font face="Times" size="+1">NWLS_SHAREABLE</font>
+
+<p><font face="Times" size="+1"><i>timeOutLimit</i> passes the length of time the file server attempts to lock the physical record set before timing out.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful.&nbsp; One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFD</font></td>
+
+<td><font face="Times" size="+1">Lock Collision</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFE</font></td>
+
+<td><font face="Times" size="+1">Timeout Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Lock Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Unlock Error</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">The timeOutLimit is specified in units of 1/18 of a second (0 = no wait).</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Notes</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function cannot lock a record that is already locked exclusively by another application.&nbsp; If one or more records, identified in the log table, are already exclusively locked by another application, the attempt to lock the set fails.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWClearPhysicalRecord</font><br>
+<font face="Times" size="+1">NWClearPhysicalRecordSet</font><br>
+<font face="Times" size="+1">NWLogPhysicalRecord</font><br>
+<font face="Times" size="+1">NWReleasePhysicalRecord</font><br>
+<font face="Times" size="+1">NWReleasePhysicalRecordSet</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWLogFile</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function logs the file in the File Log table.&nbsp; Use this function when you need to lock a set of files.&nbsp; If the lock flag is set, this function also locks the file.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &#34;netware/nwapi.h&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWPath_t</font></td>
+
+<td><font face="Times" size="+1">path;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint8</font></td>
+
+<td><font face="Times" size="+1">logFlags;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">timeOutLimit;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWLogFile</b>( &amp;path, logFlags, timeOutLimit );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>path</i> passes a pointer to the file name to be locked (must be the full path name for the file</font><font size="+1"><img src="../Images/c2D.gif" width=8 height=4></font><font face="Times" size="+1">up to 255 characters).</font>
+
+<p><font face="Times" size="+1"><i>logFlags</i> passes one of the following log flags.</font>
+
+<p><img src="../Images/sp.gif" width=50 height=1><font face="Times" size="+1">NWFL_LOG_ONLY</font><br>
+<img src="../Images/sp.gif" width=50 height=1><font face="Times" size="+1">NWFL_LOG_AND_LOCK</font>
+
+<p><font face="Times" size="+1"><i>timeOutLimit</i> passes the length of time the file server attempts to log the specified file before timing out.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful.&nbsp; One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFD</font></td>
+
+<td><font face="Times" size="+1">Lock Collision</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFE</font></td>
+
+<td><font face="Times" size="+1">Timeout Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Lock Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Unlock Error</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">When the logFlags parameter is set to NWFL_LOG_AND_LOCK, the server will attempt to lock a file for the length of time specified by the timeOutLimit parameter.&nbsp; The timeOutLimit parameter is specified in units of 1/18 of a second (0 = no wait).</font>
+
+<p><font face="Times" size="+1">A log table contains data locking information used by a file server.&nbsp; The file server tracks this information for each workstation and process. Whenever a file, logical record or physical record is logged, information identifying the data being logged is placed in the log table.&nbsp; Normally a set of files or records is logged and then locked as a set.&nbsp; However, a single file or record can also be locked when it is placed in the log table.</font>
+
+<p><font face="Times" size="+1">When using log tables a task first logs all of the files or records that are needed to complete a transaction.&nbsp; The task then attempts to lock the logged set of files or records.&nbsp; If some of the logged resources cannot be locked, the lock fails and none of the resources are locked.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWClearFile</font><br>
+<font face="Times" size="+1">NWClearFileSet</font><br>
+<font face="Times" size="+1">NWLockFileSet</font><br>
+<font face="Times" size="+1">NWReleaseFile</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWLogLogicalRecord</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function logs a logical record.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &#34;netware/nwapi.h&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">char</font></td>
+
+<td><font face="Times" size="+1">logicalRecordName</font><font face="Times" size="-1"><b>[NWMAX_LOGICAL_</b></font><br>
+<img src="../Images/sp.gif" width=100 height=1><font face="Times" size="-1"><b>RECORD_NAME_LENGTH]</b></font><font face="Times" size="+1">;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint8</font></td>
+
+<td><font face="Times" size="+1">lockFlags;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">timeOutLimit;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWLogLogicalRecord</b>( serverConnID, logicalRecordName, lockFlags, timeOutLimit );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> passes the file server connection ID.</font>
+
+<p><font face="Times" size="+1"><i>logicalRecordName</i> passes a pointer to the name of the logical record being logged (128 characters).</font>
+
+<p><font face="Times" size="+1"><i>lockFlags</i> passes one of the following lock flags.</font>
+
+<p><img src="../Images/sp.gif" width=50 height=1><font face="Times" size="+1">NWPL_LOG_ONLY</font><br>
+<img src="../Images/sp.gif" width=50 height=1><font face="Times" size="+1">NWPL_LOG_AND_LOCK_EXCLUSIVE</font><br>
+<img src="../Images/sp.gif" width=50 height=1><font face="Times" size="+1">NWPL_LOG_AND_LOCK_SHAREABLE</font>
+
+<p><font face="Times" size="+1"><i>timeOutLimit</i> passes the length of time the file server attempts to lock the record before timing out.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful.&nbsp; One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFD</font></td>
+
+<td><font face="Times" size="+1">Lock Collision</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFE</font></td>
+
+<td><font face="Times" size="+1">Timeout Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Lock Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Unlock Error</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">When the lockFlags parameter is set to option one or three, the file server will attempt to lock the logical record for the length of time specified by the</font><br>
+<font face="Times" size="+1">timeOutLimit parameter.&nbsp; The timeOutLimit parameter is specified in units of</font><br>
+<font face="Times" size="+1">1/18 of a second.</font>
+
+<p><font face="Times" size="+1">A log table contains data locking information used by a file server.&nbsp; The file server tracks this information for each workstation and workstation task. Whenever a file, logical record or physical record is logged, information identifying the data being logged is placed in the log table.</font>
+
+<p><font face="Times" size="+1">Normally a set of files or records is logged and then locked as a set.&nbsp; However, a single file or record can also be locked when it is placed in the log table.&nbsp; The release functions are used to unlock a lock (or set of locks). The clear functions are used to unlock and remove a lock (or set of locks) from the log table.</font>
+
+<p><font face="Times" size="+1">When using log tables, a task first logs all files or records to complete a transaction.&nbsp; The task attempts to lock the logged set of files or records.&nbsp; If some logged resources cannot be locked, the lock fails and none of the resources are locked.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWClearLogicalRecord</font><br>
+<font face="Times" size="+1">NWClearLogicalRecordSet</font><br>
+<font face="Times" size="+1">NWLockLogicalRecordSet</font><br>
+<font face="Times" size="+1">NWReleaseLogicalRecord</font><br>
+<font face="Times" size="+1">NWReleaseLogicalRecordSet</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWLogPhysicalRecord</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function logs a physical record in the Physical Record Log table.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &#34;netware/nwapi.h&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWFileHandle_ta</font></td>
+
+<td><font face="Times" size="+1">fileHandle;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint32</font></td>
+
+<td><font face="Times" size="+1">recordStartOffset;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint32</font></td>
+
+<td><font face="Times" size="+1">recordLength;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint8</font></td>
+
+<td><font face="Times" size="+1">lockFlags;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">timeOutLimit;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWLogPhysicalRecord</b>( serverConnID, fileHandle, recordStartOffset, recordLength, lockFlags, timeOutLimit );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> passes the file server connection ID.</font>
+
+<p><font face="Times" size="+1"><i>fileHandle</i> passes the file handle of the file whose record is being logged.</font>
+
+<p><font face="Times" size="+1"><i>recordStartOffset</i> passes the offset into the file where the record being logged begins.</font>
+
+<p><font face="Times" size="+1"><i>recordLength</i> passes the length, in bytes, of the record to be logged.</font>
+
+<p><font face="Times" size="+1"><i>lockFlags</i> passes one of the following lock flags:</font>
+
+<p><img src="../Images/sp.gif" width=50 height=1><font face="Times" size="+1">NWPL_LOG_ONLY</font><br>
+<img src="../Images/sp.gif" width=50 height=1><font face="Times" size="+1">NWPL_LOG_AND_LOCK_EXCLUSIVE</font><br>
+<img src="../Images/sp.gif" width=50 height=1><font face="Times" size="+1">NWPL_LOG_AND_LOCK_SHAREABLE</font>
+
+<p><font face="Times" size="+1"><i>timeOutLimit</i> passes the length of time the file server attempts to log a record before timing out.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful.&nbsp; One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFD</font></td>
+
+<td><font face="Times" size="+1">Lock Collision</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFE</font></td>
+
+<td><font face="Times" size="+1">Timeout Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Lock Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Unlock Error</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">The file server attempts to log the record for the length of time specified by the timeOutLimit parameter before returning a time out error.&nbsp; The timeoutLimit parameter is specified in units of 1/18 of a second (0 = no wait).</font>
+
+<p><font face="Times" size="+1">A log table contains data locking information used by a file server.&nbsp; The file server tracks this information for each workstation and process.&nbsp; Whenever a file, logical record or physical record is logged, information identifying the data being logged is placed in the log table.&nbsp; Normally a set of files or records is logged and then locked as a set.&nbsp; However, a single file or record can also be locked when it is placed in the log table.</font>
+
+<p><font face="Times" size="+1">The release functions are used to unlock a lock or set of locks.</font>
+
+<p><font face="Times" size="+1">The clear functions are used to unlock and remove a lock or set of locks from the log table.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Notes</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">When using log tables, a task first logs all files or records to complete a transaction.&nbsp; The task then attempts to lock the logged set of files or records.&nbsp; If some of the logged resources cannot be locked, the lock fails and none of the resources are locked.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWClearLogicalRecord</font><br>
+<font face="Times" size="+1">NWClearLogicalRecordSet</font><br>
+<font face="Times" size="+1">NWLockLogicalRecordSet</font><br>
+<font face="Times" size="+1">NWReleaseLogicalRecord</font><br>
+<font face="Times" size="+1">NWReleaseLogicalRecordSet</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWOpenSemaphore</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function opens a semaphore.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &#34;netware/nwapi.h&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">char</font></td>
+
+<td><font face="Times" size="+1">semaphoreName</font><font face="Times" size="-1"><b>[NWMAX_SEMAPHORE_NAME]</b></font><font face="Times" size="+1">;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">initialSemaphoreValue;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint32</font></td>
+
+<td><font face="Times" size="+1">NetWareSemaphoreHandle;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">semaphoreOpenCount;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWOpenSemaphore</b>( serverConnID, semaphoreName,</font><br>
+<font face="Times" size="+1">initialSemaphoreValue, &amp;NetWareSemaphoreHandle, &amp;semaphoreOpenCount );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> passes the file server connection ID.</font>
+
+<p><font face="Times" size="+1"><i>semaphoreName</i> passes a pointer to the name of the semaphore to be opened.</font>
+
+<p><font face="Times" size="+1"><i>initialSemaphoreValue</i> passes the initial value of the semaphore being opened (must be greater than 1).</font>
+
+<p><font face="Times" size="+1"><i>NetWareSemaphoreHandle</i> passes a pointer to the space allocated for the</font><br>
+<font face="Times" size="+1">NetWare semaphore handle.</font>
+
+<p><font face="Times" size="+1"><i>semaphoreOpenCount</i> passes a pointer to the space allocated for the number of stations that have this semaphore opened (optional).</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>NetWareSemaphoreHandle</i> receives the NetWare semaphore handle.</font>
+
+<p><font face="Times" size="+1"><i>semaphoreOpenCount</i> receives the number of stations that have this semaphore opened (optional).</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful.&nbsp; One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFD</font></td>
+
+<td><font face="Times" size="+1">Lock Collision</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFE</font></td>
+
+<td><font face="Times" size="+1">Timeout Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Lock Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Unlock Error</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function creates and initializes the semaphore to the value indicated by the initialSemaphoreValue parameter.</font>
+
+<p><font face="Times" size="+1">The semaphoreOpenCount parameter indicates the number of processes currently using the semaphore. Semaphores can have two purposes under NetWare.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">1</font></td>
+
+<td><font face="Times" size="+1">Semaphores can limit the number of users to a particular resource.&nbsp; To</font><br>
+<font face="Times" size="+1">limit the number of users, use the NWOpenSemaphore and</font><br>
+<font face="Times" size="+1">NWCloseSemaphore function calls only.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><img src="../Images/sp.gif" width=38 height=1><font face="Times" size="+1">The NWOpenSemaphore call returns the number of processes that</font><br>
+<img src="../Images/sp.gif" width=38 height=1><font face="Times" size="+1">currently have the semaphore open.&nbsp; An application can check the value</font><br>
+<img src="../Images/sp.gif" width=38 height=1><font face="Times" size="+1">against a programmer-defined limit and take appropriate action.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">2</font></td>
+
+<td><font face="Times" size="+1">Semaphores can restrict access to a particular resource.&nbsp; If access is</font><br>
+<font face="Times" size="+1">restricted, only serial access is allowed.&nbsp; To request access, a resource</font><br>
+<font face="Times" size="+1">must open the semaphore associated with the resource and, through that</font><br>
+<font face="Times" size="+1">semaphore, request permission to access the resource.&nbsp; If the resource is</font><br>
+<font face="Times" size="+1">unavailable, the calling process is placed in a wait queue.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><img src="../Images/sp.gif" width=38 height=1><font face="Times" size="+1">Restricting access to a resource is not limited to allowing only one process</font><br>
+<img src="../Images/sp.gif" width=38 height=1><font face="Times" size="+1">to have access.&nbsp; For example, if the resource being restricted is a modem</font><br>
+<img src="../Images/sp.gif" width=38 height=1><font face="Times" size="+1">pool with four modems, the semaphore could allow access to four users</font><br>
+<img src="../Images/sp.gif" width=38 height=1><font face="Times" size="+1">but could restrict access to subsequent requesters by setting the</font><br>
+<img src="../Images/sp.gif" width=38 height=1><font face="Times" size="+1">initialSemaphoreValue parameter to four.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWCloseSemaphore</font><br>
+<font face="Times" size="+1">NWExamineSemaphore</font><br>
+<font face="Times" size="+1">NWSignalSemaphore</font><br>
+<font face="Times" size="+1">NWWaitOnSemaphore</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWReleaseFile</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function unlocks the specified file but does not remove it from the File Log table.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &#34;netware/nwapi.h&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWPath_t</font></td>
+
+<td><font face="Times" size="+1">path;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWReleaseFile</b>( &amp;path );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>path</i> passes a pointer to the NWPath_t structure containing the directory handle, the server connection ID and a pointer to the path name.&nbsp; (See Appendix A, &quot;NWPath_t Structure.&quot;)</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful.&nbsp; One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFD</font></td>
+
+<td><font face="Times" size="+1">Lock Collision</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFE</font></td>
+
+<td><font face="Times" size="+1">Timeout Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Lock Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Unlock Error</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWClearFile</font><br>
+<font face="Times" size="+1">NWClearFileSet</font><br>
+<font face="Times" size="+1">NWLogFile</font><br>
+<font face="Times" size="+1">NWReleaseFileSet</font>
+
+<p><font face="Times" size="+1">NWReleaseFileSet</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWReleaseFileSet</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function unlocks all files logged in the File Log table.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &#34;netware/nwapi.h&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWReleaseFileSet</b>( );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful.&nbsp; One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFD</font></td>
+
+<td><font face="Times" size="+1">Lock Collision</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFE</font></td>
+
+<td><font face="Times" size="+1">Timeout Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Lock Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Unlock Error</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">The NWReleaseFileSet function does not remove files from the log table.&nbsp; This function is ignored if the requesting workstation does not have locked files.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWClearFile</font><br>
+<font face="Times" size="+1">NWClearFileSet</font><br>
+<font face="Times" size="+1">NWLogFile</font><br>
+<font face="Times" size="+1">NWReleaseFile</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWReleaseLogicalRecord</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function unlocks a logical record but does not remove it from the Logical Record Log table.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &#34;netware/nwapi.h&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">char</font></td>
+
+<td><font face="Times" size="+1">logicalRecordName</font><font face="Times" size="-1"><b>[NWMAX_LOGICAL_</b></font><br>
+<font face="Times" size="-1"><b>RECORD_NAME]</b></font><font face="Times" size="+1">;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWReleaseLogicalRecord</b>( serverConnID, logicalRecordName );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> passes the file server connection ID.</font>
+
+<p><font face="Times" size="+1"><i>logicalRecordName</i> passes a pointer to the name of the logical record being released (128 characters).</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful.&nbsp; One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFD</font></td>
+
+<td><font face="Times" size="+1">Lock Collision</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFE</font></td>
+
+<td><font face="Times" size="+1">Timeout Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Lock Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Unlock Error</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">A log table contains data locking information used by a file server.&nbsp; The file server tracks this information for each workstation and workstation task.&nbsp; Whenever a file, logical record or physical record is logged, information identifying the data being logged is placed in the log table.&nbsp; Normally a set of files or records is logged and then locked as a set.&nbsp; However, a single file or record can also be locked when it is placed in the log table.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWClearLogicalRecord</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWReleaseLogicalRecordSet</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function unlocks all the logical records in the Logical Record Log table.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &#34;netware/nwapi.h&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWReleaseLogicalRecordSet</b>( );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful.&nbsp; One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFD</font></td>
+
+<td><font face="Times" size="+1">Lock Collision</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFE</font></td>
+
+<td><font face="Times" size="+1">Timeout Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Lock Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Unlock Error</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">The NWReleaseLogicalRecordSet function does not remove logical records from the log table.&nbsp; This function is ignored if the requesting workstation or process does not have locked logical records.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWClearLogicalRecord</font><br>
+<font face="Times" size="+1">NWClearLogicalRecordSet</font><br>
+<font face="Times" size="+1">NWLockLogicalRecordSet</font><br>
+<font face="Times" size="+1">NWLogLogicalRecord</font><br>
+<font face="Times" size="+1">NWReleaseLogicalRecord</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWReleasePhysicalRecord</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function unlocks the specified physical record but does not remove it from the log table.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &#34;netware/nwapi.h&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWFileHandle_ta</font></td>
+
+<td><font face="Times" size="+1">fileHandle;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint32</font></td>
+
+<td><font face="Times" size="+1">recordStartOffset;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint32</font></td>
+
+<td><font face="Times" size="+1">recordLength;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWReleasePhysicalRecord</b>( serverConnID, fileHandle,</font><br>
+<font face="Times" size="+1">recordStartOffset, recordLength );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> passes the file server connection ID.</font>
+
+<p><font face="Times" size="+1"><i>fileHandle</i> passes the file handle associated with the file containing the specified record.</font>
+
+<p><font face="Times" size="+1"><i>recordStartOffset</i> passes the offset, within the file, where the physical record begins.</font>
+
+<p><font face="Times" size="+1"><i>recordLength</i> passes the length, in bytes, of the record being released.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful.&nbsp; One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFD</font></td>
+
+<td><font face="Times" size="+1">Lock Collision</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFE</font></td>
+
+<td><font face="Times" size="+1">Timeout Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Lock Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Unlock Error</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWClearPhysicalRecord</font><br>
+<font face="Times" size="+1">NWClearPhysicalRecordSet</font><br>
+<font face="Times" size="+1">NWLockPhysicalRecordSet</font><br>
+<font face="Times" size="+1">NWLogPhysicalRecord</font><br>
+<font face="Times" size="+1">NWReleasePhysicalRecordSet</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWReleasePhysicalRecordSet</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function unlocks all records logged in the Physical Record Log table but leaves them logged in the table.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &#34;netware/nwapi.h&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWReleasePhysicalRecordSet</b>( );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful.&nbsp; One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFD</font></td>
+
+<td><font face="Times" size="+1">Lock Collision</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFE</font></td>
+
+<td><font face="Times" size="+1">Timeout Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Lock Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Unlock Error</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function is ignored if the workstation does not have locked physical records.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWClearPhysicalRecord</font><br>
+<font face="Times" size="+1">NWClearPhysicalRecordSet</font><br>
+<font face="Times" size="+1">NWLockPhysicalRecordSet</font><br>
+<font face="Times" size="+1">NWLogPhysicalRecord</font><br>
+<font face="Times" size="+1">NWReleasePhysicalRecord</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWSignalSemaphore</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function signals a semaphore that the station or process is finished.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &#34;netware/nwapi.h&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint32</font></td>
+
+<td><font face="Times" size="+1">semaphoreHandle;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWSignalSemaphore</b>( serverConnID, semaphoreHandle );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> passes the file server connection ID.</font>
+
+<p><font face="Times" size="+1"><i>NetWareSemaphoreHandle</i> passes the semaphore handle pointing to the semaphore to be signaled.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful.&nbsp; One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFD</font></td>
+
+<td><font face="Times" size="+1">Lock Collision</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFE</font></td>
+
+<td><font face="Times" size="+1">Timeout Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Lock Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Unlock Error</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">An application must call this function when it finishes accessing the network resource associated with the semaphore.&nbsp; If processes are waiting to use the semaphore, the first process in the queue is released (signaled). The</font><br>
+<font face="Times" size="+1">NetWareSemaphoreHandle is a uint32 pointer to a semaphore.&nbsp; An application obtains this handle with a call to the NWOpenSemaphore function.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWCloseSemaphore</font><br>
+<font face="Times" size="+1">NWExamineSemaphore</font><br>
+<font face="Times" size="+1">NWOpenSemaphore</font><br>
+<font face="Times" size="+1">NWWaitOnSemaphore</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWWaitOnSemaphore</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function decrements a semaphore value.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &#34;netware/nwapi.h&#34;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint32</font></td>
+
+<td><font face="Times" size="+1">semaphoreHandle;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">timeOutLimit;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWWaitOnSemaphore</b>( serverConnID, semaphoreHandle,</font><br>
+<font face="Times" size="+1">timeOutLimit );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> passes the file server connection ID</font>
+
+<p><font face="Times" size="+1"><i>NetWareSemaphoreHandle</i> passes the semaphore handle returned from the NWOpenSemaphore function call.</font>
+
+<p><font face="Times" size="+1"><i>timeOutLimit</i> passes the length of time the application will wait.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=58></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful.&nbsp; One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFD</font></td>
+
+<td><font face="Times" size="+1">Lock Collision</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFE</font></td>
+
+<td><font face="Times" size="+1">Timeout Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Lock Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFF</font></td>
+
+<td><font face="Times" size="+1">Unlock Error</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">If the semaphore value is greater than or equal to zero, the application can access the associated resource.&nbsp; If the value is less than zero, the function queues the application for the time interval specified in the timeoutLimit parameter.&nbsp; If the semaphore value is greater than or equal to zero when the timeout value expires, the application can access the resource.&nbsp; If the semaphore value is still negative, the function removes the application from the queue and re-increments the semaphore value.&nbsp; A semaphore handle is a uint32 pointer to a semaphore and can be obtained by calling NWOpenSemaphore.</font>
+
+<p><font face="Times" size="+1">The timeout limit indicates how long the file server should wait if the semaphore value is negative.&nbsp; The timeout limit is specified in units of 1/18 of a second (0 = no wait).</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWCloseSemaphore</font><br>
+<font face="Times" size="+1">NWExamineSemaphore</font><br>
+<font face="Times" size="+1">NWOpenSemaphore</font><br>
+<font face="Times" size="+1">NWSignalSemaphore</font></td></tr>
+
+</table>
+
+
+
+</body>
+</html>

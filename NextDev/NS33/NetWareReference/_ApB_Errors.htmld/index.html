@@ -1,0 +1,1776 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/Novell/NetWareReference/_ApB_Errors.rtf -->
+<!-- Date: Mon Jan  9 04:04:08 2023 -->
+<head>
+<title>_ApB_Errors</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Copyright</font> &copy;<font face="Times">1993 by Novell, Inc. and NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Times" size="+4">Appendix B:&nbsp; NetWare Errors</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>NWErrno</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">When an API returns an &#34;unsuccessful&#34; completion code (-1 for most calls, 0 for NWBoolean calls), a corresponding error code is placed in NWErrno (provided as part of nwapi.h).&nbsp; NWErrno is a 4-byte value that tells you which API section the failure code came from, where the failure originated (from the client or from the file server), whether the error code is specific to one section of APIs or global among many sections, and what the actual error code is.&nbsp; This appendix describes the NWErrno value according to each byte and the NetWare errors that are represented by the error code.</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=54></td>
+
+<td nowrap><font face="Times" size="+1"><b>Note:</b></font></td>
+
+<td><font face="Times" size="+1">You should declare NWErrno (in the nwapi.h include file) and include NWERRORS.H in your code if you want to receive NetWare errors.&nbsp; The syntax would be as follows:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><img src="../Images/sp.gif" width=50 height=1><font face="Times" size="+1">#include &#34;netware/nwerrors.h&#34;</font><br>
+<img src="../Images/sp.gif" width=50 height=1><font face="Times" size="+1">extern uint32 NWErrno;</font>
+
+<p><font face="Times" size="+1">Each byte in the 4-byte NWErrno represents one part of the total error code which helps you debug your programs calling the NetWare C Interface for UNIX APIs.&nbsp; The bytes are labelled according to the following diagram.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">TABLE 12.</font></td>
+
+<td><font face="Helvetica">Bytes in NWErrno</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1"><b>High</b></font></td>
+
+<td nowrap><font face="Times" size="+1"><b>---------------------</b></font></td>
+
+<td nowrap><font face="Times" size="+1"><b>---------------------</b></font></td>
+
+<td><font face="Times" size="+1"><b>Low</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=55 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">1</font></td>
+
+<td nowrap><font face="Times" size="+1">2</font></td>
+
+<td nowrap><font face="Times" size="+1">3</font></td>
+
+<td><font face="Times" size="+1">4</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">The 1st byte in NWErrno is reserved for future use.</font>
+
+<p><font face="Times" size="+1">The 2nd byte in NWErrno identifies the area of APIs from which the error originated (Accounting, Bindery, Connection, etc.).&nbsp; The following values correspond to the API sections:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0x01</font></td>
+
+<td><font face="Times" size="+1">Accounting</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0x07</font></td>
+
+<td><font face="Times" size="+1">Bindery</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0x09</font></td>
+
+<td><font face="Times" size="+1">Connection</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0x11</font></td>
+
+<td><font face="Times" size="+1">Files</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0x1B</font></td>
+
+<td><font face="Times" size="+1">Path</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0x21</font></td>
+
+<td><font face="Times" size="+1">Queue</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0x23</font></td>
+
+<td><font face="Times" size="+1">Server Platform</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0x27</font></td>
+
+<td><font face="Times" size="+1">Synchronization</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0x29</font></td>
+
+<td><font face="Times" size="+1">Transaction Tracking</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0x15</font></td>
+
+<td><font face="Times" size="+1">Miscellaneous</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">The 3rd byte in NWErrno will identify what generated the error: the file server or an API.&nbsp; This byte will contain one of the following values:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0x00</font></td>
+
+<td><font face="Times" size="+1">File server</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0x10</font></td>
+
+<td><font face="Times" size="+1">API</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0x20</font></td>
+
+<td><font face="Times" size="+1">API</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">If a file server value is returned, the call failed after a valid request was made to the file server.&nbsp; If an API value is returned, the called failed before a request was made to the file server.</font>
+
+<p><font face="Times" size="+1">The 4th Byte in NWErrno will contain a value which represents one of the following NetWare Errors (as defined in NWERRORS.H):</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Errors returned in the 4th Byte of NWErrno:</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_PATH_TOO_LONG</font></td>
+
+<td><font face="Times" size="+1">0x01</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_BAD_SRCH_DRIVE_VECTOR</font></td>
+
+<td><font face="Times" size="+1">0x01</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_VERSION_TOO_LOW</font></td>
+
+<td><font face="Times" size="+1">0x01</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_INVALID_PARAMETER_LENGTH</font></td>
+
+<td><font face="Times" size="+1">0x01</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_SETTING_UP_TRANSPORT</font></td>
+
+<td><font face="Times" size="+1">0x01</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_INVALID_PATH_LENGTH</font></td>
+
+<td><font face="Times" size="+1">0x02</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_SFT_LEVEL_TOO_LOW</font></td>
+
+<td><font face="Times" size="+1">0x02</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_TRANSPORT_OPEN</font></td>
+
+<td><font face="Times" size="+1">0x02</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_TRANSPORT_CLOSE</font></td>
+
+<td><font face="Times" size="+1">0x03</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NOT_CONNECTED_TO_SERVER</font></td>
+
+<td><font face="Times" size="+1">0x04</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_CONNECT_LIST_OVERFLOW</font></td>
+
+<td><font face="Times" size="+1">0x04</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_TTS_LEVEL_TOO_LOW</font></td>
+
+<td><font face="Times" size="+1">0x04</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_AFP_LEVEL_TOO_LOW</font></td>
+
+<td><font face="Times" size="+1">0x08</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_INVALID_DRIVE_NUM</font></td>
+
+<td><font face="Times" size="+1">0x20</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_MORE_RESTRICTIONS</font></td>
+
+<td><font face="Times" size="+1">0x24</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_DRIVES_AVAILABLE</font></td>
+
+<td><font face="Times" size="+1">0x25</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_WS_DOES_NOT_SUPPORT</font></td>
+
+<td><font face="Times" size="+1">0x30</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_INVALID_CONNECTION_ID</font></td>
+
+<td><font face="Times" size="+1">0x30</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERRR_INVALID_NCP_PACKET_LENGTH</font></td>
+
+<td><font face="Times" size="+1">0x31</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_SETTING_UP_TIMEOUT</font></td>
+
+<td><font face="Times" size="+1">0x32</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_TRANSPORT_SEND</font></td>
+
+<td><font face="Times" size="+1">0x33</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_IN_SETTING_SIGNALS</font></td>
+
+<td><font face="Times" size="+1">0x34</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_SERVER_CONNECTION_LOST</font></td>
+
+<td><font face="Times" size="+1">0x35</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_FILE_IN_USE</font></td>
+
+<td><font face="Times" size="+1">0x80</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_MORE_FILE_HANDLES</font></td>
+
+<td><font face="Times" size="+1">0x81</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_OPEN_PRIVILEGES</font></td>
+
+<td><font face="Times" size="+1">0x82</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_IO_ERROR_NETWORK_DISK</font></td>
+
+<td><font face="Times" size="+1">0x83</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_CREATE_PRIVILEGES</font></td>
+
+<td><font face="Times" size="+1">0x84</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_CREATE_DELETE_PRIVILEGES</font></td>
+
+<td><font face="Times" size="+1">0x85</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_CREATE_FILE_EXISTS_READ_ONLY</font></td>
+
+<td><font face="Times" size="+1">0x86</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_CREATE_ERROR</font></td>
+
+<td><font face="Times" size="+1">0x87</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_WILDCARDS_IN_CREATE_FILE_NAME</font></td>
+
+<td><font face="Times" size="+1">0x87</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_INVALID_FILE_HANDLE</font></td>
+
+<td><font face="Times" size="+1">0x88</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_SEARCH_PRIVILEGES</font></td>
+
+<td><font face="Times" size="+1">0x89</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_DELETE_PRIVILEGES</font></td>
+
+<td><font face="Times" size="+1">0x8A</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_RENAME_PRIVILEGES</font></td>
+
+<td><font face="Times" size="+1">0x8B</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_MODIFY_PRIVILEGES</font></td>
+
+<td><font face="Times" size="+1">0x8C</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_SOME_FILES_AFFECTED_IN_USE</font></td>
+
+<td><font face="Times" size="+1">0x8D</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_ENTRY_IN_USE</font></td>
+
+<td><font face="Times" size="+1">0x8D</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_FILES_AFFECTED_IN_USE</font></td>
+
+<td><font face="Times" size="+1">0x8E</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_SOME_FILES_AFECTED_READ_ONLY</font></td>
+
+<td><font face="Times" size="+1">0x8F</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_FILES_AFFECTED_READ_ONLY</font></td>
+
+<td><font face="Times" size="+1">0x90</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_ALL_FILE_READ_ONLY</font></td>
+
+<td><font face="Times" size="+1">0x90</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_SOME_FILES_RENAMED_NAME_EXISTS</font></td>
+
+<td><font face="Times" size="+1">0x91</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_FILES_RENAMED_NAME_EXISTS</font></td>
+
+<td><font face="Times" size="+1">0x92</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_READ_PRIVILEGES</font></td>
+
+<td><font face="Times" size="+1">0x93</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_INVALID_OPEN_ACCESS_RIGHTS</font></td>
+
+<td><font face="Times" size="+1">0x94</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_WRITE_PRIVILEGES_OR_READ_ONLY</font></td>
+
+<td><font face="Times" size="+1">0x94</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_FILE_DETACHED</font></td>
+
+<td><font face="Times" size="+1">0x95</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_SERVER_OUT_OF_MEMORY</font></td>
+
+<td><font face="Times" size="+1">0x96</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_DISK_SPACE_FOR_SPOOL_FILE</font></td>
+
+<td><font face="Times" size="+1">0x97</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_VOLUME_DOES_NOT_EXIST</font></td>
+
+<td><font face="Times" size="+1">0x98</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_BAD_VOL_NUM</font></td>
+
+<td><font face="Times" size="+1">0x98</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_DIRECTORY_FULL</font></td>
+
+<td><font face="Times" size="+1">0x99</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_INVALID_NAME</font></td>
+
+<td><font face="Times" size="+1">0x99</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_RENAMING_ACROSS_VOLUMES</font></td>
+
+<td><font face="Times" size="+1">0x9A</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_BAD_DIRECTORY_HANDLE</font></td>
+
+<td><font face="Times" size="+1">0x9B</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_INVALID_PATH</font></td>
+
+<td><font face="Times" size="+1">0x9C</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_MORE_TRUSTEES</font></td>
+
+<td><font face="Times" size="+1">0x9C</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_MORE_DIRECTORY_HANDLES</font></td>
+
+<td><font face="Times" size="+1">0x9D</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_INVALID_FILENAME</font></td>
+
+<td><font face="Times" size="+1">0x9E</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_DIRECTORY_ACTIVE</font></td>
+
+<td><font face="Times" size="+1">0x9F</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_DIRECTORY_NOT_EMPTY</font></td>
+
+<td><font face="Times" size="+1">0xA0</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_DIRECTORY_IO_ERROR</font></td>
+
+<td><font face="Times" size="+1">0xA1</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_READ_FILE_WITH_RECORD_LOCKED</font></td>
+
+<td><font face="Times" size="+1">0xA2</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_ACCOUNT_PRIVILEGES</font></td>
+
+<td><font face="Times" size="+1">0xC0</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_LOGIN_DENIED_NO_ACCOUNT_BALANC</font></td>
+
+<td><font face="Times" size="+1">0xC1</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_CREDIT_LIMIT_EXCEEDED</font></td>
+
+<td><font face="Times" size="+1">0xC2</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_LOGIN_DENIED_NO_CREDIT</font></td>
+
+<td><font face="Times" size="+1">0xC2</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_INTRUDER_DETECTION_LOCK</font></td>
+
+<td><font face="Times" size="+1">0xC5</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_LOGIN_LOCKOUT</font></td>
+
+<td><font face="Times" size="+1">0xC5</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_CONSOLE_OPERATOR_RIGHTS</font></td>
+
+<td><font face="Times" size="+1">0xC6</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_Q_ERROR</font></td>
+
+<td><font face="Times" size="+1">0xD0</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_QUEUE</font></td>
+
+<td><font face="Times" size="+1">0xD1</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_QUEUE_SERVER</font></td>
+
+<td><font face="Times" size="+1">0xD2</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_QUEUE_RIGHTS</font></td>
+
+<td><font face="Times" size="+1">0xD3</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_Q_FULL</font></td>
+
+<td><font face="Times" size="+1">0xD4</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_JOB</font></td>
+
+<td><font face="Times" size="+1">0xD5</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_JOB_RIGHTS</font></td>
+
+<td><font face="Times" size="+1">0xD6</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_PASSWORD_NOT_UNIQUE</font></td>
+
+<td><font face="Times" size="+1">0xD7</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_Q_SERVICING</font></td>
+
+<td><font face="Times" size="+1">0xD7</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_PASSWORD_TOO_SHORT</font></td>
+
+<td><font face="Times" size="+1">0xD8</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_Q_NOT_ACTIVE</font></td>
+
+<td><font face="Times" size="+1">0xD8</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_LOGIN_DENIED_NO_CONNECTION</font></td>
+
+<td><font face="Times" size="+1">0xD9</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_Q_PASSWORD_TOO_SHORT</font></td>
+
+<td><font face="Times" size="+1">0xD9</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_UNAUTHORIZED_LOGIN_TIME</font></td>
+
+<td><font face="Times" size="+1">0xDA</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_Q_HALTED</font></td>
+
+<td><font face="Times" size="+1">0xDA</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_UNAUTHORIZED_LOGIN_STATION</font></td>
+
+<td><font face="Times" size="+1">0xDB</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_MAX_QUEUE_SERVERS</font></td>
+
+<td><font face="Times" size="+1">0xDB</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_ACCOUNT_DISABLED</font></td>
+
+<td><font face="Times" size="+1">0xDC</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_BAD_PASSWORD</font></td>
+
+<td><font face="Times" size="+1">0xDE</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_PASSWORD_HAS_EXPIRED_NO_GRACE</font></td>
+
+<td><font face="Times" size="+1">0xDE</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_PASSWORD_HAS_EXPIRED</font></td>
+
+<td><font face="Times" size="+1">0xDF</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_UNENCRYPTED_PASSWORD</font></td>
+
+<td><font face="Times" size="+1">0xD6</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_ACCOUNT_BAD</font></td>
+
+<td><font face="Times" size="+1">0xD7</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_DISK_TRACK</font></td>
+
+<td><font face="Times" size="+1">0xD7</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_MAX_LOGINS_EXCEEDED</font></td>
+
+<td><font face="Times" size="+1">0xD9</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NOT_ITEM_PROPERTY</font></td>
+
+<td><font face="Times" size="+1">0xE8</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_WRITE_PROPERTY_TO_GROUP</font></td>
+
+<td><font face="Times" size="+1">0xE8</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_MEMBER_ALREADY_EXISTS</font></td>
+
+<td><font face="Times" size="+1">0xE9</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_SUCH_MEMBER</font></td>
+
+<td><font face="Times" size="+1">0xEA</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NOT_SET_PROPERTY</font></td>
+
+<td><font face="Times" size="+1">0xEB</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_SUCH_SEGMENT</font></td>
+
+<td><font face="Times" size="+1">0xEC</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_SUCH_SET</font></td>
+
+<td><font face="Times" size="+1">0xEC</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_PROPERTY_ALREADY_EXISTS</font></td>
+
+<td><font face="Times" size="+1">0xED</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_OBJECT_ALREADY_EXISTS</font></td>
+
+<td><font face="Times" size="+1">0xEE</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_INVALID_NAME</font></td>
+
+<td><font face="Times" size="+1">0xEF</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_WILD_CARD_NOT_ALLOWED</font></td>
+
+<td><font face="Times" size="+1">0xF0</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_ILLEGAL_WILDCARD</font></td>
+
+<td><font face="Times" size="+1">0xF0</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_INVALID_BINDERY_SECURITY</font></td>
+
+<td><font face="Times" size="+1">0xF1</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_OBJECT_READ_PRIVILEGE</font></td>
+
+<td><font face="Times" size="+1">0xF2</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_OBJECT_RENAME_PRIVILEGE</font></td>
+
+<td><font face="Times" size="+1">0xF3</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_OBJECT_DELETE_PRIVILEGE</font></td>
+
+<td><font face="Times" size="+1">0xF4</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_OBJECT_CREATE_PRIVILEGE</font></td>
+
+<td><font face="Times" size="+1">0xF5</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_PROPERTY_DELETE_PRIVILEGE</font></td>
+
+<td><font face="Times" size="+1">0xF6</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NOT_SAME_LOCAL_DRIVE</font></td>
+
+<td><font face="Times" size="+1">0xF6</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_PROPERTY_CREATE_PRIVILEGE</font></td>
+
+<td><font face="Times" size="+1">0xF7</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_TARGET_DRIVE_NOT_LOCAL</font></td>
+
+<td><font face="Times" size="+1">0xF7</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_ALREADY_ATTACHED_TO_SERVER</font></td>
+
+<td><font face="Times" size="+1">0xF8</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_PROPERTY_WRITE_PRIVILEGE</font></td>
+
+<td><font face="Times" size="+1">0xF8</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NOT_ATTACHED_TO_SERVER</font></td>
+
+<td><font face="Times" size="+1">0xF8</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_FREE_CONNECTION_SLOTS</font></td>
+
+<td><font face="Times" size="+1">0xF9</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_MORE_PROP_VALS</font></td>
+
+<td><font face="Times" size="+1">0xF9</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_PROPERTY_READ_PRIVILEGE</font></td>
+
+<td><font face="Times" size="+1">0xF9</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_MORE_SERVER_SLOTS</font></td>
+
+<td><font face="Times" size="+1">0xFA</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_TEMP_REMAP_ERROR</font></td>
+
+<td><font face="Times" size="+1">0xFA</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_INVALID_PARAMETERS</font></td>
+
+<td><font face="Times" size="+1">0xFB</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_MORE_PROPERTIES</font></td>
+
+<td><font face="Times" size="+1">0xFB</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_SUCH_PROPERTY</font></td>
+
+<td><font face="Times" size="+1">0xFB</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NOT_386_FILE_SYSTEM</font></td>
+
+<td><font face="Times" size="+1">0xFB</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_INTERNET_PACKET_REQT_CANCELED</font></td>
+
+<td><font face="Times" size="+1">0xFB</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_SEMAPHORE_INVALID_PARAMETERS</font></td>
+
+<td><font face="Times" size="+1">0xFB</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_SYNC_INVALID_PARAMETERS</font></td>
+
+<td><font face="Times" size="+1">0xFB</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_UNKNOWN_FILE_SERVER</font></td>
+
+<td><font face="Times" size="+1">0xFC</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_MESSAGE_QUEUE_FULL</font></td>
+
+<td><font face="Times" size="+1">0xFC</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_SUCH_OBJECT</font></td>
+
+<td><font face="Times" size="+1">0xFC</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_MORE_OBJECTS</font></td>
+
+<td><font face="Times" size="+1">0xFC</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_BAD_STATION_NUMBER</font></td>
+
+<td><font face="Times" size="+1">0xFD</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_INVALID_PACKET_LENGTH</font></td>
+
+<td><font face="Times" size="+1">0xFD</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_TTS_DISABLED</font></td>
+
+<td><font face="Times" size="+1">0xFD</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_UNKNOWN_REQUEST</font></td>
+
+<td><font face="Times" size="+1">0xFD</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_BINDERY_LOCKED</font></td>
+
+<td><font face="Times" size="+1">0xFE</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_DIRECTORY_LOCKED</font></td>
+
+<td><font face="Times" size="+1">0xFE</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_INVALID_NAME_LENGTH</font></td>
+
+<td><font face="Times" size="+1">0xFE</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_INVALID_SEMAPHORE_NAME_LENGTH</font></td>
+
+<td><font face="Times" size="+1">0xFE</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_IMLPICIT_TRANS_ACTIVE</font></td>
+
+<td><font face="Times" size="+1">0xFE</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_SUCH_RESTRICTION</font></td>
+
+<td><font face="Times" size="+1">0xFE</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_PACKET_NOT_DELIVERABLE</font></td>
+
+<td><font face="Times" size="+1">0xFE</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_RECORDS_STILL_LOCKED</font></td>
+
+<td><font face="Times" size="+1">0xFE</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_SERVER_BINDERY_LOCKED</font></td>
+
+<td><font face="Times" size="+1">0xFE</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_SOCKET_TABLE_FULL</font></td>
+
+<td><font face="Times" size="+1">0xFE</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_SPOOL_DIRECTORY_ERROR</font></td>
+
+<td><font face="Times" size="+1">0xFE</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_SUPERVISOR_HAS_DISABLED_LOGIN</font></td>
+
+<td><font face="Times" size="+1">0xFE</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_TIMEOUT_FAILURE</font></td>
+
+<td><font face="Times" size="+1">0xFE</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_BAD_PRINTER_ERROR</font></td>
+
+<td><font face="Times" size="+1">0xFF</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_BAD_RECORD_OFFSET</font></td>
+
+<td><font face="Times" size="+1">0xFF</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_CLOSE_FCB_ERROR</font></td>
+
+<td><font face="Times" size="+1">0xFF</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_ENTRY_EXISTS</font></td>
+
+<td><font face="Times" size="+1">0xFF</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_ENTRY_NOT_FOUND</font></td>
+
+<td><font face="Times" size="+1">0xFF</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_EXPLICIT_TRANS_ACTIVE</font></td>
+
+<td><font face="Times" size="+1">0xFF</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_FILE_ALREADY_EXISTS</font></td>
+
+<td><font face="Times" size="+1">0xFF</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_FILE_EXTENSION_ERROR</font></td>
+
+<td><font face="Times" size="+1">0xFF</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_FILE_NAME_ERROR</font></td>
+
+<td><font face="Times" size="+1">0xFF</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_HARDWARE_FAILURE</font></td>
+
+<td><font face="Times" size="+1">0xFF</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_INVALID_DRIVE_NUMBER</font></td>
+
+<td><font face="Times" size="+1">0xFF</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_INVALID_INITIAL_SEMAPHORE_VALUE</font></td>
+
+<td><font face="Times" size="+1">0xFF</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_INVALID_SEMAPHORE_HANDLE</font></td>
+
+<td><font face="Times" size="+1">0xFF</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_IO_BOUND_ERROR</font></td>
+
+<td><font face="Times" size="+1">0xFF</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_EXPLICIT_TRANS_ACTIVE</font></td>
+
+<td><font face="Times" size="+1">0xFF</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_FILES_FOUND_ERROR</font></td>
+
+<td><font face="Times" size="+1">0xFF</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_MORE_FILES_FOUND</font></td>
+
+<td><font face="Times" size="+1">0xFF</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_RESPONSE_FROM_SERVER</font></td>
+
+<td><font face="Times" size="+1">0xFF</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_NO_SUCH_OBJECT_OR_BAD_PASSWORD</font></td>
+
+<td><font face="Times" size="+1">0xFF</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_OPEN_FILES</font></td>
+
+<td><font face="Times" size="+1">0xFF</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_PATH_NOT_LOCATABLE</font></td>
+
+<td><font face="Times" size="+1">0xFF</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_QUEUE_FULL_ERROR</font></td>
+
+<td><font face="Times" size="+1">0xFF</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_REQUEST_NOT_OUTSTANDING</font></td>
+
+<td><font face="Times" size="+1">0xFF</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_SEMAPHORE_INVALID_VALUE</font></td>
+
+<td><font face="Times" size="+1">0xFF</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_SEMAPHORE_INVALID_HANDLE</font></td>
+
+<td><font face="Times" size="+1">0xFF</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_SOCKET_ALREADY_OPEN</font></td>
+
+<td><font face="Times" size="+1">0xFF</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_SYNC_LOCK_FAILURE</font></td>
+
+<td><font face="Times" size="+1">0xFF</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_SYNC_ENTRY_NOT_FOUND</font></td>
+
+<td><font face="Times" size="+1">0xFF</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_SYNC_RECORD_NOT_FOUND</font></td>
+
+<td><font face="Times" size="+1">0xFF</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_TRANS_NOT_WRITTEN</font></td>
+
+<td><font face="Times" size="+1">0xFF</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWERR_TTS_NOT_AVAILABLE</font></td>
+
+<td><font face="Times" size="+1">0xFF</font></td></tr>
+
+</table>
+
+
+
+<p>
+
+</body>
+</html>

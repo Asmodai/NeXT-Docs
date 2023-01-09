@@ -1,0 +1,1476 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<!-- Created with LatinByrd III -->
+<!-- File: /NextLibrary/Documentation/Novell/NetWareReference/01_Accounting.rtf -->
+<!-- Date: Mon Jan  9 04:03:57 2023 -->
+<head>
+<title>01_Accounting</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" alink="#FF00FF" vlink="#FF0000">
+
+<basefont size=3>
+
+<p><font face="Times">Copyright</font> &copy;<font face="Times">1993 by Novell, Inc. and NeXT Computer, Inc.&nbsp; All Rights Reserved.</font>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Times" size="+4">Accounting Services APIs</font>
+
+<p><br><br>
+
+<p><font face="Helvetica" size="+1"><b>Introduction to Accounting Services</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">The four accounting service calls enable developers to create servers that can charge for their services. For example, a database server can charge for the number of records viewed, the number of requests serviced or the amount of time connected. A print server can charge for the number of pages printed.</font>
+
+<p><font face="Times" size="+1">To charge for services, a server must be a member of the ACCOUNT_SERVERS property of the file server. To use accounting services, you must be familiar with the NetWare file server bindery.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWGetAccountStatus</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function returns the account status of a bindery object.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &quot;netware/nwapi.h&quot;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">objectType;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">char</font></td>
+
+<td><font face="Times" size="+1">objectName</font><font face="Times" size="-1"><b>[NWMAX_OBJECT_NAME_LENGTH]</b></font><font face="Times">;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int32</font></td>
+
+<td><font face="Times" size="+1">balance;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int32</font></td>
+
+<td><font face="Times" size="+1">limit;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">NWHoldInfo_t</font></td>
+
+<td><font face="Times" size="+1">holds</font><font face="Times" size="-1"><b>[NWMAX_NUMBER_OF_HOLDS]</b></font><font face="Times" size="+1">;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWGetAccountStatus</b>( serverConnID, objectType, objectName,</font><br>
+<font face="Times" size="+1">&amp;balance, &amp;limit, holds );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> passes the file server connection ID.</font>
+
+<p><font face="Times" size="+1"><i>objectType</i> passes the type of bindery object for which the request is being made. (See Appendix A, &quot;Bindery Object Types.&quot;)</font>
+
+<p><font face="Times" size="+1"><i>objectName</i> passes a pointer to the string containing the object name for which the account status request is being made.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>balance</i> receives the number of value units available to the object to buy services on the network.</font>
+
+<p><font face="Times" size="+1"><i>limit</i> receives the value of the lowest level the object's account balance can reach before the object can no longer buy services on the network.</font>
+
+<p><font face="Times" size="+1"><i>holds</i> returns a list of objectIDs and holdAmounts that have been placed on the account (maximum = 16). (See Appendix A, &quot;NWHoldInfo_t Structure.&quot;)</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful</font></td></tr>
+
+</table>
+
+<p><br><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a complete listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function queries a file server's bindery for the current account status of a specified bindery object by passing the bindery object name and type. The function returns the object's balance, limit and holds parameters.</font>
+
+<p><font face="Times" size="+1">The value in the balance parameter represents the object's account balance, usually in some established monetary unit such as cents.</font>
+
+<p><font face="Times" size="+1">The holds parameter lists servers that have issued NWSubmitAccountHold calls against the object and the amount reserved by each value-added server. The holds parameter also lists the object ID number of a value-added server that has issued a NWSubmitAccountHold call against the object. Up to 16 servers can place holds on the account at one time. Multiple holds from the same server are combined. Each server hold is made up of two fields: (1) the object ID of the server that placed the hold, and (2) the amount of that server's hold.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWSubmitAccountHold</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWSubmitAccountCharge</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function updates the account of a bindery object by charging for a service and updating the audit record.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &quot;netware/nwapi.h&quot;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">objectType;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">char</font></td>
+
+<td><font face="Times" size="+1">objectName[</font><font face="Times" size="-1"><b>NWMAX_OBJECT_NAME_LENGTH]</b></font><font face="Times" size="+1">;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serviceType;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int32</font></td>
+
+<td><font face="Times" size="+1">chargeAmount;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int32</font></td>
+
+<td><font face="Times" size="+1">cancelHoldAmount;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">commentType;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">char</font></td>
+
+<td><font face="Times" size="+1">comment</font><font face="Times" size="-1"><b>[NWMAX_COMMENT_LENGTH]</b></font><font face="Times" size="+1">;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWSubmitAccountCharge</b>( serverConnID, objectType, objectName, serviceType, chargeAmount, cancelHoldAmount, commentType, comment );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> passes the file server connection ID.</font>
+
+<p><font face="Times" size="+1"><i>objectType</i> passes the type of bindery object for which the request is being made. (See Appendix A, &quot;Bindery Object Types.&quot;)</font>
+
+<p><font face="Times" size="+1"><i>objectName</i> passes a pointer to the name of the object for which the account status request is being made.</font>
+
+<p><font face="Times" size="+1"><i>serviceType</i> passes the type of service for which the request is being made (usually the object type of the charging account server).</font>
+
+<p><font face="Times" size="+1"><i>chargeAmount</i> passes the amount of account server charges for the service it provides.</font>
+
+<p><font face="Times" size="+1"><i>cancelHoldAmount</i> passes the amount to be subtracted from the total amount of all holds previously placed by the server. If no NWSubmitAccountHold calls were made prior to providing the service, this value should be zero.</font>
+
+<p><font face="Times" size="+1"><i>commentType</i> passes the type of comment written to the audit report.</font>
+
+<p><font face="Times" size="+1"><i>comment</i> passes a pointer to a comment associated with the object's account charge.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful. One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0x94</font></td>
+
+<td><font face="Times" size="+1">No Write Privileges</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xA2</font></td>
+
+<td><font face="Times" size="+1">I/O Lock Error</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a complete listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function charges an object's account balance and relinquishes a hold against the object's account balance. The function can also write a note about the transaction in an audit record (optional). The charge and hold amounts do not have to be the same.</font>
+
+<p><font face="Times" size="+1">The objectType and objectName parameters must uniquely specify the bindery object and cannot contain wildcard characters.</font>
+
+<p><font face="Times" size="+1">The serviceType parameter usually contains the object type of the charging account server. The common server object types are listed below:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>Object</b></font></td>
+
+<td><font face="Times" size="+1"><b>Type</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Archive Server</font></td>
+
+<td><font face="Times" size="+1">NWOT_ARCHIVE_SERVER</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Job Server</font></td>
+
+<td><font face="Times" size="+1">NWOT_JOB_SERVER</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Print Server</font></td>
+
+<td><font face="Times" size="+1">NWOT_PRINT_SERVER</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">The commentType parameter contains the number of the comment type in the comment parameter. Comment types are administered by Novell and are listed below:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>Comment</b></font></td>
+
+<td><font face="Times" size="+1"><b>Description</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">1</font></td>
+
+<td><font face="Times" size="+1">Connect time charge</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">2</font></td>
+
+<td><font face="Times" size="+1">Disk storage charge</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">3</font></td>
+
+<td><font face="Times" size="+1">Log in note</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">4</font></td>
+
+<td><font face="Times" size="+1">Log out note</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">5</font></td>
+
+<td><font face="Times" size="+1">Account locked note</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">6</font></td>
+
+<td><font face="Times" size="+1">Server time modified note</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">Developers should contact Novell for unique comment types. Comment types greater than 8000h are reserved for experimental purposes.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Notes</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">The comment parameter is the entry that the value-added server makes in an audit record. This audit record is contained in the</font><br>
+<font face="Times" size="+1">SYS:SYSTEM\NET$ACCT.DAT file.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>See Also</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">NWSubmitAccountNote</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWSubmitAccountHold</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function reserves a specified amount of an object's account balance pending a NWSubmitAccountCharge call.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &quot;netware/nwapi.h&quot;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">objectType;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">char</font></td>
+
+<td><font face="Times" size="+1">objectName</font><font face="Times" size="-1"><b>[NWMAX_OBJECT_NAME_LENGTH]</b></font><font face="Times">;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int32</font></td>
+
+<td><font face="Times" size="+1">reserveAmount;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWSubmitAccountHold</b>( serverConnID, objectType, objectName, reserveAmount );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> passes the file server connection ID.</font>
+
+<p><font face="Times" size="+1"><i>objectType</i> passes the type of bindery object for which the request is being made. (See Appendix A, &quot;Bindery Object Types.&quot;)</font>
+
+<p><font face="Times" size="+1"><i>objectName</i> passes a pointer to the name of the bindery object for which the account status request is being made.</font>
+
+<p><font face="Times" size="+1"><i>reserveAmount</i> passes the hold amount to be placed against the client's account pending service.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Output</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">None.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful. One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0x94</font></td>
+
+<td><font face="Times" size="+1">No Write Privileges</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xA2</font></td>
+
+<td><font face="Times" size="+1">I/O Lock Error</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xC1</font></td>
+
+<td><font face="Times" size="+1">No Account Balance</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xC3</font></td>
+
+<td><font face="Times" size="+1">Too Many Holds</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a complete listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function reserves a specified amount of an object's account balance before that object receives and is charged for a service on the network.</font>
+
+<p><font face="Times" size="+1">The objectType and objectName parameters must uniquely identify the bindery object and may not contain wildcard characters.</font>
+
+<p><font face="Times" size="+1">The reserveAmount parameter gets the amount that the server expects to charge for the service it is about to provide to the object.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Notes</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">No more than 16 servers can reserve amounts of an object's account balance at one time. Multiple holds from the same server are combined.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>NWSubmitAccountNote</b></font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function adds a note about an object's account to an audit record. This API does not charge for the service.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Synopsis</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">#include &quot;netware/nwapi.h&quot;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">int</font></td>
+
+<td><font face="Times" size="+1">ccode;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serverConnID;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">objectType;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">char</font></td>
+
+<td><font face="Times" size="+1">objectName</font><font face="Times" size="-1"><b>[NWMAX_OBJECT_NAME_LENGTH]</b></font><font face="Times" size="+1">;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">serviceType;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">uint16</font></td>
+
+<td><font face="Times" size="+1">commentType;</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">char</font></td>
+
+<td><font face="Times" size="+1">comment</font><font face="Times" size="-1"><b>[NWMAX_COMMENT_LENGTH]</b></font><font face="Times" size="+1">;</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">ccode=<b>NWSubmitAccountNote</b>( serverConnID, objectType, objectName,</font><br>
+<font face="Times" size="+1">serviceType, commentType, comment );</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Input</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1"><i>serverConnID</i> passes the file server connection ID.</font>
+
+<p><font face="Times" size="+1"><i>objectType</i> passes the type of bindery object for which the request is being made. (See Appendix A, &quot;Bindery Object Types.&quot;)</font>
+
+<p><font face="Times" size="+1"><i>objectName</i> passes a pointer to the object name for which the account status request is being made.</font>
+
+<p><font face="Times" size="+1"><i>serviceType</i> passes the type of service for which the request is being made (usually the object type of the charging account server).</font>
+
+<p><font face="Times" size="+1"><i>commentType</i> passes the type of comment in the comment parameter. (See Appendix A, &quot;Comment Types.&quot;)</font>
+
+<p><font face="Times" size="+1"><i>comment</i> passes a pointer to the comment associated with the object's account.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Return Values</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">0</font></td>
+
+<td><font face="Times" size="+1">Successful.</font></td></tr>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td nowrap><font face="Times" size="+1">-1</font></td>
+
+<td><font face="Times" size="+1">Unsuccessful. One of the following error codes is placed in NWErrno:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xEA</font></td>
+
+<td><font face="Times" size="+1">No Such Member</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xEB</font></td>
+
+<td><font face="Times" size="+1">Not Set Property</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xEC</font></td>
+
+<td><font face="Times" size="+1">No Such Set</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">0xFC</font></td>
+
+<td><font face="Times" size="+1">No Such Object</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">See Appendix B for a complete listing of possible NetWare errors and a description of the four bytes in NWErrno.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=5></td>
+
+<td><font face="Helvetica" size="+1"><b>Description</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">This function adds a note about an accounting transaction to an audit record.</font>
+
+<p><font face="Times" size="+1">The objectType and objectName parameters must uniquely identify the bindery object and may not contain wildcard characters.</font>
+
+<p><font face="Times" size="+1">The serviceType parameter usually contains the object type of the charging account server. The common server object types are listed below:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>Object</b></font></td>
+
+<td><font face="Times" size="+1"><b>Type</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Archive Server</font></td>
+
+<td><font face="Times" size="+1">NWOT_ARCHIVE_SERVER</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Job Server</font></td>
+
+<td><font face="Times" size="+1">NWOT_JOB_SERVER</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">Print Server</font></td>
+
+<td><font face="Times" size="+1">NWOT_PRINT_SERVER</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">The commentType parameter contains the number of the comment type in the comment parameter. Comment types are administered by Novell and are listed below:</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1"><b>Comment</b></font></td>
+
+<td><font face="Times" size="+1"><b>Description</b></font></td></tr>
+
+<tr valign=top>
+
+<td width=105 height=17></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">1</font></td>
+
+<td><font face="Times" size="+1">Connect time charge</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">2</font></td>
+
+<td><font face="Times" size="+1">Disk storage charge</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">3</font></td>
+
+<td><font face="Times" size="+1">Log in note</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">4</font></td>
+
+<td><font face="Times" size="+1">Log out note</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">5</font></td>
+
+<td><font face="Times" size="+1">Account locked note</font></td></tr>
+
+<tr valign=top>
+
+<td width=105></td>
+
+<td nowrap><font face="Times" size="+1">6</font></td>
+
+<td><font face="Times" size="+1">Server time modified note</font></td></tr>
+
+</table>
+
+<p>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">Developers should contact Novell for unique comment types. Comment types greater than 8000h are reserved for experimental purposes.</font></td></tr>
+
+</table>
+
+<p><br>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=9></td>
+
+<td><font face="Helvetica" size="+1"><b>Notes</b></font></td></tr>
+
+</table>
+
+<table cellspacing=0 cellpadding=0>
+
+<tr valign=top>
+
+<td width=55></td>
+
+<td><font face="Times" size="+1">The comment parameter contains the entry that the server makes in the audit record. The audit record is contained in the SYS:SYSTEM\NET$ACCT.DAT file.</font></td></tr>
+
+</table>
+
+
+
+<p><br><br><br>
+
+</body>
+</html>
